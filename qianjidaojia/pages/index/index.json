@@ -1,0 +1,12 @@
+{
+    "navigationBarTitleText": "钱记到家",
+    "navigationBarBackgroundColor":"#fff",
+    "navigationBarTextStyle":"black",
+    "usingComponents": {
+        "tabbar": "../../components/tabbar/tabbar",
+        "myIcon":"../../components/myIcon/myIcon",
+        "myToast": "../../components/myToast/myToast",
+        "addCart": "../../components/addCart/addCart"
+
+    }
+}

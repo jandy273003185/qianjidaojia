@@ -1,0 +1,135 @@
+/* pages/refund/refund.wxss */
+page{
+  background-color: #FDFAFE;
+}
+.item{
+  background-color: #ffffff;
+  margin: 20rpx;
+  padding: 20rpx;
+  color: #505050;
+  border-radius: 8rpx; 
+}
+.item-up{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2rpx solid #eeeeee;
+  padding: 6rpx 0;
+}
+.select{
+  color: #909090;
+  font-size: 30rpx;
+}
+.arrow{
+  width: 16rpx;
+  height: 24rpx;
+  margin-left: 8rpx;
+}
+.item-mid{
+  width: 94%;
+  margin-top: 20rpx;
+  border: 2rpx solid #e1e1e1;
+  border-radius: 8rpx;  
+}
+textarea{
+  padding: 20rpx;
+}
+.num{
+  color: #909090;
+  text-align: right;
+  padding-bottom: 20rpx;
+}
+.submit{
+  display: flex;
+  background-color: #2db961;
+  color:#ffffff;
+  padding: 20rpx;
+  justify-content: center;
+  margin: 150rpx 30rpx;
+  border-radius: 80rpx;
+  border:2rpx solid #ff5c29
+}
+
+/*模态框*/
+.modal{position:fixed; top:0; right:0; bottom:0; left:0; z-index:1000;}
+.modal-cancel{position:absolute; z-index:2000; top:0; right:0; bottom: 0; left:0; background:rgba(0,0,0,0.3);}
+.bottom-dialog-body{width:100%; position:absolute; z-index:3000; bottom:0; left:0;background:#dfdede;}
+/*动画前初始位置*/
+.bottom-positon{-webkit-transform:translateY(100%);transform:translateY(100%);}
+ 
+/* 底部弹出框 */
+.bottom-positon{
+  text-align: center;
+}
+.Mselect{
+  margin-bottom: 20rpx;
+}
+.Mselect view{
+  padding: 26rpx 0;
+  background: #fff;
+}
+.Mselect view:not(:last-of-type){
+  border-bottom: 1px solid #dfdede;
+}
+.Mcancel{
+  background: #fff;
+  padding: 26rpx 0;
+}
+
+.goods{
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  color: #333333;
+}
+.goods-up{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 22rpx 0;
+}
+.order-type,.deal-status{ 
+  color: #09B007;
+}
+.merchant{
+  margin-left: 14rpx;
+  font-family:PingFangSC-Medium,PingFang SC;
+  font-weight:500;
+  font-size: 34rpx;
+}
+.goods-middle{
+  display: flex;
+  justify-content: space-between;
+}
+.goods-img{
+  width: 140rpx;
+  height: 140rpx;
+}
+image{
+  width: 100%;
+  height: 100%;
+}
+.goods-title{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 80rpx;
+  white-space:nowrap;
+}
+.goods-txt{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 200rpx;
+  margin: 0 20rpx;
+}
+.num{
+  width: 50rpx;
+}
+.price{
+  color: #FF7387;
+  font-size: 36rpx;
+}
+.specText{
+  margin:6rpx 0 10rpx 0;
+  font-size: 22rpx;
+  color: #999999;
+}

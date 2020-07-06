@@ -1,0 +1,136 @@
+.fenxiang {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	z-index: 100;
+	background: rgba(0, 0, 0, .7);
+	display: none;
+}
+
+.fenxiang>div {
+	position: absolute;
+	bottom: 0px;
+	background: #FFFFFF;
+	width: 100%;
+	text-align: center;
+}
+
+.fenxiang ul {
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+}
+
+.fenxiang ul li {
+	float: left;
+	width: 25%;
+	color: #666666;
+	text-align: center;
+}
+
+.fenxiang ul li i {
+	width: .4rem;
+	height: .4rem;
+	display: block;
+	margin: auto;
+	margin-bottom: .02rem;
+}
+
+.fenxiang .icon-weixin {
+	background: url(../images/icons/weixin.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.fenxiang .icon-qq {
+	background: url(../images/icons/qq.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.fenxiang .icon-weibo {
+	background: url(../images/icons/weibo.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.fenxiang .icon-quan {
+	background: url(../images/icons/weixinf.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.fenxiang .icon-qqroom {
+	background: url(../images/icons/qq_room.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.fenxiang .fenxiang-title {
+	height: .5rem;
+	line-height: .5rem;
+	border-bottom: 1px solid #eee;
+	/*margin: .2rem 0px;*/
+	margin-bottom: .2rem;
+	font-size: .18rem;
+	color: #666666;
+}
+
+.fenxiang .fenxiang-colse {
+	height: .5rem;
+	line-height: .5rem;
+	border-top: 1px solid #eee;
+	/*margin: .2rem 0px;*/
+	margin-top:.2rem;
+	font-size: .18rem;
+	color: #666666;
+}
+
+
+/*加入购物车按钮*/
+/*
+.shade__ft {
+	overflow: hidden;
+}
+
+.shade__ft a {
+	display: inline-block;
+	width: 50%;
+	float: left;
+	border: none;
+}*/
+
+/*#addCart {
+	background-color: #fda33a;
+}*/
+/*分享插件的样式*/
+.bdsharebuttonbox a { width: .4rem!important; height: .4rem!important; margin: 0 auto 10px!important; float: none!important; padding: 0!important; display: block; }
+.bdsharebuttonbox a img { width: 60px; height: 60px; }
+.bdsharebuttonbox .bds_tsina { background: url(../images/icons/weibo.png) no-repeat center center/.4rem .4rem; }
+.bdsharebuttonbox .bds_qzone { background: url(../images/icons/qq_room.png) no-repeat center center/.4rem .4rem; }
+.bdsharebuttonbox .bds_tqq { background: url(../images/gbRes_5.png) no-repeat center center/.4rem .4rem; }
+.bdsharebuttonbox .bds_weixin { background: url(../images/icons/weixin.png) no-repeat center center/.4rem .4rem; }
+.bdsharebuttonbox .bds_sqq { background: url(../images/icons/qq.png) no-repeat center center/.4rem .4rem; }
+/*.bdsharebuttonbox .bds_renren { background: url(../images/gbRes_1.png) no-repeat center center/.5rem .5rem; }*/
+.bd_weixin_popup .bd_weixin_popup_foot { position: relative; top: -12px; }
+.bdsharebuttonbox a {
+	float: none !important;
+	display: block !important;
+	margin: auto !important;
+	border-radius: 50%;
+}
+
+.bdshare-button-style0-24 .bds_weixin {
+	background-position: 0 0px !important;
+}
+
+.bdshare-button-style0-24 .bds_sqq {
+	background-position: 0 0px !important;
+}
+
+.bdshare-button-style0-24 .bds_qzone {
+	background-position: 0 0px !important;
+}
+
+.bdshare-button-style0-24 .bds_tsina {
+	background-position: 0 0px !important;
+}
+.bdshare-button-style0-24 .bds_renren {
+    background-position: 0 0px !important;
+}

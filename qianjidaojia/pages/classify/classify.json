@@ -1,0 +1,10 @@
+{
+    "navigationBarTitleText": "全部商品",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTextStyle": "black",
+  "usingComponents": {
+      "tabbar": "../../components/tabbar/tabbar",
+      "myIcon": "../../components/myIcon/myIcon",
+      "addCart": "../../components/addCart/addCart"
+  }
+}

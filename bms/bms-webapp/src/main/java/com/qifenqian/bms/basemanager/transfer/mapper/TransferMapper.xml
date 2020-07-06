@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.transfer.mapper.TransferMapper">
+
+	<select id="selectTransfer" parameterType="com.qifenqian.bms.basemanager.transfer.bean.TransferBean"
+	resultType="com.qifenqian.bms.basemanager.transfer.bean.TransferBean">
+		SELECT
+				T.ORDER_ID,
+				T.ORDER_NAME,
+				T.ORDER_DESC,
+				H.ID channelId,
+				PAY.MOBILE  PAYER_CUST_ID,
+				RCV.MOBILE  PAYEE_CUST_ID,
+				T.PAYEE_CUST_NAME,
+				T.PAYER_CUST_NAME,
+				IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+				T.ORDER_CREATE_TIME,
+				T.ORDER_STATE,
+				T.SUM_AMT
+			FROM
+				TD_TRADE_BILL_MAIN T
+				left JOIN TD_LOGIN_USER_INFO PAY
+				ON T.PAYER_CUST_ID = PAY.CUST_ID
+				left JOIN TD_LOGIN_USER_INFO RCV
+				ON T.PAYEE_CUST_ID = RCV.CUST_ID
+				LEFT JOIN STCS.TRANS_RECORD SS
+				ON T.ORDER_ID = SS.REQ_SERIAL_ID
+			LEFT JOIN (
+				SELECT
+					Y.TRANS_AMT,
+					Y.RTN_SEQ,
+					F.MSG_ID,
+					Y.ID,
+					Y.WORK_DATE
+				FROM
+					STCS.CLEAR_JGKJ_TRANSFER Y
+				LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+			WHERE F.OPERATE= 'JGKJ_TRANSFER' 
+			) H ON SS.MSG_ID = H.MSG_ID
+		<where>
+			T.TRADE_TYPE  in ('1001','1302') 
+			<if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND T.ORDER_ID LIKE CONCAT('%',#{orderId} ,'%')   
+	            ]]>  
+        	</if> 
+        	<if test="channelId != null and '' != channelId">  
+	            <![CDATA[  
+	              AND H.ID = #{channelId}  
+	            ]]>  
+	        </if>
+        	 <if test="payerCustId != null and '' != payerCustId">  
+	            <![CDATA[  
+	              AND PAY.MOBILE  LIKE CONCAT('%', #{payerCustId}   ,'%') 
+	            ]]>  
+	        </if> 
+	        <if test="payerCustName != null and '' != payerCustName">  
+	            <![CDATA[  
+	              AND T.PAYER_CUST_NAME LIKE CONCAT('%',#{payerCustName}  ,'%')  
+	            ]]>  
+	        </if>
+	         <if test="payeeCustId != null and '' != payeeCustId">  
+	            <![CDATA[  
+	              AND RCV.MOBILE  LIKE CONCAT('%', #{payeeCustId}   ,'%') 
+	            ]]>  
+	        </if> 
+			<if test="payeeCustName != null and '' != payeeCustName">  
+	            <![CDATA[  
+	              AND T.PAYEE_CUST_NAME LIKE CONCAT('%',#{payeeCustName}  ,'%')  
+	            ]]>  
+	        </if>
+        	<if test="orderState != null and '' != orderState">  
+	            <![CDATA[  
+	              	AND T.ORDER_STATE = #{orderState, jdbcType = VARCHAR}  
+	            ]]>  
+        	</if> 
+        	<if test="orderName != null and '' != orderName">  
+	            <![CDATA[  
+	              	AND T.ORDER_NAME = #{orderName, jdbcType = VARCHAR}  
+	            ]]>  
+        	</if> 
+       		<if test="beginTime != null and '' != beginTime">
+	       		<![CDATA[ 
+	 				AND DATE_FORMAT(T.ORDER_CREATE_TIME ,'%Y-%m-%d') >= #{beginTime}  
+	 			]]>
+ 			</if>
+	 		<if test="endTime != null and '' != endTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(T.ORDER_CREATE_TIME ,'%Y-%m-%d') <= #{endTime}
+	 			]]>
+	 		</if>
+	 		 <if test="startWorkDate != null and '' != startWorkDate">
+		 		<![CDATA[ 
+		 			AND IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) >= #{startWorkDate} 
+	 			]]>
+			</if>
+			<if test="endWorkDate != null and '' != endWorkDate">
+	 		    <![CDATA[ 
+	 				AND IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d'))  <= #{endWorkDate}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY T.ORDER_CREATE_TIME DESC
+	</select>
+	
+	<select id="selectTransferExcel" parameterType="com.qifenqian.bms.basemanager.transfer.bean.TransferBean"
+	resultType="com.qifenqian.bms.basemanager.transfer.bean.TransferExcel">
+		SELECT
+				T.ORDER_ID,
+				T.ORDER_NAME,
+				T.ORDER_DESC,
+				H.ID channelId,
+				PAY.MOBILE  PAYER_CUST_ID,
+				RCV.MOBILE  PAYEE_CUST_ID,
+				T.PAYEE_CUST_NAME,
+				T.PAYER_CUST_NAME,
+				IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+				T.ORDER_CREATE_TIME,
+				CASE T.ORDER_STATE
+				WHEN '00' THEN '成功'
+				WHEN '01' THEN '待提交'
+				WHEN '02' THEN '提交核心'
+				WHEN '03' THEN '核心处理中'
+				WHEN '04' THEN '失败'
+				WHEN '99' THEN '取消'
+				WHEN '90' THEN '未明'
+				ELSE T.ORDER_STATE END AS 
+				ORDER_STATE,
+				T.SUM_AMT
+			FROM
+				TD_TRADE_BILL_MAIN T
+				left JOIN TD_LOGIN_USER_INFO PAY
+				ON T.PAYER_CUST_ID = PAY.CUST_ID
+				left JOIN TD_LOGIN_USER_INFO RCV
+				ON T.PAYEE_CUST_ID = RCV.CUST_ID
+				LEFT JOIN STCS.TRANS_RECORD SS
+				ON T.ORDER_ID = SS.REQ_SERIAL_ID
+			LEFT JOIN (
+				SELECT
+					Y.TRANS_AMT,
+					Y.RTN_SEQ,
+					F.MSG_ID,
+					Y.ID,
+					Y.WORK_DATE
+				FROM
+					STCS.CLEAR_JGKJ_TRANSFER Y
+				LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+			WHERE F.OPERATE= 'JGKJ_TRANSFER' 
+			) H ON SS.MSG_ID = H.MSG_ID
+		<where>
+			T.TRADE_TYPE in ('1001','1302') 
+			<if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND T.ORDER_ID LIKE CONCAT('%',#{orderId} ,'%')   
+	            ]]>  
+        	</if> 
+        	<if test="channelId != null and '' != channelId">  
+	            <![CDATA[  
+	              AND H.ID = #{channelId}  
+	            ]]>  
+	        </if>
+        	 <if test="payerCustId != null and '' != payerCustId">  
+	            <![CDATA[  
+	              AND PAY.MOBILE  LIKE CONCAT('%', #{payerCustId}   ,'%') 
+	            ]]>  
+	        </if> 
+	        <if test="payerCustName != null and '' != payerCustName">  
+	            <![CDATA[  
+	              AND T.PAYER_CUST_NAME LIKE CONCAT('%',#{payerCustName}  ,'%')  
+	            ]]>  
+	        </if>
+	         <if test="payeeCustId != null and '' != payeeCustId">  
+	            <![CDATA[  
+	              AND RCV.MOBILE  LIKE CONCAT('%', #{payeeCustId}   ,'%') 
+	            ]]>  
+	        </if> 
+			<if test="payeeCustName != null and '' != payeeCustName">  
+	            <![CDATA[  
+	              AND T.PAYEE_CUST_NAME LIKE CONCAT('%',#{payeeCustName}  ,'%')  
+	            ]]>  
+	        </if>
+        	<if test="orderState != null and '' != orderState">  
+	            <![CDATA[  
+	              	AND T.ORDER_STATE = #{orderState, jdbcType = VARCHAR}  
+	            ]]>  
+        	</if> 
+       		<if test="beginTime != null and '' != beginTime">
+	       		<![CDATA[ 
+	 				AND DATE_FORMAT(T.ORDER_CREATE_TIME ,'%Y-%m-%d') >= #{beginTime}  
+	 			]]>
+ 			</if>
+	 		<if test="endTime != null and '' != endTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(T.ORDER_CREATE_TIME ,'%Y-%m-%d') <= #{endTime}
+	 			]]>
+	 		</if>
+	 		 <if test="startWorkDate != null and '' != startWorkDate">
+		 		<![CDATA[ 
+		 			AND IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) >= #{startWorkDate} 
+	 			]]>
+			</if>
+			<if test="endWorkDate != null and '' != endWorkDate">
+	 		    <![CDATA[ 
+	 				AND IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d'))  <= #{endWorkDate}
+	 			]]>
+			</if>
+		</where>
+		 ORDER BY T.ORDER_CREATE_TIME DESC
+	</select>
+	
+	<select id="selectTransferByOrderId" resultType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO" parameterType="string">
+		SELECT 
+			T.* 
+		FROM 
+			TD_TRADE_BILL_MAIN T
+		WHERE T.TRADE_TYPE ='1001'
+		AND T.ORDER_STATE = '00'
+		AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+</mapper>

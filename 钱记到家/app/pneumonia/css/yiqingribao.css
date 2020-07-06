@@ -1,0 +1,258 @@
+﻿body
+{
+    background-color: #0153C6;
+    padding: 0;
+    margin: 0;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+}
+*
+{
+    margin: 0;
+    padding: 0;
+}
+.main
+{
+    background: url(../images/yiqing/bg.jpg) no-repeat;
+    background-size: 100% 100%;
+    width: 3.75rem;
+    height: 8.33rem;
+}
+.main .day1
+{
+    padding-top: .95rem;
+    margin-left: 2.45rem;
+    font-size: .18rem;
+    font-family: PingFangSC-Semibold,PingFang SC;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: .25rem;
+    letter-spacing: 2px;
+}
+.main .day2
+{
+    padding-top: .07rem;
+    margin-left: 2.49rem;
+    font-size: .18rem;
+    font-family: PingFangSC-Thin,PingFang SC;
+    font-weight: 100;
+    color: #FFFFFF;
+    line-height: .25rem;
+    letter-spacing: 2px;
+}
+.main .line
+{
+    font-size: .18rem;
+    font-family: Arial-Black,Arial;
+    font-weight: 900;
+    color: #fff;
+    line-height: .26rem;
+    margin-left: .3rem;
+    background: url(../images/yiqing/line.png) no-repeat;
+    background-size: 100% 100%;
+    width: 2.51rem;
+    height: .41rem;
+    line-height: .41rem;
+    text-align: center;
+    margin-top: .19rem;
+    padding-top: .015rem;
+}
+.main .tent
+{
+    width: 3.45rem;
+    height: 1.18rem;
+    margin: .27rem .15rem .22rem .15rem;
+    color: #333333;
+    font-size: .12rem;
+    background: url(../images/yiqing/bg3.png) no-repeat;
+    background-size: 100% 100%;
+}
+.main .tent .remark
+{
+    padding-top: 0.1rem;
+    clear: both;
+    padding-left: .1rem;
+    color: #486DE6;
+    }
+.main ul
+{
+    color: #333333;
+    text-align: center;
+    font-size: .12rem;
+    list-style: none;
+}
+.main ul li
+{
+    float: left;
+    width: .86rem;
+}
+
+.main ul li div:nth-child(1)
+{
+    font-size: .2rem;
+    font-family: Avenir-Heavy,Avenir;
+    font-weight: 800;
+    line-height: .27rem;
+    margin-top: .12rem;
+}
+.main ul li div:nth-child(2)
+{
+    font-size: .12rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: .17rem;
+}
+.main ul li div:nth-child(3)
+{
+    font-size: .10rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #666666;
+    line-height: .14rem;
+    margin-top: .12rem;
+}
+.main ul li:nth-child(1), .main ul li:nth-child(1) span
+{
+    color: #EE6C5F;
+}
+.main ul li:nth-child(2), .main ul li:nth-child(2) span
+{
+    color: #F2B95E;
+}
+.main ul li:nth-child(3), .main ul li:nth-child(3) span
+{
+    color: #4BB39C;
+}
+.main ul li:nth-child(4), .main ul li:nth-child(4) span
+{
+    color: #505D7F;
+}
+.main .nav2
+{
+    border-radius: 7px;
+    width: 3.45rem;
+    margin: 0 auto;
+    background: #fff;
+    margin: 0 .15rem .8rem .15rem;
+}
+.main .nav2 .guanzhutxt
+{
+    font-size: .24rem;
+    font-family: PingFangSC-Medium,PingFang SC;
+    font-weight: 500;
+    color: #486DE6;
+    line-height: .33rem;
+    padding-left: .2rem;
+    padding-top: .3rem;
+}
+.main .nav2 .area
+{
+    margin-top: .27rem;
+    margin-left: .26rem;
+    font-size: .2rem;
+    font-family: PingFangSC-Medium,PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: .19rem;
+    clear:both;
+}
+.main .nav2 .area .biao
+{
+    background: url(../images/yiqing/weizhi.png) no-repeat;
+    background-size: 100% 100%;
+    width: .15rem;
+    height: .19rem;
+    float: left;
+}
+.main .nav2 .area .txt
+{
+    float: left;
+    margin-left: .05rem;
+}
+.main .nav2 .tx
+{
+    clear: both;
+    padding-top: .07rem;
+    margin-left: .47rem;
+}
+.main .nav2  .tx p
+{
+    font-size: .14rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: .20rem;
+}
+.main .nav2  .tx p span
+{
+     color: #F09B4F;
+    }
+    .main .nav2  .t
+    { margin-left: .26rem;
+      margin-right:.14rem;
+      margin-top:.27rem;
+        padding-bottom:.14rem;
+        font-size:.12rem;
+font-family:PingFangSC-Regular,PingFang SC;
+font-weight:400;
+color:#999999;
+line-height:.17rem;
+        }
+        
+.tabcontent3 {
+    background: #0342A6;
+    position: fixed;
+    bottom: 0rem;
+    left: 0px;
+    width: 3.47rem;
+    padding: .11rem .14rem;
+}
+   .tabcontent3 .share
+   {
+    background: url("../images/yiqing/share3.png") no-repeat;
+    background-size: 100% 100%;
+    width: .78rem;
+    height: .4rem;
+    float:left;
+       } 
+       .tabcontent3 .dingyue
+   {
+    background: url("../images/yiqing/dingyue.png") no-repeat;
+    background-size: 100% 100%;
+    width: 2.51em;
+    height: .4rem;  float:right;
+       }
+	   
+	   .mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    background-color: rgba(0,0,0,.6);
+    display:none;
+}
+.mask .arrow {
+    position: absolute;
+    top: .23rem;
+    right: .17rem;
+    width: 1.03rem;
+    height: 1.11rem;
+    background-image: url(../images/yiqing/j.png);
+    background-size: 100% 100%;
+}
+.mask .hint {
+    position: absolute;
+    top: 1.2rem;
+    right: .84rem;
+    color: #fff;
+    font-weight: 500;
+    font-size: .16rem;
+}
+.pangbai
+{
+       font-size: .1rem;
+    height: .01rem;
+    clear: both;
+}

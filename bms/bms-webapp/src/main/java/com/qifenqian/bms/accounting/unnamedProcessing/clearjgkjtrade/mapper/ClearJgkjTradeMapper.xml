@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qifenqian.bms.accounting.unnamedProcessing.clearjgkjtrade.mapper.ClearJgkjTradeMapper" >
+  
+  <select id="selectClearJgkjTradeList" resultType="com.qifenqian.bms.accounting.unnamedProcessing.clearjgkjtrade.bean.ClearJgkjTrade"  parameterType="com.qifenqian.bms.accounting.unnamedProcessing.clearjgkjtrade.bean.ClearJgkjTrade" >
+	   	SELECT
+			  ID,
+			  TRANS_FLOW_ID,
+			  TRANS_CODE,
+			  BUSINESS_TYPE,
+			  CARD_NO,
+			  CURR_CODE,
+			  TRANS_AMT,
+			  ORDER_NO,
+			  ORDER_MEMO,
+			  PIN,
+			  SEND_DATETIME,
+			  WORK_DATE,
+			  SEND_DATE,
+			  SEND_TIME,
+			  STATUS,
+			  INST_DATE,
+			  INST_DATETIME,
+			  RTN_DATE,
+			  RTN_TIME,
+			  RTN_SEQ,
+			  RTN_CODE,
+			  RTN_INFO,
+			  RTN_CARD_NO,
+			  RTN_AMT,
+			  RTN_BALANCE,
+			  UPDATE_DATETIME,
+			  BAL_STATUS
+		FROM
+			CLEAR_JGKJ_TRADE T
+		WHERE
+			1 = 1
+		AND T. STATUS = 'EXCEPTION'
+    <if test="businessType != null and businessType != '' ">
+	 AND T.BUSINESS_TYPE LIKE CONCAT('%',#{businessType,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="cardNo != null and cardNo != '' ">
+	 AND T.CARD_NO LIKE CONCAT('%',#{cardNo,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="transFlowId != null and transFlowId != '' ">
+	 AND T.TRANS_FLOW_ID LIKE CONCAT('%',#{transFlowId,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="workDate != null and workDate != '' ">
+	 AND T.WORK_DATE LIKE CONCAT('%',#{workDate,jdbcType=VARCHAR},'%')
+	</if>
+	ORDER BY T.INST_DATETIME DESC
+  </select>
+</mapper>

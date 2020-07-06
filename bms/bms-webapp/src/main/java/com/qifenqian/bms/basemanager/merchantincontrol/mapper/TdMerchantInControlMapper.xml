@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.basemanager.merchantincontrol.mapper.TdMerchantInControlMapper">
+
+	<select id="selectMerchantInControlList" resultType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		SELECT
+			D.CUST_NAME,
+			D.CUST_ID,
+			D.MERCHANT_CODE,
+			T.TRADE_TYPE,
+			T.IS_SUPPORT_CREDIT_CARD,
+			T.BAND_IP,
+			T.MERCHANT_CERT_FILE_PATH,
+			T.MERCHANT_PUB_KEY,
+			T.CREATER_TIME,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.CREATER) CREATER,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.MODIFIED) MODIFIED,
+			T.MODIFIED_TIME,
+			T.COMMENT
+		FROM
+			TD_MERCHANT_IN_CONTROL T
+		LEFT JOIN TD_CUST_INFO D ON T.CUST_ID = D.CUST_ID
+		<where>
+			<if test="custName !=null and custName !='' ">
+				AND D.CUST_NAME LIKE CONCAT('%',#{custName, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="merchantCode !=null and merchantCode !='' ">
+				AND D.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode, jdbcType = VARCHAR},'%')
+			</if>
+		</where>
+		ORDER BY T.CREATER_TIME DESC
+	</select>
+
+	<select id="verify" resultType="int" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		SELECT COUNT(*)
+		FROM TD_MERCHANT_IN_CONTROL
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="exists" resultType="int" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		SELECT COUNT(*)
+		FROM TD_CUST_INFO
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="delete" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		DELETE FROM TD_MERCHANT_IN_CONTROL
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</delete>
+
+	<update id="update" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		UPDATE TD_MERCHANT_IN_CONTROL
+		<set>
+			<if test="tradeType != null">
+				TRADE_TYPE = #{tradeType,jdbcType=VARCHAR},
+			</if>
+			<if test="isSupportCreditCard != null">
+				IS_SUPPORT_CREDIT_CARD = #{isSupportCreditCard,jdbcType=VARCHAR},
+			</if>
+			<if test="bandIp != null">
+				BAND_IP = #{bandIp,jdbcType=VARCHAR},
+			</if>
+			<if test="merchantCertFilePath != null">
+				MERCHANT_CERT_FILE_PATH = #{merchantCertFilePath,jdbcType=VARCHAR},
+			</if>
+			<if test="merchantPubKey != null">
+				MERCHANT_PUB_KEY = #{merchantPubKey,jdbcType=VARCHAR},
+			</if>
+			<if test="modified != null">
+				MODIFIED = #{modified,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="null != comment and '' != comment ">
+				COMMENT = #{comment,jdbcType=VARCHAR},
+			</if>
+				MODIFIED_TIME = NOW()
+		</set>
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+
+	<insert id="insert" parameterType="com.qifenqian.bms.basemanager.merchantincontrol.bean.MerchantInControl">
+		INSERT INTO TD_MERCHANT_IN_CONTROL(
+		CUST_ID,
+		TRADE_TYPE,
+		IS_SUPPORT_CREDIT_CARD,
+		BAND_IP,
+		MERCHANT_CERT_FILE_PATH,
+		MERCHANT_PUB_KEY,
+		CREATER,
+		CREATER_TIME
+		)VALUES(
+		#{custId,				jdbcType=VARCHAR},
+		#{tradeType,			jdbcType=VARCHAR},
+		#{isSupportCreditCard,	jdbcType=VARCHAR},
+		#{bandIp,				jdbcType=VARCHAR},
+		#{merchantCertFilePath,	jdbcType=VARCHAR},
+		#{merchantPubKey,		jdbcType=VARCHAR},
+		#{creater,				jdbcType=VARCHAR},
+		NOW()
+	)
+	</insert>
+</mapper>

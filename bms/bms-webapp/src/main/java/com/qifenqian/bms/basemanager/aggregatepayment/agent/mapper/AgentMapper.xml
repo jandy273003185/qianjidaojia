@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.agent.mapper.AgentMapper">
+	
+	<select id="getAgentCollectDailyList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentCollectDailyBean" 
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentCollectDailyBean">
+			select 
+				T.*
+			from 
+				td_agent_collect_daily T
+			<where>
+				<if test="agentId != '' and agentId != null">
+					T.agent_id= #{agentId,jdbcType=VARCHAR}
+				</if>
+				
+				<if test="merchantId != '' and merchantId != null">
+					AND T.merchant_id= #{merchantId,jdbcType=VARCHAR}
+				</if>
+				
+				<if test="status != '' and status != null">
+					AND T.status= #{status,jdbcType=VARCHAR}
+				</if>
+			</where>
+		
+	</select>
+	
+	<select id="getAgentCollectDailyListExport" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentCollectDailyBean" 
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentCollectDailyBean">
+		select 
+				T.daily_id,
+				T.agent_id,
+				T.work_date,
+				T.merchant_id,
+				T.channel_code,
+				T.trans_total_fee,
+				T.status,
+				T.inst_date,
+				Date_format(T.inst_datetime,'%Y-%m-%d %H:%i:%s') inst_datetime
+			from 
+				td_agent_collect_daily T
+			<where>
+				<if test="agentId != '' and agentId != null">
+					T.agent_id= #{agentId,jdbcType=VARCHAR}
+				</if>
+				
+				<if test="merchantId != '' and merchantId != null">
+					AND T.merchant_id= #{merchantId,jdbcType=VARCHAR}
+				</if>
+				
+				<if test="status != '' and status != null">
+					AND T.status= #{status,jdbcType=VARCHAR}
+				</if>
+			</where>
+	</select>
+	<select id="getAgreementList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgreementBean" 
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgreementBean">
+		select 
+			T.*
+		from
+			td_agent_merchant_prod_rate T
+		<where>
+			<if test="agentCode != '' and agentCode != null">
+				T.AGENT_CODE = #{agentCode,jdbcType=VARCHAR}
+			</if>
+			<if test="merCode != '' and merCode != null">
+				AND T.MER_CODE=#{merCode,jdbcType=VARCHAR}
+			</if>
+			<if test="agentAgreementCode != '' and agentAgreementCode != null">
+				AND T.AGENT_AGREEMENT_CODE=#{agentAgreementCode,jdbcType=VARCHAR}
+			</if>
+			<if test="prodCode != '' and prodCode != null">
+				AND T.PROD_CODE=#{prodCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addAgreementInfo" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgreementBean">
+		insert into 
+			td_agent_merchant_prod_rate 
+		(
+			AGENT_AGREEMENT_CODE,
+			AGENT_CODE,
+			MER_CODE,
+			PROD_CODE,
+			AGENT_AGREE_RATE
+		)
+		VALUES
+		(
+			#{agentAgreementCode,jdbcType=VARCHAR},
+			#{agentCode,jdbcType=VARCHAR},
+			#{merCode,jdbcType=VARCHAR},
+			#{prodCode,jdbcType=VARCHAR},
+			#{agentAgreeRate,jdbcType=VARCHAR}
+			
+		)
+	</insert>
+	<update id="updateAgreementInfo" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgreementBean">
+		update 
+			td_agent_merchant_prod_rate T
+		<set>
+			
+			<if test="agentAgreeRate != '' and agentAgreeRate != null">
+				T.AGENT_AGREE_RATE=#{agentAgreeRate,jdbcType=VARCHAR},
+			</if>
+		
+		</set>
+		<where>
+			<if test="agentCode != '' and agentCode != null">
+				T.AGENT_CODE = #{agentCode,jdbcType=VARCHAR}
+			</if>
+			<if test="merCode != '' and merCode != null">
+				AND T.MER_CODE=#{merCode,jdbcType=VARCHAR}
+			</if>
+			<if test="agentAgreementCode != '' and agentAgreementCode != null">
+				AND T.AGENT_AGREEMENT_CODE=#{agentAgreementCode,jdbcType=VARCHAR}
+			</if>
+			<if test="prodCode != '' and prodCode != null">
+				AND T.PROD_CODE=#{prodCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+			
+	</update>
+	
+	<delete id="deleteAgreementInfo" parameterType="String">
+		delete from
+			td_agent_merchant_prod_rate 
+		where   AGENT_CODE = #{agentCode,jdbcType=VARCHAR}
+				AND MER_CODE=#{merCode,jdbcType=VARCHAR}
+				AND AGENT_AGREEMENT_CODE=#{agreement,jdbcType=VARCHAR}
+				AND PROD_CODE=#{prodCode,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="getAgentSettleList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentSettleBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentSettleBean">
+		select 
+			settle_id,
+			agent_id,
+			work_date,
+			settle_begin_date,
+			settle_end_date,
+			protocol_id,
+			settle_amt,
+			finish_date,
+			status,
+			memo,
+			inst_user,
+			inst_date,
+			Date_format(inst_datetime,'%Y-%m-%d %H:%i:%s') inst_datetime,
+			audit_user,
+			Date_format(audit_datetime,'%Y-%m-%d %H:%i:%s') audit_datetime,
+			verified_user,
+			Date_format(verified_datetime,'%Y-%m-%d %H:%i:%s') verified_datetime
+		from
+			td_agent_settle
+		<where>
+			<if test="settleId != null and settleId != ''">
+				settle_id= #{settleId,jdbcType=VARCHAR}
+			</if>
+			<if test="agentId != null and agentId != ''">
+				AND agent_id = #{agentId,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != ''">
+				AND status=#{status,jdbcType=VARCHAR}
+			</if>
+		</where>
+			
+	</select>
+	
+	<select id="getDetailBySettleId" parameterType="String" resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.AgentSettleDetailBean">
+		select 
+			*
+		from
+			td_agent_settle_detail
+		<where>
+			<if test="settleId != null and settleId != ''">
+				settle_id=#{settleId,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getPayChannelList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayChannelBean" 
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayChannelBean">
+		select 
+			*
+		from
+			td_pay_channel_cfg
+		<where>
+			<if test="payChannelCode != null and payChannelCode != ''">
+				pay_channel_code = #{payChannelCode,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="payChannelName != null and payChannelName != ''">
+				AND pay_channel_name like CONCAT('%',#{payChannelName},'%')
+			</if>
+			<if test="payChannelRate != null and payChannelRate != ''">
+				AND pay_channel_rate = #{payChannelRate,jdbcType=VARCHAR}
+			</if>
+			
+			
+		</where>
+	</select>
+	
+	<insert id="addPayChannelInfo" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayChannelBean" >
+		insert into 
+			td_pay_channel_cfg
+		(
+			PAY_CHANNEL_CODE,
+			PAY_CHANNEL_NAME,
+			PAY_CHANNEL_MEMO,
+			PAY_CHANNEL_RATE,
+			SUPLLY_ORG,
+			OUR_BANK_ACCT_NO,
+			OUR_BANK_ACCT_NAME
+		)
+		VALUES
+		(
+			#{payChannelCode,jdbcType=VARCHAR},
+			#{payChannelName,jdbcType=VARCHAR},
+			#{payChannelMemo,jdbcType=VARCHAR},
+			#{payChannelRate,jdbcType=VARCHAR},
+			#{supllyOrg,jdbcType=VARCHAR},
+			#{ourBankAcctNo,jdbcType=VARCHAR},
+			#{ourBankAcctName,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updatePayChannelInfo">
+		update
+			td_pay_channel_cfg
+		<set>
+			<if test="payChannelName != null and payChannelName != ''">
+				pay_channel_name = #{payChannelName,jdbcType=VARCHAR},
+			</if>
+			<if test="payChannelRate != null and payChannelRate != ''">
+				pay_channel_rate = #{payChannelRate,jdbcType=VARCHAR},
+			</if>
+			<if test="payChannelMemo!= null and payChannelMemo != ''">
+				pay_channel_memo = #{payChannelMemo,jdbcType=VARCHAR},
+			</if>
+			<if test="supllyOrg != null and supllyOrg != ''">
+				suplly_org = #{supllyOrg,jdbcType=VARCHAR},
+			</if>
+			<if test="ourBankAcctNo != null and ourBankAcctNo != ''">
+				our_bank_acct_no = #{ourBankAcctNo,jdbcType=VARCHAR},
+			</if>
+			<if test="ourBankAcctName != null and ourBankAcctName != ''">
+				our_bank_acct_name = #{ourBankAcctName,jdbcType=VARCHAR}
+			</if>
+			
+		</set>
+		where
+			pay_channel_code = #{payChannelCode,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deletePayChannelInfo" parameterType="String">
+		delete from 
+			td_pay_channel_cfg
+		where 
+			pay_channel_code = #{payChannelCode,jdbcType=VARCHAR}		
+	</delete>
+	
+	<select id="getPayProdList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayProdBean"
+	 resultType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayProdBean">
+		select
+			PROD_CODE,
+			PROD_NAME,
+			PROD_MEMO,
+			CONCAT(cast(STANDARD_RATE*100 as CHAR(4)),'%') STANDARD_RATE,
+			CONCAT(cast(AGENT_BASE_RATE*100 as CHAR(4)),'%') AGENT_BASE_RATE
+		from
+			td_payment_prod_for_merchant
+		<where>
+			<if test="prodCode != null and prodCode != ''">
+				prod_code = #{prodCode,jdbcType=VARCHAR}
+			</if>
+			<if test="prodName != null and prodName != ''">
+				AND prod_name like CONCAT('%',#{prodName},'%')
+			</if>
+			<if test="prodMemo != null and  prodMemo != ''">
+				AND　prod_memo = #{prodMemo,jdbcType=VARCHAR}
+			</if>
+			<if test="standardRate != null and standardRate != ''">
+				AND STANDARD_RATE = #{standardRate,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addPayProdInfo" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.agent.bean.PayProdBean">
+		insert into 
+			td_payment_prod_for_merchant
+		(
+			PROD_CODE,
+			PROD_NAME,
+			PROD_MEMO,
+			STANDARD_RATE
+		)
+		VALUES
+		(
+			#{prodCode,jdbcType=VARCHAR},
+			#{prodName,jdbcType=VARCHAR},
+			#{prodMemo,jdbcType=VARCHAR},
+			#{standardRate,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updatePayProdInfo">
+		update 
+			td_payment_prod_for_merchant
+		<set>
+			<if test="prodName != null and  prodName != ''">
+				prod_name = #{prodName,jdbcType=VARCHAR},
+			</if>
+			<if test="prodMemo != null and prodMemo != ''">
+				prod_memo = #{prodMemo,jdbcType=VARCHAR},
+			</if>
+			<if test="standardRate != null and standardRate != ''">
+				STANDARD_RATE = #{standardRate,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where 
+			PROD_CODE = #{prodCode,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deletePayProdInfo">
+		delete from
+			td_payment_prod_for_merchant
+		where 
+			PROD_CODE = #{prodCode,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,100 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.balunionpayuniondatasource.mapper.BalUnionpayUnionDataSourceMapper">
+
+	<select id="selectUnionpayUnionDataSourceList" resultType="com.qifenqian.bms.accounting.balunionpayuniondatasource.bean.BalUnionpayUnionDataSource" parameterType="com.qifenqian.bms.accounting.balunionpayuniondatasource.bean.BalUnionpayUnionDataSource">
+			SELECT
+			C.ID,
+			T.FILE_ID,
+			T.SEQ,
+			T.WORK_DATE,
+			IFNULL((SELECT B.TYPE_NAME FROM BASE_TYPE B WHERE B.TYPE_SORT='BUSINESS_TYPE' AND B.TYPE_CODE = T.TXN_CODE),T.TXN_CODE) TXN_CODE,
+			T.ACQ_INS_CODE,
+			T.ISS_INS_CODE,
+			T.TRACE_NO,
+			T.TXN_TIME,
+			T.PAY_CARD_NO,
+			T.TXN_AMT,
+			T.MER_CAT_CODE,
+			T.TERM_TYPE,
+			T.QUERY_ID,
+			T.OLD_PAY_TYPE,
+			T.ORDER_ID,
+			CASE T.PAY_CARD_TYPE
+			WHEN '00' THEN '未知'
+			WHEN '01' THEN '借记账户'
+			WHEN '02' THEN '贷记账户'
+			WHEN '03' THEN '准贷记账户'
+			WHEN '04' THEN '借贷合一账户'
+			WHEN '05' THEN '预付费账户'
+			WHEN '06' THEN '半开放预付费账户'
+			ELSE T.PAY_CARD_TYPE end PAY_CARD_TYPE,
+			T.ORIG_TRACE_NO,
+			T.ORIG_TXN_TIME,
+			T.MCHNT_FEE_FLAG,
+			T.MCHNT_FEE,
+			T.SETTLE_AMT_FLAG,
+			T.SETTLE_AMT,
+			T.PAY_TYPE,
+			T.GROUP_MER_ID,
+			T.TXN_TYPE,
+			T.TXN_SUB_TYPE,
+			T.BIZ_TYPE,
+			T.ACC_TYPE,
+			T.BILL_TYPE,
+			T.BILL_NO,
+			T.INTERACT_MODE,
+			T.ORIG_QRY_ID,
+			T.MER_ID,
+			T.SPLIT_IN_WAY,
+			T.SUB_MER_ID,
+			T.SUB_MER_ABBR,
+			T.SUB_MER_SPLIT_IN_AMT_FLAG,
+			T.SUB_MER_SPLIT_IN_AMT,
+			T.SETTLE_NET_AMT_FLAG,
+			T.SETTLE_NET_AMT,
+			T.TERM_ID,
+			T.MER_RESERVED,
+			T.DISCOUNT_AMT_FLAG,
+			T.DISCOUNT_AMT,
+			T.INVOICE_AMT_FLAG,
+			T.INVOICE_AMT,
+			T.PERIOD_PAY_PLUS_FEE_FLAG,
+			T.PERIOD_PAY_PLUS_FEE,
+			T.PAY_PERIODS,
+			T.TRADE_MEDIUM,
+			T.RESERVE,
+			T.INST_DATE,
+			DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS instDatetime
+			FROM
+			BAL_UNIONPAY_UNION_DATA_SOURCE T
+			LEFT JOIN CLEAR_JGKJ_RECHARGE C
+			ON T.QUERY_ID = C.CHANNEL_SERIAL_SEQ
+		 <where>
+			<if test="orderId != null and orderId!= '' ">
+				AND T.ORDER_ID LIKE CONCAT('%',#{orderId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="queryId != null and queryId != '' ">
+				AND T.QUERY_ID LIKE CONCAT('%',#{queryId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="instDatetime != null and instDatetime != '' ">
+				AND T.INST_DATETIME LIKE CONCAT('%',#{instDatetime,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="workDate != null and workDate != '' ">
+				AND T.WORK_DATE = #{workDate,jdbcType=VARCHAR}
+			</if>
+			<if test="payCardType != null and payCardType != '' ">
+				AND T.PAY_CARD_TYPE = #{payCardType,jdbcType=VARCHAR}
+			</if>
+			<if test="id != null and id != '' ">
+				AND C.ID = #{id,jdbcType=VARCHAR}
+			</if>
+			<if test="merReserved != null and merReserved == 'yes' ">
+				AND T.mer_reserved = 'ytqfq001'
+			</if>
+			<if test="merReserved != null and merReserved == 'no' ">
+				AND T.mer_reserved = ''
+			</if>
+		</where>
+		ORDER BY T.INST_DATETIME DESC
+	</select>
+</mapper>

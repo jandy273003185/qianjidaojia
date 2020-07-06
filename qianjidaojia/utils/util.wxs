@@ -1,0 +1,39 @@
+var numberUtil = {
+  numberFormat: function (value) {
+    // var v = parseInt(value)//强转Int，毕竟有可能返回是String类型的数字
+    return Number(value).toFixed(2);
+  },
+  expressage: function (value) {
+    if(value == 0){
+      value = '免运费';
+    } else if (value == 2){
+      value = '到付';
+    }
+    return value;
+  },
+  strToArr: function (value) {
+    var v = value.split(',');
+    return v;
+  },
+  bankCard: function(card){
+    // var reg_a = getRegExp('/\s/','g');
+    // var reg_b = getRegExp('/[^\d]/', 'g');
+    var reg_c = getRegExp('/(\d{4})(?=\d)/');
+    // 
+    var aaaaaaa = getRegExp('/\s/');
+    console.log('4852262'.replace(aaaaaaa, ''));
+    console.log('238732872783'.replace(getRegExp('/\s/', 'g'), '').replace(getRegExp('/(.{4})/', 'g'), "$1 "))
+
+    var reg = getRegExp("/B(?=(/d{4})+(?!/d))", "g");
+
+    console.log(card.replace(getRegExp('/(d{4})/', 'g'), ' '))
+  }
+}
+
+
+module.exports = {
+  numberFormat: numberUtil.numberFormat,
+  expressage: numberUtil.expressage,
+  strToArr: numberUtil.strToArr,
+  bankCard: numberUtil.bankCard
+}

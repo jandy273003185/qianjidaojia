@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.meeting.prize.mapper.PrizeMapper">
+
+	<!-- 根据编号查询单个 -->
+	<select id="selectPrizeSingleById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.prize.bean.PrizeBean">
+		SELECT P.*,
+			   A.ACTIVITY_NAME
+		  FROM BASE_PRIZE P
+		  LEFT JOIN BASE_ACTIVITY A ON A.ACTIVITY_ID = P.ACTIVITY_ID
+		WHERE P.PRIZE_ID = #{prizeId, jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectPrizeBeanList" parameterType="com.qifenqian.bms.meeting.prize.bean.PrizeBean" resultType="com.qifenqian.bms.meeting.prize.bean.PrizeBean">
+		    SELECT 
+		    T.PRIZE_ID,
+			  T.PRIZE_NO,
+			  T.ACTIVITY_ID,
+			  T.PRIZE_CODE,
+			  T.PRIZE_NAME,
+			  T.PRIZE_TYPE,
+			  T.OVERALL_CONTROL_TYPE,
+			  T.QUOTA_NUMBER,
+			  T.WIN_NUMBER,
+			  T.QUOTA_AMOUNT,
+			  T.WIN_AMOUNT,
+			  T.ODDS_FACTOR,
+			  T.AMOUNT_TYPE,
+			  T.FIXED_AMOUNT,
+			  T.RANDOM_AMOUNT_MIN,
+			  T.RANDOM_AMOUNT_MAX,
+			  T.PRIZE_SORT,
+			  T.EFFECTIVE_HOURS,
+			  T.IS_REPEAT_WIN,
+			  T.CUST_SCOPE,
+			  T.LIMIT_SEX,
+			  DATE_FORMAT(T.LIMIT_REGISTER_DATE_START,'%Y-%m-%d %H:%i:%s') AS LIMIT_REGISTER_DATE_START,
+			  DATE_FORMAT(T.LIMIT_REGISTER_DATE_END,'%Y-%m-%d %H:%i:%s') AS LIMIT_REGISTER_DATE_END,
+			  T.MEMO,
+			  T.STATUS,
+			  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.INST_USER) instUserName,
+			  DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS INST_DATETIME,
+			  T.LUPD_USER,
+			  DATE_FORMAT(T.LUPD_DATETIME,'%Y-%m-%d %H:%i:%s') AS LUPD_DATETIME,
+			  A.ACTIVITY_NAME
+			 FROM BASE_PRIZE T LEFT JOIN BASE_ACTIVITY  A ON T.ACTIVITY_ID = A.ACTIVITY_ID
+			<where>
+				<if test="prizeName != '' and prizeName!=null ">
+				 AND T.PRIZE_NAME like CONCAT('%',#{prizeName},'%')
+				</if>
+				<if test="activityId > 0 ">
+				 AND T.ACTIVITY_ID = #{activityId,jdbcType = INTEGER}
+				</if>
+			</where>
+			  ORDER BY T.PRIZE_ID DESC
+	</select>
+
+	<insert id="insertPrizeSingle" useGeneratedKeys="true" keyProperty="prizeId" parameterType="com.qifenqian.bms.meeting.prize.bean.PrizeBean">
+		INSERT INTO BASE_PRIZE(
+			PRIZE_NO,
+			ACTIVITY_ID,
+			PRIZE_CODE,
+			PRIZE_NAME,
+			PRIZE_TYPE,
+			OVERALL_CONTROL_TYPE,
+			<if test="quotaNumber>0">
+				QUOTA_NUMBER,
+			</if>
+			<if test="quotaAmount!= null  and quotaAmount!=''">
+				QUOTA_AMOUNT,
+			</if>
+			ODDS_FACTOR,
+			AMOUNT_TYPE,
+			<if test="fixedAmount!= null  and fixedAmount!= '' ">
+				FIXED_AMOUNT,
+			</if>
+			<if test="randomAmountMin!= null  and randomAmountMin!= '' ">
+				RANDOM_AMOUNT_MIN,
+			</if>
+			<if test="randomAmountMax!= null  and randomAmountMax!= '' ">
+				RANDOM_AMOUNT_MAX,
+			</if>
+			PRIZE_SORT,
+			EFFECTIVE_HOURS,
+			IS_REPEAT_WIN,
+			CUST_SCOPE,
+			LIMIT_SEX,
+			<if test="limitRegisterDateStart!= null  and limitRegisterDateStart!= '' ">
+				LIMIT_REGISTER_DATE_START,
+			</if>
+			<if test="limitRegisterDateEnd!= null  and limitRegisterDateEnd!= '' ">
+				LIMIT_REGISTER_DATE_END,
+			</if>
+			MEMO,
+			STATUS,
+			INST_USER,
+			INST_DATETIME
+		)VALUES(
+			#{prizeNo,				jdbcType=VARCHAR},
+			#{activityId,			jdbcType=INTEGER},
+			#{prizeCode,			jdbcType=VARCHAR},
+			#{prizeName,			jdbcType=VARCHAR},
+			#{prizeType,			jdbcType=VARCHAR},
+			#{overallControlType,	jdbcType=VARCHAR},
+			<if test="quotaNumber >0 ">
+				#{quotaNumber,			jdbcType=INTEGER},
+			</if>
+			<if test="quotaAmount!= null  and quotaAmount!= '' ">
+				#{quotaAmount,			jdbcType=DECIMAL},
+			</if>
+			#{oddsFactor,			jdbcType=INTEGER},
+			#{amountType,			jdbcType=VARCHAR},
+			<if test="fixedAmount!= null  and fixedAmount!= '' ">
+			#{fixedAmount,			jdbcType=DECIMAL},
+			</if>
+			<if test="randomAmountMin!= null  and randomAmountMin!= '' ">
+			#{randomAmountMin,		jdbcType=DECIMAL},
+			</if>
+			<if test="randomAmountMax!= null  and randomAmountMax!= '' ">
+			#{randomAmountMax,		jdbcType=DECIMAL},
+			</if>
+			#{prizeSort,			jdbcType=INTEGER},
+			#{effectiveHours,		jdbcType=INTEGER},
+			#{isRepeatWin,			jdbcType=VARCHAR},
+			#{custScope,			jdbcType=VARCHAR},
+			#{limitSex,				jdbcType=VARCHAR},
+			<if test="limitRegisterDateStart!= null  and limitRegisterDateStart!= '' ">
+				#{limitRegisterDateStart,jdbcType=VARCHAR},
+			</if>
+			<if test="limitRegisterDateEnd!= null  and limitRegisterDateEnd!= '' ">
+				#{limitRegisterDateEnd,	jdbcType=VARCHAR},
+			</if>
+			#{memo,					jdbcType=VARCHAR},
+			#{status,				jdbcType=VARCHAR},
+			#{instUser,				jdbcType=INTEGER},
+			NOW()
+		)
+	</insert>
+
+	<update id="updatePrizeById" parameterType="com.qifenqian.bms.meeting.prize.bean.PrizeBean">
+		UPDATE BASE_PRIZE T
+		<set>
+			<if test="prizeNo!= null  and prizeNo!= '' ">
+				T.PRIZE_NO = #{prizeNo, jdbcType=VARCHAR},
+			</if>
+			<if test="activityId > 0 ">
+				T.ACTIVITY_ID = #{activityId, jdbcType=INTEGER},
+			</if>
+			<if test="prizeCode!= null  and prizeCode!= '' ">
+				T.PRIZE_CODE = #{prizeCode, jdbcType=VARCHAR},
+			</if>
+			<if test="prizeName!= null  and prizeName!= '' ">
+				T.PRIZE_NAME = #{prizeName, jdbcType=VARCHAR},
+			</if>
+			<if test="prizeType != null  and prizeType != '' ">
+				T.PRIZE_TYPE = #{prizeType, jdbcType=VARCHAR},
+			</if>
+			<if test="overallControlType != null  and overallControlType != '' ">
+				T.OVERALL_CONTROL_TYPE = #{overallControlType, jdbcType=VARCHAR},
+			</if>
+			<if test="quotaNumber > 0 ">
+				T.QUOTA_NUMBER = #{quotaNumber, jdbcType=INTEGER},
+			</if>
+			<if test="quotaAmount != null  and quotaAmount != '' ">
+				T.QUOTA_AMOUNT = #{quotaAmount, jdbcType=DECIMAL},
+			</if>
+			<if test="amountType!= null  and amountType!= '' ">
+				T.AMOUNT_TYPE = #{amountType, jdbcType=VARCHAR},
+			</if>
+			<if test="oddsFactor > 0 ">
+				T.ODDS_FACTOR = #{oddsFactor, jdbcType=INTEGER},
+			</if>
+			<if test="fixedAmount!= null  and fixedAmount!= '' ">
+				T.FIXED_AMOUNT = #{fixedAmount, jdbcType=DECIMAL},
+			</if>
+			<if test="randomAmountMin!= null  and randomAmountMin!= '' ">
+				T.RANDOM_AMOUNT_MIN = #{randomAmountMin, jdbcType=DECIMAL},
+			</if>
+			<if test="randomAmountMax!= null  and randomAmountMax!= '' ">
+				T.RANDOM_AMOUNT_MAX = #{randomAmountMax, jdbcType=DECIMAL},
+			</if>
+			<if test="prizeSort > 0 ">
+				T.PRIZE_SORT = #{prizeSort, jdbcType=INTEGER},
+			</if>
+			<if test="effectiveHours > 0 ">
+				T.EFFECTIVE_HOURS = #{effectiveHours, jdbcType=INTEGER},
+			</if>
+			<if test="isRepeatWin!= null  and isRepeatWin!= '' ">
+				T.IS_REPEAT_WIN = #{isRepeatWin, jdbcType=VARCHAR},
+			</if>
+			<if test="custScope!= null  and custScope!= '' ">
+				T.CUST_SCOPE = #{custScope, jdbcType=VARCHAR},
+			</if>
+			<if test="limitSex!= null  and limitSex!= '' ">
+				T.LIMIT_SEX = #{limitSex, jdbcType=VARCHAR},
+			</if>
+			<if test="limitRegisterDateStart!= null  and limitRegisterDateStart!= '' ">
+				T.LIMIT_REGISTER_DATE_START = #{limitRegisterDateStart, jdbcType=VARCHAR},
+			</if>
+			<if test="limitRegisterDateEnd!= null  and limitRegisterDateEnd!= '' ">
+				T.LIMIT_REGISTER_DATE_END = #{limitRegisterDateEnd, jdbcType=VARCHAR},
+			</if>
+			<if test="memo!= null  and memo!= '' ">
+				T.MEMO = #{memo, jdbcType=VARCHAR},
+			</if>
+			<if test="status!= null  and status!= '' ">
+				T.STATUS = #{status, jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser!= null  and lupdUser!= '' ">
+				T.LUPD_USER = #{lupdUser, jdbcType=INTEGER},
+			</if>
+			T.LUPD_DATETIME = NOW()
+		</set>
+		WHERE T.PRIZE_ID = #{prizeId, jdbcType=INTEGER}
+	</update>
+</mapper>

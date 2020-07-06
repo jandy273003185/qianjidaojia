@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.withdrawControl.mapper.WithdrawControlMapper">
+	<select id="selectAll" resultType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl" parameterType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+		SELECT 
+			T.*,
+			U.MOBILE 
+		FROM 
+		TB_WITHDRAW_CONTROL T 
+		LEFT JOIN TD_LOGIN_USER_INFO U 
+		ON T.CUST_ID =U.CUST_ID
+		<where>
+			<if test="mobile != null and mobile != '' ">AND U.MOBILE = #{mobile, jdbcType=VARCHAR}</if>
+			<if test="protocolId != null and protocolId != '' ">AND T.PROTOCOL_ID = #{protocolId, jdbcType=VARCHAR}</if>
+		</where>
+
+	</select>
+
+	<select id="selectWithdrawControl" parameterType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl" resultType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+		SELECT 
+			T.*,
+			U.MOBILE 
+		FROM 
+		TB_WITHDRAW_CONTROL T 
+		LEFT JOIN TD_LOGIN_USER_INFO U 
+		ON T.CUST_ID =U.CUST_ID
+		<where>
+			<if test="mobile != null and mobile != '' ">AND U.MOBILE = #{mobile, jdbcType=VARCHAR}</if>
+			<if test="custId != null and custId != '' ">AND T.CUST_ID = #{custId, jdbcType=VARCHAR}</if>
+		</where>
+	</select>
+
+	<insert id="addWithdrawControl" parameterType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+
+		INSERT INTO TB_WITHDRAW_CONTROL (
+		CUST_ID,
+		CONTROL_TYPE,
+		PROTOCOL_ID,
+		PC_WD_CNT_PER_DAY,
+		PC_WD_AMT_PER_ONCE,
+		PC_WD_AMT_PER_DAY,
+		PC_WD_AMT_PER_MONTH,
+		MB_WD_CNT_PER_DAY,
+		MB_WD_AMT_PER_ONCE,
+		MB_WD_AMT_PER_DAY,
+		MB_WD_AMT_PER_MONTH,
+		IS_SHARE
+		)
+		VALUES
+		(
+		#{custId, jdbcType=VARCHAR},
+		#{controlType, jdbcType=VARCHAR},
+		#{protocolId, jdbcType=VARCHAR},
+		#{pcWdCntPerDay, jdbcType=INTEGER},
+		#{pcWdAmtPerOnce, jdbcType=DECIMAL},
+		#{pcWdAmtPerDay,jdbcType=DECIMAL},
+		#{pcWdAmtPerMonth, jdbcType=DECIMAL},
+		#{mbWdCntPerDay, jdbcType=INTEGER},
+		#{mbWdAmtPerOnce, jdbcType=DECIMAL},
+		#{mbWdAmtPerDay, jdbcType=DECIMAL},
+		#{mbWdAmtPerMonth, jdbcType=DECIMAL},
+		#{isShare, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="editTradeControl" parameterType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+		UPDATE
+		TB_WITHDRAW_CONTROL T
+		SET
+		T.PROTOCOL_ID = #{protocolId, jdbcType=VARCHAR},
+		T.PC_WD_CNT_PER_DAY = #{pcWdCntPerDay, jdbcType=INTEGER},
+		T.PC_WD_AMT_PER_ONCE = #{pcWdAmtPerOnce, jdbcType=DECIMAL},
+		T.PC_WD_AMT_PER_DAY = #{pcWdAmtPerDay, jdbcType=DECIMAL},
+		T.PC_WD_AMT_PER_MONTH = #{pcWdAmtPerMonth, jdbcType=DECIMAL},
+		T.MB_WD_CNT_PER_DAY = #{mbWdCntPerDay, jdbcType=INTEGER},
+		T.MB_WD_AMT_PER_ONCE = #{mbWdAmtPerOnce, jdbcType=DECIMAL},
+		T.MB_WD_AMT_PER_DAY = #{mbWdAmtPerDay, jdbcType=DECIMAL},
+		T.MB_WD_AMT_PER_MONTH = #{mbWdAmtPerMonth, jdbcType=DECIMAL},
+		T.IS_SHARE = #{isShare, jdbcType=VARCHAR}
+		WHERE
+		CUST_ID = #{custId, jdbcType=VARCHAR}
+		AND CONTROL_TYPE = #{controlType, jdbcType=VARCHAR}
+	</update>
+
+	<delete id="deleteTradeControl" parameterType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+		DELETE FROM TB_WITHDRAW_CONTROL
+		WHERE CUST_ID = #{custId, jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectCustIdByMobile" parameterType="string" resultType="com.qifenqian.bms.basemanager.withdrawControl.bean.WithdrawControl">
+		SELECT 
+			U.CUST_ID,
+			U.MOBILE 
+		FROM 
+		TD_LOGIN_USER_INFO U 
+		WHERE U.MOBILE = #{mobile,jdbcType=VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.UserBalanceMapper">
+
+	<select id="selectUserBalanceList" resultType="com.qifenqian.bms.accounting.financequery.bean.UserBalance" parameterType="com.qifenqian.bms.accounting.financequery.bean.UserBalance">
+		SELECT
+			U.MOBILE,
+			A.CUST_ID,
+			A.ACCT_ID,
+			C.CUST_NAME ACCT_NAME,
+			A.BALANCE,
+			A.FREEZE_AMT,
+			A.ONWAY_AMT,
+			A.USABLE_AMT,
+			DATE_FORMAT(A.INST_DATETIME,'%Y-%m-%d %H:%i:%s') as instDatetime
+		FROM
+			TD_LOGIN_USER_INFO U
+		JOIN STCS.ACCT_SEVEN_CUST A ON U.CUST_ID = A.CUST_ID
+		JOIN TD_CUST_INFO C ON U.CUST_ID = C.CUST_ID
+		<where>
+			<if test="acctName!=null and acctName!='' ">
+				AND C.CUST_NAME LIKE CONCAT('%',#{acctName},'%')
+			</if>
+			<if test="mobile !=null and mobile !='' ">
+				AND U.MOBILE LIKE CONCAT('%',#{mobile},'%')
+			</if>
+		</where>
+		ORDER BY A.USABLE_AMT DESC
+	</select>	
+	
+	<select id="selectSumBalance" resultType="com.qifenqian.bms.accounting.financequery.bean.UserBalance" parameterType="com.qifenqian.bms.accounting.financequery.bean.UserBalance">
+		SELECT
+			SUM(A.BALANCE) BALANCE_COUNT,
+			SUM(A.USABLE_AMT) USABLE_AMT_COUNT,
+			SUM(A.FREEZE_AMT) FREEZE_AMT_COUNT,
+			SUM(A.ONWAY_AMT) ONWAY_AMT_COUNT
+		FROM
+			 TD_LOGIN_USER_INFO U
+		JOIN STCS.ACCT_SEVEN_CUST A 
+			 ON U.CUST_ID = A.CUST_ID
+	</select>
+</mapper>

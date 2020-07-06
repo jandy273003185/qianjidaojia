@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.basemanager.agency.mapper.AgencyReportMapper">
+	
+	<select id="getAgenReportList" parameterType="com.qifenqian.bms.basemanager.agency.bean.AgenReport"
+	resultType="com.qifenqian.bms.basemanager.agency.bean.AgenReport">
+		SELECT
+			#{beginWorkDate,jdbcType = VARCHAR} beginWorkDate,
+			#{endDate,jdbcType = VARCHAR} endDate,
+			T.ID,
+			(select c.MERCHANT_CODE from td_cust_info c where c.CUST_ID =T.AGENT_CUST_ID) agentMerchantId ,
+			t.AGENT_CUST_ID,
+			T.WORK_DATE,
+			T.MER_CUST_ID,
+			(
+				SELECT
+					F.CUST_NAME
+				FROM
+					TD_CUST_INFO F
+				WHERE
+					F.CUST_ID = T.MER_CUST_ID
+			) MERCHANT_NAME,
+			(
+				SELECT
+					ur.user_name
+				FROM
+					sys_user ur
+				WHERE
+					ur.user_id = bc4.column_value
+			) custManager,
+			SUM(T.RECEIVE_COUNT) RECEIVE_COUNT,
+			SUM(T.RECEIVE_TOTAL_AMT) RECEIVE_TOTAL_AMT,
+			SUM(T.REFUND_COUNT) REFUND_COUNT,
+			SUM(T.REFUND_TOTAL_AMT) REFUND_TOTAL_AMT,
+			concat(
+				'H5:',
+				IFNULL(bc6.column_value, '无'),
+				'/',
+				'app:',
+				IFNULL(bc8.column_value, '无'),
+				'/',
+				'扫码:',
+				IFNULL(bc5.column_value, '无'),
+				'/',
+				'PC:',
+				IFNULL(bc7.column_value, '无'),
+				'/',
+				'原生H5:',
+				IFNULL(bc9.column_value, '无')
+			) agent_rate,
+			SUM(T.COMMISION) COMMISION,
+			T.CREATE_ID,
+			T.CREATE_TIME,
+			T.MODIFY_ID,
+			T.MODIFY_TIME,
+			cust.CUST_NAME,
+			bc1.column_value bankName,
+			bc2.column_value bankAccountNumber,
+			bc3.column_value bankAccountName,
+			SUM(
+				t.RECEIVE_TOTAL_AMT - t.REFUND_TOTAL_AMT
+			) validAmt
+			FROM
+				TR_AGENT_DAILY_REPORT T
+			JOIN td_cust_info cust ON T.AGENT_CUST_ID = cust.CUST_ID
+			JOIN bms_protocol_content bp ON t.AGENT_CUST_ID = bp.cust_id
+			AND bp.`status` = 'VALID'
+			LEFT JOIN bms_protocol_column bc1 ON bp.id = bc1.protocol_id and bc1.`status` = 'VALID'
+			AND bc1.column_code = 'bankName'
+			LEFT JOIN bms_protocol_column bc2 ON bp.id = bc2.protocol_id and bc2.`status` = 'VALID'
+			AND bc2.column_code = 'bankCardNo'
+			LEFT JOIN bms_protocol_column bc3 ON bp.id = bc3.protocol_id and bc3.`status` = 'VALID'
+			AND bc3.column_code = 'bankCardName'
+			LEFT JOIN bms_protocol_column bc4 ON bp.id = bc4.protocol_id and bc4.`status` = 'VALID'
+			AND bc4.column_code = 'custManager'
+			LEFT JOIN bms_protocol_column bc5 ON bp.id = bc5.protocol_id and bc5.`status` = 'VALID'
+			AND bc5.column_code = 'onecode.coll.pay_rate'
+			LEFT JOIN bms_protocol_column bc6 ON bp.id = bc6.protocol_id and bc6.`status` = 'VALID'
+			AND bc6.column_code = 'h5.gateway.pay_rate'
+			LEFT JOIN bms_protocol_column bc7 ON bp.id = bc7.protocol_id and bc7.`status` = 'VALID'
+			AND bc7.column_code = 'pc.gateway.pay_rate'
+			LEFT JOIN bms_protocol_column bc8 ON bp.id = bc8.protocol_id and bc8.`status` = 'VALID'
+			AND bc8.column_code = 'mobile.plugin.pay_rate'
+			LEFT JOIN bms_protocol_column bc9 ON bp.id = bc9.protocol_id and bc9.`status` = 'VALID'
+			AND bc9.column_code = 'h5_t.gateway.pay_rate'
+			<where>
+				<if test="agentCustId != null and agentCustId != ''">
+				AND	T.AGENT_CUST_ID = #{agentCustId,jdbcType = VARCHAR} 
+				</if>
+				<if test="beginWorkDate != null and beginWorkDate != ''">
+				AND	 date_add(t.WORK_DATE,interval -1 DAY) >= DATE_FORMAT(#{beginWorkDate,jdbcType = VARCHAR},'%Y-%m-%d')
+				</if>
+				<if test="endDate != null and endDate != ''">
+				AND	 DATE_FORMAT(#{endDate,jdbcType = VARCHAR},'%Y-%m-%d') >= date_add(t.WORK_DATE,interval -1 DAY)
+				</if>
+				<if test="merCustId != null and merCustId != ''">
+				AND	T.MER_CUST_ID = #{merCustId,jdbcType = VARCHAR}
+				</if>
+				<if test="custManager != null and custManager != ''">
+				AND	bc4.column_value = #{custManager,jdbcType = VARCHAR}
+				</if>
+			</where>
+			GROUP BY t.AGENT_CUST_ID
+			order by T.CREATE_TIME DESC
+	</select>
+	<select id="getAgentMerchantReport" parameterType="com.qifenqian.bms.basemanager.agency.bean.AgentMerchantReport"
+	resultType="com.qifenqian.bms.basemanager.agency.bean.AgentMerchantReport">
+		SELECT
+			#{beginWorkDate,jdbcType = VARCHAR} beginWorkDate,
+			#{endDate,jdbcType = VARCHAR} endDate,
+			(select c.MERCHANT_CODE from td_cust_info c where c.CUST_ID =t.AGENT_CUST_ID) agentId,
+			cust_1.CUST_NAME agentName,
+			-- 代理商名称
+			cust_2.CUST_NAME merchantName,
+			-- 商户名称
+			(select c.MERCHANT_CODE from td_cust_info c where c.CUST_ID =t.MER_CUST_ID) MER_CUST_ID,
+			-- 商户编号
+			concat(
+				'扫码:',
+				IFNULL(col_1.column_value, '无'),
+				'/',
+				'H5:',
+				IFNULL(col_2.column_value, '无'),
+				'/',
+				'PC:',
+				IFNULL(col_3.column_value, '无'),
+				'/',
+				'APP:',
+				IFNULL(col_4.column_value, '无'),
+				'/',
+				'原生H5:',
+				IFNULL(col_10.column_value, '无')
+			) agent_rate,
+			-- 代理商费率
+			concat(
+				'扫码:',
+				IFNULL(col_5.column_value, '无'),
+				'/',
+				'H5:',
+				IFNULL(col_6.column_value, '无'),
+				'/',
+				'PC:',
+				IFNULL(col_7.column_value, '无'),
+				'/',
+				'APP:',
+				IFNULL(col_8.column_value, '无'),
+				'/',
+				'原生H5:',
+				IFNULL(col_9.column_value, '无')
+			) mer_rate,
+			-- 代理商费率
+			SUM(t.RECEIVE_COUNT) RECEIVE_COUNT,
+			SUM(t.RECEIVE_TOTAL_AMT) RECEIVE_TOTAL_AMT,
+			SUM(t.REFUND_COUNT) REFUND_COUNT,
+			SUM(t.REFUND_TOTAL_AMT) REFUND_TOTAL_AMT,
+			SUM(
+				t.RECEIVE_TOTAL_AMT - t.REFUND_TOTAL_AMT
+			) validAmt,
+			SUM(t.COMMISION) COMMISION
+			
+		FROM
+			tr_agent_daily_report t
+		LEFT JOIN td_cust_info cust_1 ON cust_1.CUST_ID = t.AGENT_CUST_ID
+		LEFT JOIN td_cust_info cust_2 ON cust_2.CUST_ID = t.MER_CUST_ID
+		LEFT JOIN bms_protocol_content c ON t.AGENT_CUST_ID = c.cust_id
+		AND c.`status` = 'VALID'
+		LEFT JOIN bms_protocol_column col_1 ON c.id = col_1.protocol_id
+		AND col_1.`status` = 'VALID'
+		AND col_1.column_code = 'onecode.coll.pay_rate'
+		LEFT JOIN bms_protocol_column col_2 ON c.id = col_2.protocol_id
+		AND col_2.`status` = 'VALID'
+		AND col_2.column_code = 'h5.gateway.pay_rate'
+		LEFT JOIN bms_protocol_column col_3 ON c.id = col_3.protocol_id
+		AND col_3.`status` = 'VALID'
+		AND col_3.column_code = 'pc.gateway.pay_rate'
+		LEFT JOIN bms_protocol_column col_4 ON c.id = col_4.protocol_id
+		AND col_4.`status` = 'VALID'
+		AND col_4.column_code = 'mobile.plugin.pay_rate'
+		LEFT JOIN bms_protocol_column col_10 ON c.id = col_10.protocol_id
+		AND col_10.`status` = 'VALID'
+		AND col_10.column_code = 'h5_t.gateway.pay_rate'
+		LEFT JOIN bms_protocol_content c_1 ON t.mer_cust_id = c_1.cust_id
+		AND c_1.`status` = 'VALID'
+		LEFT JOIN bms_protocol_column col_5 ON c_1.id = col_5.protocol_id
+		AND col_5.`status` = 'VALID'
+		AND col_5.column_code = 'onecode.coll.pay_rate'
+		LEFT JOIN bms_protocol_column col_6 ON c_1.id = col_6.protocol_id
+		AND col_6.`status` = 'VALID'
+		AND col_6.column_code = 'h5.gateway.pay_rate'
+		LEFT JOIN bms_protocol_column col_7 ON c_1.id = col_7.protocol_id
+		AND col_7.`status` = 'VALID'
+		AND col_7.column_code = 'pc.gateway.pay_rate'
+		LEFT JOIN bms_protocol_column col_8 ON c_1.id = col_8.protocol_id
+		AND col_8.`status` = 'VALID'
+		AND col_8.column_code = 'mobile.plugin.pay_rate'
+		LEFT JOIN bms_protocol_column col_9 ON c_1.id = col_9.protocol_id
+		AND col_9.`status` = 'VALID'
+		AND col_9.column_code = 'h5_t.gateway.pay_rate'
+		<where>
+			<if test="agentId != null and agentId != ''">
+				t.AGENT_CUST_ID = #{agentId}
+			</if>
+			<if test="beginWorkDate != null and beginWorkDate != ''">
+				AND	 date_add(t.WORK_DATE,interval -1 DAY) >= DATE_FORMAT(#{beginWorkDate,jdbcType = VARCHAR},'%Y-%m-%d')
+				</if>
+				<if test="endDate != null and endDate != ''">
+				AND	 DATE_FORMAT(#{endDate,jdbcType = VARCHAR},'%Y-%m-%d') >= date_add(t.WORK_DATE,interval -1 DAY)
+			</if>
+		</where>
+		GROUP BY
+			t.MER_CUST_ID
+	</select>
+</mapper>

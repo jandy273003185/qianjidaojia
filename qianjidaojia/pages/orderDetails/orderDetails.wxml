@@ -1,0 +1,57 @@
+<!--pages/orderDetails/orderDetails.wxml-->
+
+<view class="title"><text class="title-txt">{{StatusName}}</text></view>
+<image class="bg" src="/images/address_bg.png"></image>
+<view class="address" bindtap="address">
+  <view class="address-left"><image class="addressIcon" src="/images/address.png"></image></view>
+  <view class="address-right">
+    <view class="name">
+      <text>{{ContactName}}</text><text class="mobile">{{TelephoneNumber}}</text>
+    </view>
+    <view class="address-txt">{{Address}}</view>
+  </view>
+</view>
+<block wx:for="{{orderDetails}}" wx:key="*this">
+  <view class="goods">
+    <view class="goods-img"><image src="{{item.ProductImg}}"></image></view>
+    <view class="goods-title">
+      {{item.ProductName}}
+      <view class="specText" wx:if="{{item.ProductSkuName}}">规格：{{item.ProductSkuName}}</view>
+    </view>
+    <view class="goods-right">
+      <text class="money">¥ {{item.UnitPrice}}</text><text class="num">x{{item.ProductCount}}</text>
+    </view>
+    <view wx:if="{{item.OrderStatusId == 1}}" class="refund" bindtap="refund" data-id="{{item.Id}}">退款</view>
+    <view wx:if="{{item.OrderStatusId == 16}}" class="refund refund2" bindtap="cancelRefund" data-id="{{item.Id}}">取消申请退款</view>
+    <view wx:if="{{item.OrderStatusId == 16}}" class="refund3">{{item.OrderStatusName}}</view>
+  </view>
+</block>
+
+<view class="goods-money">
+  <view class="item line">
+    <text>配送费</text><text>¥ {{ExpressPrice}}</text>
+  </view>
+  <view class="item">
+    <text>商品总价</text><text>¥ {{TotalAmount}}</text>
+  </view>
+  <view class="item">
+    <text>优惠券抵扣</text><text>¥ {{DiscountedAmount}}</text>
+  </view>
+  <view class="item pay">
+    <text>实付款</text><text class="pay-num">¥ {{TotalPrice}}</text>
+  </view>
+</view>
+
+<view class="down">
+  <view class="down-item" bindtap='copyText' data-text="{{OrderNo}}"><text>订单编号: {{OrderNo}}</text><text class="copy">复制</text></view>
+  <view class="down-item"><text>创建时间: {{AddTime}}</text></view>
+  <view class="down-item"><text>支付时间: {{PayTime}}</text></view>
+
+  <view class="kefu" bindtap="afterSale">
+    <image class="kefu-img" src="/images/kefu.png"></image><text>联系客服</text>
+  </view>
+</view>
+
+<view class="box {{qrcodeHide}}" bindtap="qrcode">
+  <view class="dialog"><image mode="widthFix" src="/images/qrcode.png"></image></view>
+</view>

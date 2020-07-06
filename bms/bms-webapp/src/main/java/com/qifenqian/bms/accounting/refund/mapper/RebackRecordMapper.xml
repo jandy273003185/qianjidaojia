@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.refund.mapper.RebackRecordMapper">
+
+	<select id="countOriginRelateSuccessOrUnknowTrans" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			STCS.TRANS_RECORD T
+		INNER JOIN STCS.TRANS_RECORD_REBACK A ON A.MSG_ID = T.MSG_ID
+		WHERE
+			A.ORIGIN_MSG_ID = #{originMsgId,	jdbcType=VARCHAR}
+		AND T.STATUS ='EXCEPTION'
+	</select>
+	
+	<select id="countRebackAmtSuccessOrUnknowTrans" resultType="com.qifenqian.bms.accounting.refund.bean.RefundRecord">
+		SELECT
+			SUM(A.REBACK_AMT) REFUND_AMT
+		FROM
+			STCS.TRANS_RECORD T
+		INNER JOIN STCS.TRANS_RECORD_REBACK A ON A.MSG_ID = T.MSG_ID
+		WHERE
+			A.ORIGIN_MSG_ID = #{originMsgId,	jdbcType=VARCHAR}
+		AND T.STATUS IN ('SUCCESS', 'EXCEPTION')
+	</select>
+	
+	<select id="queryAcctBussByMerchantCode" resultType="com.qifenqian.bms.basemanager.acctsevenbuss.bean.AcctSevenBuss">
+		SELECT 
+			BALANCE,
+			USABLE_AMT 
+		FROM 
+			STCS.ACCT_SEVEN_BUSS B,
+			STCDB.TD_CUST_INFO U  
+		WHERE 
+			B.CUST_ID = U.CUST_ID 
+			AND U.MERCHANT_CODE = #{merchantCode,jdbcType = VARCHAR}
+	</select>
+</mapper>

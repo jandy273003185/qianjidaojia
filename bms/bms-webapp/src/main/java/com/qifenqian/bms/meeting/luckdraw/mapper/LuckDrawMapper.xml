@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.meeting.luckdraw.mapper.LuckDrawMapper">
+
+	<!-- 根据编号查询单个 -->
+	<select id="selectPrizeSingleById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.luckdraw.bean.Prize">
+		SELECT P.*,
+			   A.ACTIVITY_NAME,
+			   (SELECT COUNT(1) FROM BASE_PRIZE_WIN PW WHERE PW.PRIZE_ID = P.PRIZE_ID AND PW.STATUS != 'DISABLE' ) WIN_NUMBER 
+		  FROM BASE_PRIZE P
+		  LEFT JOIN BASE_ACTIVITY A ON A.ACTIVITY_ID = P.ACTIVITY_ID
+		WHERE P.PRIZE_ID = #{prizeId, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据编号查询单个 -->
+	<select id="selectActivitySingleById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.luckdraw.bean.Activity">
+		SELECT A.*
+		  FROM BASE_ACTIVITY A
+		WHERE A.ACTIVITY_ID = #{activityId, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="selectPrizeList" parameterType="com.qifenqian.bms.meeting.luckdraw.bean.Prize" resultType="com.qifenqian.bms.meeting.luckdraw.bean.Prize">
+		SELECT
+			P.*,
+			A.ACTIVITY_NAME,
+			(SELECT COUNT(1) FROM BASE_PRIZE_WIN PW WHERE PW.PRIZE_ID = P.PRIZE_ID AND PW.STATUS != 'DISABLE' ) WIN_NUMBER 
+		FROM
+			BASE_PRIZE P
+			LEFT JOIN BASE_ACTIVITY A ON A.ACTIVITY_ID = P.ACTIVITY_ID
+		<where>
+			<if test="activityId > 0 "> AND P.ACTIVITY_ID =#{activityId, jdbcType=INTEGER}</if>
+			<if test="status != null and status != '' "> AND P.STATUS =#{status, jdbcType=VARCHAR}</if>
+			<if test="dynamicSql != null and dynamicSql != '' "> ${dynamicSql} </if>
+		</where>
+		ORDER BY P.PRIZE_SORT, P.PRIZE_ID DESC
+	</select>
+	
+	<select id="selectCustSingleById" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			LU.MOBILE,
+			LU.CUST_ID
+		FROM
+			TD_LOGIN_USER_INFO LU
+		WHERE LU.CUST_ID = #{custId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCustDrawByPrizeRandom" parameterType="com.qifenqian.bms.meeting.luckdraw.bean.Prize" resultType="com.qifenqian.bms.meeting.luckdraw.bean.PrizeWin">
+		SELECT
+			T.CUST_ID WIN_CUST_ID,
+			CONCAT(LEFT(T.MOBILE, 3), '****', RIGHT(T.MOBILE, 4)) WIN_CUST_PHONE,
+			CAST((
+				SELECT
+					IF ( P.AMOUNT_TYPE = 'FIXED',
+						 P.FIXED_AMOUNT,
+						 P.RANDOM_AMOUNT_MIN + FLOOR((RAND() * (P.RANDOM_AMOUNT_MAX - P.RANDOM_AMOUNT_MIN) * 100)) / 100
+					)
+				FROM
+					BASE_PRIZE P
+				WHERE
+					P.PRIZE_ID = #{prizeId, jdbcType=INTEGER}
+			) AS DECIMAL(18,2)) WIN_AMOUNT
+		FROM
+			TD_LOGIN_USER_INFO T
+		<where>
+				T.MOBILE IS NOT NULL
+			AND T.MOBILE != ''
+			AND T.STATE = '00'
+			AND T.ROLE_ID = 'per'
+			AND LENGTH(T.MOBILE) = 11 
+			<!-- 同一奖项必须不可重复中奖 -->
+			AND NOT EXISTS (
+				SELECT 1 
+				  FROM BASE_PRIZE_WIN PW
+				 WHERE PW.WIN_CUST_ID = T.CUST_ID  
+				   AND PW.STATUS != 'DISABLE' 
+				   AND PW.PRIZE_ID = #{prizeId, jdbcType=INTEGER}
+			)
+			<!-- 不同奖项间不可重复中奖 -->
+			<if test="isRepeatWin.name() == 'N'.toString() and activityId > 0 "> 
+				AND NOT EXISTS (
+					SELECT 1 
+					  FROM BASE_PRIZE_WIN PW
+					 WHERE PW.WIN_CUST_ID = T.CUST_ID  
+					   AND PW.STATUS != 'DISABLE' 
+					   AND PW.PRIZE_ID IN (SELECT PRIZE_ID FROM BASE_PRIZE WHERE ACTIVITY_ID = #{activityId, jdbcType=INTEGER})
+				)
+			</if>
+			<!-- 可抽奖范围 -->
+			<if test="custScope.name() == 'LIMIT'.toString() and limitRegisterDateStart != null"> 
+				<![CDATA[ 
+				 	AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d %H:%i:%S') >= #{limitRegisterDateStart} 
+				]]>
+			</if>
+			<if test="custScope.name() == 'LIMIT'.toString() and limitRegisterDateEnd != null"> 
+				<![CDATA[ 
+				 	AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d %H:%i:%S') <= #{limitRegisterDateEnd} 
+				]]>
+			</if>
+		</where>
+		
+		ORDER BY RAND() LIMIT 1
+
+	</select>
+	
+	<!-- 写入单个用户 -->
+	<insert id="insertPrizeWinSingle" useGeneratedKeys="true" keyProperty="prizeId" parameterType="com.qifenqian.bms.meeting.luckdraw.bean.PrizeWin">
+		INSERT INTO BASE_PRIZE_WIN (
+			PRIZE_ID,
+			WIN_CUST_ID,
+			WIN_CUST_NAME,
+			WIN_CUST_PHONE,
+			WIN_AMOUNT,
+			EFFECTIVE_DEADLINE,
+			INST_USER,
+			INST_DATE
+		) VALUES (
+			#{prizeId, 				jdbcType=INTEGER},
+			#{winCustId, 			jdbcType=VARCHAR},
+			#{winCustName, 			jdbcType=VARCHAR},
+			#{winCustPhone, 		jdbcType=VARCHAR},
+			#{winAmount, 			jdbcType=DECIMAL},
+			#{effectiveDeadline, 	jdbcType=TIMESTAMP},
+			#{instUser, 			jdbcType=VARCHAR},
+			#{instDate, 			jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 根据编号查询单个 -->
+	<select id="selectPrizeWinSingleById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.luckdraw.bean.PrizeWin">
+		SELECT PW.* 
+		  FROM BASE_PRIZE_WIN PW
+		WHERE PW.WIN_ID = #{winId, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="selectPrizeWinList" parameterType="com.qifenqian.bms.meeting.luckdraw.bean.PrizeWin" resultType="com.qifenqian.bms.meeting.luckdraw.bean.PrizeWin">
+		SELECT
+			PW.*
+		FROM
+			BASE_PRIZE_WIN PW
+		<where>
+			<if test="prizeId > 0 "> AND PW.PRIZE_ID =#{prizeId, jdbcType=INTEGER}</if>
+			<if test="status != null and status != '' "> AND PW.STATUS =#{status, jdbcType=VARCHAR}</if>
+		</where>
+		ORDER BY PW.WIN_ID
+	</select>
+	
+	<!-- 写入单个-->
+	<insert id="insertRedPacketSingle" parameterType="com.qifenqian.bms.meeting.luckdraw.bean.RedPacket">
+		INSERT INTO MEET_RED_PACKET_BILL (
+			RED_PACKET_SN,
+			RECEIVE_CUST_ID,
+			GIVE_CUST_ID,
+			RED_PACKET_TYPE,
+			RED_PACKET_NAME,
+			RED_PACKET_AMT,
+			MEMO,
+			RELATION_ID
+		) VALUES (
+			#{redPacketSn, 				jdbcType=VARCHAR},
+			#{receiveCustId, 			jdbcType=VARCHAR},
+			#{giveCustId, 				jdbcType=VARCHAR},
+			#{redPacketType, 			jdbcType=VARCHAR},
+			#{redPacketName, 			jdbcType=VARCHAR},
+			#{redPacketAmt, 			jdbcType=DECIMAL},
+			#{memo, 					jdbcType=VARCHAR},
+			#{relationId, 				jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 查询出下一个待抽奖奖项 -->
+	<select id="selectNextDrawPrize" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.luckdraw.bean.Prize">
+		SELECT
+			P.*,
+			A.ACTIVITY_NAME,
+			(SELECT COUNT(1) FROM BASE_PRIZE_WIN PW WHERE PW.PRIZE_ID = P.PRIZE_ID AND PW.STATUS != 'DISABLE' ) WIN_NUMBER
+		FROM
+			BASE_PRIZE P
+			LEFT JOIN BASE_ACTIVITY A ON A.ACTIVITY_ID = P.ACTIVITY_ID
+		WHERE
+			P.ACTIVITY_ID = #{activityId, jdbcType=INTEGER}
+		AND P. STATUS = 'VALID'
+		AND P.QUOTA_NUMBER > (SELECT COUNT(1) FROM BASE_PRIZE_WIN PW WHERE PW.PRIZE_ID = P.PRIZE_ID AND PW.STATUS != 'DISABLE' )
+		ORDER BY
+			P.PRIZE_SORT,
+			P.PRIZE_ID DESC
+		LIMIT 1
+	</select>
+	
+</mapper>

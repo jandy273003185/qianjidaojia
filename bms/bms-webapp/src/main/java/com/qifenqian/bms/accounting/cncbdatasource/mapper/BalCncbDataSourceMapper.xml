@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.cncbdatasource.mapper.BalCncbDataSourceMapper">
+
+	<select id="selectCncbDataSourceList" resultType="com.qifenqian.bms.accounting.cncbdatasource.bean.BalCncbDataSource" parameterType="com.qifenqian.bms.accounting.cncbdatasource.bean.BalCncbDataSource">
+		SELECT
+			T.channel_order_id,
+			T.trans_type,
+			T.trans_status,
+			T.currency_code,
+			T.total_amt,
+			T.user_mark,
+			T.merchant_id,
+			T.trans_datetime,
+			T.commodity_name,
+			T.receive_amt,
+			T.channel_sub,
+			T.order_id,
+			T.pay_bank,
+			D.work_date
+		FROM
+			BAL_CNCB_DATA_SPECIFIC T
+		LEFT JOIN bal_external_data D ON T.channel_order_id = D.clear_id
+		ORDER BY T.TRANS_DATETIME DESC
+	</select>
+</mapper>

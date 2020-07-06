@@ -1,0 +1,31 @@
+<!--pages/guide/guide.wxml-->
+<view class="guideBox">
+    <view class="questionBox">
+        <view class="question">Q：团长订单如何查询？</view>
+        <view class="answer">A：团长后台我的订单可以看到自己的客户名单和客户订单列表</view>
+        <view class="imgBox">
+            <image class="img" src=""></image>
+        </view>
+    </view>
+     <view class="questionBox">
+        <view class="question">Q：如何查看自己的佣金？</view>
+        <view class="answer">A：到我的收益页面查看</view>
+        <view class="imgBox">
+            <image class="img" src=""></image>
+        </view>
+    </view>
+    <view class="questionBox">
+        <view class="question">Q：怎么知道自己团长后面的会员，能调出来名单吗？</view>
+        <view class="answer">A：可以的，点击我的客户查看详情</view>
+        <view class="imgBox">
+            <image class="img" src=""></image>
+        </view>
+    </view>
+    <view class="questionBox">
+        <view class="question">Q：佣金如何结算，周期是多少？</view>
+        <view class="answer">A：当你的客户订单签收后或发货后10天，进行佣金结算</view>
+    </view>
+
+
+
+</view>

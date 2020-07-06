@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.aggregations.mapper.BalAggregationResultStatisticMapper" >
+  
+  <select id="selectList" resultType="com.qifenqian.bms.accounting.aggregations.bean.BalAggregationResultStatistic" parameterType="com.qifenqian.bms.accounting.aggregations.bean.BalAggregationResultStatistic" >
+  	select 
+		T.statistic_id,
+		T.batch_id,
+		T.bal_date,
+		T.work_date,
+		T.file_id,
+		T.channel_id,
+		T.data_owner,
+		T.trans_status,
+		
+		T.trans_currency,
+		T.total_count,
+		T.total_amt,
+		T.bal_equal_count,
+		T.bal_equal_amt,
+		T.bal_doubt_count,
+		T.bal_doubt_amt,
+		T.bal_error_count,
+		T.bal_error_amt,
+		T.self_doubt_count,
+		T.self_doubt_amt,
+		T.inst_datetime,
+		
+		T.update_datetime,
+		C.channel_Name,
+		e.type_name, 
+		IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BAL_RESULT_STATUS' AND TYPE_CODE = T.STATUS),T.STATUS) STATUS,
+		T.trans_type 
+	
+	from 
+		bal_batch_result_statistic T
+	left join 
+		base_channel C
+	on
+		T.channel_id=C.channel_id
+	left join 
+		base_type D
+	on
+		t.trans_type = d.type_code
+	left join
+		base_type E
+	on
+		t.data_owner = e.type_code
+	<where>
+		<if test="workDateMax != null and workDateMax != '' "> AND #{workDateMax, jdbcType=VARCHAR} &gt;= T.WORK_DATE</if>
+		<if test="workDateMin != null and workDateMin != '' "> AND T.WORK_DATE &gt;= #{workDateMin, jdbcType=VARCHAR}</if>
+		<if test="status != null and status != '' ">AND T.STATUS = #{status, 	jdbcType=VARCHAR}</if>
+		<if test="channelId != null and channelId != '' "> AND T.CHANNEL_ID = #{channelId,jdbcType=VARCHAR}</if>
+	</where>
+		ORDER BY T.work_date DESC
+  </select>
+  
+  <select id="queryBalBaseChannel" resultType="com.qifenqian.bms.accounting.aggregations.bean.BaseChannel">
+  	select
+  	 * 
+  	from
+  		base_channel
+  	
+  	
+  </select>
+</mapper>

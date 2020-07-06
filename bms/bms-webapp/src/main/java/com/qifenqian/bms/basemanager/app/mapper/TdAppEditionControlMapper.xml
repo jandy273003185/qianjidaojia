@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.app.mapper.TdAppEditionControlMapper">
+	<select id="listTdAppEditionControl" resultType="com.qifenqian.bms.basemanager.app.bean.TdAppEditionControl" parameterType="com.qifenqian.bms.basemanager.app.bean.TdAppEditionControl">
+		SELECT * FROM td_app_edition_control 
+		<where>
+			<if test="machineType !=null and machineType !=''">
+				AND MACHINE_TYPE = #{machineType,jdbcType=VARCHAR}
+			</if>
+			<if test="state !=null and state !=''">
+				AND STATE = #{state,jdbcType=VARCHAR}
+			</if>
+			<if test="editionId !=null and editionId !=''">
+				AND EDITION_ID = #{editionId,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY CREATE_TIME DESC
+	</select>
+	
+	<update id="updateTdAppEditionControl" parameterType="com.qifenqian.bms.basemanager.app.bean.TdAppEditionControl">
+		UPDATE td_app_edition_control
+		SET STATE = #{state,jdbcType=VARCHAR}
+		WHERE ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insertTdAppEditionControl" parameterType="com.qifenqian.bms.basemanager.app.bean.TdAppEditionControl">
+		INSERT INTO td_app_edition_control (
+			MACHINE_TYPE,
+			FILE_URL,
+			STATE,
+			EDITION_ID,
+			CREATOR,
+			CREATE_TIME,
+			MEMO
+		) VALUES (
+			#{machineType,jdbcType=VARCHAR},
+			#{fileUrl,jdbcType=VARCHAR},
+			#{state,jdbcType=VARCHAR},
+			#{editionId,jdbcType=VARCHAR},
+			#{creator,jdbcType=VARCHAR},
+			default,
+			#{memo,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateTdAppEditionControlLose" parameterType="com.qifenqian.bms.basemanager.app.bean.TdAppEditionControl">
+		UPDATE td_app_edition_control
+		SET STATE = #{state,jdbcType=VARCHAR},
+		CREATOR = #{creator,jdbcType=VARCHAR}
+		WHERE MACHINE_TYPE = #{machineType,jdbcType=VARCHAR}
+	</update>
+</mapper>

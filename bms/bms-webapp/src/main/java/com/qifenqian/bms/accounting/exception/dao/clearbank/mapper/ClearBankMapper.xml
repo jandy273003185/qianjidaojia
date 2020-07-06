@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.clearbank.mapper.ClearBankMapper">
+	<select id="selectBankClearByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.clearbank.bean.ClearBank">
+	SELECT
+	ID AS id,
+	trans_flow_id AS transFlowId,
+	business_type AS businessType,
+	is_rapid AS isRapid,
+	pay_acct_id AS  	payAcctId,
+    pay_acct_type as payAcctType,
+	pay_bank_card_no AS payBankCardNo,
+	pay_bank_card_name AS payBankCardName,
+	pay_bank_code_12 AS payBankCode12,
+	rcv_cust_type AS rcvCustType,
+	rcv_acct_id AS rcvAcctId,
+	rcv_acct_type AS rcvAcctType,
+	rcv_bank_card_no AS rcvBankCardNo,
+	rcv_bank_card_name AS rcvBankCardName,
+	rcv_bank_code_12 AS rcvBankCode12,
+	curr_code AS currCode,
+	trans_amt AS transAmt,
+	brief AS brief,
+	reserve AS reserve,
+	inst_date AS instDate,
+	inst_datetime AS instDatetime,
+	STATUS AS status,
+	execute_way AS executeWay,
+	execute_bank_code AS executeBankCode,
+	work_date AS workDate ,
+	seven_send_date AS sevenSendDate,
+	seven_send_time AS sevenSendTime,
+	seven_rtn_datetime AS sevenRtnDatetime,
+	outer_sys_id AS outerSysId,
+	ourer_serial_id AS ourerSerialId,
+	outer_rtn_date AS outerRtnDate,
+	outer_rtn_time AS outerRtnTime,
+	outer_rtn_code AS outerRtnCode,
+	outer_rtn_info AS outerRtnInfo,
+	bal_status AS balStatus
+	FROM stcs.CLEAR_BANK WHERE TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateBankClearFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.clearbank.bean.ClearBank">
+		UPDATE STCS.CLEAR_BANK 
+		<set>
+			<if test="workDate!=null and workDate!='' ">
+				WORK_DATE = #{workDate,jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+  	
+</mapper>

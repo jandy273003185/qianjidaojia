@@ -1,0 +1,142 @@
+/*评论*/
+.Praise .icolist{ padding: 0 .1rem; background: #fff;}
+.Praise .icolist .hd{ height: .4rem; line-height: .4rem; font-size: .16rem; border-bottom: 1px solid #eee; margin-bottom: .1rem;}
+.Praise .icolist .hd .number{ font-size: .13rem; color: #999;}
+.Praise .icolist .bd a{
+	display: inline-block;
+	height: .3rem;
+	min-width: .6rem;
+	line-height: .3rem;
+	font-size: .13rem;
+	padding: 0 .15rem;
+	margin-right: .1rem;
+	margin-bottom: .1rem;
+	border-radius: .15rem;
+	background: #eee;
+	color: #505050;
+	}
+.Praise .icolist a.selected{
+	background: #ff5c29;
+	color: #fff;
+}
+
+.Praiselist .item_praise{ padding: .1rem; background: #fff; margin-bottom: .1rem; border-radius: 8px;}
+.item_praise .p_top{
+	line-height: .4rem;
+	padding: 0 0 .1rem;
+	margin-bottom: .1rem;
+	border-bottom: 1px solid #eee;
+}
+.item_praise .p_top .user img{ height: .4rem; width: .4rem; border-radius: 50%; float: left; margin-right: .1rem;}
+.item_praise .p_top .user .name{ font-size: .15rem; color: #505050; max-width: 1.5rem;}
+.item_praise .p_top .time{ font-size: .13rem; color: #999;}
+.item_praise .tu_showAll {
+	position:relative;
+}
+
+.item_praise .p_desc{
+	padding: 0 .1rem; font-size: .14rem; color: #666; 
+}
+.item_praise .p_desc a{color: #ed3a3e;}
+.item_praise .tu_showAll{
+	padding:.05rem .08rem 0;
+}
+.item_praise .tu_showAll .num {
+	width:.4rem;
+	height: .16rem;
+	text-align: center;
+	line-height: .16rem;
+	background: rgba(255,255,255,0.8);
+	position: absolute;
+	border-radius: .9rem;
+	font-size: .09rem;
+	color:#333;
+	z-index: 5;
+	bottom: .05rem;
+    right: .15rem;
+}
+.item_praise .tu_show {
+	font-size: 0;
+	white-space: nowrap;
+	overflow-x: auto;
+}
+.item_praise .tu_show li {
+	width:33.33%;
+	display: inline-block;
+	vertical-align: middle;
+}
+.item_praise .tu_show li .pictrueAll {
+	margin:0 .02rem;
+	border-radius: 8px;
+	overflow: hidden;
+}
+.item_praise .tu_show li .pictrue {
+	width:100%;
+	padding-bottom: 100%;	
+	position: relative;
+}
+.item_praise .tu_show li .pictrue img {
+	position: absolute;
+    top: 50%;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    right: 0;
+    margin:0 auto;
+    transform: translate(0,-50%);
+    -webkit-transform: translate(0,-50%);
+}
+.pro_Praise .item_praise{ border-bottom: 1px solid #f4f4f4; border-radius: 0;}
+.pro_Praise .item_praise:last-child{border-bottom: none;}
+.pro_Praise .item_praise .p_top{ margin-bottom: 0; border-bottom: none;}
+.pro_Praise .item_praise .p_desc{
+	display: -webkit-box!important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-all;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.Praiselist .item_praise .reply{
+background-color: #F6F6F6;
+margin:.1rem .1rem 0;
+padding:.08rem .1rem;
+border-radius: .05rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: block;
+    color:#666;
+    font-size: .14rem;
+}
+.Praiselist .item_praise .reply .label{
+color:#ff5c29;
+}
+.reply .con {
+    display: -webkit-box;
+   
+}
+.clamp {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.Praiselist .item_praise .reply .time {
+text-align: right;
+font-size: .13rem;
+color:#999;
+margin-top:.08rem;
+}
+.flex1{
+-webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    overflow: hidden;
+}
+ 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.checkquery.mapper.BalSevenResultEqualMapper">
+
+	<select id="selectFitList" resultType="com.qifenqian.bms.accounting.checkquery.bean.BalSevenResultEqual" parameterType="com.qifenqian.bms.accounting.checkquery.bean.BalSevenResultEqual">
+		SELECT
+			T.BAL_DATE,
+			CONCAT(B.RTN_DATE,'',B.RTN_TIME) AS channelTime,
+			CONCAT(B.SEND_DATE,'',B.SEND_TIME) AS sevenTime,
+			T.CHANNEL_ID ,
+			B.WORK_DATE,
+			B.RTN_SEQ ,
+			B.CLEAR_ID,
+			B.TRANS_AMT,
+			A.TRANS_AMT AS trans_amtc
+		FROM
+		BAL_FILE_BATCH T
+		INNER JOIN BAL_JGKJ_RESULT_EQUAL A ON A.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER'
+		INNER JOIN BAL_JGKJ_SEVEN_RESULT_EQUAL B ON B.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER'
+		AND B.CLEAR_ID = A.SEVENPAY_ID
+		<where>
+			<if test="balDate!=null and balDate!='' ">   
+	         	 AND  T.BAL_DATE = #{balDate,jdbcType = VARCHAR} 
+	        </if> 
+			<if test="clearId!=null and clearId!='' ">
+				AND B.CLEAR_ID LIKE CONCAT('%',#{clearId},'%')
+			</if>
+			 <if test="beginBalTime != null and '' != beginBalTime">  
+	            <![CDATA[  
+	              	AND B.WORK_DATE >= #{beginBalTime, jdbcType=VARCHAR}       
+	            ]]>  
+	        </if>
+	        <if test="endBalTime!= null and '' !=endBalTime">  
+	            <![CDATA[  
+	            	AND  #{endBalTime, jdbcType=VARCHAR} >=  B.WORK_DATE
+	            ]]>  
+	        </if> 
+		</where>
+		ORDER BY A.INST_DATE DESC
+	</select>
+</mapper>

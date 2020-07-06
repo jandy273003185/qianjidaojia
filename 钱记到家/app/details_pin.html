@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/swiper.min.css" />
+    <link rel="stylesheet" href="css/fsgallery.css" />
+    <!--<link rel="stylesheet" type="text/css" href="css/default-skin.css"/>
+    <link rel="stylesheet" type="text/css" href="css/photoswipe.css"/>-->
+    <link rel="stylesheet" href="css/details.css" />
+    <link rel="stylesheet" href="css/praise.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js " type="text/javascript" charset="utf-8"></script>
+    <!--<script src="js/photoswipe-ui-default.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/photoswipe.js" type="text/javascript" charset="utf-8"></script>-->
+    <script type="text/javascript" src="js/fs_forse.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="js/swiper.min.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/productDetail_pin.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="script/coupon.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="script/WxShare.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        #youhuiquan {
+            position: relative;
+        }
+
+            #youhuiquan:after {
+                position: absolute;
+                content: "";
+                width: .08rem;
+                height: .08rem;
+                border-top: 1px solid #b1b1b1;
+                border-left: 1px solid #b1b1b1;
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                -moz-transform: rotate(135deg);
+                -o-transform: rotate(135deg);
+                -ms-transform: rotate(135deg);
+                top: 50%;
+                right: .1rem;
+                margin-top: -.04rem;
+            }
+
+        .coupTan {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 11;
+            display: none;
+        }
+
+        .zhezhao {
+            width: 100%;
+            height: 40%;
+            background: #000000;
+            opacity: 0.5;
+        }
+
+        #couponList2 {
+            width: 100%;
+            height: 60%;
+            background: #fff;
+            overflow: auto;
+        }
+    </style>
+</head>
+<!--判断页面跳转，如果有前一页就跳转到前一页，如果没有就跳转首页 -->
+<script>
+    function goBack() {
+     
+        if (window.history.length > 2) {
+            window.history.go(-1);
+        } else {
+            window.location.href = "/indexV.html";
+        }
+    }
+</script>
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+            <div class="title center">商品详情</div>
+            <a href="javascript:;" class="icon_r icons_share sharebtn"></a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="product">
+            <div id="productBanner_div"></div>
+            <script id="productBanner_tpl" type="text/x-dot-template">
+                <!--详情banner-->
+                <div class="swiper-container d_banner">
+                    <a href="/indexV.html" class="icons icons_home"></a>
+                    <div class="swiper-wrapper">
+                        {{~it.ProductImgList:value:index }}
+                        <div class="swiper-slide">
+                            <div class="img" style="background-image: url({{=value.PicUrl}});"></div>
+                        </div>
+                        {{~}}
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+                <!--详情banner end-->
+            </script>
+            <!--产品信息-->
+            <div class="pro_info">
+                <!--显示倒计时-->
+                <div class="activity pin" style="display: none;">
+                    <div class="left">
+                        <div class="left-1">
+                            <i>￥</i><span class="price"></span>
+                        </div>
+                        <div class="left-2">
+                            <span class="counterPrice"></span>
+                            <span class="people"></span>
+                        </div>
+                    </div>
+                    <div class="right fr">
+                        <span class="lab">距离结束还剩</span>
+                        <div class="Countdown">
+                            <span class="num hh">00</span>
+                            <span>:</span>
+                            <span class="num mm">00</span>
+                            <span>:</span>
+                            <span class="num ss">00</span>
+                        </div>
+                    </div>
+                </div>
+                <!--拼团显示倒计时 end-->
+
+                <div class="infoItem pro-bd">
+
+                </div>
+                <!--福利详情不显示-->
+                <div class="infoItem pro-guige">
+                    <span class="lab area">智利</span>
+                    <div class="txt_r">
+                        <p>实付满59包邮</p>
+                    </div>
+                </div>
+                <div class="infoItem pro-guige" id="youhuiquan">
+                    <span class="lab" id="lingqu">领取优惠券</span>
+                </div>
+                <div class="infoItem pro-youhui">
+                    <span class="lab c_Org">优惠</span>
+                    <div class="txt_r">
+                        <p>天天更多优惠活动等你来哦！</p>
+                    </div>
+                </div>
+                <!--店铺 拼团/福利详情不显示-->
+                <div class="infoItem pro-Store">
+                    <div class="storeinfo clear mb10">
+                        <div class="store_logo">
+                            <img src="images/tx/tx_012.png" />
+                        </div>
+                        <div class="btn-group">
+                            <a href="javascript:;" class="btn flow" id="isCollectionShop">关注</a>
+                            <a href="javascript:;" class="btn instore lookstore">进店看看</a>
+                        </div>
+                        <div class="name">
+
+                        </div>
+                    </div>
+                    <div class="storeScore clear">
+                        <div class="score">
+                            宝贝描述<span id="proSocre"> 5.0 高</span>
+                        </div>
+                        <div class="score">
+                            卖家服务<span id="serviceScore"> 5.0 高</span>
+                        </div>
+                        <div class="score">
+                            物流服务<span id="logisticsScore"> 5.0 高</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--拼团-->
+            <div class="pro_Pintuan bg_fff mb10">
+                <div class="dd-Hd">
+                    <span>8人在拼团,可直接参团</span>
+                    <a href="javascript:;" class="Pinmore more arrow-r">查看更多</a>
+                </div>
+                <div class="dd-Bd">
+                    <ul class="pinlist">
+                        <li>
+                            <div class="box clear">
+                                <div class="img fl"><img src="images/tx/tx_015.png" /></div>
+                                <div class="right">
+                                    <div class="ct-num">
+                                        <p>还差<span class="c_Org">2</span>人拼团</p>
+                                        <p>剩余<span class="time">20:28:26</span></p>
+                                    </div>
+                                    <a href="javascript:;" class="btn pinbtn">去拼团</a>
+                                </div>
+                                <div class="name">
+                                    大参林东甲……
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="box clear">
+                                <div class="img fl"><img src="images/tx/tx_013.png" /></div>
+                                <div class="right">
+                                    <div class="ct-num">
+                                        <p>还差<span class="c_Org">2</span>人拼团</p>
+                                        <p>剩余<span class="time">20:28:26</span></p>
+                                    </div>
+                                    <a href="javascript:;" class="btn pinbtn">去拼团</a>
+                                </div>
+                                <div class="name">
+                                    大参林东甲……
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--拼团玩法-->
+            <div class="pro_Pinway bg_fff mb10">
+                <div class="dd-Hd center">
+                    <span>拼团玩法</span>
+                </div>
+                <div class="dd-Bd">
+                    <div class="text_r">
+                        <a href="javascript:;" class="rulebtn">规则</a>
+                    </div>
+                    <div class="img">
+                        <img src="images/of/rule.png" />
+                    </div>
+                </div>
+            </div>
+
+            <!--评价-->
+            <div class="pro_Praise bg_fff mb10">
+                <div class="dd-Hd">
+                    <span>商品评价(<span id="aprriseNum"></span>)</span>
+                    <a href="javascript:;" class="more arrow-r" id="gotoPraiseList">查看更多</a>
+                </div>
+                <div class="dd-Bd">
+                    <div class="Praiselist" id="appriseList">
+
+                    </div>
+                </div>
+            </div>
+            <!--详情-->
+            <div class="pro_Detail bg_fff">
+                <div class="dd-Hd">
+                    <span>商品详情</span>
+                </div>
+                <div class="dd-Bd">
+                    <!--属性-->
+                    <!--<div class="attribute pd10">
+                        <p>规格：1盒</p>
+                        <p>重量：1000g盒</p>
+                        <p>保质期：到货即可食用</p>
+                        <p>包装：普通</p>
+                        <p>贮存方法：冷藏</p>
+                    </div>-->
+                    <!--详情描述-->
+                    <!--<div class="proDesc">
+                        <img src="images/of/dd1.jpg" />
+                        <img src="images/of/d4.jpg" />
+                        <img src="images/of/dd2.jpg" />
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--拼团底部-->
+    <div class="null50">
+        <footer class="dd_footer">
+            <div class="btnGroup">
+                <a href="javascript:;" class="btn2 btn-Add">我要参团</a>
+                <a href="javascript:;" class="btn2 btn-Open">￥16.9 一键开团</a>
+            </div>
+        </footer>
+    </div>
+    <!--拼团底部 end-->
+    <!--弹出sku选择-->
+    <div class="shade">
+        <div class="shadebg"></div>
+        <div class="shade_content">
+            <div class="shade-item specifications_shade">
+                <span class="btn-close"></span>
+                <div class="productInfo">
+                    <div class="m-pro clear">
+                        <div class="hd fl">
+                            <div class="img">
+                                <img src="">
+                            </div>
+                        </div>
+                        <div class="bd">
+                            <h4 class="name"></h4>
+                            <p class="desc">
+                                <span>库存：<span id="stock"></span>件</span>
+                            </p>
+                            <p class="price">
+                                <span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="shade_bd">
+                    <div class="skuBox addr_skuBox">
+                        <h2 class="skuTitle">配送区域</h2>
+                        <div class="skuCon">
+                            <span class="place">深圳市 龙华区</span>
+                        </div>
+                    </div>
+                    <div id="skuBoxContent">
+
+                    </div>
+
+                    <div class="skuBox buyNum_skuBox clear">
+                        <h2 class="skuTitle fl">购买数量</h2>
+                        <div class="flexItem fr">
+                            <div class="selnum">
+                                <span class="less btn-num icon-minus"></span>
+                                <div class="textWrap">
+                                    <input type="text" id="pro_num" readonly="readonly">
+                                </div>
+                                <span class="more btn-num icon-add"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shade_ft">
+                    <a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="addCart">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出sku选择 end-->
+    <!--优惠券弹窗-->
+    <div class="coupTan">
+        <div class="zhezhao"></div>
+        <div class="couponList" id="couponList2"></div>
+    </div>
+</body>
+<script type="text/javascript" src="js/top.js"></script>
+
+<!--评论列表模板-->
+<script id="appriseTemp" type="text/x-dot-template">
+    {{~it:value:index}}
+    {{? index<3 }}
+    <div class="item_praise" data-id="{{=value.Id}}">
+        <div class="p_top clear">
+            <div class="user fl">
+                {{? value.MemberHeadImg}}
+                <img src="{{=value.MemberHeadImg}}"> {{?? }}
+                <img src="/images/tx/default.png"> {{?}}
+                <!--<p class="text name">{{=value.MemberName}}</p>-->
+                <p class="text name">{{=cutTel(value.MemberName)}}</p>
+            </div>
+            <span class="time fr">{{=value.AddTime}}</span>
+        </div>
+        <div class="p_desc">
+            {{=value.ContentText}}
+        </div>
+        {{? sc.slicePicString(value.EvaluateImgList).length}}
+        <div class="tu_showAll">
+            <ul class="tu_show clear thumbnails">
+                {{ for(var i=0;i<sc.slicePicString(value.EvaluateImgList).length;i++){ }}
+                {{ if(i>2){ }}
+                <li style="display: none;">
+                    <div class="pictrueAll">
+                        <div class="pictrue">
+                            <img src="{{=sc.slicePicString(value.EvaluateImgList)[i]}}" alt="">
+                        </div>
+                    </div>
+                </li>
+                {{ }else{ }}
+                <li>
+                    <div class="pictrueAll">
+                        <div class="pictrue">
+                            <img src="{{=sc.slicePicString(value.EvaluateImgList)[i]}}" alt="">
+                        </div>
+                    </div>
+                </li>
+                {{ } }}
+                {{ } }}
+            </ul>
+            {{if(sc.slicePicString(value.EvaluateImgList).length>2){ }}
+            <span class="num">共{{=sc.slicePicString(value.EvaluateImgList).length}}张</span>
+            {{ } }}
+        </div>
+        {{?}}
+        {{ if(value.Reply){ }}
+        <div class="reply">
+            <div class="flexItem label">商家回复：</div>
+            <div class="flexItem flex1">
+                <div class="con">{{value.Reply}}</div>
+            </div>
+        </div>
+        {{ } }}
+    </div>
+    {{?}}
+    {{~}}
+    {{ if(!it.length){ }}
+    <div class="center" style="padding:.3rem;font-size: .15rem;color:#505050;">暂无数据</div>
+    {{ } }}
+</script>
+<!--评论列表模板  end-->
+<!--优惠券列表模板 start-->
+<script type="text/html" id="couponLtpl2">
+    {{# for(var i = 0; i < d.data.length; i++){ }}
+    {{#  if(d.data[i].IsMyAlready===false){ }}
+    <div class="item false__item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+        {{#  } else { }}
+        <div class="item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+            {{#  } }}
+            <div class="left">
+                {{#  if(d.data[i].DiscountType==="2"){ }}
+                {{
+#
+						  function rebate(){
+						  	var number = d.data[i].Denomination*10;
+						    return number;
+						  }
+                }}
+                <span class="priceArea left_priceArea center">{{rebate()}}<span class="fh">折</span></span>
+                {{#  } else { }}
+                <span class="priceArea left_priceArea center"><span class="fh">￥</span>{{d.data[i].Denomination}}</span>
+                {{#  } }}
+                <div class="titleBox">
+                    <p class="useNeed">
+                        <span>{{d.data[i].UseExplain}}</span>
+                    </p>
+                    <span class="title">{{d.data[i].Name}}</span>
+                </div>
+                <p class="validTime">有效日期：{{d.data[i].StartTime.split(" ")[0]}}-<span class="endTime">{{d.data[i].EndTime.split(" ")[0]}}</span></p>
+            </div>
+            <div class="right">
+                <span class="type">优惠券</span>
+            </div>
+        </div>
+        {{# } }}
+</script>
+<!--优惠券列表模板 end-->
+<!--详情手机号显示-->
+<script type="text/javascript">
+    function cutTel(tel) {
+        var ptel = tel.substr(8, tel.length - 1);
+        var ptel2 = sc.utils.truncateString(tel, 4);
+        return ptel2 + "****" + ptel;
+    }
+</script>
+</html>

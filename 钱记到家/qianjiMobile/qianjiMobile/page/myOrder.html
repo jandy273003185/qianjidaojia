@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的订单</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/myOrder.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div class="allStatus"><span class="allStatutsColor">全部</span><span>待付款</span><span>待发货</span><span>配送中</span><span>待评价</span></div>
+
+    <div class="goodsList">
+        <div class="store">
+            <div><span class="storeType">[普通]</span><span class="storeName">钱记到家旗舰店</span></div><span class="storeStatus">待付款</span>
+        </div>
+        <div class="goods">
+            <div class="goodsImg"><img src="" alt=""></div>
+            <div class="goods-right">
+                <div>
+                    <p class="goodsName">roaringwild ss18 咆哮猛兽 观</p>
+                    <p class="num">x2</p>
+                </div>
+                <p class="price">¥ 189.00</p>
+            </div>
+        </div>
+        <div class="goods">
+            <div class="goodsImg"><img src="" alt=""></div>
+            <div class="goods-right">
+                <div>
+                    <p class="goodsName">roaringwild ss18 咆哮猛兽 观</p>
+                    <p class="num">x2</p>
+                </div>
+                <p class="price">¥ 189.00</p>
+            </div>
+        </div>
+        <div class="goods-num">
+            <span class="total-num">共2件商品</span>
+            <div><span>合计:</span><span class="total-money">¥ 20.00</span></div>
+        </div>
+
+        <div class="status-div"><span class="status">取消订单</span><span class="status status-color">付款</span></div>
+    </div>
+
+
+
+    <script>
+        $(function() {
+            $('.allStatus span').click(function() {
+                $(this).addClass('allStatutsColor').siblings().removeClass('allStatutsColor');
+            })
+        })
+    </script>
+</body>
+
+</html>

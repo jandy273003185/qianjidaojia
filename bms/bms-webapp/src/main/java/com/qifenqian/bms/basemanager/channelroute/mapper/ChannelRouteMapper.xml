@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.channelroute.mapper.ChannelRouteMapper">
+	
+	<!-- 查询 --> 
+	<select id="selectRoute" parameterType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean" 
+		resultType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean">
+			select 
+				T.*
+			from 
+				tb_channel_route T
+			
+			<where>
+				<if test="paychannelType != '' and paychannelType != null">
+					T.paychannel_type like CONCAT('%',#{paychannelType},'%')
+				</if>
+				<if test = "name != '' and name != null">
+					AND T.name like CONCAT('%',#{name},'%')
+				</if>
+			</where>
+		
+	</select>
+	
+	<!-- 添加 --> 
+	<insert id="addChannelRoute" parameterType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean">
+		INSERT INTO tb_channel_route(
+			name,
+			paychannel_type,
+			gateway_type,
+			fee_type,
+			fee,
+			minLim,
+			maxLim,
+			cardType,
+			weight,
+			status,
+			totalCnt,
+			failCnt,
+			remark,
+			createTime
+		) values (  
+			#{name},
+			#{paychannelType},
+			#{gatewayType},
+			#{feeType},
+			#{fee},
+			#{minLim},
+			#{maxLim},
+			#{cardType},
+			#{weight},
+			#{status},
+			#{totalCnt},
+			#{failCnt},
+			#{remark},
+			now()
+		)	
+	</insert>	
+	
+	
+	<!-- 删除 --> 
+	<delete id="deleteChannelRoute" parameterType="String">
+		delete from
+			tb_channel_route
+		where
+			ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	
+	<!-- 修改 --> 
+	<update id="updateChannelRoute" parameterType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean">
+		update 
+			tb_channel_route
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="paychannelType != null and paychannelType != ''">
+				paychannel_type = #{paychannelType},
+			</if>
+			<!-- <if test="gatewayType != null and gatewayType != ''"> -->
+				gateway_type = #{gatewayType},
+			<!-- </if>
+			<if test="feeType != null and feeType != ''"> -->
+				fee_type = #{feeType},
+			<!-- </if>
+			<if test="fee != null and fee != ''"> -->
+				fee = #{fee},
+			<!-- </if>
+			<if test="minLim != null and minLim != ''"> -->
+				minLim = #{minLim},
+			<!-- </if>
+			<if test="maxLim != null and maxLim != ''"> -->
+				maxLim = #{maxLim},
+			<!-- </if>
+			<if test="cardType != null and cardType != ''"> -->
+				cardType = #{cardType},
+			<!-- </if>
+			<if test="weight != null and weight != ''"> -->
+				weight = #{weight},
+			<!-- </if>
+			<if test="status != null and status != ''"> -->
+				status = #{status},
+			<!-- </if>
+			<if test="totalCnt != null and totalCnt != ''"> -->
+				totalCnt = #{totalCnt},
+			<!-- </if>
+			<if test="failCnt != null and failCnt != ''"> -->
+				failCnt = #{failCnt},
+			<!-- </if>
+			<if test="remark != null and remark != ''"> -->
+				remark = #{remark},
+			<!-- </if> -->
+			createTime = now()
+		</set>
+		where
+			id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<!-- 查询 --> 
+	<select id="selectId" parameterType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean" 
+		resultType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean">
+			select 
+				
+				I.ID
+			from 
+				tb_channel_info I
+			WHERE
+				I.code =#{code}
+				
+		
+	</select>
+	
+	
+	<!-- 添加渠道关系 --> 
+	<insert id="addRouteRf" parameterType="com.qifenqian.bms.basemanager.channelroute.bean.ChannelRouteBean">
+		INSERT INTO tb_route_rf_channel(
+			channel_route_id,
+			channel_id
+		) values (  
+			#{id},
+			#{channelId}
+		)	
+	</insert>
+	
+	
+	<!-- 删除渠道关系 --> 
+	<delete id="deleteRouteId" parameterType="String">
+		delete from
+			tb_route_rf_channel
+		where
+			channel_route_id = #{id}
+	</delete>
+	
+</mapper>

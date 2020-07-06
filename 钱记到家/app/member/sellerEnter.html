@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>商家入驻</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script src="../js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="../js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .fixed__defaultPage .main {
+            height: calc( 100% - .45rem);
+            height: -webkit-calc( 100% - .45rem);
+            height: -moz-calc( 100% - .45rem);
+            height: -ms-calc( 100% - .45rem);
+            height: -o-calc( 100% - .45rem);
+        }
+
+        .applyStatusCon {
+            height: calc( 100% - .35rem);
+            height: -webkit-calc( 100% - .35rem);
+            height: -moz-calc( 100% - .35rem);
+            height: -ms-calc( 100% - .35rem);
+            height: -o-calc( 100% - .35rem);
+        }
+
+            .applyStatusCon .statusInner {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            .applyStatusCon .statusBox {
+                display: block;
+            }
+
+        .btnUploadAll {
+            margin-right: .1rem;
+        }
+
+            .btnUploadAll .button-upload {
+                background: none;
+            }
+
+        .applyStatusCon .testStatus {
+            display: table;
+            width: 100%;
+            box-sizing: border-box;
+            height: 100%;
+            background-color: #fff;
+            padding: 0.25rem 0.1rem;
+            border-radius: 0.06rem;
+        }
+
+        .applyStatusCon {
+            display: block;
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .verifyFail .tel {
+            display: inline-block;
+            color: #ff5c29;
+            font-size: .15rem;
+            background: url(/images/icons/tel.png) left center no-repeat;
+            background-size: .2rem auto;
+            padding-left: .25rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="defaultPage sellerEnterEaditPage" style="display: none;">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:history.go(-1);" class="btn_back"></a>
+					<div class="title center">商家入驻</div>
+				</div>
+			</div>
+			<div class="main">
+				<div class="dd-tips">
+					<h2 class="title">温馨提示：</h2>
+					<div class="con">
+						<p>1、为保证您的认证顺利，请保证信息真实，照片清晰可见</p>
+						<p>2、此证件信息，只作为商家入驻申请认证，请放心上传</p>
+					</div>
+				</div>
+				<div class="applyForm weui-cells alone__weui-cells">
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="company" type="text" class="weui-input"  placeholder="公司名称" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="shopNick" type="text"  class="weui-input" placeholder="店铺名称" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="weui-cell__title">上传营业执照</p>
+							<div class="uploadImage clear">
+								<div class="btnUploadAll">
+									<div class="button-upload">
+										<input class="small btnUpload" type="file" id="file1_input" />
+										<img src="../images/icons/upimg.png" id="Business" accept="image/*" />
+									</div>
+									<p class="item-tips">上传营业执照</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="shopName" type="text"  class="weui-input" placeholder="申请人姓名" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="shopwd" type="password"  class="weui-input" placeholder="请输入登录密码" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="reshopwd" type="password"  class="weui-input" placeholder="再次输入密码" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input id="mobile" type="text" class="weui-input"  placeholder="手机号" />
+						</div>
+					</div>
+					<div class="weui-cell sendCode__weui-cell">
+						<div class="weui-cell__bd">
+							<input type="text" class="weui-input" placeholder="填写校验码" id="txtCode" />
+						</div>
+						<div class="btnSendCode code" id="sendCode">
+							<span>获取验证码</span>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input  type="text" id="idcard"  class="weui-input" placeholder="身份证号码" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="weui-cell__title">上传身份证</p>
+							<div class="uploadImage clear">
+								<div class="btnUploadAll">
+									<div class="button-upload">
+										<input class="small btnUpload" type="file" id="file2_input" />
+										<img src="../images/icons/upimg.png" id="Positive" accept="image/*" />
+									</div>
+									<p class="item-tips">手持身份证正面照</p>
+								</div>
+								<div class="btnUploadAll">
+									<div class="button-upload">
+										<input class="small btnUpload" type="file" id="file3_input" />
+										<img src="../images/icons/upimg.png" id="Negative" accept="image/*" />
+									</div>
+									<p class="item-tips">手持身份证反面照</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="weui-cell" style="display: none;">
+						<div class="weui-cell__ft">
+							<label for="" class="weui-label">性别</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<label for="male" class="check-label">
+								<div class="IconsCK IconsCK-radio">
+									<input type="radio" name="sex" id="male" checked="checked" />
+									<span></span>
+								</div>
+								男
+							</label>
+							<label for="female" class="check-label">
+								<div class="IconsCK IconsCK-radio">
+									<input type="radio" name="sex" id="female" />
+									<span></span>
+								</div>
+								女
+							</label>
+						</div>
+					</div>
+					<!--<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input type="text" class="weui-input" placeholder="地址信息" />
+						</div>
+					</div>-->
+				</div>
+			</div>
+			<!--底部-->
+			<div class="h60">
+				<footer class="ftbtn bg_f6f6f6">
+					<div id="submit" class="btn" style="border-radius: 1rem;">提交申请</div>
+				</footer>
+			</div>
+		</div>
+		<!--申请状态-->
+		<div class="defaultPage fixed__defaultPage bg_f6f6f6 sellerEnterStatusPage">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:history.go(-1);" class="btn_back"></a>
+					<div class="title center">入驻申请</div>
+				</div>
+			</div>
+			<div class="main">
+
+				<div class="applyStatusCon">
+					<div class="testStatus">
+						<div class="statusInner">
+							<!--审核中-->
+							<div class="statusBox verify" style="display: none;">
+								<div class="icons">
+									<img src="../images/icons/verify-ing.jpg" alt="" />
+								</div>
+								<p class="status">审核中</p>
+								<p class="status-tips">您的入驻申请一提交审核，工作人员会在3个工作日内联系您，请保持手机号码畅通</p>
+							</div>
+							<!--审核中  end-->
+
+							<!--入驻失败-->
+							<div class="statusBox verifyFail" style="display: none;">
+								<div class="icons">
+									<img src="../images/icons/verify-success.jpg" alt="" />
+								</div>
+								<p class="status" style="color:#3b3b3b;">很抱歉！您入驻申请失败！</p>
+								<div class="ftbtn">
+									<a href="javascript:;" class="btn" id="againEadit">编辑资料</a>
+								</div>
+							</div>
+							<!--入驻失败  end-->
+							<!--冻结-->
+							<div class="statusBox freeze" style="display: none;">
+								<div class="icons">
+									<img src="../images/icons/verify-success.jpg" alt="" />
+								</div>
+								<p class="status" style="color:#3b3b3b;">很抱歉！您入驻申请失败，该申请已被冻结，请联系管理员！</p>
+								<p style="margin-top:.2rem;"><span class="tel">客服热线：0755-82837166</span></p>
+								<!--<div class="ftbtn">
+									<a href="javascript:;" class="btn">重新入驻</a>
+								</div>-->
+							</div>
+							<!--冻结  end-->
+							<!--入驻申请成功-->
+							<div class="statusBox verifySuccess" style="display: none;">
+								<div class="icons">
+									<img src="../images/icons/verify-success.jpg" alt="" />
+								</div>
+								<p class="status">入驻申请成功</p>
+								<p class="status-tips">恭喜您入驻申通过，请尽快登录修改相关信息</p>
+								<div class="ftbtn">
+									<a href="javascript:;" class="btn" id="gotoStoreIndex">查看店铺</a>
+								</div>
+							</div>
+							<!--入驻申请成功  end-->
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--申请状态  end-->
+		<script src="../script/sellerEnter.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>

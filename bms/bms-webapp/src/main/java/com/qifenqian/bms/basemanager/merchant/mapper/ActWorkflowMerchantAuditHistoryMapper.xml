@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.ActWorkflowMerchantAuditHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="merchantId" property="merchantid" jdbcType="VARCHAR" />
+    <result column="proc_inst_id" property="procInstId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="auditer" property="auditer" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, merchantId, proc_inst_id, status, message, auditer, audit_time
+  </sql>
+  
+  
+  <insert id="insert" parameterType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    insert into act_workflow_merchantaudit_history 
+    	( 	merchantId, 
+    		proc_inst_id, 
+      		status, 
+      		message, 
+      		auditer, 
+      		audit_time,
+      		submit_time)
+    values ( 
+    		#{merchantid,jdbcType=VARCHAR}, 
+    		#{procInstId,jdbcType=VARCHAR}, 
+      		#{status,jdbcType=VARCHAR}, 
+      		#{message,jdbcType=VARCHAR}, 
+      		#{auditer,jdbcType=VARCHAR}, 
+     		#{auditTime,jdbcType=VARCHAR},
+     		#{submitTime,jdbcType=VARCHAR} )
+  </insert>
+</mapper>

@@ -1,0 +1,101 @@
+    body {
+        background-color: #FDFAFE;
+        padding: 0;
+        margin: 0;
+        font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    }
+    
+    .timer {
+        display: flex;
+    }
+    
+    .timer div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 0.94rem;
+        height: 0.46rem;
+        color: #C0C0C0;
+        border-radius: 0.14rem;
+        border: 1px solid #C0C0C0;
+        margin: 0.24rem 0 0.24rem 0.24rem;
+        font-size: 0.3rem;
+        padding-bottom: 0.007rem;
+    }
+    
+    .active {
+        color: #F74146 !important;
+        border: 1px solid #F74146 !important;
+    }
+    
+    .content {
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        height: 3.9rem;
+        margin-top: 0.18rem;
+    }
+    
+    .content-up {
+        background: url('../images/my_bg.png') no-repeat center;
+        height: 2.06rem;
+        background-size: cover;
+        color: #ffffff;
+        margin-top: 0.24rem;
+    }
+    
+    .content-up {
+        display: flex;
+        justify-content: space-between;
+        height: 2.06rem;
+    }
+    
+    .content-txt {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        font-size: 0.28rem;
+    }
+    
+    .content-txt div {
+        line-height: 0.55rem;
+    }
+    /* .content-down-txt>div:first-child> {
+        height: 0.72rem !important;
+    } */
+    
+    .content-txt>div:first-child>span:last-child {
+        font-size: 0.48rem;
+    }
+    
+    .line {
+        background-color: #E00202;
+        height: 1.3rem;
+        width: 0.01rem !important;
+        margin-top: 0.35rem;
+    }
+    
+    .content-down {
+        display: flex;
+        justify-content: space-between;
+        height: 1.6rem;
+    }
+    
+    .content-down-left>p:first-child {
+        color: #F74146;
+        font-size: 0.48rem;
+    }
+    
+    .content-down-left>p:last-child {
+        color: #333333;
+        font-size: 0.28rem;
+    }
+    
+    .line2 {
+        background-color: #E00202;
+        height: 0.8rem;
+        width: 0.01rem !important;
+        margin-top: 0.4rem;
+    }

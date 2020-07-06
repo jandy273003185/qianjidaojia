@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>问题解答</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/script/pullLoading.js" type="text/javascript"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/upload_pic_domain.js"></script>
+    <style type="text/css">
+        .askProblemList {
+            padding: 0 0.15rem;
+        }
+
+            .askProblemList .item .problemTitle {
+                color: #000;
+                font-size: 0.15rem;
+                position: relative;
+                margin: 0.1rem 0;
+                line-height: 0.26rem;
+                padding-left: 0.22rem;
+            }
+
+                .askProblemList .item .problemTitle:before {
+                    content: "";
+                    position: absolute;
+                    height: 0.26rem;
+                    width: 0.15rem;
+                    left: 0;
+                    top: 0;
+                    background: url(../images/icons/problem.png) center no-repeat;
+                    background-size: 100% auto;
+                }
+
+            .askProblemList .item .con {
+                padding: 0.1rem;
+                background-color: #fff;
+                font-size: 0.14rem;
+                color: #505050;
+                border-radius: .06rem;
+                box-shadow: 0 0 0.05rem #ebebeb;
+                line-height: 1.6;
+            }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/problem.html" class="btn_back"></a>
+				<div class="title center">常见问题</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="askProblemBox">
+				<div class="askProblemList">
+					<div class="item" id="helpList">
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var userId = sc.utils.getCookieValue("UserId");
+			var token = sc.utils.getCookieValue("Token");
+			var curren = 1;
+			var pages = ''; //总页数
+			var id = sc.utils.getQueryString("id");;
+			$(function() {
+				getProblemDetail();
+			});
+
+			function getProblemDetail() {
+				var url = "api/Help/GetHelpInfo";
+				var calback = function(data) {
+					console.log(data);
+					//pages = data.count;
+					var str = '<p class="problemTitle">' + data.data.Title + '</p>' +
+						"<div class='item__bd' >" +
+						"<div class='con'>" +
+						'' + data.data.Contents + '' +
+						"</div>" +
+						" </div >";
+                    $("#helpList").html(str);
+                    $(".con img").each(function () {
+                        var url = $(this).attr('src');
+                        url = pic_domain.add(url);
+                        $(this).attr('src', url);
+                    });
+				}
+				sc.post(url, {
+					"UserId": userId,
+					"Token": token,
+					"Id": id
+				}, calback);
+			}
+		</script>
+	</body>
+
+</html>

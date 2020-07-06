@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.toPay.mapper.TopayMapper">
+ 	<!-- 获取Tyy渠道银行编码信息 -->
+ 	<select id="listTyyBankCode" resultType="com.qifenqian.bms.basemanager.toPay.bean.TyyBankInfo">
+ 		SELECT
+ 			*
+ 		FROM
+ 			TD_TYY_BANK_INFO
+ 	</select>
+ 	<!-- 获取省份信息 -->
+ 	<select id="listProvince" resultType="com.qifenqian.bms.basemanager.city.bean.ProvinceBean">
+ 		SELECT 
+ 			*
+ 		FROM
+ 			TD_ZB_PROVINCE_CODE
+ 	</select>
+ 	<!-- 根据城市编码获取城市信息 -->
+ 	<select id="listCityByProvinceCode" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.city.bean.CityNew">
+ 		SELECT
+ 			CITY_CODE cityId,
+ 			CITY_NAME
+ 		FROM 
+ 			TD_ZB_CITY_CODE
+ 		WHERE
+ 			PROVINCE_CODE=#{provinceCode}
+ 		
+ 	
+ 	</select>
+ 	
+
+ 	<!-- 插入代付批次信息 -->
+ 	<insert id="saveBatTopay" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TopayBatDetail">
+ 		INSERT INTO TD_AGENT_PAYMENT_BAT_RECORD(
+ 			BAT_NO,
+ 			SUM_AMT,
+ 			SUM_COUNT,
+ 			TRADE_STATUS,
+ 			TOPAY_TYPE,
+ 			SUCC_AMT,
+ 			SUCC_COUNT,
+ 			FAIL_AMT,
+ 			FAIL_COUNT,
+ 			FeeAmt,
+ 			CREATE_ID,
+ 			CREATE_TIME,
+ 			PAER_MERCHANT_CODE
+ 		)VALUES(
+ 			#{batNo, jdbcType = VARCHAR},
+ 			#{sumAmt, jdbcType = DECIMAL},
+ 			#{sumCount, jdbcType = INTEGER},
+ 			#{tradeStatus, jdbcType = VARCHAR},
+ 			#{topayType, jdbcType = VARCHAR},
+ 			#{succAmt, jdbcType = VARCHAR},
+ 			#{succCount, jdbcType = VARCHAR},
+ 			#{failAmt, jdbcType = VARCHAR},
+ 			#{failCount, jdbcType = VARCHAR},
+ 			#{feeAmt  ,jdbcType = INTEGER},
+ 			#{createId,         jdbcType = VARCHAR},
+ 			now(),
+ 			#{paerMerchantCode,         jdbcType = VARCHAR}
+ 		)	
+ 	</insert>
+ 	
+ 	<!-- 批量插入单条代付信息 -->
+ 	<insert id="saveSingleTopay" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TopayBatDetail">
+ 		INSERT INTO TD_AGENT_PAYMENT_BAT_DETAIL_RECORD(
+ 			BAT_NO,
+ 			ROW_NO,
+ 			ORDER_NO,
+ 			REC_ACCOUNT_NAME,
+ 			REC_ACCOUNT_NO,
+ 			REC_BANK_CODE,
+ 			REC_CARD_NAME,
+ 			province_code,
+ 			city_code,
+ 			TRANS_AMT,
+ 			TRADE_STATUS,
+ 			TOPAY_TYPE,
+ 			CREATE_ID,
+ 			CREATE_TIME,
+ 			PAER_MERCHANT_CODE,
+ 			Single_FeeAmt
+ 		)VALUES(		
+ 			#{batNo, 		jdbcType = VARCHAR},
+ 			#{rowNo, 		jdbcType = VARCHAR},
+ 			#{orderNo, 		jdbcType = VARCHAR},
+ 			#{recAccountName, 		jdbcType = VARCHAR},
+ 			#{recAccountNo, 		jdbcType = VARCHAR},
+ 			#{recBankCode, 		jdbcType = VARCHAR},
+ 			#{recCardName, 		jdbcType = VARCHAR},
+ 			#{recBankProvince, 		jdbcType = VARCHAR},
+ 			#{recBankCity, 		jdbcType = VARCHAR},
+ 			#{transAmt, 		jdbcType = DECIMAL},
+ 			#{tradeStatus, 		jdbcType = VARCHAR},
+ 			#{topayType, 		jdbcType = VARCHAR},
+ 			#{createId, 		jdbcType = VARCHAR},
+ 			now(),
+ 			#{paerMerchantCode, 		jdbcType = VARCHAR},
+ 			#{SingleFeeAmt, 		jdbcType = DECIMAL}
+ 		)	
+ 	</insert>	
+ 	<!-- 获取代付汇总信息 -->
+ 	<select id="listBatRecord" resultType="com.qifenqian.bms.basemanager.toPay.bean.TopayBatDetail" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TopayBatDetail" >
+ 		SELECT
+ 			T.*,
+ 			A.MEMO,
+ 			U.USER_NAME createName,
+ 			P.SCAN_COPY_PATH ,
+ 			C.CUST_NAME
+ 		FROM
+ 			TD_AGENT_PAYMENT_BAT_RECORD T
+ 		LEFT JOIN
+ 			TD_PAYMENT_AUDIT_RECODE A
+ 		ON
+ 			A.BAT_NO = T.BAT_NO
+ 		LEFT JOIN
+ 			SYS_USER U
+ 		ON
+ 			T.CREATE_ID = U.USER_ID
+ 		LEFT JOIN
+ 			TD_PAY_CREDIT_INFO P
+ 		ON
+ 			T.BANK_PAYMENT_NO = P.ID
+ 		LEFT JOIN
+ 			td_cust_info C
+ 		ON
+ 			T.PAER_MERCHANT_CODE = C.MERCHANT_CODE
+ 		WHERE
+ 			T.TRADE_STATUS IN ('01','02','03','06','00','99')
+ 			<if test="batNo != null and batNo != ''">
+ 				AND T.BAT_NO = #{batNo}
+ 			</if>
+ 			<if test="paerMerchantCode != null and paerMerchantCode != ''">
+ 				AND T.PAER_MERCHANT_CODE = #{paerMerchantCode}
+ 			</if>
+ 			<if test="tradeStatus != null and tradeStatus != ''">
+ 				AND T.TRADE_STATUS = #{tradeStatus}
+ 			</if>
+ 			<if test="createId != null and createId != ''">
+ 				AND T.CREATE_ID = #{createId}
+ 			</if>
+ 		ORDER BY
+ 			T.CREATE_TIME DESC	
+ 	</select>
+ 	
+ 	<!-- 根据汇总信息的批次号获取单笔支付的信息 -->
+ 	<select id="listSingleRecordByOrderNo" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.toPay.bean.TopaySingleDetail">
+ 		SELECT
+ 			T.*,
+ 			A.MEMO
+ 		FROM
+ 			TD_AGENT_PAYMENT_BAT_DETAIL_RECORD T
+ 		LEFT JOIN
+ 			TD_PAYMENT_AUDIT_RECODE A
+ 		ON 
+ 			A.BAT_NO = T.BAT_NO
+ 		WHERE
+ 			ORDER_NO = #{orderNo}
+ 	</select>
+ 	
+
+	<!-- 更新单笔交易状态 -->
+	<update id="updateSinglePayInfo" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TopaySingleDetail">
+		UPDATE TD_AGENT_PAYMENT_BAT_DETAIL_RECORD T
+		<set>
+			<if test="tradeStatus != null and tradeStatus != ''">
+				T.TRADE_STATUS = #{tradeStatus, jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId != ''">
+				T.MODIFY_ID = #{modifyId, jdbcType=VARCHAR},
+			</if>
+			T.MODIFY_TIME = now(),
+		</set>
+		WHERE
+			T.BAT_NO = #{batNo, jdbcType=VARCHAR}
+	
+	</update>
+	
+	<update id="updateBatchPayInfo" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TopayBatDetail">
+		UPDATE TD_AGENT_PAYMENT_BAT_RECORD T
+		<set>
+			<if test="tradeStatus != null and tradeStatus != ''">
+				T.TRADE_STATUS = #{tradeStatus, jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId != ''">
+				T.MODIFY_ID = #{modifyId, jdbcType=VARCHAR},
+			</if>
+			<if test="failAmt != null and failAmt != ''">
+				T.FAIL_AMT = #{failAmt, jdbcType=VARCHAR},
+			</if>
+			<if test="failCount != null and failCount != ''">
+				T.FAIL_COUNT = #{failCount, jdbcType=VARCHAR},
+			</if>
+			T.MODIFY_TIME = now(),
+		</set>
+		WHERE
+			T.BAT_NO = #{batNo, jdbcType=VARCHAR}
+	
+	</update>
+	<!-- 查询系统用户id与名字 -->
+	<select id="listCreater" resultType="com.qifenqian.bms.basemanager.toPay.bean.Creater">
+		SELECT
+			USER_ID,
+			USER_NAME
+		FROM
+			SYS_USER
+	</select>
+ 	
+ 	
+ 	<!-- 根据省份名称获取省份信息 -->
+ 	<select id="selProvinceByName" resultType="com.qifenqian.bms.basemanager.city.bean.ProvinceBean">
+ 		SELECT 
+ 			*
+ 		FROM
+ 			TD_ZB_PROVINCE_CODE
+ 		WHERE
+ 			PROVINCE_NAME like CONCAT('%',#{provinceName, jdbcType=VARCHAR},'%')
+ 	</select>
+ 	
+ 	<!-- 根据城市名称获取城市信息 -->
+ 	<select id="selCityByName" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.city.bean.CityNew">
+ 		SELECT
+ 			CITY_CODE cityId,
+ 			CITY_NAME
+ 		FROM 
+ 			TD_ZB_CITY_CODE
+ 		WHERE
+ 			CITY_NAME like CONCAT('%',#{cityName, jdbcType=VARCHAR},'%')
+ 		
+ 	
+ 	</select>
+ 	
+ 	<!-- 根据银行名称获取银行code -->
+ 	<select id="selBankCodeByName" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.toPay.bean.TyyBankInfo">
+ 		SELECT
+ 			BANK_CODE,
+ 			BANK_NAME
+ 		FROM 
+ 			td_tyy_bank_info
+ 		WHERE
+ 			BANK_NAME like CONCAT('%',#{bankName, jdbcType=VARCHAR},'%')
+ 		
+ 	
+ 	</select>
+ 	
+ 	<!-- 查询商户号是否存在-->
+ 	<select id="selInfoByMerchantCode" parameterType="java.lang.String" resultType="java.lang.String">
+ 		SELECT
+ 			MERCHANT_CODE
+ 		FROM 
+ 			td_cust_info
+ 		WHERE
+ 			MERCHANT_CODE = #{paerMerchantCode, jdbcType=VARCHAR}
+ 		
+ 	
+ 	</select>
+ 	
+ 	<!-- 查询今日已经代付总金额-->
+ 	<select id="sumTransAmtInToday" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+ 		SELECT
+ 			SUM(TRANS_AMT)as sumTransAmt
+ 		FROM 
+ 			td_agent_payment_bat_detail_record
+ 		WHERE
+ 			REC_ACCOUNT_NO =#{recAccountNo, jdbcType=VARCHAR}
+ 		AND
+			date(create_time) = curdate();
+ 		
+ 	
+ 	</select>
+ 	
+ 	 <!-- 获取充值利润 -->
+   <select id="getProfitOfRecharge" parameterType="com.qifenqian.bms.basemanager.toPay.bean.DateBean" resultType="com.qifenqian.bms.basemanager.toPay.bean.ProfitBean">
+   		SELECT
+			COALESCE(SUM(T.RECHARGE_FEEAMT),0) incomeAmt,
+			COALESCE(SUM(T.CHANNEL_RECHARGE_FEEAMT),0) expenseAmt
+		FROM
+			TD_PAY_CREDIT_INFO T	
+		<where>
+			 T.PAY_STATUS = '00' 
+			<if test="rechargeStart !=null and rechargeStart !=''">
+				<![CDATA[  	             
+	             AND  DATE_FORMAT(t.MODIFY_TIME,'%Y-%m-%d') >= #{rechargeStart}  
+	            ]]>				
+			</if>
+			<if test="rechargeEnd !=null and rechargeEnd !=''">
+				<![CDATA[  	             
+	             AND DATE_FORMAT(t.MODIFY_TIME,'%Y-%m-%d') <= #{rechargeEnd}  
+	            ]]>				
+			</if>						
+		</where>			
+   </select>
+   
+   <!-- 获取手续费利润 -->
+   <select id="getProfitOfPoundage" parameterType="com.qifenqian.bms.basemanager.toPay.bean.DateBean" resultType="com.qifenqian.bms.basemanager.toPay.bean.ProfitBean">
+   		SELECT
+			COALESCE(SUM(T.CHANNEL_FEEAMT),0) expenseAmt,
+			COALESCE(SUM(T.Single_FeeAmt),0) incomeAmt
+		FROM
+			td_agent_payment_bat_detail_record T	
+		<where>
+			 T.TRADE_STATUS = '00' 
+			
+			<if test="poundageStart != null and poundageStart != ''">
+				<![CDATA[  	             
+	             AND  DATE_FORMAT(t.MODIFY_TIME,'%Y-%m-%d') >= #{poundageStart}  
+	            ]]>				
+			</if>
+			<if test="poundageEnd !=null and poundageEnd !=''">
+				<![CDATA[  	             
+	             AND DATE_FORMAT(t.MODIFY_TIME,'%Y-%m-%d') <= #{poundageEnd}  
+	            ]]>				
+			</if>						
+		</where>		
+   </select>
+   
+   <!-- 插入代付收益提现信息 -->
+   <insert id="insertBatInfo"
+		parameterType="com.qifenqian.bms.basemanager.toPay.bean.TdPaymentBatInfoBean">
+		INSERT INTO `stcdb`.`td_agent_payment_bat_record` (
+		`BAT_NO`,
+		`PAER_ACCT_NO`,
+		`SUM_AMT`,
+		`SUM_COUNT`,
+		`TRADE_STATUS`,
+		`TOPAY_TYPE`,
+		`FeeAmt`,
+		`CREATE_TIME`,
+		`PAER_MERCHANT_CODE`,
+		`MERCHANT_PRODUCT_ID`
+		)
+		VALUES
+		(
+		#{batNo, jdbcType=VARCHAR},
+		#{paerAcctNo, jdbcType=VARCHAR},
+		#{sumAmt, jdbcType=VARCHAR},
+		#{sumCount, jdbcType=VARCHAR},
+		#{tradeStatus, jdbcType=VARCHAR},
+		#{toPayType, jdbcType=VARCHAR},
+		#{serviceFee, jdbcType=VARCHAR},
+		now(),
+		#{paerMerchantCode, jdbcType=VARCHAR},
+		#{merchantProductId,jdbcType=VARCHAR}
+		);
+	</insert>
+	
+	<!-- 插入代付收益提现明细表 -->
+	<insert id="insertPaymentDetail" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TdPaymentBatDetailBean">
+		insert into `stcdb`.`td_agent_payment_bat_detail_record` (
+		`BAT_NO`,
+		`ROW_NO`,
+		`REC_ACCOUNT_NAME`,
+		`REC_ACCOUNT_NO`,
+		`REC_BANK_CODE`,
+		`TRANS_AMT`,
+		`TRADE_STATUS`,
+		`TOPAY_TYPE`,
+		`REC_CARD_NAME`,
+		`CREATE_TIME`,
+		`REC_BANK_CNAPS`,
+		`PROVINCE_CODE`,
+		`CITY_CODE`,
+		`PAER_MERCHANT_CODE`,
+		`SINGLE_FEEAmt`,
+		`ORDER_NO`,
+		`CHANNEL_ORDER_ID`,
+		`CHANNEL_FEEAMT`
+		) 
+		values
+		(
+		#{batNo}, 
+		#{rowNo}, 
+		#{recAccountName},
+		#{recAccountNo}, 
+		#{recBankCode},
+		#{transAmt}, 
+		#{tradeStatus}, 
+		#{toPayType},
+		#{recCardName},
+		now(),
+		#{recBankCnaps},
+		#{provinceCode},
+		#{cityCode},
+		#{merchantCode},
+		#{singleFeeAmt},
+		#{orderNo},
+		#{channelOrderId},
+		#{channelFeeamt}
+		);
+			
+    </insert>
+    
+      <select id="getBankNameByBankNum"  parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.toPay.bean.TbBankCardBin">
+   		SELECT
+			x.BANK_NAME,
+			x.TYY_CODE
+		FROM
+			tb_bankcardbin_bank_ref x
+		WHERE
+			#{bankNum,jdbcType=VARCHAR} LIKE concat(x.CARD_BIN, '%')
+		AND x.CARD_BIN = (
+			SELECT
+				max(t.CARD_BIN)
+			FROM
+				tb_bankcardbin_bank_ref t
+			WHERE
+				#{bankNum,jdbcType=VARCHAR} LIKE concat(t.CARD_BIN, '%')
+		);
+   
+   </select>
+   
+   <select id="getChnanelInfoByChannelName" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.toPay.bean.ToPayChannelInfo">
+   		SELECT
+			C.*
+		FROM
+			td_merchant_channel C
+		WHERE
+			C.channel_name = #{channelName}
+   </select>
+   
+   <update id="updateCoreSn" parameterType="com.qifenqian.bms.basemanager.toPay.bean.TdPaymentBatDetailBean">
+	UPDATE 
+		td_agent_payment_bat_detail_record
+	SET 
+		CORE_SN = #{coreSn}
+	WHERE
+		bat_no = #{batNo}
+   </update>
+</mapper>

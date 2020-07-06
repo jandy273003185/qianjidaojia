@@ -1,0 +1,112 @@
+    body {
+        background-color: #FDFAFE;
+        padding: 0;
+        margin: 0;
+        font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    }
+
+.timer {
+    display: flex;
+}
+
+    .timer div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 0.47rem;
+        height: 0.23rem;
+        color: #C0C0C0;
+        border-radius: 0.07rem;
+        border: 1px solid #C0C0C0;
+        margin: 0.12rem 0 0.12rem 0.12rem;
+        font-size: 0.15rem;
+        padding-bottom: 0.007rem;
+    }
+    .active1 {
+        color: #F74146 !important;
+        border: 1px solid #F74146 !important;
+    }
+.active2 {
+    color: #4583F8 !important;
+    border: 1px solid #4583F8 !important;
+}
+    .content {
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        /*height: 3.9rem;*/
+        margin-top: 0.09rem;
+    }
+
+.content-up1 {
+    background: url('../images/groupuser/m1.png') no-repeat center;
+    background-size: cover;
+}
+.content-up2 {
+    background: url('../images/groupuser/m2.png') no-repeat center;
+    background-size: cover;
+}
+
+.content-up {
+    height: 1.03rem;
+    color: #ffffff;
+    margin-top: 0.12rem;
+    display: flex;
+    justify-content: space-between;
+    height: 1.03rem;
+}
+    
+    .content-txt {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        font-size: 0.14rem;
+    }
+    
+    .content-txt>div:first-child>span:last-child {
+        font-size: 0.24rem;
+    }
+    
+    .line {
+        background-color: #E00202;
+        height: .65rem;
+        width: 0.005rem !important;
+        margin-top: 0.175rem;
+    }
+    
+    .content-down {
+        display: flex;
+        justify-content: space-between;
+        height: .8rem;
+    }
+    
+    .r {
+        color: #F74146;
+        font-size: 0.24rem;
+    }
+    
+    .content-down-left>p:last-child {
+        color: #333333;
+        font-size: 0.14rem;
+    }
+    
+    .line2 {
+        background-color: #E00202;
+        height: 0.4rem;
+        width: 0.005rem !important;
+        margin-top: 0.2rem;
+    }
+.contentkuang {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    margin: 0.1rem 0 0;
+    box-shadow: 0 0 0.04rem 0 rgba(202, 202, 202, 0.24);
+}
+.mt16{margin-top:.16rem;}
+.xi {
+    color: #F74146;
+    font-size: 0.16rem;
+}

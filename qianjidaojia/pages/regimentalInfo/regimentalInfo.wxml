@@ -1,0 +1,124 @@
+<!--pages/regimentalInfo/regimentalInfo.wxml-->
+<view class="regimental">
+    <image wx:if='{{role==1}}' class="bg" src="../../images/index/regimentalbg.png"></image>
+    <image wx:if='{{role==2}}' class="bg" src="../../images/index/battalionbg.png"></image>
+    <view class="regimentalInfo flex justs alifs">
+        <view class="flex justs alifs">
+            <image class="head" src="{{centreData.headimgurl}}"></image>
+            <view class="regimentalName">
+              <text class="nickname">{{centreData.nickname}}</text>
+              <text class="see-url" bindtap="seeUrl">查看推广链接</text>
+            </view>
+            
+        </view>
+        <view class="guideBox flex justs alic">
+          <navigator url="/pages/new-guidelines/new-guidelines">
+            <text class="guide">新手指引</text>
+            <myIcon iconClass="icon_more" class="more" color="#FFF"></myIcon>
+          </navigator>
+        </view>
+    </view>
+    <navigator url="/pages/withdrawDeposit/withdrawDeposit">
+      <view class="withdraw flex justs alic">
+        <view class="withdrawLeft">收益提现</view>
+        <view class=" flex justs alic {{into}}">
+            <text class="withdrawInto">提现</text>
+            <myIcon iconClass="icon_more" class="more" ></myIcon>
+        </view>
+      </view>
+    </navigator>
+</view>
+<!-- 我的客户 -->
+<view class="myClient marT64">
+    <view class="title flex justs alic">
+        <view class=" flex justs alic">
+            <view class="titleText">我的客户</view>
+            <image class="eyes" src="../../images/index/lookeyes.png"></image>
+        </view>
+        <view class=" flex justs alic" bindtap="toCustomer">
+            <text class="moreText">更多</text>
+            <myIcon iconClass="icon_more" class="more" color="#747474"></myIcon>
+        </view>
+    </view>
+    <view class="nubBox flex justsa alic"  bindtap="toCustomer">
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">{{centreData.offineuserTodayTotal}}
+                <text class="unit">人</text>
+            </view>
+            <view class="all">今日客户</view>
+        </view>
+        <view class="vline {{vline}}"></view>
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">{{centreData.offineuserTotal}}
+                <text class="unit">人</text>
+            </view>
+            <view class="all">累计客户</view>
+        </view>
+    </view>
+</view>
+<!-- 预估收益 -->
+<view class="myClient marT64">
+    <view class="title flex justs alic">
+        <view class=" flex justs alic">
+            <view class="titleText">预估收益</view>
+            <image class="eyes" src="../../images/index/lookeyes.png"></image>
+        </view>
+        <view class=" flex justs alic" bindtap="toEarnings">
+            <text class="moreText">更多</text>
+            <myIcon iconClass="icon_more" class="more" color="#747474"></myIcon>
+        </view>
+    </view>
+    <view class="nubBox flex justsa alic" bindtap="toEarnings">
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">
+                <text class="unit">￥</text>{{centreData.commissionPriceTodayTotal}}
+            </view>
+            <view class="all">今日返利收益</view>
+        </view>
+        <view class="vline {{vline}}"></view>
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">
+                <text class="unit">￥</text>{{centreData.commissionPriceYesterdayTotal}}</view>
+            <view class="all">昨日返利收益</view>
+        </view>
+    </view>
+</view>
+<!-- 我的订单 -->
+<view class="myClient marT64">
+    <view class="title flex justs alic">
+        <view class=" flex justs alic">
+            <view class="titleText">我的订单</view>
+            <image class="eyes" src="../../images/index/lookeyes.png"></image>
+        </view>
+        <view class=" flex justs alic" bindtap="toPromoteOrder">
+            <text class="moreText">更多</text>
+            <myIcon iconClass="icon_more" class="more" color="#747474"></myIcon>
+        </view>
+    </view>
+    <view class="nubBox flex justsa alic" bindtap="toPromoteOrder">
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">{{centreData.offineorderTodayTotal}}
+                <text class="unit">人</text>
+            </view>
+            <view class="all">今日购买订单量</view>
+        </view>
+        <view class="vline {{vline}}"></view>
+        <view class="flex justs alic colu">
+            <view class="today {{num}}">{{centreData.offineorderYesterdayTotal}}
+                <text class="unit">人</text>
+            </view>
+            <view class="all">昨日购买订单量</view>
+        </view>
+    </view>
+</view>
+
+<view class="box {{qrcodeHide}}">
+  <view class="dialog">
+    <canvas style="width: 400rpx; height: 600rpx;" canvas-id="myQrcode" bindlongpress="getTempFilePath"></canvas>
+    <!-- <view style="font-size:32rpx;color:#666666;margin-top:20rpx;">长按保存二维码</view> -->
+    <view style="font-size:30rpx;color:#f74045;border:1px solid #f74045;padding:0 30rpx;border-radius:20rpx;margin-top:30rpx;" bindlongpress="getTempFilePath">长按保存二维码</view>
+    <view style="font-size:30rpx;color:#f74045;border:1px solid #f74045;padding:0 30rpx;border-radius:20rpx;margin-top:30rpx;" bindtap="qrcode">点击复制推广码链接</view>
+  </view>
+</view>
+<!-- footer -->
+<view class="footer">转发分享，手有余香</view>

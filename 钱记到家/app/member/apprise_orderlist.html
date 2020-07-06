@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>评价订单</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/order.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/upload.js?v=007"></script>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">评价订单</div>
+			</div>
+		</div>
+		<div class="main">			
+			<div class="apprise mA10" id="appriselist_Div"></div>
+			<script id="appriselist_Tpl" type="text/html">				
+				<div class="orderitem" data-id="{{d.OrderId}}" data-no="{{d.OrderNumber}}">
+					<div class="item-hd"><span class="ordertype fl">{{d.ShopName}}</span></div>
+					<div class="item-prolist">
+						{{# for(var i = 0; i< d.orderDetails.length; i++){ }}
+							{{#  if(d.orderDetails[i].OrderStatusId==3){ }}	
+							<!--已收货状态-->
+							<div class="proitem" data-id="{{d.orderDetails[i].Id}}" data-pid="{{d.orderDetails[i].ProductId}}" onclick="location='/details.html?id={{d.orderDetails[i].ProductId}}'">
+								<div class="img fl"> <img src="{{d.orderDetails[i].ProductImg}}"> </div>
+								<div class="descbox">
+									<div class="titleBox flex">
+										<div class="flex1 flexItem">
+											<p class="title ellipsis">{{d.orderDetails[i].ProductName}} </p>
+										</div>
+										<div class="flexItem">x<span class="num">{{d.orderDetails[i].ProductCount}}</span></div>
+									</div>
+									<div class="flex">
+										<p class="price flex1">￥{{d.orderDetails[i].UnitPrice}}</p>
+										<a href="apprise.html?No={{d.OrderNumber}}&DId={{d.orderDetails[i].Id}}" class="apprise_btn btn flexItem">评价</a>
+									</div>								
+								</div>
+							</div>
+							{{#  } }} 
+						{{# } }} 
+					</div>	
+				</div>
+				
+			</script>		    		    
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+            var OrderNo = getUrlParam("No");
+			OrderDetails(OrderNo,0,function(data){
+				var gettpl = document.getElementById('appriselist_Tpl').innerHTML;
+				laytpl(gettpl).render(data.data, function (html) {
+			         //得到的模板渲染到html
+			        	document.getElementById('appriselist_Div').innerHTML = html;
+			      });
+			});
+			
+        })
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+	</script>
+</html>

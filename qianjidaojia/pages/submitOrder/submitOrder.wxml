@@ -1,0 +1,60 @@
+<!--pages/submitOrder/submitOrder.wxml-->
+<image class="bg" src="/images/address_bg.png"></image>
+<view class="address" bindtap="address">
+  <view class="address-left">
+    <view class="address-txt">{{addressinfo}}</view>
+    <view class="name">
+      <text>{{name}}</text><text class="mobile">{{tel}}</text>
+    </view>
+  </view>
+  <view class="address-right"><image class="arrow" src="images/arrow.png"></image></view>
+</view>
+
+<view class="goodsList">
+  <view class="item goods-head"><text class="goods-title">商品列表</text><text class="goods-click" wx:if="{{nowBuy!='nowBuy'}}">点击下方获取商品清单</text></view>
+  <view class="item-img" bindtap="goods">
+    <view class="goods-img"><image wx:for="{{imgArr}}" wx:key="index" src="{{item}}"></image></view> 
+    <view class="goods-img-url"><text>共{{allnum}}件</text><image wx:if="{{nowBuy!='nowBuy'}}" class="arrow2" src="images/arrow.png"></image></view>
+  </view>
+  <view class="item line"><text>商家留言</text><input placeholder="填写内容并与卖家确认" placeholder-style="color:#A0A0A0" bindinput="OrderRemarks"></input></view>
+  <view class="item line"><text>商品总价</text><text>¥{{numberUtil.numberFormat(OrderTotal)}}</text></view>
+  <view class="item line"><text>运费</text><text>¥{{ShopFreight}}</text></view>
+  <!-- <view class="item line"><text>小计</text><text>¥{{numberUtil.numberFormat(OrderTotal)}}</text></view> -->
+  <view class="item" bindtap="showModal"><view>优惠券</view><view><text>{{reasonsTxt}}</text><image class="arrow3" src="images/arrow.png"></image></view></view>
+</view>
+<view class="total">
+  <text>共{{allnum}}件商品</text>
+  <view>
+    <text>合计:</text>
+    <text class="symbol">¥</text>
+    <text class="total-price">{{AactualAmount}}</text>
+  </view>
+</view>
+
+<view class="order">
+  <text>待支付:</text>
+  <text class="symbol">¥</text>
+  <text class="total-price2">{{AactualAmount}}</text>
+  <text class="go-order" bindtap="toOrder">去下单</text>
+</view>
+
+<wxs module="numberUtil" src="../../utils/util.wxs"></wxs>
+
+<view class="wrap">
+  <!-- modal  -->
+  <view class="modal modal-bottom-dialog" hidden="{{hideFlag}}">
+    <view class="modal-cancel" bindtap="hideModal"></view>
+    <view class="bottom-dialog-body bottom-positon" animation="{{animationData}}">
+      <!--  -->
+      <view class='Mselect' style="max-height:700rpx;overflow: scroll;">
+        <view wx:for="{{reasonsArr}}" wx:key="unique" data-id="{{item.Id}}" data-denomination='{{item.Denomination}}' data-txt='{{item.Title}}' bindtap='getOption' data-discounttype="{{item.DiscountType}}" data-MaxAmount="{{item.MaxAmount}}">
+          {{item.CouponText}}
+        </view>
+      </view>
+      <view></view>
+      <view class='Mcancel' bindtap='mCancel'>
+        <text>不使用</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/swiper.min.css" />
+    <link rel="stylesheet" href="css/fsgallery.css" />
+    <!--<link rel="stylesheet" type="text/css" href="css/default-skin.css"/>
+    <link rel="stylesheet" type="text/css" href="css/photoswipe.css"/>-->
+    <link rel="stylesheet" href="css/details.css" />
+    <link rel="stylesheet" href="css/praise.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <link rel="stylesheet" type="text/css" href="css/fenxiang.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--<script src="js/photoswipe-ui-default.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/photoswipe.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js " type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/fs_forse.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+
+    <script type="text/javascript" src="js/swiper.min.js"></script>
+    <script src="script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/Share.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/welfareDetail.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/WxShare.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        #youhuiquan {
+            position: relative;
+        }
+
+            #youhuiquan:after {
+                position: absolute;
+                content: "";
+                width: .08rem;
+                height: .08rem;
+                border-top: 1px solid #b1b1b1;
+                border-left: 1px solid #b1b1b1;
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                -moz-transform: rotate(135deg);
+                -o-transform: rotate(135deg);
+                -ms-transform: rotate(135deg);
+                top: 50%;
+                right: .1rem;
+                margin-top: -.04rem;
+            }
+
+        .coupTan {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 11;
+            display: none;
+        }
+
+        .zhezhao {
+            width: 100%;
+            height: 40%;
+            background: #000000;
+            opacity: 0.5;
+        }
+
+        #couponList1 {
+            width: 100%;
+            height: 60%;
+            background: #fff;
+            overflow: auto;
+        }
+
+        .pro_info .activity {
+            height: .45rem;
+            line-height: .45rem;
+        }
+
+        .activity .left {
+            height: .45rem;
+        }
+
+        .infoItem {
+            background: #fff;
+            padding: .1rem;
+            margin-bottom: .1rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">商品详情</div>
+				<a href="javascript:;" class="icon_r icons_share sharebtn"></a>
+			</div>
+		</div>
+		<div class="main">
+			<div class="product">
+				<div id="productInfoBox"></div>
+				<script id="productInfo" type="text/x-dot-template">
+					<!--详情banner-->
+					<div class="swiper-container d_banner">
+						<a href="/indexV.html" class="icons icons_home"></a>
+						<div class="swiper-wrapper">
+							{{ var bb = sc.slicePicString(it.PicNo); for(var i=0;i
+							<bb.length-1;i++){ }} <div class="swiper-slide">
+								<div class="img" style="background-image: url({{=bb[i]}});"></div>
+						</div>
+						{{ } }}
+					</div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+			</div>
+
+			<div class="pro_info">
+				<!--企业福利详情显示 end-->
+				<div class="activity qiye">
+					<div class="left">
+						<div class="left-1">
+							<i>￥</i><span class="price">{{=it.Price}}</span>
+						</div>
+					</div>
+					<div class="right fr">
+						<!--<span class="guige">10份礼盒</span>--></div>
+				</div>
+				<!--企业福利详情显示-->
+				<div class="infoItem pro-bd">
+					<h4 class="name">{{=it.Title}}</h4>
+					<p class="desc">{{=it.GiftSynopsis}}</p>
+				</div>
+			</div>
+			<!--详情banner end-->
+
+			</script>
+			<div class="infoItem pro-guige" id="youhuiquan">
+				<span class="lab" id="lingqu">领取优惠券</span>
+			</div>
+			<div class="pro_info">
+				<div class="infoItem pro-youhui">
+					<span class="lab c_Org">优惠</span>
+					<div class="txt_r">
+						<p>天天更多优惠活动等你来哦！</p>						
+						<p class="scoreTips" style="display: none;">购买可得积分<span id="scoreNum" class="red"></span>积分</p>
+					</div>
+				</div>
+
+				<!--是否有备注-->
+				<div class="infoItem pro-beizhu">
+					<span class="lab c_Org">备注：</span>
+					<div class="txt_r">
+						<p>福利礼包不支持退款，商品损坏可换货</p>
+					</div>
+				</div>
+
+			</div>
+
+			<!--详情-->
+			<div class="pro_Detail bg_fff">
+				<div class="dd-Hd">
+					<span>商品详情</span>
+				</div>
+				<div class="dd-Bd">
+					<!--属性-->
+					<!--<div class="attribute pd10">
+							<p>规格：1盒</p>
+							<p>重量：1000g盒</p>
+							<p>保质期：到货即可食用</p>
+							<p>包装：普通</p>
+							<p>贮存方法：冷藏</p>
+						</div>-->
+					<!--详情描述-->
+					<!--<div class="proDesc">
+							<img src="images/of/dd1.jpg" />
+							<img src="images/of/d4.jpg" />
+							<img src="images/of/dd2.jpg" />
+						</div>-->
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<!--优惠券弹窗-->
+		<div class="coupTan">
+			<div class="zhezhao"></div>
+			<div class="couponList" id="couponList1"></div>
+		</div>
+		<!--底部-->
+		<div class="null50">
+			<footer class="dd_footer">
+				<a href="javascript:;" class="btn btn-Service">客服</a>
+				<a href="javascript:;" class="btn btn-Cart" id="gotoCart">购物车<span class="cartNum" style="display: none;"></span></a>
+                <div class="btnGroup ml10">
+                    <a href="javascript:;" class="btn2" id="gotoSmOrder">立即购买</a>
+                </div>
+			</footer>
+		</div>
+		<!--底部 end-->
+
+		<!--弹出sku选择-->
+		<div class="shade">
+			<div class="shadebg"></div>
+			<div class="shade_content">
+				<div class="shade-item specifications_shade">
+					<span class="btn-close"></span>
+					<div class="productInfo">
+						<div class="m-pro clear">
+							<div class="hd fl">
+								<div class="img">
+									<img src="">
+								</div>
+							</div>
+							<div class="bd">
+								<h4 class="name"></h4>
+								<p class="desc"><span>库存：<span id="stock"></span>件</span>
+								</p>
+								<p class="price"><span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="shade_bd">
+						<!--<div class="skuBox addr_skuBox">
+							<h2 class="skuTitle">配送区域</h2>
+							<div class="skuCon">
+								<span class="place">深圳市 龙华区</span>
+							</div>
+						</div>-->
+						<div id="skuBoxContent">
+							<!--<div class="skuBox">
+								<h2 class="skuTitle">净含量</h2>
+								<div class="skuCon">
+									<ul class="skuList">
+										<li class="active">
+											2500g
+										</li>
+										<li>
+											3000g
+										</li>
+										<li class="disabled">
+											5000g
+										</li>
+									</ul>
+								</div>
+							</div>-->
+						</div>
+
+						<div class="skuBox buyNum_skuBox clear">
+							<h2 class="skuTitle fl">购买数量</h2>
+							<div class="flexItem fr">
+								<div class="selnum">
+									<span class="less btn-num icon-minus"></span>
+									<div class="textWrap">
+										<input type="text" id="pro_num" readonly="readonly">
+									</div>
+									<span class="more btn-num icon-add"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="shade_ft">
+						<a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="sureGotoSmOrder">确定</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出sku选择 end-->
+
+		<!--分享的弹窗-->
+		<div class="fenxiang">
+			<div>
+				<p class="fenxiang-title">分享给新朋友</p>
+				<div class="bdsharebuttonbox">
+					<ul class="gb_resItms">
+						<li>
+							<a title="分享到微信" href="#" class="bds_weixin " data-cmd="weixin" data-url="http://wondcity.wtvxin.com/productDetail.html?proId="></a>微信好友 </li>
+						<li>
+							<a title="分享到QQ好友" href="#" class="bds_sqq " data-cmd="sqq" data-url="http://wondcity.wtvxin.com/productDetail.html?proId="></a>QQ好友 </li>
+						<li>
+							<a title="分享到QQ空间" href="#" class="bds_qzone " data-cmd="qzone" data-url="http://wondcity.wtvxin.com/productDetail.html?proId="></a>QQ空间 </li>
+						<li>
+							<a title="分享到新浪微博" href="#" class="bds_tsina " data-cmd="tsina" data-url="http://wondcity.wtvxin.com/productDetail.html?proId="></a>新浪微博 </li>
+					</ul>
+				</div>
+				<p class="fenxiang-colse">取消</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/top.js"></script>
+	<!--优惠券列表模板 start-->
+	<script type="text/html" id="couponLtpl">
+		{{# for(var i = 0; i < d.data.couponlist.length; i++){ }}
+			{{#  if(d.data.couponlist[i].IsMyAlready===false){ }}
+			<div class="item false__item" data-id="{{d.data.couponlist[i].CouponId}}">
+				{{#  } else { }}
+				<div class="item" data-id="{{d.data.couponlist[i].CouponId}}">
+				{{#  } }}
+				<div class="left">
+					{{#  if(d.data.couponlist[i].DiscountType===2){ }}
+						{{#  
+						  function rebate(){
+						  	var number = d.data.couponlist[i].CouponMoney*10;
+						    return number;
+						  }
+						}}	
+						<span class="priceArea left_priceArea center">{{rebate()}}<span class="fh">折</span></span>						
+						{{#  } else { }}
+						<span class="priceArea left_priceArea center"><span class="fh">￥</span>{{d.data.couponlist[i].CouponMoney}}</span>
+					{{#  } }}
+					<div class="titleBox">
+						<p class="useNeed">
+						&nbsp;								
+						</p>
+						<span class="title">{{d.data.couponlist[i].Name}}</span>
+					</div>
+					<p class="validTime">有效日期：{{d.data.couponlist
+
+[i].StartTime.replace(/-/g,".")}}-<span class="endTime">{{d.data.couponlist[i].EndTime.replace
+
+(/-/g,".")}}</span></p>
+				</div>
+				<div class="right">
+					<span class="type">优惠券</span>
+				</div>
+			</div>		
+			{{# } }}
+	</script>
+	<!--优惠券列表模板 end-->
+
+</html>

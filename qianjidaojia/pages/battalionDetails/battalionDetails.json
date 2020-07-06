@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "下级详情",
+"navigationBarBackgroundColor": "#fff",
+"navigationBarTextStyle": "black",
+"usingComponents": {
+    "myModal": "../../components/myModal/myModal",
+    "myIcon": "../../components/myIcon/myIcon"
+}
+}

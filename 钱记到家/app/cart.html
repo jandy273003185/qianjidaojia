@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css?0" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/coupon.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/cart.js?v=001" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        .cartFoot .btn-del {
+            display: inline-block;
+            padding: 0 .15rem;
+            line-height: .28rem;
+            border: 1px solid #ff5c29;
+            color: #ff5c29;
+            border-radius: .06rem;
+        }
+
+        .cartItem .buyStatus {
+            position: absolute;
+            right: .1rem;
+            top: .15rem;
+            color: #ff5c29;
+            font-size: .12rem;
+        }
+
+        .cartItem .m-pro .bd .name {
+            /*padding-right: .8rem;*/
+            /*margin-bottom: .05rem;*/
+            position: relative;
+        }
+
+        .cartItem .bd .name a {
+            display: block;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .cartItem__hd {
+            padding: .1rem .1rem .05rem;
+            position: relative;
+        }
+
+            .cartItem__hd .shopName {
+                display: inline-block;
+                background: url(/images/icons/shopico.png) left center no-repeat;
+                background-size: .26rem .26rem;
+                padding-left: .32rem;
+                position: relative;
+                padding-right: .25rem;
+            }
+
+                .cartItem__hd .shopName:before {
+                    position: absolute;
+                    content: "";
+                    display: block;
+                    right: 0;
+                    height: 100%;
+                    width: .2rem;
+                    background: url(/images/icons/down.png) center no-repeat;
+                    background-size: .12rem auto;
+                    transform: rotate(-90deg);
+                }
+
+        .cartContent {
+            background: none;
+        }
+
+            .cartContent .cartList {
+                margin-top: 0;
+                margin-bottom: .12rem;
+                border-radius: .06rem;
+            }
+
+        .youhuiquan {
+            color: #999999;
+            font-size: .13rem;
+            padding: 0 .05rem;
+        }
+
+        #youhuiquan {
+            position: relative;
+        }
+
+            #youhuiquan:after {
+                position: absolute;
+                content: "";
+                width: .08rem;
+                height: .08rem;
+                border-top: 1px solid #b1b1b1;
+                border-left: 1px solid #b1b1b1;
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                -moz-transform: rotate(135deg);
+                -o-transform: rotate(135deg);
+                -ms-transform: rotate(135deg);
+                top: 50%;
+                right: .1rem;
+                margin-top: -.04rem;
+            }
+
+        .coupTan {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 11;
+            display: none;
+        }
+
+        .zhezhao {
+            width: 100%;
+            height: 40%;
+            background: #000000;
+            opacity: 0.5;
+        }
+
+        #couponList2 {
+            width: 100%;
+            height: 60%;
+            background: #fff;
+            overflow: auto;
+        }
+    </style>
+    <link href="/NewVersion/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/NewVersion/css/style_css.css" rel="stylesheet" />
+</head>
+
+<body class="bg_gray ac">
+    <!--正在加载中-->
+    <!--<div class="allScreenLoading">
+        <div class="inner">
+            <div class="con">
+                <img src="/images/icons/bigLoading.gif" alt="" />
+                <p>正在加载中...</p>
+            </div>
+
+        </div>
+    </div>-->
+    <!--正在加载中  end-->
+    <!--判断页面跳转，如果有前一页就跳转到前一页，如果没有就跳转首页 -->
+    <script>
+        function goBack() {
+            if (window.history.length > 2) {
+                window.history.go(-1);
+            } else {
+                window.location.href = "/indexV.html";
+            }
+        }
+    </script>
+    <div class="h45">
+        <div class="head search_head">
+            <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+            <div class="title center">购物车</div>
+            <a href="javascript:;" id="btnManage" class="icon_r txt">管理</a>
+        </div>
+    </div>
+
+    <div class="main mA10">
+        <div class="cartContent">
+            <div id="cartList"></div>
+
+        </div>
+    </div>
+    <!--底部-->
+    <div class="cartFoot" style="display: none;">
+        <footer>
+            <div class="left" style="display:none;">
+                <label for="allSelect" class="check-label">
+                    <div class="IconsCK IconsCK-radio ">
+                        <input type="checkbox" name="" id="allSelect" value=""  />
+                        <span></span>
+                    </div>
+                    全选
+                </label>
+            </div>
+            <div class="right">
+                <div class="inner1">
+                    <span>合计：<span class="allPrice" id="allPrice">0</span></span>
+                    <a href="javascript:;" class="btn_settle" id="settle">结算(<span id="settleNum">0</span>)</a>
+                </div>
+                <div class="inner2" style="display: none;">
+                    <a href="javascript:;" class="btn btn-del" id="delCart">删除</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer">
+
+    </nav>
+    <!--底部end-->
+    <!--购物车列表模板-->
+    <script id="cartTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        {{ if(index===0 || it[index-1].ShopId!==value.ShopId){ }}
+        <div class="cartList weui-cells bb__weui-cells" id="shopItem_{{=value.ShopId}}">
+            <div class="cartItem__hd flex">
+                <div class="weui-cell__hd">
+                    <div class="IconsCK IconsCK-radio " style="margin-right:.1rem">
+                        <input type="checkbox" name="" id="cbx_{{=value.ShopId}}" data-shopid="{{=value.ShopId}}"  data-cbxType="shop"  value="" />
+                        <span></span>
+                    </div>
+                </div>
+                <div class="flexItem flex1">
+                    <a href="member/storeIndex.html?shopId={{=value.ShopId}}"><span class="shopName">{{=value.ShopName}}</span></a>
+                </div>
+                <div class="flexItem">
+                    <div class="youhuiquan" data-shopid="{{=value.ShopId}}">领券</div>
+                </div>
+            </div>
+            {{ } }}
+            <div class="cartItem weui-cell {{? value.TabFlashSale ==1}} limit__cartItem {{?}} " data-id="{{=value.Id}}" data-sku="{{=value.SpecText}}" data-stock="{{=value.Stock}}" data-maxbuy="{{=value.MaxBuyNum}}" data-minbuy="{{=value.MinBuyNum}}">
+                <div class="weui-cell__hd">
+                    {{? value.IsBuy == 0}}
+                    <div class="IconsCK IconsCK-radio ">
+                        <input type="checkbox" name="" id="" value="" data-cbxType="goods"  />
+                        <span></span>
+                    </div>
+                    {{??}}
+                    <div class="IconsCK IconsCK-radio disabled forever_disabled">
+                        <input type="checkbox" name="" id="" disabled="disabled" value="" />
+                        <span></span>
+                    </div>
+                    {{?}}
+                </div>
+                <div class="weui-cell__bd">
+                    <div class="m-pro">
+                        <div class="hd">
+                            <div class="img">
+                                <a href="/details.html?id={{=value.ProductId}}">
+                                    {{? value.ProductImg}}
+                                    <img src="{{=value.ProductImg}}"> {{?? }}
+                                    <img src="/images/noPic.jpg"> {{?}}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="bd">
+                            <h4 class="name">
+                                <a href="/details.html?id={{=value.ProductId}}">{{=value.ProductName}}</a>
+                            </h4>
+                            <div class="Spectext">
+                                <span class="c_999 fz12">{{=value.SpecText}}</span>
+                            </div>
+                            <div class="flex flexAlignCenter">
+                                <div class="flex1 flexItem">
+                                    <p class="price"><span>￥<span class="num">{{=value.SalePrice}}</span></span><!--<span class="counterPrice">￥39.9</span>--></p>
+                                </div>
+                                {{? value.Stock != 0 && value.Stock < value.Number}}
+                                <div class="flex c_Org" style="font-size: .13rem; margin-right: .05rem;">仅剩{{=value.Stock}}件 </div>
+                                {{?}}
+                                <div class="flexItem">
+                                    <div class="preNum">
+                                        {{? value.IsBuy != 0}}
+                                        {{? value.IsBuy == 4 && value.Stock != 0}}
+                                        <span class="pre_btn btn_reduce">-</span>
+                                        {{??}}
+                                        <span class="pre_btn btn_reduce disabled">-</span>
+                                        {{?}}
+                                        {{??}}
+                                        <span class="pre_btn btn_reduce">-</span>
+                                        {{?}}
+                                        <input readonly="readonly" class="pre_txt" value="{{=value.Number}}" />
+                                        {{? value.IsBuy != 0}}
+                                        <span class="pre_btn btn_add disabled">+</span>
+                                        {{??}}
+                                        <span class="pre_btn btn_add">+</span>
+                                        {{?}}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ if(index===it.length-1||it[index].ShopId!==it[index+1].ShopId){ }}
+        </div>
+        {{ } }}
+        {{~}}
+    </script>
+    <!--购物车列表模板  end-->
+    <script type="text/javascript">
+        $(function () {
+            //底部调用
+            $("#index-footer").load("footerV.html");
+
+        });
+    </script>
+    <!--优惠券弹窗-->
+    <div class="coupTan">
+        <div class="zhezhao"></div>
+        <div class="couponList" id="couponList2"></div>
+    </div>
+</body>
+	<!--优惠券列表模板 start-->
+		<script type="text/html" id="couponLtpl2">
+			{{# for(var i = 0; i < d.data.length; i++){ }}
+			{{#  if(d.data[i].IsMyAlready===false){ }}
+			<div class="item false__item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+				{{#  } else { }}
+				<div class="item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+				{{#  } }}
+				<div class="left">
+					{{#  if(d.data[i].DiscountType==="2"){ }}
+						{{#  
+						  function rebate(){
+						  	var number = d.data[i].Denomination*10;
+						    return number;
+						  }
+						}}	
+						<span class="priceArea left_priceArea center">{{rebate()}}<span class="fh">折</span></span>						
+						{{#  } else { }}
+						<span class="priceArea left_priceArea center"><span class="fh">￥</span>{{d.data[i].Denomination}}</span>
+					{{#  } }}
+					<div class="titleBox">
+						<p class="useNeed">
+							<span>{{d.data[i].UseExplain}}&nbsp;</span>									
+						</p>	
+						<span class="title">{{d.data[i].Name}}</span>
+					</div>
+					<p class="validTime">有效日期：{{d.data[i].StartTime.split(" ")[0]}}-<span class="endTime">{{d.data[i].EndTime.split(" ")[0]}}</span></p>
+				</div>
+				<div class="right">
+					<span class="type">优惠券</span>
+				</div>
+			</div>
+			{{# } }}
+		</script>
+		<!--优惠券列表模板 end-->
+
+</html>

@@ -1,0 +1,38 @@
+<!--pages/goodsList.wxml-->
+<view class="orderList">
+    <view class="title flex justs alife">
+        <view class="shopName">钱记到家</view>
+        <view class="goodsNum">共3件(不含失效商品)</view>
+    </view>
+    <view class="goodsList">
+        <view class="item flex justs alifs">
+            <view class="goodsImg flex justfs alicfs">
+                <image src="" class="img"></image>
+                <view class="goodsName hid-ell">泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜</view>
+            </view>
+            <view class="price flex colu justfs alife">
+                <view class="nowPrice">￥99.99</view>
+                <view class="oldPrice">￥88.88
+                    <text class="line"></text>
+                </view>
+                <view class="oldPrice">X1</view>
+            </view>
+
+        </view>
+        <view class="item flex justs alifs">
+            <view class="goodsImg flex justfs alicfs">
+                <image src="" class="img"></image>
+                <view class="goodsName hid-ell">泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜泥萝卜</view>
+            </view>
+            <view class="price flex colu justfs alife">
+                <view class="nowPrice">￥99.99</view>
+                <view class="oldPrice">￥88.88
+                    <text class="line"></text>
+                </view>
+                <view class="oldPrice">X1</view>
+            </view>
+
+        </view>
+    </view>
+
+</view>

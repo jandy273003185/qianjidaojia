@@ -1,0 +1,66 @@
+/* pages/myAddress/myAddress.wxss */
+page{
+  background-color: #FDFAFE;
+  padding-top: 36rpx;
+}
+
+.item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 14rpx 26rpx;
+  margin: 0 0 36rpx 0;
+}
+.item-left{
+  display: flex;
+  align-items: center;
+}
+.item-left-txt{
+  display: flex;
+  flex-direction: column;
+  margin-left: 20rpx;
+  width: 500rpx;
+}
+.item-left-txt :first-child{
+  height: 46rpx;
+}
+.name{
+  color: #333333;
+  font-size: 32rpx;
+  margin-right: 16rpx; 
+}
+.mobile,.address{
+  color: #666666;
+  font-size: 24rpx;
+  max-width: 500rpx;
+  text-overflow: ellipsis; 
+  overflow: hidden;
+  white-space: nowrap;
+}
+image{
+  width: 40rpx;
+  height: 40rpx;
+}
+.edit{
+  width: 80rpx;
+  border-left: 2rpx solid #09B007;
+  margin-left: 30rpx;
+  padding: 20rpx 0 20rpx 20rpx;
+  color: #999999;
+  font-size: 24rpx;
+}
+
+.add{
+  position: fixed;
+  width: 550rpx;
+  margin: 0 80rpx;
+  padding: 20rpx;
+  text-align: center;
+  background:linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+  box-shadow:0rpx 4rpx 12rpx 0rpx rgba(2,156,1,0.24);
+  border-radius:40rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+  bottom: 80rpx;
+}

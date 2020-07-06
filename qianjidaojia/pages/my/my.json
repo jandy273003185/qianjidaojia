@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "tabbar": "../../components/tabbar/tabbar",
+    "addCart": "../../components/addCart/addCart"
+  },
+  "navigationBarTitleText": "个人中心"
+}

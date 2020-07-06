@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.opercustwithdraw.mapper.CustWithdrawMapper">
+	<select id="selectCustWithdrawBySn" resultType="com.qifenqian.bms.accounting.exception.dao.opercustwithdraw.bean.CustWithdrawBean">
+		SELECT
+			T.*
+		  FROM TD_WITHDRAW_BILL T
+		 WHERE T.WITHDRAW_SN = #{withdrawSn, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCustWithdrawChildByWithdrawReqserialid" parameterType="string" resultType="com.qifenqian.bms.accounting.exception.dao.opercustwithdraw.bean.CustWithdrawBean">
+		SELECT
+			T.*
+		  FROM TD_WITHDRAW_BILL T,
+		  TD_WITHDRAW_CHILD_BILL CB
+		 WHERE T.WITHDRAW_SN = CB.WITHDRAW_SN 
+		 AND CB.WITHDRAW_REQSERIALID = #{withdrawReqserialid, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCustWithdrawBySn" parameterType="com.qifenqian.bms.accounting.exception.dao.opercustwithdraw.bean.CustWithdrawBean">
+		UPDATE TD_WITHDRAW_BILL T 
+		<set>
+		<if test="withdrawState!=null and withdrawState!=''">
+		T.WITHDRAW_STATE = #{withdrawState, jdbcType=VARCHAR},
+		</if>
+		T.MODIFY_TIME = NOW()
+		</set>
+		 WHERE T.WITHDRAW_SN = #{withdrawSn, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateCustWithdrawByWithdrawReqSerialId" parameterType="com.qifenqian.bms.accounting.exception.dao.opercustwithdraw.bean.CustWithdrawBean">
+		UPDATE TD_WITHDRAW_BILL T
+		SET T.WITHDRAW_STATE = #{withdrawState , jdbcType = VARCHAR}
+		WHERE
+			T.WITHDRAW_SN = (
+				SELECT
+					CB.WITHDRAW_SN
+				FROM
+					TD_WITHDRAW_CHILD_BILL CB
+				WHERE
+					CB.WITHDRAW_REQSERIALID = #{withdrawReqserialid , jdbcType = VARCHAR}
+		)
+	</update>
+	
+</mapper>

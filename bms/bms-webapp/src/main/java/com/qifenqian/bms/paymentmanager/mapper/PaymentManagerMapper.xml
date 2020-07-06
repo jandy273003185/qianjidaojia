@@ -1,0 +1,1729 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.paymentmanager.mapper.PaymentManagerMapper">
+
+ <select id="selecPaymentList" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail" parameterType="String">
+	SELECT
+	T.BAT_NO,
+	T.ROW_NO,
+	T.REC_ACCOUNT_NAME,
+	T.REC_ACCOUNT_NO,
+	T.REC_BANK_CODE,
+	T.REC_BANK_CNAPS,
+	T.TRANS_AMT,
+	T.STATUS,
+	T.PROC_MEMO,
+	T.CREATE_ID,
+	T.CREATE_TIME,
+	T.MODIFY_ID,
+	T.MODIFY_TIME
+	FROM
+	`stcdb`.`td_agent_payment_bat_detail_info` T
+	WHERE T.BAT_NO = #{batNo  ,jdbcType=VARCHAR}
+</select> 
+
+ <insert id="insertPaymentList" parameterType="ArrayList">
+	insert into `stcdb`.`td_agent_payment_bat_detail_info` (
+	`BAT_NO`,
+	`ROW_NO`,
+	`REC_ACCOUNT_NAME`,
+	`REC_ACCOUNT_NO`,
+	`REC_BANK_CODE`,
+	`REC_BANK_CNAPS`,
+	`TRANS_AMT`,
+	`STATUS`,
+	`PROC_MEMO`,
+	`CREATE_ID`,
+	`CREATE_TIME`,
+	 MODIFY_TIME
+	) values
+	<foreach collection="list" item="obj" index="index" separator=",">
+		(#{obj.batNo}, #{obj.rowNo}, #{obj.recAccountName},
+		#{obj.recAccountNo}, #{obj.recBankCode}, #{obj.recBankCnaps},
+		#{obj.transAmt}, #{obj.status}, #{obj.procMemo},
+		#{obj.createId},
+		now())
+	</foreach>
+    </insert> 
+
+ <select id="selectCardBinList" resultType="com.qifenqian.bms.paymentmanager.bean.TdBankCardBin">
+		SELECT
+		T.CARD_BIN,
+		T.CARD_NAME,
+		T.CARD_TYPE,
+		T.BANK_CODE,
+		T.BANK_NAME,
+		T.CREATE_TIME
+		FROM
+		tb_bankcardbin_bank_ref T
+		ORDER BY
+		LENGTH(CARD_BIN) DESC;
+	</select>
+
+<update id="upPaymentBatDetail" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail">
+		UPDATE `stcdb`.`td_agent_payment_bat_detail_info` T
+		<set>
+			<if test="recAccountName != null">
+				T.REC_ACCOUNT_NAME = #{recAccountName, jdbcType=VARCHAR},
+			</if>
+			<if test="recAccountNo != null">
+				T.REC_ACCOUNT_NO = #{recAccountNo, jdbcType=VARCHAR},
+			</if>
+			<if test="recBankCode != null">
+				T.REC_BANK_CODE = #{recBankCode, jdbcType=VARCHAR},
+			</if>
+			<if test="recBankCnaps != null">
+				T.REC_BANK_CNAPS = #{recBankCnaps, jdbcType=VARCHAR},
+			</if>
+			<if test="transAmt != null">
+				T.TRANS_AMT = #{transAmt, jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				T.STATUS = #{status, jdbcType=VARCHAR},
+			</if>
+			<if test="procMemo != null">
+				T.PROC_MEMO = #{procMemo,
+				jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyId != null">
+				T.MODIFY_ID = #{modifyId, jdbcType=VARCHAR},
+			</if>
+				T.MODIFY_TIME = now(),
+			
+		</set>
+		WHERE T.BAT_NO = #{batNo, jdbcType=VARCHAR}
+		<if test="rowNo != null">
+				AND T.ROW_NO = #{rowNo, jdbcType=VARCHAR}
+			</if>
+	</update>
+
+ <insert id="insertBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		INSERT INTO `stcdb`.`td_agent_payment_bat_info` (
+		`BAT_NO`,
+		`PAER_ACCT_NO`,
+		`SUM_AMT`,
+		`SUM_COUNT`,
+		`BAT_STATUS`,
+		`CREATE_ID`,
+		`CREATE_TIME`,
+		MODIFY_TIME
+		)
+		VALUES
+		(
+		#{batNo, jdbcType=VARCHAR},
+		#{paerAcctNo, jdbcType=VARCHAR},
+		#{sumAmt, jdbcType=VARCHAR},
+		#{sumCount, jdbcType=VARCHAR},
+		#{batStatus, jdbcType=VARCHAR},
+		#{createId, jdbcType=VARCHAR},
+		now()
+		);
+	</insert>
+
+	<update id="upPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		UPDATE `stcdb`.`td_agent_payment_bat_info` T
+		<set>
+			<if test="paerAcctNo != null">
+				T.PAER_ACCT_NO = #{paerAcctNo, jdbcType=VARCHAR},
+			</if>
+			<if test="sumAmt != null">
+				T.SUM_AMT = #{sumAmt, jdbcType=VARCHAR},
+			</if>
+			<if test="sumCount != null">
+				T.SUM_COUNT = #{sumCount, jdbcType=VARCHAR},
+			</if>
+			<if test="succAmt != null">
+				T.SUCC_AMT = #{succAmt, jdbcType=VARCHAR},
+			</if>
+			<if test="succCount != null">
+				T.SUCC_COUNT = #{succCount, jdbcType=VARCHAR},
+			</if>
+			<if test="failAmt != null">
+				T.FAIL_AMT = #{failAmt, jdbcType=VARCHAR},
+			</if>
+			<if test="failCount != null">
+				T.FAIL_COUNT = #{failCount, jdbcType=VARCHAR},
+			</if>
+			<if test="batStatus != null">
+				T.BAT_STATUS = #{batStatus, jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null">
+				T.CREATE_ID = #{createId, jdbcType=TIMESTAMP},
+			</if>
+			<if test="createTime != null">
+				T.CREATE_TIME = #{createTime, jdbcType=VARCHAR},
+			</if>
+
+			<if test="modifyId != null">
+				T.MODIFY_ID = #{modifyId, jdbcType=VARCHAR},
+			</if>
+				T.MODIFY_TIME = now(),
+		</set>
+		WHERE T.BAT_NO = #{batNo, jdbcType=VARCHAR}
+
+	</update>
+
+	<update id="updateDetailBatch" parameterType="list">
+		update `stcdb`.`td_agent_payment_bat_detail_info`
+		<trim prefix="SET" suffixOverrides=",">
+			<trim prefix="STATUS = CASE" suffix="END,">
+				<foreach collection="list" item="obj" index="index">
+					<if test="obj.status!=null">
+						when ROW_NO=#{obj.rowNo} then #{obj.status}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="MODIFY_ID = CASE" suffix="END,">
+				<foreach collection="list" item="obj" index="index">
+					<if test="obj.modifyId!=null">
+						when ROW_NO=#{obj.rowNo} then #{obj.modifyId}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE
+		<foreach collection="list" separator="or" item="obj" index="index">
+			ROW_NO=#{obj.rowNo}
+		</foreach>
+	</update>
+
+	
+	<select id="selToPayCustList" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+		  t1.CUST_ID,
+		  t1.MERCHANT_CODE,
+		  t1.CUST_NAME,
+		  t2.MOBILE,
+		  t2.EMAIL,
+		  t1.AGENT_NAME,
+		  t1.DF_CREATE_TIME as modifyTime,
+		  t1.ToPAY_STATUE,
+		  t1.DF_ACC_ID,
+		  t1.CONTACT_PHONE
+		FROM
+			td_cust_info t1
+		LEFT JOIN td_login_user_info t2 ON t1.cust_id = t2.cust_id
+		WHERE
+			 t2.ROLE_ID ='ent' 
+			<if test="topayStatue != null and topayStatue != ''">
+			 and ToPAY_STATUE = #{topayStatue, jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null and custId != ''">
+			 and t1.cust_id = #{custId, jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+			 and t1.MERCHANT_CODE = #{merchantCode, jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null and mobile != ''">
+			 and t2.MOBILE = #{mobile, jdbcType=VARCHAR}
+			</if>
+			<if test="contactPhone != null and contactPhone != ''">
+			 and t1.CONTACT_PHONE = #{contactPhone, jdbcType=VARCHAR}
+			</if>
+           <if test="custName != null and custName != ''">
+			  and t1.cust_name LIKE CONCAT('%',#{custName},'%') 
+			</if>
+			<if test="email != null and email != ''">
+			  and t2.email = #{email, jdbcType=VARCHAR}
+			</if>
+			<if test="startTime !=null and startTime != ''">
+			   and	t1.DF_CREATE_TIME  &gt;= CAST(#{startTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+			<if test="endTime !=null and endTime != ''">
+			   	and t1.DF_CREATE_TIME  &lt;= CAST(#{endTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+			ORDER BY ToPAY_STATUE,DF_CREATE_TIME DESC
+	</select>
+	
+
+	<select id="selRechargeCustList" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="string">
+		SELECT
+		  t1.CUST_ID,
+		  t1.MERCHANT_CODE,
+		  t1.CUST_NAME,
+		  t2.MOBILE,
+		  t2.EMAIL,
+		  t1.AGENT_NAME,
+		  t1.DF_CREATE_TIME as modifyTime,
+		  t1.ToPAY_STATUE,
+		  t1.DF_ACC_ID
+		FROM
+			td_cust_info t1
+		LEFT JOIN td_login_user_info t2 ON t1.cust_id = t2.cust_id
+		WHERE
+			 t2.ROLE_ID ='ent' and ToPAY_STATUE ='YES'
+			
+			<if test="merchantCode != null and merchantCode != ''">
+			 and t1.MERCHANT_CODE = #{merchantCode, jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null and mobile != ''">
+			 and t2.MOBILE = #{mobile, jdbcType=VARCHAR}
+			</if>
+           <if test="custName != null and custName != ''">
+			  and t1.cust_name LIKE CONCAT('%',#{custName},'%') 
+			</if>
+			<if test="email != null and email != ''">
+			  and t2.email = #{email, jdbcType=VARCHAR}
+			</if>
+	</select>
+	
+
+	<select id="selToPayCust" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo"  parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			t1.*,
+			t2.EMAIL,
+			t2.mobile,
+			p2.column_value as bankCardName,
+			p3.column_value as bankName
+		FROM
+			td_cust_info t1
+		LEFT JOIN td_login_user_info t2 ON t1.cust_id = t2.cust_id
+		left join bms_protocol_content p1 on t1.CUST_ID = p1.cust_id
+		left join bms_protocol_column p2 on p1.id = p2.protocol_id
+		left join bms_protocol_column p3 on p1.id = p3.protocol_id
+		WHERE
+			t1.cust_id=#{custId, jdbcType=VARCHAR}  and p1.`status`= 'VALID' and p2.column_code='bankCardName' and p3.column_code='bankName'
+	</select>
+	
+	<!-- 账户信息-更新客户信息表 -->
+	<update id="updateToPayCust" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" >
+		UPDATE td_cust_info t
+		<set>
+			
+			<if test="dfAccId != null and dfAccId != ''">
+			t.DF_ACC_ID = #{dfAccId, jdbcType=VARCHAR},
+			</if>
+			<if test="topayStatue != null and topayStatue != ''">
+			t.ToPAY_STATUE = #{topayStatue, jdbcType=VARCHAR},
+			</if>
+			t.modify_time = now()
+		</set>
+		WHERE
+			t.cust_id = #{custId, jdbcType=VARCHAR}
+	</update>
+	
+	
+	<insert id="insertTdPaymentFeeInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentFeeInfo">
+		INSERT INTO `stcdb`.`td_payment_fee_info` (
+			`ACCOUNT_NO`,
+			`PAY_FEE`,
+			`WORK_RATE`,
+			`NO_WORK_RATE`,
+			`AMT_RATE`
+		)
+		VALUES
+			(
+				#{accountNo, jdbcType=VARCHAR},
+				#{payFee, jdbcType=DECIMAL},
+				#{workRate, jdbcType=DECIMAL},
+				#{noWorkRate, jdbcType=DECIMAL},
+				#{amtRate, jdbcType=DECIMAL}
+			)
+
+	</insert>
+	
+	<select id="selTdPaymentFeeInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentFeeInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentFeeInfo">
+		select * from td_payment_fee_info where account_no =#{accountNo, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDefaultFeeInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdPayInInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayInInfo">
+		select * from td_pay_in_info where td_pay_in_info.`STATUS`='00' and FEE_CODE =#{feeCode, jdbcType=VARCHAR}
+	</select>
+	
+	
+	
+	<select id="getToPayHistory" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAccountAuditInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAccountAuditInfo">
+		SELECT
+			t.ID,
+			t.ACCOUNT,
+			t.AUDIT_STATUS,
+			t.AUDIT_TIME,
+			t.MEMO,
+			t.AUDIT_USER,
+			t2.cust_name
+		FROM
+			td_payment_account_audit_info t
+		LEFT JOIN td_login_user_info t1 ON t1.email = t.account
+		LEFT JOIN td_cust_info t2 ON t1.cust_id = t2.cust_id
+		WHERE
+			t.account = #{account, jdbcType=VARCHAR}
+	</select>
+	
+	
+	
+	<select id="getSingleToPayInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		SELECT
+			t1.`BAT_NO`,
+			t1.`PAER_ACCT_NO`,
+			t1.`REC_ACCOUNT_NAME`,
+			t1.`REC_ACCOUNT_NO`,
+			t1.`REC_ACCOUNT_CODE` lineNumber,
+			t1.`REC_ACCOUNT_CNAPS`,
+			t1.`MEMO`,
+			t1.`SUM_AMT`,
+			t1.`TRADE_STATUS`,
+			t1.`BUINESS_TYPE`,
+			t1.`TOPAY_TYPE`,
+			t1.`CREATE_ID`,
+			t1.`CREATE_TIME` as startCreateTime,
+			t1.`MODIFY_ID`,
+			t1.`MODIFY_TIME`,
+			t1.`REC_MOBILE` as phone,
+			t1.`CORE_SN`,
+			t1.`CORE_RETURN_CODE`,
+			t1.`CORE_RETURN_INFO`,
+			t1.`CORE_RETURN_TIME`,
+			t1.`REC_CARD_NAME` as payeeAcctBankName,
+			t1.BANK_PAYMENT_NO,
+			t1.province_code,
+			t1.city_code,
+			t1.`FeeAmt`, 
+			t3.cust_name,
+			t4.pay_fee,
+			t3.CUST_ID
+		FROM
+			td_agent_payment_single_record t1
+		LEFT JOIN td_login_user_info t2 ON t1.PAER_ACCT_NO = t2.email
+		LEFT JOIN td_cust_info t3 ON t2.CUST_ID = t3.CUST_ID
+		LEFT JOIN td_payment_fee_info t4 ON t1.PAER_ACCT_NO = t4.ACCOUNT_NO
+		WHERE
+			t2.ROLE_ID = 'ent'
+		    AND t1.BAT_NO = #{batNo, jdbcType=VARCHAR}
+	</select>
+	
+<select id="getBatchToPayInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		SELECT
+			t1.`BAT_NO`,
+			t1.`PAER_ACCT_NO`,
+			t1.`SUM_AMT`,
+			t1.`SUM_COUNT`,
+			t1.`TRADE_STATUS`,
+			t1.`TOPAY_TYPE`,
+			t1.`SUCC_AMT`,
+			t1.`CREATE_TIME` as startCreateTime,
+			t1.`SUCC_COUNT`,
+			t1.`FAIL_AMT`,
+			t1.`FAIL_COUNT`,
+			t1.BANK_PAYMENT_NO,
+			t1.`FeeAmt`, 
+			t3.cust_name,
+			t3.CUST_ID
+		FROM
+			td_agent_payment_bat_record t1
+		LEFT JOIN td_login_user_info t2 ON t1.PAER_ACCT_NO = t2.email
+		LEFT JOIN td_cust_info t3 ON t2.CUST_ID = t3.CUST_ID
+		WHERE
+			
+		     t1.BAT_NO = #{batNo, jdbcType=VARCHAR}
+</select>
+	
+	<insert id="insertPaymentAccountAuditInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAccountAuditInfo">
+		INSERT INTO `stcdb`.`td_payment_account_audit_info` (
+			`ID`,
+			`ACCOUNT`,
+			`AUDIT_STATUS`,
+			`AUDIT_TIME`,
+			`MEMO`,
+			`AUDIT_USER`
+		)
+		VALUES
+			(
+				#{id, jdbcType=VARCHAR},
+				#{account, jdbcType=VARCHAR},
+				#{auditStatus, jdbcType=VARCHAR},
+				now(),
+				#{memo, jdbcType=VARCHAR},
+				#{auditUser, jdbcType=VARCHAR}
+			)
+
+	</insert>
+
+	
+	
+<select id="queryAcctSevenToPayBuss"   resultType="com.qifenqian.bms.paymentmanager.bean.AcctSevenBussAgentpay" parameterType="com.qifenqian.bms.paymentmanager.bean.AcctSevenBussAgentpay">
+
+	SELECT
+	t.CUST_ID,
+	u.EMAIL,
+	u.MOBILE,
+	t.CUST_NAME
+
+	FROM
+	td_cust_info t
+	LEFT JOIN td_login_user_info u ON t.CUST_ID = u.CUST_ID
+	WHERE
+	t.ToPAY_STATUE = 'yes'
+	
+	 <if test="email !=null and email != ''">
+	   and  u.EMAIL=#{email,jdbcType=VARCHAR} 
+	 </if>
+	 <if test="mobile !=null and mobile != ''">
+	   and u.MOBILE=#{mobile,jdbcType=VARCHAR} 
+	 </if>
+	 <if test="custName !=null and custName != ''">
+	  and  t.CUST_NAME=#{custName,jdbcType=VARCHAR} 
+	 </if>
+	 <if test="acctId !=null and acctId != ''">
+	  and  u.EMAIL=#{acctId,jdbcType=VARCHAR} 
+	 </if>
+	</select>
+	
+	
+<select id="getAudingPaymentBatList"  resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	  SELECT
+	  temp.*, (
+	  SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	)CUST_NAME,
+	(
+			select MAX(r.audit_time) from td_payment_audit_recode r where r.audit_status in ('00','04') and r.BAT_NO = temp.BAT_NO
+			<if test="startsecondAuditTime !=null and startsecondAuditTime != ''">
+			   	and r.audit_time &gt;= CAST(#{startsecondAuditTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+			<if test="endsecondAuditTime !=null and endsecondAuditTime != ''">
+			   	and r.audit_time &lt;= CAST(#{endsecondAuditTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+		) secondAuditTime,
+	(
+			select MIN(r.audit_time) from td_payment_audit_recode r where r.audit_status in ('06','05') and r.BAT_NO = temp.BAT_NO
+			<if test="startfristAuditTime !=null and startfristAuditTime != ''">
+			   	and r.audit_time &gt;= CAST(#{startfristAuditTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+			<if test="endfristAuditTime !=null and endfristAuditTime != ''">
+			   	and r.audit_time &lt;= CAST(#{endfristAuditTime,jdbcType=VARCHAR} AS datetime)
+			</if>
+		) fristAuditTime
+	FROM
+	(
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	TOPAY_TYPE,
+	PAER_ACCT_NO,
+	00 AS 'TYPE',
+	`SUM_COUNT`,
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	`SUCC_COUNT`,
+	`SUCC_AMT`,
+	`FAIL_COUNT`,
+	`FAIL_AMT`,
+	t.CREATE_TIME 
+	FROM
+	td_agent_payment_bat_record t
+	UNION ALL
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	`TOPAY_TYPE`,
+	PAER_ACCT_NO,
+	01 AS 'TYPE',
+	'1' AS 'SUM_COUNT',
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	'000' AS 'SUCC_COUNT',
+	'1' AS 'SUCC_AMT',
+	'failCount' AS 'FAIL_COUNT',
+	'failAmt' AS 'FAIL_AMT',
+	t.CREATE_TIME 
+	FROM
+	td_agent_payment_single_record t
+	
+	) temp
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	left JOIN td_cust_info f on u.CUST_ID = f.CUST_ID
+	WHERE
+	(temp.TRADE_STATUS in('02','03','04','06','08','92','93','90','80','60','97','99'))
+	 
+	  <if test="batNo !=null and batNo != ''">
+	   	and temp.BAT_NO=#{batNo,jdbcType=VARCHAR} 
+	  </if>
+	   <if test="paerAcctNo !=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="tradeStatus !=null and tradeStatus != ''">
+	   	and temp.TRADE_STATUS=#{tradeStatus,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="custName !=null and custName != ''">
+	   	and f.CUST_NAME LIKE CONCAT('%',#{custName},'%') 
+	  </if>
+	  order by temp.CREATE_TIME DESC
+	
+</select>
+
+
+
+<select id="exportPayment"  resultType="com.qifenqian.bms.paymentmanager.bean.TdAuditReportExport" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+		SELECT
+			temp.BAT_NO,
+			(
+			CASE temp.`TRADE_STATUS`
+			WHEN '02' THEN
+			'审核通过'
+			WHEN '03' THEN
+			'审核不通过'
+			WHEN '04' THEN
+			'前台审核通过'
+			WHEN '06' THEN
+			'清洁算审核通过'
+			WHEN '08' THEN
+			'发送银行成功'
+			WHEN '92' THEN
+			'清洁算审核未通过'
+			WHEN '93' THEN
+			'财务审核未通过'
+			WHEN '90' THEN
+			'交易异常'
+			WHEN '80' THEN
+			'核销失败'
+			WHEN '60' THEN
+			'银行打款成功'
+			WHEN '99' THEN
+			'交易失败'
+			ELSE
+			''
+			END)TRADE_STATUS,
+			
+			(
+				SELECT
+					f.CUST_NAME
+				FROM
+					td_cust_info f
+				WHERE
+					u.CUST_ID = f.CUST_ID
+			) CUST_NAME,
+			temp.PAER_ACCT_NO,
+		temp.TOPAY_TYPE,
+		temp.TYPE,
+		temp.SUM_COUNT,
+		temp.FeeAmt,
+		temp.SUM_AMT,
+		temp.SUCC_COUNT,
+		temp.SUCC_AMT,
+		temp.FAIL_COUNT,
+		temp.FAIL_AMT,
+		temp.CREATE_TIME
+		
+		FROM
+			(
+				SELECT
+					`BAT_NO`,
+					`TRADE_STATUS`,
+					TOPAY_TYPE,
+					PAER_ACCT_NO,
+					00 AS 'TYPE',
+					`SUM_COUNT`,
+					`FeeAmt`,
+					`SUM_AMT`,
+					`SUCC_COUNT`,
+					`SUCC_AMT`,
+					`FAIL_COUNT`,
+					`FAIL_AMT`,
+					CREATE_TIME
+				FROM
+					td_agent_payment_bat_record t
+				UNION ALL
+					SELECT
+						`BAT_NO`,
+						`TRADE_STATUS`,
+						`TOPAY_TYPE`,
+						PAER_ACCT_NO,
+						01 AS 'TYPE',
+						'1' AS 'SUM_COUNT',
+						`FeeAmt`,
+						`SUM_AMT`,
+		
+						(
+							CASE TRADE_STATUS
+							WHEN '00' THEN
+							'1'
+							ELSE
+							''
+							END)AS 'SUCC_COUNT',
+							
+							(
+							CASE TRADE_STATUS
+							WHEN '00' THEN
+							`SUM_AMT`
+							ELSE
+							''
+							END)AS 'SUCC_AMT',
+		
+							(
+							CASE TRADE_STATUS
+							WHEN '99' THEN
+							'1'
+							ELSE
+							''
+							END)AS 'FAIL_COUNT',
+		
+							(
+							CASE TRADE_STATUS
+							WHEN '99' THEN
+							`SUM_AMT`
+							ELSE
+							''
+							END)AS 'FAIL_AMT',
+						CREATE_TIME
+					FROM
+						td_agent_payment_single_record t
+			) temp
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	WHERE
+	(temp.TRADE_STATUS in('02','03','04','06','08','92','93','90','80','60','99'))
+	 
+	  <if test="batNo !=null and batNo != ''">
+	   	and temp.BAT_NO=#{batNo,jdbcType=VARCHAR} 
+	  </if>
+	   <if test="paerAcctNo !=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="tradeStatus !=null and tradeStatus != ''">
+	   	and temp.TRADE_STATUS=#{tradeStatus,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  order by temp.CREATE_TIME DESC
+	
+</select>
+
+	
+
+<select id="getPaymentRecodeQuery"  resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	  SELECT
+	  temp.*, (
+	  SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	)CUST_NAME
+
+	FROM
+	(
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	TOPAY_TYPE,
+	PAER_ACCT_NO,
+	00 AS 'TYPE',
+	`SUM_COUNT`,
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	`SUCC_COUNT`,
+	`SUCC_AMT`,
+	`FAIL_COUNT`,
+	`FAIL_AMT`,
+	CREATE_TIME
+	FROM
+	td_agent_payment_bat_record t
+	UNION ALL
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	`TOPAY_TYPE`,
+	PAER_ACCT_NO,
+	01 AS 'TYPE',
+	'1' AS 'SUM_COUNT',
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	'000' AS 'SUCC_COUNT',
+	'1' AS 'SUCC_AMT',
+	'failCount' AS 'FAIL_COUNT',
+	'failAmt' AS 'FAIL_AMT',
+	CREATE_TIME
+	FROM
+	td_agent_payment_single_record t
+	) temp
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	WHERE  
+	(temp.TRADE_STATUS in('04','00','06','07','08','92','60','93','99','90'))
+	
+	  <if test="batNo !=null and batNo != ''">
+	   	and temp.BAT_NO=#{batNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="paerAcctNo !=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="tradeStatus !=null and tradeStatus != ''">
+	   	and temp.TRADE_STATUS=#{tradeStatus,jdbcType=VARCHAR} 
+	  </if>
+	  
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  order by temp.CREATE_TIME DESC
+	
+</select>
+		
+	
+	
+	
+	
+<select id="getPaymentRecodeQueryExcel"  resultType="com.qifenqian.bms.paymentmanager.bean.TdRecodeExport" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	 SELECT
+  temp.BAT_NO,
+	temp.PAER_ACCT_NO,
+	(
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME,
+	(
+	CASE temp.TOPAY_TYPE
+	WHEN '00' THEN
+	'银行卡'
+	WHEN '01' THEN
+	'余额'
+	ELSE
+	''
+	END)toPayType,
+	(
+	CASE temp.TYPE
+	WHEN '00' THEN
+	'批量'
+	WHEN '01' THEN
+	'单笔'
+	ELSE
+	''
+	END)type,
+	temp.SUM_COUNT,
+	temp.SUM_AMT,
+	temp.FeeAmt,
+	DATE_FORMAT(temp.CREATE_TIME,'%Y-%m-%d')createTime,
+  (
+	CASE temp.TRADE_STATUS
+	WHEN '00' THEN
+	'支付成功'
+	WHEN '06' THEN
+	'清洁算审核通过'
+  WHEN '08' THEN
+	'发送银行成功'
+	WHEN '92' THEN
+	'清洁算审核未通过'
+	WHEN '93' THEN
+	'财务审核未通过'
+	WHEN '99' THEN
+	'交易失败'
+  WHEN '60' THEN
+	'银行打款成功'
+	ELSE
+	''
+	END)tradeStatus
+	
+
+	FROM
+	(
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	TOPAY_TYPE,
+	PAER_ACCT_NO,
+	00 AS 'TYPE',
+	`SUM_COUNT`,
+	`FeeAmt`,
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	`SUCC_COUNT`,
+	`SUCC_AMT`,
+	`FAIL_COUNT`,
+	`FAIL_AMT`,
+	CREATE_TIME
+	FROM
+	td_agent_payment_bat_record t
+	UNION ALL
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	`TOPAY_TYPE`,
+	PAER_ACCT_NO,
+	01 AS 'TYPE',
+	'1' AS 'SUM_COUNT',
+	`FeeAmt`,
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	'000' AS 'SUCC_COUNT',
+	'1' AS 'SUCC_AMT',
+	'failCount' AS 'FAIL_COUNT',
+	'failAmt' AS 'FAIL_AMT',
+	CREATE_TIME
+	FROM
+	td_agent_payment_single_record t
+	) temp
+	LEFT JOIN td_payment_audit_recode p ON temp.BAT_NO = p.BAT_NO
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	WHERE
+	(temp.TRADE_STATUS in( '00',  '06',  '08', '92',  '93', '99','60' ))
+	
+	  <if test="batNo !=null and batNo != ''">
+	   	and temp.BAT_NO=#{batNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="paerAcctNo !=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="tradeStatus !=null and tradeStatus != ''">
+	   	and temp.TRADE_STATUS=#{tradeStatus,jdbcType=VARCHAR} 
+	  </if>
+	  
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  order by temp.CREATE_TIME DESC
+	
+</select>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<select id="getPaymentReportList"  resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	  SELECT
+	  temp.*, (
+	  SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	)CUST_NAME
+
+	FROM
+	(
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	 TOPAY_TYPE,
+	PAER_ACCT_NO,
+	00 AS 'TYPE',
+	`SUM_COUNT`,
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	`SUCC_COUNT`,
+	`SUCC_AMT`,
+	`FAIL_COUNT`,
+	`FAIL_AMT`,
+	CREATE_TIME
+	FROM
+	td_agent_payment_bat_record t
+	UNION ALL
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	`TOPAY_TYPE`,
+	PAER_ACCT_NO,
+	01 AS 'TYPE',
+	'1' AS 'SUM_COUNT',
+	`FeeAmt` AS 'serviceFee',
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	'000' AS 'SUCC_COUNT',
+	'1' AS 'SUCC_AMT',
+	'failCount' AS 'FAIL_COUNT',
+	'failAmt' AS 'FAIL_AMT',
+	CREATE_TIME
+	FROM
+	td_agent_payment_single_record t
+	) temp
+	
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	WHERE
+	(temp.TRADE_STATUS in('00','09'))
+	 
+	 <if test=" paerAcctNo!=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  order by temp.CREATE_TIME DESC
+</select>
+	
+	
+	
+<select id="getReportExport"  resultType="com.qifenqian.bms.paymentmanager.bean.TdReportExport" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	SELECT
+	temp.BAT_NO,
+	temp.PAER_ACCT_NO,
+	(
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME,
+	(
+	CASE temp.TOPAY_TYPE
+	WHEN '00' THEN
+	'银行卡'
+	WHEN '01' THEN
+	'余额'
+	ELSE
+	''
+	END)toPayType,
+	(
+	CASE temp.TYPE
+	WHEN '00' THEN
+	'批量'
+	WHEN '01' THEN
+	'单笔'
+	ELSE
+	''
+	END)type,
+	temp.SUM_COUNT,
+	temp.SUM_AMT,
+	temp.FeeAmt,
+	temp.SUCC_COUNT,
+	temp.FAIL_COUNT,
+	temp.SUCC_AMT,
+	temp.FAIL_AMT,
+	DATE_FORMAT(temp.CREATE_TIME,'%Y-%m-%d %H:%i:%s')createTime,
+    temp.TRADE_STATUS
+	FROM
+	(
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	TOPAY_TYPE,
+	PAER_ACCT_NO,
+	00 AS 'TYPE',
+	`SUM_COUNT`,
+	`FeeAmt`,
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	`SUCC_COUNT`,
+	`SUCC_AMT`,
+	`FAIL_COUNT`,
+	`FAIL_AMT`,
+	CREATE_TIME
+	FROM
+	td_agent_payment_bat_record t
+	UNION ALL
+	SELECT
+	`BAT_NO`,
+	`TRADE_STATUS`,
+	`TOPAY_TYPE`,
+	PAER_ACCT_NO,
+	01 AS 'TYPE',
+	'1' AS 'SUM_COUNT',
+	`FeeAmt`,
+	`SUM_AMT`,
+	NULL AS 'service_charge',
+	'000' AS 'SUCC_COUNT',
+	'1' AS 'SUCC_AMT',
+	'failCount' AS 'FAIL_COUNT',
+	'failAmt' AS 'FAIL_AMT',
+	CREATE_TIME
+	FROM
+	td_agent_payment_single_record t
+	) temp
+	LEFT JOIN td_payment_audit_recode p ON temp.BAT_NO = p.BAT_NO
+	LEFT JOIN td_login_user_info u ON u.EMAIL = temp.PAER_ACCT_NO
+	WHERE
+	(temp.TRADE_STATUS IN ('00', '09'))
+
+	 <if test=" paerAcctNo!=null and paerAcctNo != ''">
+	   	and temp.PAER_ACCT_NO=#{paerAcctNo,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="toPayType !=null and toPayType != ''">
+	   	and temp.TOPAY_TYPE=#{toPayType,jdbcType=VARCHAR} 
+	  </if>
+	  <if test="type !=null and type != ''">
+	   	and temp.TYPE=#{type,jdbcType=VARCHAR}
+	  </if>
+	  <if test="startCreateTime !=null and startCreateTime != ''">
+	   	and temp.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  <if test="endCreateTime !=null and endCreateTime != ''">
+	   	and temp.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+	  </if>
+	  order by temp.CREATE_TIME DESC
+</select>
+
+<select id="getBatchAuditPayment" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+	SELECT
+	t.*,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d %H:%i:%s')startCreateTime,
+	(
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME,
+	f.scan_copy_path,
+	u.cust_id
+	FROM
+	td_agent_payment_bat_record t
+	LEFT JOIN td_login_user_info u ON u.EMAIL = t.PAER_ACCT_NO
+	LEFT JOIN td_pay_credit_info f ON t.BAT_NO = f.BAT_NO
+	 <where>
+	 <if test="batNo != null and  batNo!= '' ">
+	     t.BAT_NO=#{batNo,jdbcType=VARCHAR}
+	 
+	 </if>
+	 </where>
+</select>
+
+<select id="getBatchAuditPaymentList" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail">
+    SELECT
+	t.BAT_NO,
+	t.ROW_NO,
+	t.REC_ACCOUNT_NAME,
+	t.REC_ACCOUNT_NO,
+	t.TRANS_AMT,
+	t.province_code,
+	t.city_code,
+    t.TOPAY_TYPE,
+    t.TRADE_STATUS,
+    t.REC_BANK_CNAPS,
+    t.REC_CARD_NAME,
+    f.pay_fee
+   FROM
+	td_agent_payment_bat_detail_record t
+	LEFT JOIN td_agent_payment_bat_record r ON t.BAT_NO =r.BAT_NO
+	LEFT JOIN td_payment_fee_info f ON r.PAER_ACCT_NO = f.ACCOUNT_NO
+	<where>
+	 <if test="batNo != null and  batNo!= '' ">
+	    AND  t.BAT_NO=#{batNo,jdbcType=VARCHAR}
+	 </if>
+	 <if test="tradeStatus != null and  tradeStatus!= '' ">
+	    AND  t.TRADE_STATUS=#{tradeStatus,jdbcType=VARCHAR}
+	 </if>
+	 </where>
+</select>
+	
+<select id="selectCardName" resultType="com.qifenqian.bms.paymentmanager.bean.TdBankCardBin"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdBankCardBin">
+		SELECT
+		T.CARD_BIN,
+		T.CARD_NAME,
+		T.CARD_TYPE,
+		T.BANK_CODE,
+		T.BANK_NAME
+		FROM
+		tb_bankcardbin_bank_ref T
+       WHERE  
+        T.CARD_BIN = #{cardBin}
+
+</select> 	
+
+
+<select id="selectBatRecode" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo"  parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		SELECT
+			`BAT_NO`,
+			`PAER_ACCT_NO`,
+			`SUM_AMT`,
+			`SUM_COUNT`,
+			`TRADE_STATUS`,
+			`TOPAY_TYPE`,
+			`SUCC_AMT`,
+			`SUCC_COUNT`,
+			`FAIL_AMT`,
+			`FAIL_COUNT`,
+			`CREATE_ID`,
+			`CREATE_TIME`,
+			`MODIFY_ID`,
+			`MODIFY_TIME`,
+			`FeeAmt`,
+			`BANK_PAYMENT_NO`
+		FROM
+			td_agent_payment_bat_record
+	    where BAT_NO = #{batNo,jdbcType=VARCHAR}
+</select> 	
+
+
+	
+<insert id="InsertTdPaymentAuditRecode" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAuditRecode">
+	INSERT INTO  td_payment_audit_recode (
+			`id`,
+		   `BAT_NO`,
+		   `audit_status`,
+		   `audit_time`,
+		   `memo`,
+		   `audit_user`
+			)
+			VALUES
+			(
+			#{id, jdbcType=VARCHAR},
+			#{batNO, jdbcType=VARCHAR},
+			#{auditStatus, jdbcType=VARCHAR},
+			#{auditTime},
+			#{memo, jdbcType=VARCHAR},
+			#{auditUser, jdbcType=VARCHAR}
+			)
+</insert>
+
+<update id="updateTdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+		UPDATE `stcdb`.`td_agent_payment_bat_record` t
+		<set>
+		  <if test="tradeStatus != null and tradeStatus != ''">
+	      	t.TRADE_STATUS = #{tradeStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="modifyId != null and modifyId != ''">
+	      	t.MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+	      </if>
+	       t.MODIFY_TIME = now(),
+		</set>
+		WHERE
+			t.`BAT_NO` =#{batNo,jdbcType=VARCHAR};
+</update>
+
+	<update id="updateTdPaymentSingleInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+			UPDATE `stcdb`.`td_agent_payment_single_record` t
+			<set>
+			  <if test="tradeStatus != null and tradeStatus != ''">
+		      	t.TRADE_STATUS = #{tradeStatus, jdbcType=VARCHAR},
+		      </if>
+		      t.MODIFY_TIME = now(),
+			</set>
+			WHERE
+				t.`BAT_NO` =#{batNo,jdbcType=VARCHAR}
+	</update>
+
+
+
+		
+<update id="updateTdPaymentBatDetail" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail">
+		UPDATE `stcdb`.`td_agent_payment_bat_detail_record` t
+		<set>
+		  <if test="tradeStatus != null and tradeStatus != ''">
+	      	t.TRADE_STATUS = #{tradeStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="modifyId != null and modifyId != ''">
+	      	t.MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+	      </if>
+	       t.MODIFY_TIME = now(),
+		</set>
+		WHERE
+		t.`BAT_NO` =#{batNo,jdbcType=VARCHAR};
+</update>
+	
+<select id="getPaymentCheckHistory" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAuditRecode">
+
+SELECT
+	t.*, p.PAER_ACCT_NO,
+  (
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME
+FROM
+	td_payment_audit_recode t
+  LEFT JOIN td_agent_payment_bat_record p ON t.BAT_NO=p.BAT_NO
+  LEFT JOIN td_login_user_info u ON u.EMAIL = p.PAER_ACCT_NO
+  where
+  	t.`BAT_NO` =#{batNo,jdbcType=VARCHAR}
+   ORDER BY
+	t.audit_time DESC
+
+</select>	
+
+	
+<select id="getSinglePaymentCheckHistory" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentAuditRecode">
+SELECT
+	t.*, p2.PAER_ACCT_NO,
+  (
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME
+FROM
+	td_payment_audit_recode t
+left join td_agent_payment_single_record p2 on t.BAT_NO=p2.BAT_NO
+  LEFT JOIN td_login_user_info u ON u.EMAIL = p2.PAER_ACCT_NO
+	
+  where
+
+  	t.`BAT_NO` =#{batNo,jdbcType=VARCHAR}
+  
+   ORDER BY
+	t.audit_time DESC
+
+</select>
+
+
+	
+<select id="getTdAgentPaymentChildRecord" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdAgentPaymentChildRecord">
+	SELECT
+		c.*
+	FROM
+		td_agent_payment_child_record c
+	WHERE
+		c.oper_type = 'pay_apply'
+	AND c. STATUS = '00'
+	AND BAT_NO = #{batNo,jdbcType=VARCHAR}
+</select>
+	
+<select id="selTdAgentPaymentChildRecord" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdAgentPaymentChildRecord">
+	SELECT
+		c.*
+	FROM
+		td_agent_payment_child_record c
+	WHERE
+		c.oper_type = 'charge_apply'
+	AND c. STATUS = '00'
+	AND BAT_NO = #{batNo,jdbcType=VARCHAR}
+</select>
+
+<insert id="addTdAgentPaymentChildRecord" parameterType="com.qifenqian.bms.paymentmanager.bean.TdAgentPaymentChildRecord">
+		INSERT INTO `stcdb`.`td_agent_payment_child_record` (
+			`RECORD_ID`,
+			`BAT_NO`,
+			`CORE_SN`,
+			`CORE_RETURN_CODE`,
+			`CORE_RETURN_INFO`,
+			`CORE_RETURN_TIME`,
+			`STATUS`,
+			`OPER_TYPE`,
+			`CREATE_ID`,
+			`CREATE_TIME`
+		)
+		VALUES
+			(
+				#{recordId,jdbcType=VARCHAR},
+				#{batNo,jdbcType=VARCHAR},
+				#{coreSn,jdbcType=VARCHAR},
+				#{coreReturnCode,jdbcType=VARCHAR},
+				#{coreReturnInfo,jdbcType=VARCHAR},
+				now(),
+				#{Status,jdbcType=VARCHAR},
+				#{operType,jdbcType=DECIMAL},
+				NULL,
+				now()
+			)
+	</insert>
+
+
+
+<select id="getSingleInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+
+    SELECT t.*,(
+	SELECT
+	f.CUST_NAME
+	FROM
+	td_cust_info f
+	WHERE
+	u.CUST_ID = f.CUST_ID
+	) CUST_NAME  
+	FROM   td_agent_payment_single_record t 
+    LEFT JOIN td_login_user_info u ON u.EMAIL=t.PAER_ACCT_NO
+     
+     <where>
+      <if test="batNo != null and  batNo!= '' ">
+	    AND  t.BAT_NO=#{batNo,jdbcType=VARCHAR}
+	 </if>
+     </where>
+
+
+</select>
+
+
+
+
+
+<select id="getBankScanPath" resultType="string" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo">
+		SELECT
+			t.SCAN_COPY_PATH
+		FROM
+			td_pay_credit_info t
+
+		<where>
+	      <if test="batNo != null and  batNo!= '' ">
+		    AND t.BAT_NO = #{batNo, jdbcType = VARCHAR}
+		 </if>
+		 <if test="payStatus != null and  payStatus!= '' ">
+		    AND t.PAY_STATUS = #{payStatus, jdbcType = VARCHAR}
+		 </if>
+		 <if test="id != null and  id !='' ">
+	    	AND t.id = #{id, jdbcType = VARCHAR}
+		 </if>
+       </where>
+
+</select>
+
+
+
+<select id="rechargePaymentList" resultType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo">
+
+	SELECT
+	temp.*,
+    DATE_FORMAT(temp.CREATE_TIME,'%Y-%m-%d %H:%i:%s') createTime
+	FROM
+	(
+	SELECT
+	t.*, 
+	u.EMAIL,
+	u.MOBILE,
+	c.CUST_NAME,
+	f.SECOND_AUDIT_TIME
+   <!-- DATE_FORMAT(MIN(f.FRIST_AUDIT_TIME),'%Y-%m-%d %H:%i:%s') fristAuditTime,
+   DATE_FORMAT(max(f.SECOND_AUDIT_TIME),'%Y-%m-%d %H:%i:%s')secondAuditTime -->
+	FROM
+	td_pay_credit_info t
+	LEFT JOIN td_pay_credit_audit_info f ON t.id = f.CREDIT_ID
+	LEFT JOIN combinedpayment.td_order o ON t.BAT_NO = o.ORDER_ID
+	LEFT JOIN td_cust_info c ON o.MCH_ID = c.MERCHANT_CODE
+	LEFT JOIN td_login_user_info u ON  c.cust_id = u.CUST_ID
+	GROUP BY t.id
+	
+	) temp
+    WHERE 1=1  
+   
+     <if test="id != null and  id!= '' ">
+	    and  temp.id=#{id,jdbcType=VARCHAR}
+     </if>
+	 <if test="custName != null and custName!=''">
+	   and temp.CUST_NAME=#{custName,jdbcType=VARCHAR}
+     </if>
+      <if test="auditStatus != null and   auditStatus!='' ">
+	   and temp.AUDIT_STATUS=#{auditStatus,jdbcType=VARCHAR}
+     </if>
+      <if test="recAccountNo != null and  recAccountNo!= '' ">
+	   and temp.REC_ACCOUNT_NO=#{recAccountNo,jdbcType=VARCHAR}
+     </if>
+    <if test="fristAuditTime !=null and fristAuditTime != ''">
+     <![CDATA[  
+	        and	DATE_FORMAT(temp.fristAuditTime,'%Y-%m-%d')>= #{fristAuditTime,jdbcType=VARCHAR}
+	   ]]>
+	 </if>
+	<if test="fristEndAuditTime !=null and fristEndAuditTime != ''">
+	 <![CDATA[  
+	      and 	DATE_FORMAT(temp.fristAuditTime,'%Y-%m-%d')<= #{fristEndAuditTime,jdbcType=VARCHAR}
+	   ]]>
+	</if>
+   <if test="secondAuditTime !=null and secondAuditTime != ''">
+      <![CDATA[  
+	       and	DATE_FORMAT(temp.secondAuditTime,'%Y-%m-%d')>= #{secondAuditTime,jdbcType=VARCHAR}
+	   ]]>
+	</if>
+	<if test="secondEndAuditTime !=null and secondEndAuditTime != ''">
+	<![CDATA[  
+	      and 	DATE_FORMAT(temp.secondAuditTime,'%Y-%m-%d')<= #{secondEndAuditTime,jdbcType=VARCHAR}
+	   ]]>
+	</if>
+	<if test="startCreateTime !=null and startCreateTime != ''">
+	<![CDATA[  
+	      and 	DATE_FORMAT(temp.CREATE_TIME,'%Y-%m-%d')>= #{startCreateTime,jdbcType=VARCHAR}
+	   ]]>
+	</if>
+	<if test="endCreateTime !=null and endCreateTime != ''">
+	<![CDATA[  
+	      and 	DATE_FORMAT(temp.CREATE_TIME,'%Y-%m-%d')<= #{endCreateTime,jdbcType=VARCHAR}
+	   ]]>
+	</if>
+
+order by  temp.CREATE_TIME DESC 
+</select>
+
+
+<select id="selRechargeInfo" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo">
+
+ SELECT
+	t.*,
+  u.EMAIL,
+  u.MOBILE,
+  DATE_FORMAT(t.CREATE_TIME,'%Y-%m-%d %H:%i:%s') createTime,
+  c.CUST_NAME, 
+  c.MERCHANT_CODE,
+  DATE_FORMAT(f.FRIST_AUDIT_TIME,'%Y-%m-%d %H:%i:%s') fristAuditTime,
+  DATE_FORMAT(f.SECOND_AUDIT_TIME,'%Y-%m-%d %H:%i:%s')secondAuditTime,
+  f.AUDIT_AMT
+
+  
+FROM
+	td_pay_credit_info t
+LEFT JOIN combinedpayment.td_order o ON t.BAT_NO = o.ORDER_ID
+LEFT JOIN td_cust_info c ON o.MCH_ID = c.MERCHANT_CODE
+LEFT JOIN td_login_user_info u ON  c.cust_id = u.CUST_ID
+LEFT JOIN td_pay_credit_audit_info f ON t.id=f.CREDIT_ID
+
+<where>
+  <if test="id != null and  id!= '' ">
+	    t.id=#{id,jdbcType=VARCHAR}
+  </if>
+</where>
+ORDER BY t.id  DESC 
+
+</select>
+
+<insert id="InsertTdPayCreditAuditInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditAuditInfo">
+	INSERT INTO  td_pay_credit_audit_info (
+			`ID`,
+		   `CREDIT_ID`,
+		   `STATUS`,
+		   `FRIST_AUDIT_TIME`,
+		   `MEMO`,
+		   `AUDIT_USER`,
+		   `SECOND_AUDIT_TIME`,
+		   `AUDIT_AMT`
+			)
+			VALUES
+			(
+			#{id, jdbcType=VARCHAR},
+			#{creditId, jdbcType=VARCHAR},
+			#{status, jdbcType=VARCHAR},
+			now(),
+			#{memo, jdbcType=VARCHAR},
+			#{auditUser, jdbcType=VARCHAR},
+			now(),
+			#{auditAmt,jdbcType=VARCHAR}
+			)
+</insert>
+
+
+
+<select id="getRechargeCheckHistory" parameterType="String" resultType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditAuditInfo">
+  SELECT
+	t.*,
+  u.EMAIL,
+  u.MOBILE,
+ c.CUST_NAME
+FROM
+	td_pay_credit_audit_info t
+  LEFT JOIN  td_pay_credit_info f ON  t.CREDIT_ID=f.id
+  LEFT JOIN combinedpayment.td_order o ON f.BAT_NO = o.ORDER_ID
+  LEFT JOIN td_cust_info c ON o.MCH_ID = c.MERCHANT_CODE
+  LEFT JOIN td_login_user_info u ON  c.cust_id = u.CUST_ID
+
+  where
+  	t.`CREDIT_ID` =#{creditId,jdbcType=VARCHAR}
+   ORDER BY
+	t.SECOND_AUDIT_TIME  DESC
+
+</select>
+
+
+
+
+<update id="updateTdPayCreditInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo">
+		UPDATE `stcdb`.`td_pay_credit_info` t
+		<set>
+		  <if test="auditStatus != null and auditStatus != ''">
+	      	t.AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+	      </if>
+	      <if test="payStatus != null and payStatus != ''">
+	      	t.PAY_STATUS = #{payStatus,jdbcType=VARCHAR},
+	      </if>
+	       t.MODIFY_TIME = now(),
+		</set>
+		WHERE
+		t.`id` =#{id,jdbcType=VARCHAR};
+</update>
+
+
+
+<update id="updateTdPayCreditAuditInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditAuditInfo">
+		UPDATE `stcdb`.`td_pay_credit_audit_info` t
+		<set>
+		  <if test="secondAuditTime != null and secondAuditTime != ''">
+	      	t.SECOND_AUDIT_TIME = #{secondAuditTime,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fristAuditTime != null and fristAuditTime != ''">
+	      	t.FRIST_AUDIT_TIME = #{fristAuditTime,jdbcType=VARCHAR},
+	      </if>
+		</set>
+		WHERE
+		t.`CREDIT_ID` =#{creditId,jdbcType=VARCHAR};
+</update>
+
+<update id="updateToTdPayCreditAuditInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPayCreditInfo">
+		UPDATE `stcdb`.`td_pay_credit_audit_info` t
+		<set>
+		  <if test="payStatus != null and payStatus != ''">
+	      	t.STATUS = #{payStatus,jdbcType=VARCHAR},
+	      </if>
+	       t.FRIST_AUDIT_TIME = now(),
+	       t.SECOND_AUDIT_TIME = now(),
+		</set>
+		WHERE
+		t.`CREDIT_ID` =#{id,jdbcType=VARCHAR};
+</update>
+
+
+<select id="selectRechargeRate" parameterType="String" resultType="String">
+  SELECT
+	t.recharge_rate
+  FROM
+	td_merchant_product_info t
+  where
+  	t.product_status = '00'
+  AND t.`merchant_code` =#{merchantCode,jdbcType=VARCHAR}
+ 
+</select>
+
+<select id="getOrderInfoByCreditId" parameterType="String" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+ 	SELECT 
+ 		o.ORDER_ID,
+ 		o.EXT_DATA2,
+ 		o.NOTIFY_COUNT,
+ 		o.NOTIFY_RESULT,
+ 		o.ORDER_STATE
+ 	FROM combinedpayment.td_order o
+	RIGHT JOIN stcdb.td_pay_credit_info c ON o.ORDER_ID = c.BAT_NO,
+	(SELECT 
+		i.*
+	 FROM 
+	 	td_pay_credit_info i
+	 WHERE 
+	 	i.id =#{id,jdbcType=VARCHAR}
+	)t
+	WHERE c.BAT_NO = t.bat_no
+
+
+</select>
+
+
+	<select id="selectMerProduct" resultType="map">
+		SELECT
+			m.merchant_code,
+			p.product_code,
+			c.channel_id,
+			c.channel_name,
+			m.product_rate,
+			m.recharge_rate,
+			c.channel_topay_rate,
+			c.channel_recharge_rate,
+			c.channel_recharge_type
+		FROM
+			td_merchant_product_info m,
+			td_product_info p,
+			td_merchant_channel c
+		WHERE
+			m.product_status = '00'
+		AND m.product_id = p.product_id
+		AND m.aisle = c.channel_id
+		AND m.merchant_code = #{merchantCode, jdbcType=VARCHAR}
+		AND p.product_code = #{prodCode, jdbcType=VARCHAR}
+		LIMIT 1
+	</select>
+	
+		<select id="selCustInfoByEmail" parameterType="String"  resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			c.*, 
+  			t.*
+		FROM
+			td_cust_info c
+		INNER JOIN td_login_user_info t ON c.cust_id = t.cust_id
+		WHERE
+			t.email = #{email,jdbcType = VARCHAR} AND c.STATE = '00' AND t.STATE = '00'
+	</select>
+	
+	<select id="getChannelInfoByMerchantCode" parameterType="java.lang.String" resultType="com.qifenqian.bms.paymentmanager.bean.TdChannelInfo">
+		select 
+			c.*
+		from 
+			td_merchant_product_info p	
+		inner join
+			td_merchant_channel c
+		on
+			p.aisle=c.channel_id and p.product_status='00'
+		where
+			p.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+ 	</select>
+ 	
+ 	<select id="selMerchantChannelList" parameterType="com.qifenqian.bms.paymentmanager.bean.TdChannelInfo" resultType="com.qifenqian.bms.paymentmanager.bean.TdChannelInfo">
+ 		select
+ 			c.channel_id,
+ 			c.channel_name,
+ 			c.channel_topay_rate,
+ 			c.channel_recharge_rate,
+ 			c.channel_recharge_type,
+ 			c.sevenpay_recharge_rate,
+ 			c.sevenpay_recharge_type,
+ 			c.description
+ 		from 
+ 			td_merchant_channel c
+ 		where 1=1
+ 		<if test="channelId != null and  channelId != '' ">
+			 and c.channel_id=#{channelId,jdbcType=VARCHAR}
+		</if>
+		<if test="channelName != null and  channelName != '' ">
+			 and c.channel_name=#{channelName,jdbcType=VARCHAR}
+		</if>
+ 		
+ 	</select>
+</mapper>

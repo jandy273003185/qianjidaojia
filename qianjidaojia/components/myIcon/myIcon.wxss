@@ -1,0 +1,81 @@
+/* components/myIcon/myIcon.wxss */
+@font-face {
+  font-family: 'iconfont';  /* project id 1697810 */
+  src: url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.eot');
+  src: url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1697810_0ne0l4agoysk.svg#iconfont') format('svg');
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: inherit;
+}
+/* 搜索 */
+.icon_search:before{
+  content: "\e69d";
+}
+/* 购物车 */
+.icon_shoppingCort:before{
+  content: "\e661";
+}
+/* 更多 */
+.icon_more:before{
+  content: "\e63e";
+}
+/* 通知 */
+.icon_notice:before{
+  content: "\e681";
+}
+/* 回收桶 */
+.icon_empty:before{
+  content: "\e623";
+}
+/* 头像 */
+.icon_head:before{
+  content: "\e628";
+}
+/* 修改 */
+.icon_ament:before{
+  content: "\e6a3";
+}
+/* 添加 */
+.iconadd:before {
+  content: "\e600";
+}
+/* 清空 */
+.icondel:before{
+  content: "\e623"
+}
+/* 选中 */
+.iconselected:before {
+  content: "\e624";
+}
+/* 购物车 */
+.iconcar:before {
+  content: "\e64f";
+}
+/* 位置 */
+.iconaddress:before {
+  content: "\e628";
+}
+/* 关闭 */
+.iconclose:before {
+  content: "\e658";
+}
+/* 减少 */
+.iconcut:before {
+  content: "\e60b";
+}
+/* 搜索 */
+.iconsearch:before {
+  content: "\e69d";
+}
+/* 更多 */
+.iconmore:before {
+  content: "\e63e";
+}

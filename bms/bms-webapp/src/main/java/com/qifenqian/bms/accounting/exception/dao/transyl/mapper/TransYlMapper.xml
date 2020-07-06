@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.transyl.mapper.TransYlMapper">
+
+  <insert id="insertTransYl" parameterType="com.qifenqian.bms.accounting.exception.dao.transyl.bean.TransYl">
+	INSERT INTO TD_TRANS_YL(
+		  TRANS_ID,
+		  TRANS_SN,
+		  TRANS_TYPE,
+		  CUST_ID,
+		  CUST_NAME,
+		  TRANS_CURR_CODE,
+		  TRANS_AMT,
+		  MEMO,
+		  TRANS_SUBMIT_TIME,
+		  ACC_NO,
+		  PAY_CARD_TYPE,
+		  PAY_TYPE,
+		  PAY_CARD_NO,
+		  PAY_CARD_ISSUE_NAME,
+		  REVOKE_QUERY_ID,
+		  WORK_DATE
+	)values(
+		#{transId,			jdbcType = VARCHAR},
+		#{transSn,			jdbcType = VARCHAR}, <!-- not null -->
+		#{transType,		jdbcType = VARCHAR}, <!-- not null -->
+		#{custId,			jdbcType = VARCHAR}, <!-- not null -->
+		#{custName,			jdbcType = VARCHAR},
+		#{transCurrCode,	jdbcType = VARCHAR},
+		#{transAmt,			jdbcType = DECIMAL}, <!-- not null -->
+		#{memo,				jdbcType = VARCHAR},
+		#{transSubmitTime,	jdbcType = VARCHAR},
+		#{accNo,			jdbcType = VARCHAR},
+		#{payCardType,		jdbcType = VARCHAR},
+		#{payType,			jdbcType = VARCHAR},
+		#{payCardNo,		jdbcType = VARCHAR},
+		#{payCardIssueName,	jdbcType = VARCHAR},
+		#{revokeQueryId,	jdbcType = VARCHAR},
+		#{workDate,			jdbcType = VARCHAR} <!-- not null -->
+	)
+	</insert>
+	
+	<select id="selectBySn" resultType="com.qifenqian.bms.accounting.exception.dao.transyl.bean.TransYl">
+		SELECT
+			T.*,
+			(CASE 
+			WHEN A.RTN_TYPE ='SUCC' AND A.RTN_CODE='C0' THEN 'CONFIRM_SUCCESS'
+			WHEN A.RTN_TYPE ='FAIL' AND A.RTN_CODE='C4' THEN 'CONFIRM_FAILURE'
+			WHEN A.RTN_CODE ='N1' THEN 'EXCEPTION'
+			WHEN A.RTN_TYPE ='SUCC' AND A.RTN_CODE!='C0' THEN 'SUCCESS' 
+			WHEN A.RTN_TYPE ='FAIL' AND A.RTN_CODE!='C4' THEN 'FAILURE' 
+			ELSE 'EXCEPTION' END ) RESULT_STATUS,
+			(CASE WHEN T.TRANS_TYPE ='CHARGE' OR T.TRANS_TYPE ='PAYMENT' THEN 'UNIONPAY_PAYMENT'
+			WHEN T.TRANS_TYPE ='REVOCATION'  THEN 'UNIONPAY_REVOKE' 
+			WHEN T.TRANS_TYPE ='REFUND'  THEN 'UNIONPAY_REFUND' END ) transFlowOperate
+		FROM TD_TRANS_YL T
+			LEFT JOIN TD_RTN_CODE_INFO A ON A.RTN_CODE = T.YL_RESP_CODE_YB
+		WHERE 
+			T.TRANS_SN = #{transSn, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectTransYlByTransId" resultType="com.qifenqian.bms.accounting.exception.dao.transyl.bean.TransYl" parameterType="string" >
+		SELECT
+			T.*
+		FROM TD_TRANS_YL T
+		WHERE 
+			T.TRANS_ID = #{transId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectTransYlByTransSn" resultType="com.qifenqian.bms.accounting.exception.dao.transyl.bean.TransYl" parameterType="string" >
+		SELECT
+			T.*
+		FROM TD_TRANS_YL T
+		WHERE 
+			T.TRANS_SN = #{transSn, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateTransYl" parameterType="com.qifenqian.bms.accounting.exception.dao.transyl.bean.TransYl">
+		UPDATE TD_TRANS_YL T
+	 	<set>
+	 		<if test="null!=ylRespTimeTb and ylRespTimeTb!='' ">
+				T.YL_RESP_TIME_TB = #{ylRespTimeTb,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=ylRespCodeTb and ylRespCodeTb!=''">
+				T.YL_RESP_CODE_TB = #{ylRespCodeTb,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=ylRespCodeYb and ylRespCodeYb!='' ">
+				T.YL_RESP_CODE_YB = #{ylRespCodeYb,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=ylRespMsgYb and ylRespMsgYb!=''">
+				T.YL_RESP_MSG_YB = #{ylRespMsgYb,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=ylRespTimeYb and ylRespTimeYb!=''">
+				T.YL_RESP_TIME_YB = #{ylRespTimeYb,jdbcType = VARCHAR},
+			</if>
+			 <if test="null!=settleAmt and settleAmt!='' ">
+				T.SETTLE_AMT = #{settleAmt,jdbcType = DECIMAL},
+			</if>
+			<if test="null!=settleCurrencyCode and settleCurrencyCode!=''">
+				T.SETTLE_CURRENCY_CODE = #{settleCurrencyCode,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=settleDate and settleDate!='' ">
+				T.SETTLE_DATE = #{settleDate,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=traceNo and traceNo!=''">
+				T.TRACE_NO = #{traceNo,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=traceTime and traceTime!=''">
+				T.TRACE_TIME = #{traceTime,jdbcType = VARCHAR},
+			</if>	
+		    <if test="null!=exchangeDate and exchangeDate!=''">
+				T.EXCHANGE_DATE = #{exchangeDate,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=exchangeRate and exchangeRate!='' ">
+				T.EXCHANGE_RATE = #{exchangeRate,jdbcType = DECIMAL},
+			</if>
+			<if test="null!=accNo and accNo!=''">
+				T.ACC_NO = #{accNo,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=payCardType and payCardType!=''">
+				T.PAY_CARD_TYPE = #{payCardType,	jdbcType = VARCHAR},
+			</if>	
+		   <if test="null!=payType and payType!=''">
+				T.PAY_TYPE = #{payType,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=payCardNo and payCardNo!='' ">
+				T.PAY_CARD_NO = #{payCardNo,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=payCardIssueName and payCardIssueName!=''">
+				T.PAY_CARD_ISSUE_NAME = #{payCardIssueName,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=bindId and bindId!=''">
+				T.BIND_ID = #{bindId,jdbcType = VARCHAR},
+			</if>	
+			<if test="null!=queryId and queryId!=''">
+				T.QUERY_ID = #{queryId,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=revokeQueryId and revokeQueryId!=''">
+				T.REVOKE_QUERY_ID = #{revokeQueryId,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=txnType and txnType!=''">
+				T.TXN_TYPE = #{txnType,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=txnSubType and txnSubType!='' ">
+				T.TXN_SUB_TYPE = #{txnSubType,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=bizType and bizType!=''">
+				T.BIZ_TYPE = #{bizType,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=accessType and accessType!=''">
+				T.ACCESS_TYPE = #{accessType,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=merId and merId!=''">
+				T.MER_ID = #{merId,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=reqReserved and reqReserved!=''">
+				T.REQ_RESERVED = #{reqReserved,jdbcType = VARCHAR},
+			</if>
+			<if test="null!=reserved and reserved!=''">
+				T.RESERVED = #{reserved,	jdbcType = VARCHAR},
+			</if>
+			<if test="null!=vpcTransData and vpcTransData!=''">
+				T.VPC_TRANS_DATA = #{vpcTransData,	jdbcType = VARCHAR}，
+			</if>
+			<if test="null!=workDate and workDate!=''">
+				T.WORK_DATE = #{workDate,	jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE 
+		    T.TRANS_ID = #{transId, jdbcType=VARCHAR}
+	</update>
+</mapper>

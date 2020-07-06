@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html PUBLtuyIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>专属优惠券领取</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <link href="css/newcoupon.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/coupon.js?v=003" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div class="contain">
+
+        <!--搜索-->
+
+
+        <ul class="" id="ullist">
+            <!--单个优惠券  未领取-->
+
+
+
+        </ul>
+
+        <!--么有优惠券-->
+        <div class="nopic none">
+            <div>暂无可用优惠券</div>
+        </div>
+
+        <div class="both"></div>
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+</body>
+<script type="text/javascript">
+    var liIndex = 0;
+    var userId = sc.utils.getCookieValue("UserId");
+    var token = sc.utils.getCookieValue("Token");
+    var parms = sc.utils.getQueryString("parms");
+    var couId = sc.utils.getQueryString("couId");
+    var couDetailId = sc.utils.getQueryString("couDetailId");
+    var openId;
+    $(function () {
+
+        $("#index-footer").load("/footerV.html");
+        var s = setInterval(function () {
+            if (!iswx() && !sc.auth.isLogin()) {
+                window.location.href = "/login.html";
+            }
+            if (!iswx() || (iswx() && isWxLoginOver == true)) {
+                clearInterval(s);
+                setTimeout(function () {
+                    //登录过了
+                    if (sc.utils.isNullOrEmpty(token)) {
+                        userId = sc.utils.getCookieValue("UserId");
+                        token = sc.utils.getCookieValue("Token");
+                        
+                        
+
+                    }
+                    // 初始化分享链接
+                    //GetMemberInfo(function (data) {
+                    //    var url = 'https://www.qianjidaojia.com/register.html?referralCode=' + data.data.ReferralCode + '&id=';
+                    //    $(".fenxiang a").attr("data-url", url);
+                    //});
+                    //加载数据
+
+
+                }, 100);
+            }
+        }, 300);
+        loadactivity();
+        loadCouponInfo();
+
+    });
+    function subSave() {
+        $("#ullist li").click(function () {
+            var couId = $(this).attr("data-couId");
+            var couDetailId = $(this).attr("data-couDetailId");
+            var url = "api/Coupon/ReceiveCoupon";
+            var callback = function (data) {
+                if (data.code === 1) {
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+                else if (data.code === 2) {
+                    layer.open({
+                        content: '亲，您已掉线，请重新登录!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+                else if (data.code == 0 || data.code == 5) {
+                    layer.open({
+                        content: '领取成功!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    setTimeout(function () {
+                        window.location.href = "/coupon/VoucherCenter.html";
+                    }, 1000);
+                }
+            }
+            sc.post(url, {
+                'UserId': userId,
+                'Token': token,
+                'CouponId': couId,
+                'CounponDetailId': couDetailId
+            }, callback)
+        });
+    }
+    function loadactivity() {
+        
+       
+        var url = 'api/Coupon/ExclusiveCheck';
+        var activitycallback = function (data) {
+            
+            if (data.code != "0") {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 1 //1秒后自动关闭
+                });
+                setTimeout(function () {
+                    window.location.href = "/indexv.html";
+                }, 1000);
+            } 
+        }
+        sc.post(url, {
+            'UserId': userId,
+            'Token': token,
+            "couId": parseInt(couId),
+            "parms": parms,
+            "couDetailId": couDetailId
+        }, activitycallback);
+    }
+
+    function loadCouponInfo() {
+        
+        var url = 'api/Coupon/getCouponInfo';
+        var activitycallback = function (data) {
+            if (data.code != "0") {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 1 //1秒后自动关闭
+                });
+                setTimeout(function () {
+                    window.location.href = "/indexv.html";
+                }, 1000);
+            } else {
+                debugger;
+                var html = "<li class=\"l0\" data-couId=\"" + data.data.Id + "\" data-couDetailId=\"" + data.data.DetailId + "\"><div class=\"one\"><div class=\"money\">";
+                if (data.data.couponType == 0) {
+                    html += data.data.Denomination + "<span>元</span></div><div>";
+                } else if (data.data.couponType == 1) {
+                    html += data.data.Denomination * 10 + "<span>折</span></div><div>";
+                } else if (data.data.couponType == 2) {
+                    html += data.data.useSillStart + "-" + data.data.useSillEnd + "<span>元</span></div><div>";
+                } else if (data.data.couponType == 4 || data.data.couponType==3) {
+                    html += data.data.Denomination + "<span>元</span></div><div>";
+                }
+                html += data.data.UseExplain + "</div></div><div class=\"two\"><div class=\"name\">";
+                html += data.data.Name + "</div><div class=\"desc\">";
+                html += data.data.ProductExplain + "</div><div class=\"time\">";
+                html += data.data.overdueDate + "</div></div></li>";
+                $("#ullist").html(html);
+                subSave();
+            }
+        }
+        sc.post(url, {
+            'UserId': userId,
+            'Token': token,
+            "couId": parseInt(couId),
+            "parms": parms,
+            "couDetailId": couDetailId
+        }, activitycallback);
+    }
+
+
+
+</script>
+</html>
+
+

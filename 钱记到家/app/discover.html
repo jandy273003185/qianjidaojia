@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>发现</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script type="text/javascript" src="script/dropload.min.js" charset="utf-8"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/discover.js" type="text/javascript" charset="utf-8"></script>
+    <link href="/NewVersion/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/NewVersion/css/style_css.css" rel="stylesheet" />
+</head>
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <div class="title center">发现</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="findBox">
+            <ul class="column block pl10 pr10 discount__column findList"></ul>
+        </div>
+    </div>
+    <!--底部-->
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer">
+
+    </nav>
+
+    <!--发现列表模板-->
+    <script id="findListTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <li data-id="{{=value.Id}}" data-like="{{=value.likeNum}}" data-likenum="{{=value.LikeNum}}">
+            <a href="discoverDetails.html?id={{=value.Id}}" class="outside">
+                <div class="txtBox">
+                    <p class="title">{{=value.Title}}</p>
+                    <p class="tit-con">{{=value.ContentAbstract}}</p>
+                </div>
+                <div class="pictrue"><img src="{{=sc.fileServerUrl+value.PicNo}}" /></div>
+            </a>
+            <div class="li__ft">
+                <span class="read subItem">浏览{{=value.BrowseNum}}</span>
+                <span class="dz subItem {{? value.likeNum}}active{{?}}">{{=value.LikeNum}}</span>
+            </div>
+        </li>
+        {{~}}
+    </script>
+    <!--发现列表模板  end-->
+    <script>
+        $(function () {
+            initFindPage();
+            // 底部调用
+            $("#index-footer").load("footerV.html");
+        })
+    </script>
+</body>
+
+</html>

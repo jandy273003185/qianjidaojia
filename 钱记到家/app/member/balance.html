@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>余额</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+</head>
+	<style type="text/css">
+		.layui-m-layer0 .layui-m-layerchild {width: 68%;}
+	</style>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">余额</div>
+				<a href="balanceDetail.html" class="icon_r txt">明细</a>
+			</div>
+		</div>
+		<div class="main">
+			<div class="balanceTop mA10 center">
+				<p class="priceArea"><span class="fh">￥</span><span id="Wallet"></span></p>
+				<p class="txt">当前余额(元)</p>
+                <p class="msg">
+                    每周一提现销售佣金平台将在1-3个工作日内为您提现转账
+                </p>
+			</div>
+			<div class="btnBox pt10 pb10">
+				<div class="ftbtn">
+					<a href="/Recharge.html" class="btn" style="display:none;">充值</a>
+				</div>
+				<div class="ftbtn">
+					<a href="javascript:;" class="btn btn-clarity">提现</a>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				GetMemberInfo(function(data) {
+					$('#Wallet').text(data.data.Wallet);
+					if(data.data.Wallet < 100) {
+						//$('.balanceTop .msg').text('当前余额不能提现，每笔提现需满足100元');
+					}
+				});
+				$('.btn-clarity').click(function() {
+					memberBankList(function(data) {
+						if(data.data.length==0) {
+							var strHtml = '<div class="pop"><span class="btn-close"></span><div class="imgbg" style="width:80%;margin:0 auto;"><img src="../images/icons/signIn-seccess.png"/></div><p class="tips">您还没有审核通过的银行卡</br>可到会员中心-设置-绑定银行卡</p></div>';
+							layer.open({
+								
+								content: strHtml
+							});
+							$('.pop .btn-close').click(function() {
+								layer.closeAll() //关闭所有层
+							})
+						}else{
+							location.href = "withdraw.html";
+						}
+					})
+				})
+			});
+		</script>
+	</body>
+
+</html>

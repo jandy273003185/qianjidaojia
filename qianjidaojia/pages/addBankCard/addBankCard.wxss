@@ -1,0 +1,109 @@
+/* pages/addBankCard/addBankCard.wxss */
+page {
+    background-color: #fdfafe;
+}
+.description{
+  font-size: 22rpx;
+  color: #666666;
+  display: flex;
+  justify-content: center;
+  margin: 20rpx 0;
+}
+.content{
+  background: #ffffff;
+  height: 446rpx;
+}
+.item{
+  height: 110rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 30rpx;
+}
+.line{
+  border-bottom: 1rpx solid #eeeeee;
+}
+.title{
+  display: flex;
+  align-items: center;
+}
+.bankCardNo{
+  width: 700rpx;
+}
+.bankCard{
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: 20rpx;
+}
+.arrow{
+  width: 16rpx;
+  height: 22rpx;
+  transform: rotate(180deg);
+  margin-left: 10rpx;
+}
+.select{
+  align-items: center;
+  justify-content: space-between;
+}
+
+.down{
+  background: #ffffff;
+  margin-top: 60rpx;
+  font-size: 30rpx;
+}
+.mobile{
+  color: #666666;
+}
+.code{
+  background:linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+  border-radius:8rpx 0 0 8rpx;
+  color: #ffffff;
+  min-width: 210rpx;
+  height: 110rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.item2{
+  height: 110rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 30rpx;
+  justify-content: space-between;
+}
+
+.submit{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 200rpx 100rpx 0 100rpx;
+  height: 80rpx;
+  background:linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+  border-radius: 40rpx;
+  color: #ffffff;
+}
+
+/*模态框*/
+.modal{position:fixed; top:0; right:0; bottom:0; left:0; z-index:1000;}
+.modal-cancel{position:absolute; z-index:2000; top:0; right:0; bottom: 0; left:0; background:rgba(0,0,0,0.3);}
+.bottom-dialog-body{width:100%; position:absolute; z-index:3000; bottom:0; left:0;background:#dfdede;}
+/*动画前初始位置*/
+.bottom-positon{-webkit-transform:translateY(100%);transform:translateY(100%);}
+ 
+/* 底部弹出框 */
+.bottom-positon{
+  text-align: center;
+}
+.Mselect{
+  margin-bottom: 20rpx;
+}
+.Mselect view{
+  padding: 26rpx 0;
+  background: #fff;
+}
+.Mselect view:not(:last-of-type){
+  border-bottom: 1px solid #dfdede;
+}
+.Mcancel{
+  background: #fff;
+  padding: 26rpx 0;
+}

@@ -1,0 +1,46 @@
+<!--pages/classify/classify.wxml-->
+<tabbar></tabbar>
+<view class="searchBox">
+    <!-- <input class="input" placeholder="搜索商品" placeholder-class="placeholder" disabled bindtap="search">
+    <myIcon class="search" iconClass="icon_search"></myIcon>
+    </input>
+    <view class="searchBtn" bindtap="search">搜索</view> -->
+    <input class="input" placeholder="搜索商品" placeholder-class="placeholder" type="text" confirm-type="search"  bindconfirm="confirm" bindinput="inputListener">
+    <myIcon class="search" iconClass="icon_search"></myIcon>
+    </input>
+    <view class="searchBtn" bindtap="confirm">搜索</view>
+</view>
+<view class="main">
+  <scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+          <view class="cookhouse flex justs alifs flexwp">
+                  <view class="cookgoods" wx:for="{{listArr}}"  wx:key="*this" catchtap="toDetails" data-id="{{item.ProId}}">
+                      <view class="cookImg">
+                          <image src="{{item.ProductImg}}"></image>
+                      </view>
+                      <view class="goodsName hid-ell">{{item.Name}}</view>
+                      <view class="goodsText hid-ell">{{item.Synopsis}}</view>
+                      <view class="nowPrice">￥{{item.Price}}</view>
+                      <view class="oldPrice">￥{{item.MarketPrice}}
+                          <view class="line"></view>
+                      </view>
+                      <!-- 团长佣金 -->
+                    <view wx:if="{{role==1}}" class="brokerageBox flex colu justs alifs">
+                        <text class="brokerage">佣金比例:{{item.CommissionRate}}%</text>
+                        <text class="brokerage">预计可赚:￥{{item.CommissionPrice}}</text>
+                    </view>
+                    <!-- 营长佣金 -->
+                    <view wx:if="{{role==2}}" class="brokerageBox flex colu justs alifs">
+                        <text class="brokerage">佣金比例:{{item.SecondCommissionRate}}%</text>
+                        <text class="brokerage">预计可赚:￥{{item.SecondCommissionPrice}}</text>
+                    </view>
+                      <image data-proId="{{item.ProId}}" data-proName="{{item.Title}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proStock="{{item.Stock}}" data-proimg="{{item.ProductImg}}" class="shoppingCart" src="../../images/index/shoppingCart.png" catchtap="addCart"></image>
+                  </view>
+              <view style="width:200rpx;height:200rpx;"></view>
+          </view>
+    </scroll-view>
+</view>
+
+<!-- tabbar底部导航栏 -->
+<tabbar id="tabbar"></tabbar>
+<!-- 点击加入购物车 -->
+<addCart id="cart" wx:if="{{cartToggle}}" isCart="{{isCart}}" animation="{{animation}}"  proId="{{proId}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}" nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}" bind:cartNum="cartNum"></addCart>

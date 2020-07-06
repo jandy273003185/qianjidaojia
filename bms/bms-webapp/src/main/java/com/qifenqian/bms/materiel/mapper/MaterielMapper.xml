@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.materiel.mapper.MaterielMapper">
+
+	<!-- 写入单个物料 -->
+	<insert id="insertMaterielSingle" useGeneratedKeys="true" keyProperty="id" parameterType="com.qifenqian.bms.materiel.bean.Materiel">
+		INSERT INTO td_materiel (
+			MACHINE_ID,
+			MACHINE_TYPE,
+			SUPPLIER,
+			MACHINE_STATE,
+			USED_MERCHANT,
+			USED_STORES,
+			RECEIVER,
+			CREATOR,
+			LASTUPDATE_USER,
+			SERVICE_PARENTER_NAME,
+			MEMO 
+		) VALUES (
+			#{machineId, 	    jdbcType=VARCHAR},
+			#{machineType, 	    jdbcType=VARCHAR},
+			#{supplier, 	    jdbcType=VARCHAR},
+		  	#{machineState, 	jdbcType=VARCHAR},
+		  	#{usedMerchant, 	jdbcType=VARCHAR},
+		  	#{usedStores, 	    jdbcType=VARCHAR},
+		  	#{receiver, 		jdbcType=INTEGER},
+		  	#{creator, 			jdbcType=VARCHAR},
+		  	#{lastupdateUser, 	jdbcType=VARCHAR},
+		  	#{serviceParenterName, 	jdbcType=VARCHAR},
+		  	#{memo, 		    jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 根据id查询物料 -->
+	<select id="selectMaterielById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.materiel.bean.Materiel">
+		SELECT *
+		FROM td_materiel
+		WHERE ID = #{id, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据machineId查询物料 -->
+	<select id="selectMaterielByMachineId" parameterType="java.lang.String" resultType="com.qifenqian.bms.materiel.bean.Materiel">
+		SELECT *
+		FROM td_materiel
+		WHERE MACHINE_ID = #{machineId, jdbcType=INTEGER}
+	</select>
+
+	
+	<!-- 查询物料列表 -->
+	<select id="selectMaterielList" parameterType="com.qifenqian.bms.materiel.bean.Materiel" resultType="com.qifenqian.bms.materiel.bean.Materiel">
+		SELECT
+			ID,
+			MACHINE_ID,
+			MACHINE_TYPE,
+  			INPUT_TIME,
+  			SUPPLIER,
+  			MACHINE_STATE,
+  			USED_MERCHANT,
+  			USED_STORES,
+  			RECEIVER,
+  			CREATOR,
+  			CREATE_TIME,
+  			LASTUPDATE_USER,
+  			LASTUPDATE_TIME,
+  			SERVICE_PARENTER_NAME,
+  			MEMO
+		FROM
+			td_materiel 		
+		<where>
+			<if test="machineId != null and machineId != '' "> AND MACHINE_ID =#{machineId, jdbcType=INTEGER}</if>
+			<if test="receiver != null and receiver != '' "> AND RECEIVER LIKE CONCAT('%',#{receiver, jdbcType=VARCHAR},'%')</if>
+			<if test="usedMerchant != null and usedMerchant != '' "> AND USED_MERCHANT LIKE CONCAT('%',#{usedMerchant, jdbcType=VARCHAR},'%')</if>
+			<if test="serviceParenterName != null and serviceParenterName != '' "> AND SERVICE_PARENTER_NAME LIKE CONCAT('%',#{serviceParenterName, jdbcType=VARCHAR},'%')</if>
+			<if test="machineState != null and machineState != '' "> AND MACHINE_STATE =#{machineState, jdbcType=VARCHAR}</if>
+		</where>
+		order by CREATE_TIME DESC
+	</select>
+	
+	<!-- 修改物料信息 -->
+	<update id="updateMaterielById" parameterType="com.qifenqian.bms.materiel.bean.Materiel">
+		UPDATE 
+			   td_materiel  
+	   <set>
+		   	<if test="machineId != null and machineId !=''">
+				MACHINE_ID 	= #{machineId, 	jdbcType=VARCHAR},
+			</if>
+			<if test="machineType != null and machineType !=''">
+				MACHINE_TYPE 	= #{machineType, 	jdbcType=VARCHAR},
+			</if>
+			<if test="supplier != null">
+				SUPPLIER = #{supplier, 	jdbcType=VARCHAR},
+			</if>
+			<if test="machineState != null">
+				MACHINE_STATE = #{machineState, 	jdbcType=VARCHAR},
+			</if>
+			<if test="usedMerchant != null">
+				USED_MERCHANT = #{usedMerchant, 	jdbcType=VARCHAR},
+			</if>
+			<if test="serviceParenterName != null">
+				SERVICE_PARENTER_NAME = #{serviceParenterName, 	jdbcType=VARCHAR},
+			</if>
+			
+			<if test="usedStores != null">
+				USED_STORES = #{usedStores, 		jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+			  	MEMO = #{memo, 		jdbcType=VARCHAR},
+			</if>
+			
+	   </set>
+		 WHERE ID 	= #{id, 	jdbcType=INTEGER}
+	</update>
+	
+	<!-- 删除修改物料信息 -->
+	 <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    	DELETE FROM td_materiel
+    	WHERE ID = #{id,jdbcType=VARCHAR}
+  	</delete>
+  	
+  	<!-- 批量导入删除修改物料信息 -->
+  	<insert id="addBatchMateriel"  parameterType="java.util.List">
+    
+        INSERT INTO td_materiel (
+        <trim suffix="" suffixOverrides=",">
+            MACHINE_ID,
+            MACHINE_TYPE,
+			SUPPLIER,
+			MACHINE_STATE,
+			USED_MERCHANT,
+			USED_STORES,
+			RECEIVER,
+			CREATOR,
+			LASTUPDATE_USER,
+			SERVICE_PARENTER_NAME,
+			MEMO 
+        </trim>
+        ) VALUES 
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.machineId} ,
+                #{item.machineType} ,
+                #{item.supplier} ,
+                #{item.machineState} ,
+                #{item.usedMerchant} ,
+                #{item.usedStores} ,
+                #{item.receiver} ,
+                #{item.creator} ,
+                #{item.lastupdateUser} ,
+                #{item.serviceParenterName} ,
+                #{item.memo} 
+            )
+           </foreach>
+    </insert> 
+	
+</mapper>

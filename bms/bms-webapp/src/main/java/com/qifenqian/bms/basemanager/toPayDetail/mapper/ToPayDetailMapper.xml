@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.toPayDetail.mapper.ToPayDetailMapper">
+
+ 	<select id="listDetail" parameterType="com.qifenqian.bms.basemanager.toPayDetail.bean.ToPaySingleDetail" resultType="com.qifenqian.bms.basemanager.toPayDetail.bean.ToPaySingleDetail">
+ 		select 
+ 			T.*,
+ 			C.CUST_NAME	
+ 		from 
+ 			TD_AGENT_PAYMENT_BAT_DETAIL_RECORD T
+ 		LEFT JOIN
+ 			td_cust_info C
+ 		ON
+ 			T.PAER_MERCHANT_CODE = C.MERCHANT_CODE
+ 		<where>
+ 			<if test="orderNo !=null and orderNo !='' ">
+ 				and T.ORDER_NO =  #{orderNo,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="batNo !=null and batNo !='' ">
+ 				and T.BAT_NO =  #{batNo,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="paerMerchantCode !=null and paerMerchantCode !='' ">
+ 				and T.PAER_MERCHANT_CODE =  #{paerMerchantCode,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="tradeStatus !=null and tradeStatus !='' ">
+ 				and T.TRADE_STATUS =  #{tradeStatus,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="orderId !=null and orderId !='' ">
+ 				and T.ORDER_ID =  #{orderId,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="verifyStatus !=null and verifyStatus !='' ">
+ 				and T.VERIFY_STATUS =  #{verifyStatus,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="channelOrderId !=null and channelOrderId !='' ">
+ 				and T.CHANNEL_ORDER_ID =  #{channelOrderId,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="startCreateTime !=null and startCreateTime != ''">
+		   		and T.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+		  	</if>
+		  	<if test="endCreateTime !=null and endCreateTime != ''">
+		   		and T.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+		  	</if>
+ 		</where>
+ 		ORDER BY
+ 			T.CREATE_TIME DESC
+ 	</select>
+ 	
+ 	
+ 	<select id="exportDetailList" parameterType="com.qifenqian.bms.basemanager.toPayDetail.bean.ToPaySingleDetail" resultType="com.qifenqian.bms.basemanager.toPayDetail.bean.ToPaySingleDetail">
+ 		select 
+ 			T.ORDER_NO,
+ 			T.BAT_NO,
+ 			T.PAER_MERCHANT_CODE,
+ 			C.CUST_NAME,
+ 			T.TRANS_AMT,
+ 			T.Single_FeeAmt,
+ 			T.ORDER_ID,
+ 			T.CHANNEL_ORDER_ID,
+ 			T.TRADE_STATUS,
+ 			T.CREATE_TIME
+ 		from 
+ 			TD_AGENT_PAYMENT_BAT_DETAIL_RECORD T
+ 		LEFT JOIN
+ 			td_cust_info C
+ 		ON
+ 			T.PAER_MERCHANT_CODE = C.MERCHANT_CODE
+ 		<where>
+ 			<if test="orderNo !=null and orderNo !='' ">
+ 				and T.ORDER_NO =  #{orderNo,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="batNo !=null and batNo !='' ">
+ 				and T.BAT_NO =  #{batNo,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="paerMerchantCode !=null and paerMerchantCode !='' ">
+ 				and T.PAER_MERCHANT_CODE =  #{paerMerchantCode,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="tradeStatus !=null and tradeStatus !='' ">
+ 				and T.TRADE_STATUS =  #{tradeStatus,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="orderId !=null and orderId !='' ">
+ 				and T.ORDER_ID =  #{orderId,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="verifyStatus !=null and verifyStatus !='' ">
+ 				and T.VERIFY_STATUS =  #{verifyStatus,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="channelOrderId !=null and channelOrderId !='' ">
+ 				and T.CHANNEL_ORDER_ID =  #{channelOrderId,jdbcType = VARCHAR}
+ 			</if>
+ 			<if test="startCreateTime !=null and startCreateTime != ''">
+		   		and T.CREATE_TIME &gt;= CAST(#{startCreateTime,jdbcType=VARCHAR} AS datetime)
+		  	</if>
+		  	<if test="endCreateTime !=null and endCreateTime != ''">
+		   		and T.CREATE_TIME &lt;= CAST(#{endCreateTime,jdbcType=VARCHAR} AS datetime)
+		  	</if>
+ 		</where>
+ 		ORDER BY
+ 			T.CREATE_TIME DESC
+ 	</select>
+</mapper>

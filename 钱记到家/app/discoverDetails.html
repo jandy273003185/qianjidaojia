@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>详情页</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js " type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script type="text/javascript" src="script/dropload.min.js" charset="utf-8"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/WxShare.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/discover.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+
+        .dataHtml img {
+            max-width: 100%;
+            width: inherit;
+        }
+    </style>
+</head>
+<!--判断页面跳转，如果有前一页就跳转到前一页，如果没有就跳转首页 -->
+<script>
+    function goBack() {
+        if (window.history.length > 2) {
+            window.history.go(-1);
+        } else {
+            window.location.href = "/indexV.html";
+        }
+    }
+</script>
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+            <div class="title center">详情页</div>
+            <!--<a href="#" class="icon_r icons_share"></a>-->
+        </div>
+    </div>
+    <div class="main ml10 mr10 mt10 mb20">
+        <div class="discoverDetails">
+
+        </div>
+    </div>
+
+    <!--详情页模板-->
+    <script id="findDetailTemp" type="text/x-dot-template">
+        <div class="details__hd">
+            <h2 class="title">{{=it.Title}}</h2>
+            <p class="time">发布时间：{{=sc.utils.dateFormat(sc.utils.toDate(it.Addtime),"yyyy-MM-dd hh:mm") }}</p>
+        </div>
+        <div class="details__bd">
+            <div class="dataHtml">
+                {{=it.ContentDetails}}
+            </div>
+            {{? it.InnerLink}}
+            <div class="dataHtml__ft">
+                <a href="{{=it.InnerLink}}" class="btn_buy">立即购买</a>
+            </div>
+            {{?}}
+        </div>
+    </script>
+    <!--详情页模板   end-->
+    <script type="text/javascript">
+        $(function () {
+            initFindDetailPage();
+        })
+    </script>
+</body>
+</html>

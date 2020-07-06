@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.branchbank.mapper.BranchBankMapper">
+
+	<select id="branchBankList" parameterType="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank" resultType="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank">
+		SELECT
+			T.BANK_CNAPS,
+			T.BANK_CODE,
+			T.AREA_ID,
+			T.BANK_NAME,
+			T.BANK_ADDRESS
+		FROM
+			TB_BANK_INFO T
+		<where>
+			<if test="bankCode!=null and bankCode!='' ">
+				AND T.BANK_CODE = #{bankCode, jdbcType = VARCHAR}
+			</if>
+			<if test="bankName!=null and bankName!='' ">
+				AND T.BANK_NAME LIKE CONCAT('%',#{bankName, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="bankAddress!=null and bankAddress!='' ">
+				AND T.BANK_ADDRESS LIKE CONCAT('%',#{bankAddress, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="areaId!=null and areaId!='' ">
+				AND T.AREA_ID = #{areaId, jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY T.BANK_CODE
+	</select>
+	
+	<select id="selectBankCnaps" resultType="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank" parameterType="string">
+		SELECT 
+			T.* 
+		FROM 
+			TB_BANK_INFO T
+		WHERE
+		T.BANK_CNAPS = #{bankCnaps,jdbcType = VARCHAR}
+	</select>
+	
+	<insert id="insertBranchBank" parameterType ="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank">
+		INSERT INTO TB_BANK_INFO(
+			BANK_CNAPS,
+			BANK_CODE,
+			AREA_ID,
+			BANK_NAME,
+			BANK_ADDRESS
+		)VALUES(
+			#{bankCnaps,	jdbcType = VARCHAR},
+			#{bankCode,		jdbcType = VARCHAR},
+			#{areaId,		jdbcType = INTEGER},
+			#{bankName,		jdbcType = VARCHAR},
+			#{bankAddress,	jdbcType = VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateBranchBank" parameterType ="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank">
+		UPDATE TB_BANK_INFO T
+		<set>
+			<if test="bankCode!=null">
+				T.BANK_CODE = #{bankCode, jdbcType = VARCHAR},
+			</if>
+			<if test="bankName!=null">
+				T.BANK_NAME = #{bankName, jdbcType = VARCHAR},
+			</if>
+			<if test="areaId > 0">
+				T.AREA_ID  = #{areaId,jdbcType = INTEGER},
+			</if>
+			<if test="bankAddress!=null">
+				T.BANK_ADDRESS = #{bankAddress, jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE T.BANK_CNAPS = #{bankCnaps,jdbcType = VARCHAR}
+	</update>
+	
+	<delete id="deleteBranchBank" parameterType ="com.qifenqian.bms.basemanager.branchbank.bean.BranchBank">
+	 	DELETE FROM TB_BANK_INFO  WHERE BANK_CNAPS = #{bankCnaps,jdbcType = VARCHAR}
+	</delete>
+</mapper>

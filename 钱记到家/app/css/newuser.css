@@ -1,0 +1,184 @@
+﻿body {
+    background: rgba(253,250,254,1);
+}
+.loading {
+    background: url(/images/loading-1.gif) no-repeat;
+    width: .74rem;
+    height: .74rem;
+    background-size: 100% 100%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 40%;
+}
+.container{display:none;}
+.countdown {
+    background: url(../images/countdownbg.png?0);
+    background-size: 100% 100%;
+    width: 100%;
+    height: 1.63rem;
+    position: relative;
+}
+
+    .countdown .time {
+        font-size: .31rem;
+        font-family: OPPOSans-B,OPPOSans;
+        font-weight: normal;
+        color: rgba(249,69,69,1);
+        position: absolute;
+        top: .55rem;
+        width: 72%;
+        text-align: center;
+        margin: 0 .71rem;
+        height: .74rem;
+        line-height: .74rem;
+    }
+
+        .countdown .time div {
+            float: left;
+            width: .45rem;
+        }
+
+        .countdown .time .hour2 {
+            margin-left: .16rem;
+        }
+
+        .countdown .time .min1 {
+            margin-left: .42rem;
+        }
+
+        .countdown .time .min2 {
+            margin-left: .17rem;
+        }
+
+.good-list {
+    width: 3.45rem;
+    margin: 0 auto;
+    margin-bottom: .8rem;
+}
+
+    .good-list .item {
+        border-bottom: 1px solid #eee;
+        padding: .21rem .13rem;
+        font-size: .12rem;
+        background: rgba(255,255,255,1);
+        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.06);
+        border-radius: 0.08rem;
+        border: 1px solid rgba(244,245,244,1);
+        margin-top: .19rem;
+    }
+
+        .good-list .item .proimg {
+            float: left;
+            width: 1.09rem;
+            height: 1.09rem;
+            margin-right: 0.06rem;
+        }
+
+        .good-list .item .tit {
+            font-size: .16rem;
+            height: .26rem;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-family: SourceHanSansSC-Normal,SourceHanSansSC;
+            font-weight: 400;
+            color: rgba(51,51,51,1);
+            line-height: .24rem;
+        }
+
+        .good-list .item p {
+            height: .20rem;
+            font-size: .12rem;
+            font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+            font-weight: 400;
+            color: rgba(102,102,102,1);
+            line-height: .18rem;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .good-list .item .realprice {
+            font-size: .16rem;
+            font-family: SourceHanSansSC-Medium,SourceHanSansSC;
+            font-weight: 500;
+            color: #fff;
+            float: left;
+        }
+
+            .good-list .item .realprice .pricejia {
+                text-align: right;
+                font-size: .18rem;
+                background-image: url(../images/newp_btn.png?0);
+                background-size: 100% 100%;
+                width: 1.2rem;
+                height: .27rem;
+                line-height: .27rem;
+                float: left;
+            }
+
+            .good-list .item .realprice .gobuy {
+                margin-left: .3rem;
+            }
+                .good-list .item .realprice .gobuy img {
+                    width: .45rem;
+                    height: .23rem;
+                    margin-top: 0.04rem;
+                }
+                .good-list .item .realprice span {
+                font-size: .12rem;
+            }
+
+        .good-list .item .price {
+            font-size: .12rem;
+            font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+            font-weight: 400;
+            color: rgba(157,156,157,1);
+            line-height: .2rem;
+            margin-top: .08rem;
+            /*height: .2rem;*/
+        }
+
+            .good-list .item .price span {
+                text-decoration: line-through;
+            }
+
+            .good-list .item .price a {
+                display: inline-block;
+                width: .82rem;
+                height: .28rem;
+                text-align: center;
+                float: right;
+                margin-right: .2rem;
+            }
+/*  toast 样式 */
+.toast {
+    position: fixed;
+    /* padding: .43rem .36rem; */
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    color: #fff;
+    text-align: center;
+    background-color: rgba(0,0,0,.7);
+    border-radius: .2rem;
+    word-break: break-all;
+    z-index: 20;
+    line-height: 1rem;
+    letter-spacing: 1px;
+    width: 2rem;
+    height: 1rem;
+}
+.layui-m-layer-myskin {
+    background-color: transparent; /*背景透明*/
+    box-shadow: 0 0 0 rgba(0,0,0,0); /*前景无阴影*/
+}
+.layui-m-layer2 .layui-m-layerchild {
+    color: #000;
+}
+.layui-m-layershade {
+    background-color: #fff !important;
+}
+.layui-m-layer2 .layui-m-layercont i {
+    background-color: #000;
+}

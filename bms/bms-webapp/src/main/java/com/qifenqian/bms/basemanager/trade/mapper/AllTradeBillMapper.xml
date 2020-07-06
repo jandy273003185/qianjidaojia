@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.trade.mapper.AllTradeBillMapper">
+	<!-- 查询所有交易 -->
+	<select id="getAllTradeBill" parameterType="String" resultType="com.qifenqian.bms.basemanager.trade.bean.AllTradeBill">
+		select 
+			T.*
+		from
+		(select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_ali
+		UNION ALL
+		(
+		select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_wx
+		)
+		UNION ALL
+		(
+		select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_sp
+		)
+		)T
+		
+		<where>
+			<if test="bank != null and bank != ''">
+				T.channel_sub like CONCAT('%',#{bank},'%')
+			</if>
+			<if test="payProd != null and payProd != ''">
+				AND T.service like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 导出 -->
+	<select id="getAllTradeBillExport" parameterType="String" resultType="com.qifenqian.bms.basemanager.trade.bean.AllTradeBill">
+		select 
+			T.*
+		from
+		(select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_ali
+		UNION ALL
+		(
+		select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_wx
+		)
+		UNION ALL
+		(
+		select 
+			ORDER_ID,
+			MCH_ID,
+			MCH_NAME,
+			SERVICE,
+			CHANNEL,
+			CHANNEL_SUB,
+			ZX_ORDER_ID,
+			CHANNEL_ORDER_ID,
+			PG_URL,
+			BG_URL,
+			VERSION,
+			ORDER_AMT,
+			TRADE_AMT,
+			COUPON_AMT,
+			PROD_DESC,
+			PAY_TYPE,
+			ORDER_TIMESTAMP,
+			ORDER_TIME_OUT,
+			ORDER_EXPIRE,
+			ORDER_STATE,
+			NOTIFY_TIME,
+			NOTIFY_COUNT,
+			NOTIFY_RESULT,
+			CREATE_TIME,
+			FINISH_TIME,
+			REFUND_TIME,
+			MODIFY_TIME,
+			MODIFY_ID
+		from 
+			td_order_sp
+		)
+		)T
+		
+		<where>
+			<if test="bank != null and bank != ''">
+				T.channel_sub like CONCAT('%',#{bank},'%')
+			</if>
+			<if test="payProd != null and payProd != ''">
+				AND T.channel_sub like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+		</where>
+	</select>
+</mapper>

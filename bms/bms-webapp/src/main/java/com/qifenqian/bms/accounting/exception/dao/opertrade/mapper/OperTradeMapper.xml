@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.opertrade.mapper.OperTradeMapper">
+	<select id="selectTradeBillById" resultType="com.qifenqian.bms.accounting.exception.dao.opertrade.bean.OperTrade">
+		SELECT
+			T.*
+		  FROM TD_TRADE_BILL_MAIN T
+		 WHERE T.ORDER_ID = #{orderId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectTdmerchantInByInOrderId" resultType="com.qifenqian.bms.accounting.exception.dao.opertrade.bean.OperTrade">
+		select * from stcdb.td_merchant_in t
+		where t.IN_ORDER_ID = #{orderId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectTdOrderByOutOrderId" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		select * from combinedpayment.td_order t
+		where t.ORDER_ID = #{orderId, jdbcType=VARCHAR}
+	</select>
+	
+	
+	<update id="updateBillMainOrderState" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+		UPDATE TD_TRADE_BILL_MAIN 
+			<set>
+				<if test="orderState!=null and orderState!='' ">
+				    ORDER_STATE = #{orderState,jdbcType = VARCHAR},
+				</if>
+				<if test="chargeNetpayState!=null and chargeNetpayState!='' ">
+				    CHARGE_NETPAY_STATE = #{chargeNetpayState,jdbcType = VARCHAR},
+				</if>
+				<if test="coreSn!=null and coreSn!='' ">
+				    CORE_SN = #{coreSn,jdbcType = VARCHAR},
+				</if>
+					ORDER_CORE_RETURN_TIME = NOW(),
+					MODIFY_TIME= NOW()
+			</set>
+		WHERE 
+			ORDER_ID =  #{orderId, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateMerchantInOrderState" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+		update stcdb.td_merchant_in 
+		<set>
+			<if test="orderState!=null and orderState!='' ">
+			    ORDER_STATE = #{orderState,jdbcType = VARCHAR},
+			</if>
+			MODIFY_TIME= NOW()
+		</set> 
+		where IN_ORDER_ID = #{orderId, jdbcType=VARCHAR}
+	</update>
+	
+	
+	<update id="updateBillMainTimeOut">
+		UPDATE TD_TRADE_BILL_MAIN T 
+			SET T.MODIFY_TIME=NOW(),
+			T.ORDER_STATE='99' 
+		WHERE 
+			T.ORDER_STATE='01' 
+			AND T.CREATE_TIME  &lt; DATE_ADD(NOW(),INTERVAL -#{timeOutMinute, jdbcType=INTEGER} MINUTE)
+	</update>
+	
+	<update id="updateTransRecordByOperTrade" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+		UPDATE STCS.TRANS_RECORD T
+			<set>
+				<if test="chargeNetpayState!=null and chargeNetpayState!='' ">
+					  T.STATUS = #{chargeNetpayState,jdbcType = VARCHAR}
+				</if>
+			</set>
+		WHERE T.REQ_SERIAL_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+</mapper>

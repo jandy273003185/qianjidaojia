@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.refund.mapper.RefundRecordMapper">
+	<insert id="insert" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundRecord">
+		INSERT INTO ACCT_SEVEN_CUST_REFUND(
+			ID,
+			REFUND_ORDER_ID,
+  			CUST_ID,
+  			BUSINESS_TYPE,
+  			BRIEF,
+  			ORIGIN_MSG_ID,
+			ORIGIN_MSG_TYPE,
+  			MSG_TYPE,
+  			REFUND_AMT,
+  			CURR_CODE,
+  			INST_DATE,
+  			INST_DATETIME,
+  			CREATOR
+		)VALUES(
+			#{id,			jdbcType = VARCHAR},
+			#{refundOrderId,jdbcType = VARCHAR},
+			#{custId, 		jdbcType = VARCHAR},
+			#{businessType, jdbcType = VARCHAR},
+			#{brief, 		jdbcType = VARCHAR},
+			#{originMsgId, 	jdbcType = VARCHAR},
+			#{originMsgType,jdbcType = VARCHAR},
+			#{msgType, 		jdbcType = VARCHAR},
+			#{refundAmt, 	jdbcType = DECIMAL},
+			#{currCode, 	jdbcType = VARCHAR},
+			#{instDate, 	jdbcType = VARCHAR},
+			#{instDatetime, jdbcType = TIMESTAMP},
+			#{creator, 		jdbcType = VARCHAR}
+		)
+
+	</insert>
+	
+	<select id="selectRefundRecordByOrderId" parameterType="string" resultType="com.qifenqian.bms.accounting.refund.bean.RefundRecord">
+		select  
+				A.ID,
+				A.CUST_ID,
+				A.BUSINESS_TYPE,
+				A.BRIEF,
+				A.ORIGIN_MSG_ID,
+				A.ORIGIN_MSG_TYPE,
+				A.MSG_TYPE,
+				A.REFUND_AMT,
+				A.CURR_CODE,
+				A.INST_DATE,
+				A.INST_DATETIME,
+				(select s.user_name from sys_user s where s.user_id  = A.CREATOR ) CREATOR,
+				A.RTN_CODE,
+				A.RTN_DATETIME,
+				A.RTN_INFO,
+				A.REFUND_ORDER_ID
+		from 	acct_seven_cust_refund A  
+		JOIN    td_refund_bill B 
+		ON  	B.ORDER_ID = A.REFUND_ORDER_ID
+		WHERE   B.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+		
+	</select>
+	<update id="update" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundRecord">
+		UPDATE 
+		ACCT_SEVEN_CUST_REFUND T
+		<set>
+			<if test="rtnCode!=null and rtnCode!='' ">
+			T.RTN_CODE = #{rtnCode,	jdbcType=VARCHAR},
+			</if>
+			<if test="rtnInfo!=null and rtnInfo!='' ">
+			T.RTN_INFO = #{rtnInfo,		jdbcType = VARCHAR},
+			</if>
+			<if test="rtnDatetime!=null and rtnDatetime!='' ">
+			T.RTN_DATETIME = #{rtnDatetime,	jdbcType=TIMESTAMP}
+			</if>
+		</set>
+		WHERE T.ID = #{id, jdbcType = VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE xml>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd" version="2.0">
+
+	<description>平台自定义的一些标签库</description>
+	<!-- TLD版本 -->
+	<tlib-version>1.0</tlib-version>
+	<uri>http://web.platform.gyzb.org/taglib/1.0</uri>
+
+	<tag>
+		<name>submitToken</name>
+		<tag-class>com.qifenqian.bms.platform.web.tags.SubmitTokenTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!-- el函数 -->
+	<function>
+		<name>toJSONString</name>
+		<function-class>com.qifenqian.bms.platform.web.tags.JSONUtilsTag</function-class>
+		<!-- 转json字符串 -->
+		<function-signature>
+			java.lang.String toJSONString(java.lang.Object)
+		</function-signature>
+	</function>
+
+</taglib>

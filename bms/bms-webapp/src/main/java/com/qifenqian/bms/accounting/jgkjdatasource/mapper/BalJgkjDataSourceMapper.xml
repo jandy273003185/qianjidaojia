@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.jgkjdatasource.mapper.BalJgkjDataSourceMapper">
+
+	<select id="selectZytDataSourceList" resultType="com.qifenqian.bms.accounting.jgkjdatasource.bean.BalJgkjDataSource" parameterType="com.qifenqian.bms.accounting.jgkjdatasource.bean.BalJgkjDataSource">
+		SELECT
+			C.CHANNEL_SERIAL_SEQ,
+			T.FILE_ID,
+			T.SEQ,
+			T.WORK_DATE,
+			T.SEVENPAY_ID,
+			T.PLATFORM_ID,
+			T.CARD_NO,
+			T.RECEIVE_DATETIME,
+			T.RETURN_DATETIME,
+			T.TRANS_AMT,
+			IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = T.TRANS_TYPE),T.TRANS_TYPE) TRANS_TYPE,
+			IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'TRANS_STATUS' AND TYPE_CODE = T.TRANS_STATUS),T.TRANS_STATUS) TRANS_STATUS,
+			T.RESERVE,
+			T.INST_DATE,
+			DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS instDatetime
+		FROM
+			BAL_JGKJ_DATA_SOURCE T
+			LEFT JOIN STCS.CLEAR_JGKJ_RECHARGE C ON T.SEVENPAY_ID = C.ID
+		<where>
+			<if test="channelSerialSeq != null and channelSerialSeq != '' ">
+				AND C.CHANNEL_SERIAL_SEQ LIKE CONCAT('%',#{channelSerialSeq,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="platformId != null and platformId != '' ">
+				AND T.PLATFORM_ID LIKE CONCAT('%',#{platformId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="sevenpayId != null and sevenpayId != '' ">
+				AND T.SEVENPAY_ID LIKE CONCAT('%',#{sevenpayId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="workDate != null and workDate != '' ">
+				AND T.WORK_DATE = #{workDate,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY T.INST_DATETIME DESC
+	</select>
+</mapper>

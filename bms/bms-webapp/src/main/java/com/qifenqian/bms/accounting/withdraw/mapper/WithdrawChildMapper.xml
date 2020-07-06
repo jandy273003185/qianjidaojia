@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.withdraw.mapper.WithdrawChildMapper">
+	<insert id="saveWithdrawChild" parameterType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawChild">
+		INSERT INTO 
+		TD_WITHDRAW_CHILD_BILL(
+		WITHDRAW_SN,
+		WITHDRAW_REQSERIALID,
+		CUST_ID,
+		OPER_TYPE,
+		CREATE_ID,
+		CREATE_TIME
+		) VALUES(
+		#{withdrawSn,			jdbcType=VARCHAR},
+		#{withdrawReqserialid,  jdbcType=VARCHAR},
+		#{custId,				jdbcType=VARCHAR},
+		#{operType,				jdbcType=VARCHAR},
+		#{createId,				jdbcType=VARCHAR},
+		now()
+		)
+	</insert>
+	<select id="selectCustomerVerification" resultType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawChild">
+		SELECT
+		T.* 
+		FROM
+		td_withdraw_child_bill T
+		JOIN
+		stcs.trans_record_flow R
+		ON
+		T.CORE_SN = R.msg_id
+		AND T.CORE_RETURN_CODE = 'SUCCESS'
+		AND R.operate = 'BANK_CLEAR'
+		AND R.msg_type = 'CUST_WITHDRAW'
+		JOIN
+		stcs.clear_bank C
+		ON
+		R.id = C.trans_flow_id
+		AND
+		C.bal_status = 'BAL_OVER';
+	</select>
+	<select id="selectMerchantVerification" resultType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawChild">
+		SELECT
+		T.* 
+		FROM
+		td_withdraw_child_bill T
+		JOIN
+		stcs.trans_record_flow R
+		ON
+		T.CORE_SN = R.msg_id
+		AND T.CORE_RETURN_CODE = 'SUCCESS'
+		AND R.operate = 'BANK_CLEAR'
+		AND R.msg_type = 'BUSS_WITHDRAW'
+		JOIN
+		stcs.clear_bank C
+		ON
+		R.id = C.trans_flow_id
+		AND
+		C.bal_status = 'BAL_OVER';
+	</select>
+	
+	<update id="updateWithdrawChild" parameterType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawChild">
+		UPDATE TD_WITHDRAW_CHILD_BILL T  
+		<set>
+		<if test="coreSn!=null and coreSn!='' ">
+			T.CORE_SN = #{coreSn,jdbcType = VARCHAR},
+		</if>
+		<if test="coreReturnCode!=null and coreReturnCode!='' ">
+			T.CORE_RETURN_CODE = #{coreReturnCode,jdbcType = VARCHAR},
+		</if>
+		<if test="coreReturnMsg!=null and coreReturnMsg!='' ">
+			T.CORE_RETURN_MSG = #{coreReturnMsg,jdbcType = VARCHAR},
+		</if>
+		<if test="modifyId!=null and modifyId!='' ">
+			T.MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+		</if>
+			T.MODIFY_TIME = NOW()
+		</set>
+		WHERE T.WITHDRAW_REQSERIALID = #{withdrawReqserialid,jdbcType = VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.virtual.mapper.MerchantInfoMapper">
+ 
+ 
+ <select id="getDataInfos" resultType="com.qifenqian.bms.basemanager.virtual.bean.MerchantInfo">
+ 	SELECT * FROM MERCHANT_AMT_INFOS T
+ 	<where>
+ 		LENGTH(T.ID) <![CDATA[ = ]]> 12
+ 	</where>  
+ 	
+ </select>
+ 
+ <select id="getInfos" parameterType="com.qifenqian.bms.basemanager.virtual.bean.MerchantInfo" resultType="com.qifenqian.bms.basemanager.virtual.bean.MerchantInfo">
+ 
+ 	<!-- SELECT * FROM MERCHANT_AMT_INFO T
+ 	<where>
+ 		LENGTH(T.ID) <![CDATA[ = ]]> 11 LIMIT 80000,80
+ 	</where>  -->
+ 	<!-- where t.id = 'M_000010000' -->
+ 	
+ 	SELECT
+		id,
+		case 
+			WHEN LENGTH(merchant_name )= 6 then insert(merchant_name, 2, 1, 'X')
+		 	WHEN LENGTH(merchant_name )= 9 then insert(merchant_name, 2, 1, 'X')
+		 	WHEN LENGTH(merchant_name )= 12 then insert(merchant_name, 2, 2, 'XX')
+			WHEN LENGTH(merchant_name )> 12 then insert(merchant_name, 3, 4, 'XXXX')
+			ELSE merchant_Name 
+			END merchant_Name,
+		protocol_Id,
+		protocol_Rate
+	FROM
+		merchant_detail_info
+	<where>
+		<if test="id != null and id!= ''">
+			id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantName != null and merchantName!= ''">
+		 AND	merchant_name like concat('%',#{merchantName,jdbcType=VARCHAR},'%') 
+		</if>
+	</where>
+ </select>
+ 
+ <insert id="insertInfos" parameterType="com.qifenqian.bms.basemanager.virtual.bean.MerchantTradeInfo">
+ 	insert into merchant_detail_info(
+ 			id,
+			merchant_Name,
+			agent_id,
+		  	TRADE_AMT,
+		  	TRADE_TIME,
+		  	TRADE_STATUS
+			) VALUES (
+			#{merchantId, 		jdbcType=VARCHAR},
+			#{merchantName, 		jdbcType=VARCHAR},
+			#{agentName, 		jdbcType=VARCHAR},
+		  	#{tradeAmt, jdbcType=VARCHAR},
+		  	#{tradeTime, jdbcType=VARCHAR},
+		  	#{tradeStatus, jdbcType=VARCHAR})
+ </insert>
+ 
+ <update id="updateInfos" parameterType="com.qifenqian.bms.basemanager.virtual.bean.MerchantInfo">
+ 	update 
+ 		merchant_detail_info
+ 	set
+ 		protocol_Id =  #{protocolId,jdbcType = VARCHAR},
+ 		protocol_Rate =  #{protocolRate,jdbcType = VARCHAR}
+ 	where
+ 		id =  #{id,jdbcType = VARCHAR}
+ </update>
+ 
+ <select id="getAgentInfo" parameterType="com.qifenqian.bms.basemanager.virtual.bean.AgentInfo"
+  resultType="com.qifenqian.bms.basemanager.virtual.bean.AgentInfo">
+  	
+	SELECT
+		t.agent_id,
+		case 
+			WHEN LENGTH(agent_name )= 6 then insert(agent_name, 2, 1, 'X')
+		 	WHEN LENGTH(agent_name )= 9 then insert(agent_name, 2, 1, 'X')
+		 	WHEN LENGTH(agent_name )= 12 then insert(agent_name, 2, 2, 'XX')
+			WHEN LENGTH(agent_name )> 12 then insert(agent_name, 3, 4, 'XXXX')
+			ELSE agent_name 
+			END agent_name
+	FROM
+		agent_info t
+  	<where>
+  		<if test="agentId != null and agentId!= ''">
+			t.agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>
+		<if test="agentName != null and agentName !=''">
+		 AND	t.agent_name like concat('%',#{agentName,jdbcType=VARCHAR},'%') 
+		</if>
+  	</where>
+  </select>
+</mapper>

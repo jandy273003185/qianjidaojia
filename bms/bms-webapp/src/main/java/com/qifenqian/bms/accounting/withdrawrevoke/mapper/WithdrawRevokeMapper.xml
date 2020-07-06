@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.withdrawrevoke.mapper.WithdrawRevokeMapper">
+	<select id="selectWithdrawRevokeList" parameterType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawRequestBean" resultType="com.qifenqian.bms.accounting.withdraw.bean.Withdraw">
+		SELECT
+			T.WITHDRAW_SN,
+			C.WITHDRAW_REQSERIALID,
+			Y.ID AS tradeId,
+			T.CUST_ID,
+			T.CUST_NAME,
+			T.WITHDRAW_ACCT_TYPE,
+			T.BNAK_ACCT_NO_INTERNAL,
+			T.CARD_NO,
+			T.BANK_NAME,
+			T.BANK_ACCT_NAME,
+			T.BANK_BRANCH_NAME,
+			T.WITHDRAW_AMT,
+			T.WITHDRAW_TYPE,
+			T.WITHDRAW_STATE,
+			T.FEE,
+			T.FEE_CUST_ID,
+			T.FEE_STATE,
+			C.CORE_SN,
+			C.CORE_RETURN_CODE,
+			C.CORE_RETURN_MSG,
+			DATE_FORMAT(T.SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') AS submitTime,
+			T.RESULT_RETURN_TIME,
+			T.CREATE_ID,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS createTime,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.MODIFY_ID) MODIFY_ID,
+			DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS modifyTime,
+			T.AUDIT_STATE,
+			DATE_FORMAT(T.VERIFICATION_DATE,'%Y-%m-%d %H:%i:%s') AS verificationDate,
+			T.VERIFICATION_STATE,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.VERIFICATION_USER) VERIFICATION_USER,
+			L.MOBILE
+		FROM
+			TD_WITHDRAW_BILL T
+		JOIN TD_LOGIN_USER_INFO L ON T.CUST_ID = L.CUST_ID
+		JOIN TD_WITHDRAW_CHILD_BILL C ON T.WITHDRAW_SN = C.WITHDRAW_SN
+		JOIN STCS.TRANS_RECORD_FLOW F ON C.CORE_SN = F.MSG_ID AND F.OPERATE='JGKJ_PAYMENT_REFUND'
+		JOIN STCS.CLEAR_JGKJ_REBACK Y ON F.ID=Y.TRANS_FLOW_ID
+		WHERE
+			T.AUDIT_STATE = '04'
+			<if test="withdrawSn !=null and withdrawSn !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_SN LIKE CONCAT('%',#{withdrawSn,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="cardNo !=null and cardNo !='' ">
+				<![CDATA[  
+	         	   AND T.CARD_NO LIKE CONCAT('%',#{cardNo,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="tradeId !=null and tradeId !='' ">
+				<![CDATA[  
+	         	   AND Y.ID LIKE CONCAT('%',#{tradeId,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="mobile !=null and mobile !='' ">
+				<![CDATA[  
+	         	   AND L.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="withdrawState !=null and withdrawState !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_STATE = #{withdrawState,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+			
+			<if test="beginTime !=null and beginTime !='' ">
+				<![CDATA[  
+	              AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{beginTime,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+			<if test="endTime !=null and endTime !='' ">
+				<![CDATA[  
+	         	   AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endTime,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+	
+	<select id="selectWithdrawRevokeExcel" parameterType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawRequestBean" resultType="com.qifenqian.bms.accounting.withdraw.bean.WithdrawExcel">
+			SELECT
+			T.WITHDRAW_SN,
+			C.WITHDRAW_REQSERIALID,
+			Y.ID AS tradeId,
+			T.CUST_ID,
+			T.CUST_NAME,
+			T.WITHDRAW_ACCT_TYPE,
+			T.BNAK_ACCT_NO_INTERNAL,
+			T.CARD_NO,
+			T.BANK_NAME,
+			T.BANK_ACCT_NAME,
+			T.BANK_BRANCH_NAME,
+			T.WITHDRAW_AMT,
+			T.WITHDRAW_TYPE,
+			CASE T.WITHDRAW_STATE
+			WHEN '42' THEN
+			'提现撤销提交核心'
+			WHEN '43' THEN
+			'提现撤销成功'
+			WHEN '44' THEN
+			'提现撤销核心处理失败'
+			ELSE T.WITHDRAW_STATE
+			END AS withdrawState,
+			CASE T.AUDIT_STATE
+			WHEN '01' THEN
+			'待审核'
+			WHEN '02' THEN
+			'审核通过'
+			WHEN '04' THEN
+			'审核不通过'
+			END AS auditState,
+			T.FEE,
+			T.FEE_CUST_ID,
+			T.FEE_STATE,
+			C.CORE_SN,
+			C.CORE_RETURN_CODE,
+			C.CORE_RETURN_MSG,
+			DATE_FORMAT(T.SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') AS submitTime,
+			T.RESULT_RETURN_TIME,
+			T.CREATE_ID,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS createTime,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.MODIFY_ID) MODIFY_ID,
+			DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS modifyTime,
+			DATE_FORMAT(T.VERIFICATION_DATE,'%Y-%m-%d %H:%i:%s') AS verificationDate,
+			CASE T.VERIFICATION_STATE
+			WHEN '01' THEN
+			'未核销'
+			WHEN '02' THEN
+			'已核销'
+			END AS verificationState,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.VERIFICATION_USER) VERIFICATION_USER,
+			L.MOBILE
+		FROM
+			TD_WITHDRAW_BILL T
+		JOIN TD_LOGIN_USER_INFO L ON T.CUST_ID = L.CUST_ID
+		JOIN TD_WITHDRAW_CHILD_BILL C ON T.WITHDRAW_SN = C.WITHDRAW_SN
+		JOIN STCS.TRANS_RECORD_FLOW F ON C.CORE_SN = F.MSG_ID AND F.OPERATE='JGKJ_PAYMENT_REFUND'
+		JOIN STCS.CLEAR_JGKJ_REBACK Y ON F.ID=Y.TRANS_FLOW_ID
+		WHERE
+			T.AUDIT_STATE = '04'
+			<if test="withdrawSn !=null and withdrawSn !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_SN LIKE CONCAT('%',#{withdrawSn,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="cardNo !=null and cardNo !='' ">
+				<![CDATA[  
+	         	   AND T.CARD_NO LIKE CONCAT('%',#{cardNo,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="tradeId !=null and tradeId !='' ">
+				<![CDATA[  
+	         	   AND Y.ID LIKE CONCAT('%',#{tradeId,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="mobile !=null and mobile !='' ">
+				<![CDATA[  
+	         	   AND L.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%') 
+	            ]]>
+			</if>
+			<if test="withdrawState !=null and withdrawState !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_STATE = #{withdrawState,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+			<if test="beginTime !=null and beginTime !='' ">
+				<![CDATA[  
+	               AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{beginTime,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+			<if test="endTime !=null and endTime !='' ">
+				<![CDATA[  
+	         	   AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endTime,jdbcType=VARCHAR} 
+	            ]]>
+			</if>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+</mapper>

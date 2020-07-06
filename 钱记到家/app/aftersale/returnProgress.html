@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<meta charset="UTF-8">
+		<title>售后详情</title>
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
+		<link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+		<link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+		<link rel="stylesheet" type="text/css" href="/css/sum.css" />
+		<script type="text/javascript" src="/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+		<script src="/js/resetFontSize.js" type="text/javascript"></script>
+		<script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/script/order.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">售后详情</div>
+			</div>
+		</div>
+		<div class="main">
+			<div id="return_Div"></div>
+			<script id="return_Tpl" type="text/html">
+				<div class="orderitem" style="margin: .1rem;" data-reId="{{d.RefundId}}">
+					<div class="item-prolist">
+						{{# for(var i = 0; i< d.Products.length; i++){ }} 
+						<div class="proitem">
+							<div class="img fl"><img src="{{d.Products[i].ProductImg}}"></div>
+							<div class="descbox">
+								<div class="titleBox flex">
+									<div class="flex1 flexItem">
+										<p class="title ellipsis">{{d.Products[i].ProductName}}</p>
+									</div>
+									<div class="flexItem">x<span class="num">{{d.Products[i].Number}}</span></div>
+								</div>
+								<p class="price">￥{{d.Products[i].ProductPrice}}</p>
+							</div>
+						</div>
+						{{# } }} 
+					</div>
+				</div>
+				<div class="mA10" style="border-radius: 6px;">				
+				<div class="orderContent" style="margin-top: 0;">
+					<p>售后状态：<span class="c_green">{{d.StatuName}}</span></p>
+					<p>退货/退款原因：{{d.RefuseReason}}</p>	
+					<p>退款金额：<span class="red">￥{{d.RefundMoney}}</span></p>		
+					{{# var num = 0; for(var j = 0; j< d.Products.length; j++){ }} 
+						{{#  
+						  (function(j){
+						  	num += parseInt(d.Products[j].Number);
+						    return num;
+						  })(j);
+						}}									
+					{{# } }}
+					<p>申请件数：<span>{{num}}</span></p>						
+					<p>申请时间：{{d.TimeStr}}</p>
+                    <p>订单号：<span class="orderNumber"></span></p>
+				</div>
+				<div class="lianxiBtn">
+					<div class="phoneBtn" data-tel="{{d.ShopTel}}" onclick="Call(this)"> <span>拨打电话</span> </div>
+					<a class="otherBtn QQSevice" data-qq="{{d.ShopQQ}}" href="javascript:;"> <span>在线客服</span> </a>
+				</div>
+				{{#  if(d.Status==9){ }}
+				<!--退货-->
+				<div class="ftbtn pt30 pb30">
+					<a href="javascript:;" class="btn_100 EditinfoBtn">请填写寄回信息单号</a>
+				</div>
+				{{#  } }} 
+				</div>
+			</script>
+		</div>
+
+	</body>
+	<script type="text/javascript">
+		$(function() {
+			var OrderItemid='';
+			var OrderNo = sc.utils.getQueryString("OrderNo");
+			var RefundId = sc.utils.getQueryString("refundId");
+			var ItemId = sc.utils.getQueryString("Itemid");
+			if(RefundId){
+				OrderItemid=RefundId;
+            }
+            
+			RefundOrderInfo(OrderNo, OrderItemid, function(data) {
+				var gettpl = document.getElementById('return_Tpl').innerHTML;
+				laytpl(gettpl).render(data.data, function(html) {
+					//得到的模板渲染到html
+                    document.getElementById('return_Div').innerHTML = html;
+                    $(".orderNumber").html(OrderNo);
+				});	
+				$('.QQSevice').click(function() {
+					var QQno=$(this).attr("data-qq");
+					$(this).attr("href", "http://wpa.qq.com/msgrd?v=3&uin=" + QQno + "&site=qq&menu=yes");
+				});
+			});
+			$('#return_Div').on('click','.EditinfoBtn',function(){
+				var strhtml='';
+					strhtml +='<div class="pop-Editinfo">';
+					strhtml +='<div class="pop-hd">填写寄回信息</div>';
+					strhtml +='<div class="from">';
+					strhtml +='<div class="from-item arrow_r">';
+					strhtml +='<label class="text">物流公司</label>';
+					strhtml +='<div class="txt-r">';
+					strhtml +='<select name="" id="expressName" class="ipt0" style="width:2rem">';
+					strhtml +='<option value="0">请选择物流公司</option>';
+					strhtml +='</select>';
+					strhtml +='</div>';				
+					strhtml +='</div>';
+					strhtml +='<div class="from-item" style="padding-right:.2rem">';
+					strhtml +='<label class="text">物流单号</label>';
+					strhtml +='<div class="txt-r">';
+					strhtml +='<input type="text" name="" class="ipt0" style="width:2rem" id="expressNo" value="" placeholder="请输入物流单号" />';
+					strhtml +='</div>';
+					strhtml +='</div>';
+					strhtml +='</div>';
+					strhtml +='<a href="javascript:;" class="btn_100 mt20" id="addExpress">确定</a>';
+					strhtml +='</div>';
+				layer.open({
+					content: strhtml
+				});
+				$('#addExpress').click(function(){
+					var ExpressName=$('#expressName option:selected').attr("value"),
+						ExpressNo=$.trim($('#expressNo').val());
+					if( VerifyExpress(ExpressName,ExpressNo)){
+						SubmitRefundExpress(OrderNo,ExpressName,ExpressNo);
+					} 
+				})
+				GetExpressCompanyList($('#expressName'));
+			})
+		})
+	</script>
+
+</html>

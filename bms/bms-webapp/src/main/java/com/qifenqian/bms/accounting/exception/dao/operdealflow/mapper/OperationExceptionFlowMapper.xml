@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.operdealflow.mapper.OperationExceptionFlowMapper">
+
+	<insert id="insertExceptionFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.operdealflow.bean.OperationExceptionFlow">
+	 INSERT INTO BMS_OPERATION_EXCEPTION_FLOW(
+			DEAL_ID,
+			DEAL_SEQ,
+			OPERATION_ID,
+			DEAL_TYPE,
+			TRANS_STEP,
+			DEAL_RESULT,
+			DEAL_MEMO,
+			DEAL_USER,
+			DEAL_DATE,
+			EXECUTE_STATUS,
+			EXECUTE_MEMO,
+			DEAL_DATETIME
+		)VALUES(
+			#{dealId,		jdbcType=VARCHAR},
+			#{dealSeq,		jdbcType=VARCHAR},
+			#{operationId,	jdbcType=VARCHAR},
+			#{dealType,		jdbcType=VARCHAR},
+			#{transStep,	jdbcType=VARCHAR},
+			#{dealResult,	jdbcType=VARCHAR},
+			#{dealMemo,		jdbcType=DECIMAL},
+			#{dealUser,		jdbcType=VARCHAR},
+			#{dealDate,		jdbcType=VARCHAR},
+			#{executeStatus,jdbcType=VARCHAR},
+			#{executeMemo,	jdbcType=VARCHAR},
+			now()			
+		)
+	</insert>
+	
+	<select id="selectExceptionFlowByOperationId" parameterType="string" resultType="int">
+		SELECT 
+			COUNT(F.OPERATION_ID) 
+		FROM 
+			BMS_OPERATION_EXCEPTION_FLOW F 
+		WHERE 
+			F.OPERATION_ID = #{operationId,	jdbcType=VARCHAR}
+	</select>
+</mapper>

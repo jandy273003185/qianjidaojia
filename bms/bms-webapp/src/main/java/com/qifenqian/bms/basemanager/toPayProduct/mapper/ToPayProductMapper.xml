@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.toPayProduct.mapper.ToPayProductMapper">
+
+
+	<!-- 获取代付渠道信息 -->
+ 	<select id="listProduct" parameterType="com.qifenqian.bms.basemanager.toPayProduct.bean.ToPayProduct" resultType="com.qifenqian.bms.basemanager.toPayProduct.bean.ToPayProduct">
+ 		SELECT
+ 			P.*,
+ 			I.CUST_NAME,
+ 			C.*,
+ 			S.PRODUCT_NAME
+ 		FROM
+ 			td_merchant_product_info P
+ 		LEFT JOIN 
+ 			td_merchant_channel C
+ 		ON
+ 			P.aisle = C.channel_id
+ 		LEFT JOIN 
+ 			td_cust_info I
+ 		ON
+ 			P.merchant_code = I.merchant_code
+ 		LEFT JOIN
+ 			td_product_info S
+ 		ON
+ 			P.product_id = S.product_id
+ 		WHERE
+ 			1=1
+ 			<if test="productId != null and productId != ''">
+ 			AND	P.product_id = #{productId, jdbcType=VARCHAR}
+ 			</if>	
+ 			<if test="custName != null and custName != ''">
+ 			AND	I.CUST_NAME = #{custName, jdbcType=VARCHAR}
+ 			</if>
+ 			<if test="merchantCode != null and merchantCode != ''">
+ 			AND	P.MERCHANT_CODE = #{merchantCode, jdbcType=VARCHAR}
+ 			</if>
+ 			<if test="description != null and description != ''">
+ 			AND	C.description = #{description, jdbcType=VARCHAR}
+ 			</if>
+ 		ORDER BY
+ 			P.CREATE_TIME DESC	
+ 	</select>
+ 	
+ 	<!-- 更新代付费率状态 -->
+	<update id="updateRate" parameterType="com.qifenqian.bms.basemanager.toPayProduct.bean.ToPayProduct">
+		UPDATE td_merchant_product_info p
+		<set>
+			<if test="productStatus != null and productStatus != ''">
+				p.product_status = #{productStatus,jdbcType=VARCHAR},
+			</if>
+				p.MODIFY_TIME = now(),
+		</set>
+		WHERE
+			p.merchant_code = #{merchantCode, jdbcType=VARCHAR}
+		AND
+			p.product_id = #{productId, jdbcType=VARCHAR}
+		<if test="aisle != null and aisle != ''">
+		AND p.aisle = #{aisle, jdbcType=VARCHAR}
+		</if>
+	</update>
+	
+	<!-- 批量新的代付费率信息 -->
+ 	<insert id="saveProductRate" parameterType="com.qifenqian.bms.basemanager.toPayProduct.bean.ToPayProduct">
+ 		INSERT INTO TD_MERCHANT_PRODUCT_INFO(
+ 			merchant_code,
+ 			product_id,
+ 			product_rate,
+ 			recharge_rate,
+ 			product_status,
+ 			aisle,
+ 			create_time,
+ 			modify_time,
+ 			id
+ 		)VALUES(
+ 			#{merchantCode,  jdbcType = VARCHAR},
+ 			#{productId,  jdbcType = VARCHAR},
+ 			#{productRate,  jdbcType = DECIMAL},
+ 			#{rechargeRate,  jdbcType = DECIMAL},
+ 			#{productStatus,  jdbcType = VARCHAR},
+ 			#{aisle,  jdbcType = VARCHAR},
+ 			now(),
+ 			now(),
+ 			#{id,  jdbcType = VARCHAR}
+ 		)
+ 		
+ 	</insert>
+</mapper>

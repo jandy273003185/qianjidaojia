@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.CrIncomeMapper">
+	
+	<select id="getInComeInfo" parameterType="string" resultType="com.qifenqian.bms.merchant.reported.bean.CrInComeBean">
+		select 
+			DISTINCT
+			t.CUST_ID custId,
+			t.MERCHANT_CODE merchantCode,
+			t.CUST_NAME mchName,
+			t.CUST_NAME mchShortName,
+			t.categoryType ,
+			t.CUST_ADD address,
+			l.MOBILE customerPhone,
+			t.AGENT_NAME linkman,
+			l.MOBILE phone,
+			l.EMAIL email,
+			t.AGENT_NAME operator,
+			t.mchRole ,
+			t.CERTIFY_NO operatorIdno,
+			t.BUSINESS_LICENSE linenceNo,
+			'NATIONAL_LEGAL' certifcateType,
+			'LEGAL_PERSON' contractsType,
+			t.province,
+			t.city,
+			t.country,
+			p1.SCAN_COPY_PATH idCardPath,
+			p2.SCAN_COPY_PATH businessPath,
+			pc1.column_value accountNo, -- 结算卡号
+			pc2.column_value accountName, -- 结算户名
+			pc3.column_value CNAPS -- 联行号
+		 from td_cust_info t
+			JOIN td_certificate_auth A ON  a.AUTH_ID = t.AUTH_ID AND A.CERTIFICATE_STATE = '0'
+			JOIN td_cust_scan_copy p1 ON t.AUTH_ID = p1.AUTH_ID and p1.CERTIFY_TYPE = '04'
+			JOIN td_cust_scan_copy p2 ON t.AUTH_ID = p2.AUTH_ID and p2.CERTIFY_TYPE = '02'
+			JOIN td_login_user_info l ON t.CUST_ID =  l.CUST_ID
+			JOIN bms_protocol_content c ON t.CUST_ID = c.cust_id and c.`status` = 'VALID'
+			JOIN bms_protocol_column pc1 ON c.id =  pc1.protocol_id and pc1.column_code = 'bankCardNo' -- 结算卡号
+			JOIN bms_protocol_column pc2 ON c.id =  pc2.protocol_id and pc2.column_code = 'bankCardName' -- 结算户名
+			JOIN bms_protocol_column pc3 ON c.id =  pc3.protocol_id and pc3.column_code = 'CNAPS' -- 联行号
+			left JOIN td_merchant_filing_info m ON t.MERCHANT_CODE = m.merchant_code
+			where t.MERCHANT_FLAG in  ('0','2') 
+			and t.categoryType is not NULL 
+			and l.STATE = '00' 
+			<!-- and (m.filing_status is NULL  or (m.file_status = '00' and m.audit_status = '99') ) -->
+			<!-- and ((m.filing_status != '00' or m.filing_status is NULL) 
+			or (m.filing_status = '00' and  (m.audit_status != '00' or m.audit_status is NULL))) -->
+			<if test="merchantCode != null and merchantCode != ''">
+			and t.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			
+			
+	</select>
+	
+	<insert id="insertFilingInfo" parameterType="ArrayList">
+	          INSERT INTO 	td_merchant_filing_info 
+    	 	(	
+    	 		`id`,
+				`merchant_code`,
+				`patchNo`,
+				`channel_no`,
+				`filing_status`,
+				`mch_role`,
+				`out_merchant_code`
+			 )
+	        VALUES  
+		<foreach collection="list" item="obj" index="index" separator=",">
+				(
+					#{obj.id},
+					#{obj.merchantCode},
+					#{obj.patchNo},
+					#{obj.channelNo},
+					#{obj.filingStatus},
+					#{obj.mchRole},
+					#{obj.outMerchantCode}
+				)
+    	 </foreach>
+	</insert>
+	
+	
+    <update id="updateInComeInfo" parameterType="java.util.List">
+    	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+    	 	update td_cust_info  t
+			SET
+				t.filing_status = '01'
+			WHERE
+				t.MERCHANT_CODE =  #{item.merchantCode}
+    	 </foreach>
+    </update>
+    <select id="getMerchantProdInfo" parameterType="string" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantProdInfo">
+    	select 
+			t.CUST_ID,
+			IF(mobile.column_value = 'NULL',NULL,mobile.column_value) mobile,
+			IF(h5.column_value = 'NULL',NULL,h5.column_value) h5,
+			IF(pc.column_value = 'NULL',NULL,pc.column_value)	pc,
+			IF(h5_t.column_value = 'NULL',NULL,h5_t.column_value) h5t,
+			IF(onecode.column_value = 'NULL',NULL,onecode.column_value) onecode
+		from td_cust_info t 
+			JOIN bms_protocol_content c ON t.CUST_ID = c.cust_id and c.`status` = 'VALID'
+			left JOIN bms_protocol_column h5 ON c.id = h5.protocol_id and h5.column_code = 'h5.gateway.pay_rate'
+			left JOIN bms_protocol_column pc ON c.id = pc.protocol_id and pc.column_code = 'pc.gateway.pay_rate'
+			left JOIN bms_protocol_column h5_t ON c.id = h5_t.protocol_id and h5_t.column_code = 'h5_t.gateway.pay_rate'
+			left JOIN bms_protocol_column mobile ON c.id = mobile.protocol_id and mobile.column_code = 'mobile.plugin.pay_rate'
+			left JOIN bms_protocol_column onecode ON c.id = onecode.protocol_id and onecode.column_code = 'onecode.coll.pay_rate'
+		where
+			t.merchant_code = #{merchantCode,jdbcType = VARCHAR}
+    </select>
+
+	<select id="getChannlInfoList" resultType="com.qifenqian.bms.merchant.reported.bean.ChannlInfo">
+		SELECT
+		c.channl_id,
+		c.channl_code,
+		c.channl_name
+		FROM
+		td_filing_channl_info c
+		
+		where c.status='ENABLE'
+
+
+	</select>
+    
+    <select id="getfilingInfoList" parameterType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo">
+    	select 
+			t.audit_status,
+			t.channel_no,
+			t.file_status,
+			t.filing_status,
+			t.id,
+			t.mch_role,
+			t.merchant_code,
+			t.mer_msg,
+			t.mer_status,
+			t.patchNo,
+			f.cust_name,
+			DATE_FORMAT(t.modify_time, '%Y-%m-%d %H:%i:%s') modify_time,
+			DATE_FORMAT(t.create_time, '%Y-%m-%d %H:%i:%s') create_time
+		from td_merchant_filing_info t
+		LEFT JOIN td_cust_info f ON  t.MERCHANT_CODE=f.merchant_code
+		 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchRole != null and mchRole != '' ">
+			 and t.mch_role= #{mchRole,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			 and t.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.create_time DESC
+		
+    </select>
+    
+    
+    
+    <select id="getInComeInfoList" parameterType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo">
+    	select 
+			t.audit_status,
+			t.channel_no,
+			t.file_status,
+			t.filing_status,
+			t.id,
+			t.mch_role,
+			t.merchant_code,
+			t.mer_msg,
+			t.mer_status,
+			t.patchNo,
+      		t2.CUST_NAME,
+			DATE_FORMAT(t.modify_time, '%Y-%m-%d') modify_time,
+			DATE_FORMAT(t.create_time, '%Y-%m-%d') create_time
+		from td_merchant_filing_info t
+        left join td_cust_info t2 on t.merchant_code = t2.MERCHANT_CODE
+		 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchRole != null and mchRole != '' ">
+			 and t.mch_role= #{mchRole,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			 and t.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="auditStatus != null and auditStatus != '' ">
+			 and t.audit_status = #{auditStatus,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null and custName != '' ">
+			 AND t2.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+			 </if>
+		</where>
+		order by t.create_time desc
+    </select>
+	<select id="verifyFiling" parameterType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantFilingInfo">
+		SELECT
+			i.*
+		FROM
+			td_cust_info t
+		JOIN td_merchant_filing_info i ON t.MERCHANT_CODE = i.merchant_code
+		WHERE
+			i.channel_no = #{channelNo,jdbcType = VARCHAR}
+		AND i.merchant_code = #{merchantCode,jdbcType = VARCHAR}
+		AND i.filing_status = '00'
+		AND i.audit_status = '00'
+		<if test="mchRole == '00'">
+			AND (
+			i.mch_role = '0'
+			OR i.mch_role = '1'
+		)
+		</if>
+		<if test="mchRole == '01'">
+			AND i.mch_role = '0'
+		</if>
+		<if test="mchRole == '02'">
+			AND i.mch_role = '1'
+		</if>
+	</select>
+	<select id="getProvinceId" parameterType="String" resultType="String">
+		SELECT
+			tb.PROVINCE_ID
+		FROM
+			tb_heilpay_province tb
+		WHERE
+			tb.PROVINCE_NAME LIKE CONCAT(
+				'%',
+				(
+					SELECT
+						t.PROVINCE_NAME
+					FROM
+						tb_sp_province t
+					WHERE
+						t.PROVINCE_ID = #{provinceId,jdbcType = VARCHAR}
+				),
+				'%'
+			)
+	</select>
+	<select id="getCityId" parameterType="String" resultType="String">
+		SELECT
+			tb.city_id
+		FROM
+			tb_helipay_city tb
+		WHERE
+			tb.city_name LIKE CONCAT(
+				'%',
+				(
+					SELECT
+						t.city_name
+					FROM
+						tb_sp_city t
+					WHERE
+						t.city_id = #{cityId,jdbcType = VARCHAR}
+				),
+				'%'
+			)
+	</select>
+	<select id="getAreaId" parameterType="String" resultType="String">
+		SELECT
+			tb.area_id
+		FROM
+			tb_helipay_area tb
+		WHERE
+			tb.area_name LIKE CONCAT(
+				'%',
+				(
+					SELECT
+						t.area_name
+					FROM
+						tb_sp_area t
+					WHERE
+						t.area_id = #{areaId,jdbcType = VARCHAR}
+				),
+				'%'
+			)
+	</select>
+	<select id="getCategoryTypeInfo" parameterType="String" resultType="com.qifenqian.bms.basemanager.merchant.bean.CategoryCodeInfo">
+		SELECT
+			*
+		FROM
+			category_code_info t
+		WHERE
+			t.categoryId IN (
+				SELECT
+					inf.categoryType
+				FROM
+					td_cust_info inf
+				WHERE
+					inf.MERCHANT_CODE = #{merchantId,jdbcType = VARCHAR}
+			)
+	</select>
+	<select id="getCategoryInfoHelipay" parameterType="String" resultType="com.qifenqian.bms.basemanager.merchant.bean.CategoryCodeInfo">
+		SELECT
+			*
+		FROM
+			category_code_info_helipay t
+		WHERE
+			t.categoryId = #{categoryId,jdbcType = VARCHAR}
+			
+	</select>
+</mapper>

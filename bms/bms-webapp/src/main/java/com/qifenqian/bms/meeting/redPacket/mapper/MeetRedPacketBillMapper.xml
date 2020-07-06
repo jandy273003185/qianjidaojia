@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.meeting.redPacket.mapper.MeetRedPacketBillMapper" >
+
+  <select id="selectRedPacket" parameterType="com.qifenqian.bms.meeting.redPacket.bean.MeetRedPacketBillConditionBean" resultType="com.qifenqian.bms.meeting.redPacket.bean.MeetRedPacketBill">
+  	SELECT 
+  		M.RED_PACKET_SN,
+  		M.RECEIVE_CUST_ID,
+  		M.GIVE_CUST_ID,
+  		M.RED_PACKET_TYPE,
+  		M.RED_PACKET_NAME,
+  		M.RED_PACKET_AMT,
+  		M.STATUS,
+  		M.MEMO,
+  		DATE_FORMAT(M.CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+  		DATE_FORMAT(M.MODIFY_TIME, '%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+  		T.CUST_NAME ,
+  		I.MOBILE
+  		FROM
+  		MEET_RED_PACKET_BILL M
+  	JOIN 
+  		TD_CUST_INFO 	T
+  	ON M.RECEIVE_CUST_ID = T.CUST_ID 
+  	JOIN
+  		TD_LOGIN_USER_INFO I
+  	ON 
+  		T.CUST_ID = I.CUST_ID
+  	<where>
+  		<if test="null != redPacketType and redPacketType != ''">
+  			M.RED_PACKET_TYPE = #{redPacketType ,jdbcType=VARCHAR}
+  		</if>
+  		<if test="null != redPacketName and redPacketName != ''">
+  			AND M.RED_PACKET_NAME = #{redPacketName ,jdbcType=VARCHAR}
+  		</if>
+  		<if test="null != status and status != ''">
+  			AND M.STATUS = #{status ,jdbcType=VARCHAR}
+  		</if>
+  		<if test="null != custName and custName != ''">
+  			AND T.CUST_NAME = #{custName ,jdbcType=VARCHAR}
+  		</if>
+  		<if test="null != mobile and mobile != ''">
+  			AND I.MOBILE = #{mobile ,jdbcType=VARCHAR}
+  		</if>
+  		
+  		<if test="null != redPacketSn  and redPacketSn != ''">
+  			AND M.RED_PACKET_SN = #{redPacketSn ,jdbcType=VARCHAR}
+  		</if>
+  		
+  		<if test="sendBeginTime != null and '' != sendBeginTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(M.CREATE_TIME ,'%Y%m%d') >= #{sendBeginTime}  
+	            ]]>  
+	     </if>
+	     
+	     <if test="sendEndTime != null and '' != sendEndTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(M.CREATE_TIME ,'%Y%m%d') <= #{sendEndTime}  
+	            ]]>  
+	     </if>
+  		 
+  		  
+  		 <if test="receiveBeginTime != null and '' != receiveBeginTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(M.MODIFY_TIME ,'%Y%m%d') >= #{receiveBeginTime}  
+	            ]]>  
+	     </if>
+  		 
+  		 <if test="receiveEndTime != null and '' != receiveEndTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(M.MODIFY_TIME ,'%Y%m%d') <= #{receiveEndTime}  
+	            ]]>  
+	     </if>
+  		
+  	</where>
+  	ORDER BY M.CREATE_TIME DESC
+  </select>
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace ="com.qifenqian.bms.basemanager.payIn.mapper.PayInMapper" >
+
+	<!-- 查询用户列表 -->
+	<select id="selectPayIns"  parameterType="com.qifenqian.bms.basemanager.payIn.bean.PayIn" resultType="com.qifenqian.bms.basemanager.payIn.bean.PayIn">
+		SELECT 
+			P.FEE_CODE,
+			P.FEE_NAME,
+			P.FEE_RATE,
+			P.MEMO,
+			P.STATUS,
+			P.MERCHANT_CODE 
+	    FROM TD_PAY_IN_INFO P 
+	   	where
+	   		1=1	
+			<if test="feeCode != null and feeCode != '' "> 
+			AND	P.FEE_CODE =#{feeCode, jdbcType=VARCHAR}
+			</if>
+			<if test="feeName != null and feeName != '' ">
+			AND P.FEE_NAME =#{feeName, jdbcType=VARCHAR}
+			</if>
+	
+		ORDER BY P.FEE_CODE
+	</select>
+	
+	<!-- 根据费用代码查询信息 -->
+	
+	<select id="selectPayInByFeeCode" parameterType="string" resultType="com.qifenqian.bms.basemanager.payIn.bean.PayIn">
+		SELECT 
+			P.FEE_CODE,
+			P.FEE_NAME,
+			P.FEE_RATE,
+			P.MEMO,
+			P.STATUS,
+			P.MERCHANT_CODE
+		FROM TD_PAY_IN_INFO P 
+		WHERE P.FEE_CODE = #{feeCode, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 添加代付垫资费率信息 -->
+	<insert id="insertPayIn" parameterType="com.qifenqian.bms.basemanager.payIn.bean.PayIn" >
+		INSERT INTO TD_PAY_IN_INFO (
+			FEE_CODE,
+			FEE_NAME,
+			FEE_RATE,
+			MEMO,
+			STATUS,
+			MERCHANT_CODE	
+			) VALUES (
+			#{feeCode, 	jdbcType=VARCHAR},
+		  	#{feeName, 	jdbcType=VARCHAR},
+		  	#{feeRate, 	jdbcType=VARCHAR},
+		  	#{memo, 	jdbcType=VARCHAR},
+		  	'00',
+		  	#{merchantCode, 	jdbcType=VARCHAR},
+		)
+	</insert>
+	
+	<!-- 更新代付垫资费率信息 -->
+	<update id="updatePayIn" parameterType="com.qifenqian.bms.basemanager.payIn.bean.PayIn">
+		update TD_PAY_IN_INFO P
+		<set>
+			<if test="feeName != null">
+				P.FEE_NAME = #{feeName,jdbcType=VARCHAR},
+			</if>
+			<if test="feeRate != null">
+				P.FEE_RATE = #{feeRate,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				P.MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+				
+		</set>
+			where P.FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 停用代付垫资费率信息 -->
+	<update id="stopPayInByCode" parameterType="com.qifenqian.bms.basemanager.payIn.bean.PayIn" >
+		update 
+			TD_PAY_IN_INFO T
+		set
+			T.STATUS = '99'
+		where 
+			T.FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</update>
+</mapper>

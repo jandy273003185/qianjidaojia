@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.messagelog.mapper.BmsMessageLogMapper">
+  <select id="selectMessageLogList" resultType="com.qifenqian.bms.basemanager.messagelog.bean.BmsMessageLog" parameterType="com.qifenqian.bms.basemanager.messagelog.bean.BmsMessageLog">
+		 SELECT
+			MSG_ID,
+			ORDER_ID,
+			EXECUTE_DATE,
+			MSG_TO,
+			ADDRESSER,
+			CC_TO,
+			EXECUTE_DATETIME,
+			CONTENT,
+			MSG_TYPE,
+			SUBJECT,
+			ATTACHMENT_PATHS,
+			ATTACHMENT_NAMES,
+			STATE,
+			LOG_ID,
+			BUSINESS_TYPE,
+			CLIENT_IP
+		FROM
+			BMS_MESSAGE_LOG t
+		WHERE
+			1 = 1
+		<if test="msgType !=null and msgType !='' ">
+			AND	t.MSG_TYPE = #{msgType, jdbcType=VARCHAR}
+		</if>
+		<if test="beginTime !=null and beginTime !='' ">
+		<![CDATA[ 
+			AND DATE_FORMAT(T.EXECUTE_DATETIME ,'%Y-%m-%d') >= #{beginTime}
+		]]>
+		</if>
+		<if test="endTime !=null and endTime !='' ">
+		<![CDATA[ 
+			AND DATE_FORMAT(T.EXECUTE_DATETIME  ,'%Y-%m-%d') <= #{endTime}
+		]]>
+		</if>
+		<if test="msgTo!=null and msgTo!='' ">   
+	          AND  T.MSG_TO  like CONCAT('%',#{msgTo},'%') 
+        </if> 
+        <if test="businessType!=null and businessType!='' ">   
+          AND  T.BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+        </if> 
+	   ORDER BY t.EXECUTE_DATETIME    DESC	    
+  </select>
+</mapper>

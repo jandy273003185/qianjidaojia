@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.sysuser.mapper.SysUserMapper">
+ 	<select id="selectSysUser" resultType="com.qifenqian.bms.basemanager.sysuser.bean.SysUser">
+ 		select
+ 			*
+ 		from
+ 			sys_user
+ 	</select>
+
+	<select id="selectUserById" resultType="com.qifenqian.bms.basemanager.sysuser.bean.SysUser" parameterType="String">
+ 		select
+ 			A.user_name,
+ 			B.dept_name
+ 		from
+ 			sys_user A
+ 		left JOIN sys_dept B
+ 		ON A.dept_id = B.dept_id
+ 		where  A.user_id = #{userId}
+ 	</select>
+
+	<select id="selectUserByUserName" resultType="com.qifenqian.bms.basemanager.sysuser.bean.SysUser" parameterType="String">
+ 		select
+ 			*
+ 		from
+ 			sys_user A
+ 		where  A.user_name = #{userName}
+ 	</select>
+
+
+	<select id="selectDeptByAgentName" resultType="com.qifenqian.bms.basemanager.sysuser.bean.SysDept" parameterType="String">
+ 		select
+ 			*
+ 		from
+ 			sys_dept A
+ 		where  A.dept_name = #{deptName}
+ 	</select>
+	
+	<select id="selectDeptByUserCode" resultType="com.qifenqian.bms.basemanager.sysuser.bean.SysUser" parameterType="String">
+ 		select
+ 			*
+ 		from
+ 			sys_user A
+ 		where  A.user_code = #{userCode}
+ 	</select>
+</mapper>

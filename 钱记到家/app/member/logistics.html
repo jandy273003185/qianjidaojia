@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>物流</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/order.js?v=1" type="text/javascript" charset="utf-8"></script>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">物流信息</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="proInfoList mA10">
+				<div class="orderitem">
+					<div class="item-hd">
+						<span class="ordertype fl">商品信息</span>
+						<span class="orderstatus fr"></span>
+					</div>
+					<div class="item-prolist">
+					</div>
+					<div class="item-ft">
+						<div class="ft-count">
+							<div class="flex flexAlignCenter">
+								<div class="flexItem" id="expressNo"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--物流-->
+			<div class="logistics mA10">
+				<div class="addr">
+					<div class="inner">
+						<span class="dian">收</span>
+						<dl><dt>[收货地址]</dt>
+							<dd id="address"></dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+			<!--物流  end-->
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function() {
+            var orderNo = sc.utils.getQueryString("No");
+            var rId = sc.utils.getQueryString("rId");
+            var odId = sc.utils.getQueryString("oId");
+            
+            OrderDetails(orderNo, odId, function (data) {
+                $('#address').text(data.data.Address);
+                $('.orderitem .orderstatus').text(data.data.StatusName);
+                Proinfo_Tpl(data);
+                rId = data.data.orderDetails[0].rId;
+       
+                GetLogistics(orderNo, rId);
+                
+            });
+
+			//			商品信息模板
+			function Proinfo_Tpl(data) {
+				var str = '';
+				var ProCount = 0;//计算商品件数	
+				for(var i = 0; i < data.data.orderDetails.length; i++) {										
+					ProCount += data.data.orderDetails[i].ProductCount;
+					if(data.data.orderDetails.length == 1) {
+						str += '<div class="proitem">';
+						str += '<div class="img fl"><img src="' + data.data.orderDetails[i].ProductImg + '"></div>';
+						str += '<div class="descbox">';
+						str += '<div class="titleBox flex">';
+						str += '<div class="flex1 flexItem">';
+						str += '<p class="title ellipsis">' + data.data.orderDetails[i].ProductName + '</p>';
+						str += '</div>';
+						str += '<div class="flexItem">x<span class="num">' + data.data.orderDetails[i].ProductCount + '</span></div>';
+						str += '</div>';
+						str += '<p class="price">￥' + data.data.orderDetails[i].UnitPrice + '</p>';
+						str += '</div>';
+						str += '</div>';
+					} else {						
+						str += '<div class="imgitem"><img src="' + data.data.orderDetails[i].ProductImg + '"></div>';													
+					}					
+				}
+				if(data.data.orderDetails.length > 1){
+					str += '<div class="ProCount">共<span class="num">' + ProCount + '</span>件商品</div>';
+				}
+				$('.proInfoList .item-prolist').append(str);
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.expresspay.tradereport.mapper.TradeReportMapper">
+
+	<select id="selectReportList" parameterType="com.qifenqian.bms.expresspay.tradereport.bean.TradeReport" resultType="com.qifenqian.bms.expresspay.tradereport.bean.TradeReport">
+		SELECT
+		T.*
+		FROM
+		BAL_JGKJ_DATA_SOURCE_SETTLE T
+		WHERE 1=1
+		<if test="workDate != null and '' != workDate">
+			AND T.WORK_DATE = #{workDate,jdbcType=VARCHAR}
+		</if>
+		<if test="fileId != null and '' != fileId">
+			AND T.FILE_ID = #{fileId,jdbcType=VARCHAR}
+		</if>
+		ORDER BY T.SEQ
+	</select>
+</mapper>

@@ -1,0 +1,193 @@
+/* components/message/index.wxss */
+page{
+  background-color: #eeeeee;
+}
+
+.navbar{
+  display: flex;
+  align-items: center;
+  background-color: #699dd7;
+  width: 100%;
+  height: 100rpx;
+  padding-top: 40rpx;
+  padding-left: 10rpx;
+  position: fixed;
+  z-index: 999;
+}
+.navbar image{
+  width: 22rpx;
+  height: 32rpx;
+  padding: 8rpx 20rpx 0 20rpx;
+}
+.navbar text{
+  color: #fff !important;
+  font-size: 38rpx !important;
+}
+
+.top{
+  display: flex;
+  justify-content: space-between;
+  height: 140rpx;
+  background-color: #fff;
+  padding: 140rpx 80rpx 0 80rpx;
+}
+.top-item{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.top-item-num{
+  width: 46rpx;
+  height: 46rpx;
+  border-radius: 23rpx;
+  background-color: #cccaca;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 6rpx;
+}
+.four .top-item-num{
+  background-color: #699dd7;
+}
+.four .top-item-txt{
+  color: #699dd7;
+}
+.top-item-txt{
+  color: #b4b3b3;
+  font-size: 26rpx;
+}
+
+.productTitle{
+  color: #699dd7;
+  /* font-size: 28rpx; */
+  padding: 20rpx;
+}
+.product{
+  border-radius: 10rpx;
+  padding: 0rpx 20rpx 20rpx 20rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+}
+.productHide{
+  display: none;
+}
+checkbox-group{
+  display: flex;
+  flex-direction: column;
+}
+.checkboxProduct{
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 0.1px solid #f6f6f6;
+  flex-wrap: wrap;
+}
+.checkbox{
+  display: flex;
+  align-items: center;
+  padding: 18rpx 0;
+}
+.rateView{
+  display: flex;
+  align-items: center;
+  /* position: absolute; */
+  line-height: 84rpx;
+}
+
+.rate{
+  color: #b4b3b3;
+}
+.rateVal{
+  border-bottom: 0.1rpx solid #699dd7;
+  width: 240rpx;
+  text-align: center;
+  padding: 20rpx 0;
+  color: #b4b3b3;
+}
+.rate2{
+  right: 0;
+  color: #b4b3b3;
+}
+/*复选框外框样式*/
+checkbox .wx-checkbox-input {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #999;
+  border-radius: 100%;
+}
+/*复选框外框选中样式*/
+checkbox .wx-checkbox-input.wx-checkbox-input-checked {
+  border-color: #3cbcee;
+}
+/*复选框选中后内部样式*/
+checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
+  width: 60%;
+  height: 60%;
+  background: #3cbcee;
+  border-radius: 100%;
+  content: '';
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+}
+
+.further{
+  color: #699dd7;
+  /* font-size: 28rpx; */
+  padding: 20rpx 20rpx 0 20rpx;
+}
+
+.red{
+  color: red;
+}
+.next{
+  background-color: #699dd7;
+  color: #fff;
+  width: 95%;
+  font-size: 30rpx;
+  margin: 100rpx 20rpx 0rpx 20rpx;
+}
+.upload-img{
+  width: 100% !important;
+  height: 100% !important;
+}
+.photoTxtHide,.delImgHide{
+  display: none;
+}
+.del-img{
+  position:absolute;
+  width:30rpx;
+  height:30rpx;
+  left:344rpx;
+}
+.odd-img{
+  left:708rpx;
+}
+.sn{
+  margin-left: 306rpx;
+}
+.snDisplay{
+  display: none;
+}
+.sn input{
+  width: 380rpx;
+  text-align: right;
+}
+.back{
+  display: flex;
+  justify-content: center;
+  color: #699dd7;
+  font-size: 30rpx;
+  padding: 40rpx;
+}
+.ad_popError{ 
+  background: #de352d; 
+  color: #fff; 
+  height: 70rpx; 
+  line-height: 58rpx; 
+  font-size: 30rpx; 
+  text-align: center; 
+  position: fixed; 
+  left: 0;
+  top: 140rpx; 
+  width: 100%; 
+  z-index:9999999;
+}

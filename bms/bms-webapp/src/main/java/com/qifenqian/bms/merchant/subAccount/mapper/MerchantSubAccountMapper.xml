@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.subAccount.mapper.MerchantSubAccountMapper">
+	<!-- 根据分账ID查询商户分账信息 -->
+	<select id="getSubAccountById" resultType="com.qifenqian.bms.merchant.subAccount.bean.MerchantSubAccouontBean" parameterType="java.lang.String">
+		SELECT
+			t.cust_id,
+			t.out_merchant_code,
+			t.sub_account_type,
+			t.account,
+			t.account_name,
+			t.relation_type,
+			t.custom_relation,
+			t.out_request_no,
+			t.desc,
+			t.rate,
+			t.remark,
+			t.channel_code,
+			t.report_status,
+			t.status,
+			t.relation_id,
+			t.create_time,
+			t.modify_time
+		FROM
+			combinedpayment.td_royalty_relation_mg t
+			where t.relation_id = #{relationId, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询商户分账列表 -->
+	<select id="selectSubAccountList" parameterType="com.qifenqian.bms.merchant.subAccount.bean.MerchantSubAccouontBean" resultType="com.qifenqian.bms.merchant.subAccount.bean.MerchantSubAccouontBean" >
+		SELECT
+			t.cust_id,
+			c.cust_name,
+			t.out_merchant_code,
+			t.sub_account_type,
+			t.account,
+			t.account_name,
+			t.relation_type,
+			t.custom_relation,
+			t.out_request_no,
+			t.desc,
+			t.rate,
+			t.remark,
+			t.channel_code,
+			t.report_status,
+			t.status,
+			t.relation_id,
+			t.create_time,
+			t.modify_time
+		FROM
+			combinedpayment.td_royalty_relation_mg t
+			left join td_cust_info c 
+			on t.cust_id = c.cust_id			
+		<where>
+			1=1
+			<if test="custId != null and custId != '' "> 
+				AND t.cust_id = #{custId, jdbcType=VARCHAR}
+			</if>
+			<if test="outMerchantCode != null and outMerchantCode != '' "> 
+				AND t.out_merchant_code = #{outMerchantCode, jdbcType=VARCHAR}
+			</if>
+			<if test="subAccountType != null and subAccountType != '' "> 
+				AND t.sub_account_type =#{subAccountType, jdbcType=VARCHAR}
+			</if>
+			<if test="account != null and account != '' "> 
+				AND t.account =#{account, jdbcType=VARCHAR}
+			</if>
+			<if test="accountName != null and accountName != '' "> 
+				AND t.account_name LIKE CONCAT('%',#{accountName, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="channelCode != null and channelCode != '' "> 
+				AND t.channel_code =#{channelCode, jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' "> 
+				AND t.report_status =#{reportStatus, jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != '' "> 
+				AND t.status =#{status, jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.create_time DESC
+	</select>
+
+	<!-- 写入单个商户分账信息 -->
+	<insert id="insterSubAccount" parameterType="com.qifenqian.bms.merchant.subAccount.bean.MerchantSubAccouontBean">
+		INSERT INTO combinedpayment.td_royalty_relation_mg (
+			cust_id,
+			out_merchant_code,
+			sub_account_type,
+			account,
+			account_name,
+			relation_type,
+			custom_relation,
+			out_request_no,
+			`desc`,
+			rate,
+			remark,
+			channel_code,
+			report_status,
+			status,
+			relation_id,
+			create_time,
+			modify_time
+		) VALUES (
+			#{custId, 	jdbcType=VARCHAR},
+			#{outMerchantCode, 	    jdbcType=VARCHAR},
+		  	#{subAccountType, 		jdbcType=VARCHAR},
+		  	#{account, 	jdbcType=VARCHAR},
+		  	#{accountName, 	jdbcType=VARCHAR},
+		  	#{relationType, jdbcType=VARCHAR},
+		  	#{customRelation, jdbcType=VARCHAR},
+		  	#{outRequestNo, jdbcType=VARCHAR},
+		  	#{desc, jdbcType=VARCHAR},
+		  	#{rate, jdbcType=VARCHAR},
+		  	#{remark, jdbcType=VARCHAR},
+		  	#{channelCode, jdbcType=VARCHAR},
+		  	#{reportStatus, jdbcType=VARCHAR},
+		  	#{status, jdbcType=VARCHAR},
+		  	#{relationId, jdbcType=VARCHAR},
+		  	now(),
+		  	now()
+		)
+	</insert>
+	
+	<update id="updateSubAccount" parameterType="com.qifenqian.bms.merchant.subAccount.bean.MerchantSubAccouontBean">
+		UPDATE combinedpayment.td_royalty_relation_mg 
+		<set>
+			<if test="reportStatus !=null and reportStatus !=''">
+				report_status = #{reportStatus, jdbcType=VARCHAR},
+			</if>
+			<if test="status !=null and status !=''">
+				status = #{status, jdbcType=VARCHAR},
+			</if>
+			modify_time = now()
+		</set>
+		where relation_id = #{relationId, jdbcType=VARCHAR}
+	</update>
+	
+</mapper>

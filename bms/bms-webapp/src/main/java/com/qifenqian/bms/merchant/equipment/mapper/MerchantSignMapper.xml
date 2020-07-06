@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.equipment.mapper.MerchantSignMapper">
+
+
+	<!-- 查询商户设备列表 -->
+	<select id="selectMerchantSignList" parameterType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign" resultType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign" >
+		SELECT
+			tci.CUST_NAME merchant_name,
+			tms.*
+		FROM
+			td_merchant_sign tms,
+			td_cust_info tci		
+		<where>
+			tms.merchant_id = tci.CUST_ID
+			<if test="merchantName != null and merchantName != '' "> AND tci.CUST_NAME LIKE CONCAT('%',#{merchantName, jdbcType=VARCHAR},'%')</if>			
+			<if test="terminalNo != null and terminalNo != '' "> AND tms.terminal_no =#{terminalNo, jdbcType=VARCHAR}</if>
+		</where>
+		order by  tms.inst_datetime desc
+	</select>
+
+	
+	<!-- 写入单个商户设备信息 -->
+	<insert id="insertMerchantSign" parameterType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign">
+		INSERT INTO td_merchant_sign (
+			merchant_id,
+			terminal_no,
+			merchant_public_key
+		) VALUES (
+			#{merchantId, 			jdbcType=VARCHAR},
+			#{terminalNo, 	    	jdbcType=VARCHAR},
+		  	#{merchantPublicKey, 	jdbcType=VARCHAR}
+		)
+	</insert>
+	
+				
+	<!-- 修改商户设备信息 -->
+	<update id="updateMerchantSign" parameterType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign">
+		UPDATE 
+			td_merchant_sign 
+			<set>
+		   	<if test="merchantId != null and merchantId !=''">
+				merchant_id = #{merchantId, 	jdbcType=VARCHAR},
+			</if>
+			<if test="terminalNo != null and terminalNo !=''">
+				terminal_no = #{terminalNo, 	jdbcType=VARCHAR},
+			</if>					
+	   </set> 
+		WHERE 
+			id = #{id, 	jdbcType=INTEGER}
+	</update>
+	
+  	
+  	<!-- 删除商户设备信息 -->
+	 <delete id="deleteMerchantSign" parameterType="java.lang.Integer" >
+    	DELETE FROM td_merchant_sign
+    	WHERE id = #{id,jdbcType=VARCHAR}
+  	</delete>
+  	
+	
+	<!-- 根据商户id和设备编号查询商户设备 -->
+	<select id="selectMerchantSignByMerIdAndTerNo" parameterType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign" resultType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign">
+		SELECT
+			*
+		FROM
+			td_merchant_sign 
+		<where>	
+			1=1	
+			<if test="merchantId != null and merchantId != '' "> AND merchant_id =#{merchantId, jdbcType=VARCHAR}</if>
+			<if test="terminalNo != null and terminalNo != '' "> AND terminal_no =#{terminalNo, jdbcType=VARCHAR}</if>
+		</where>
+	</select>	 
+	
+	
+	<!-- 根据id查询商户设备 -->
+	<select id="selectMerchantSignById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.merchant.equipment.bean.MerchantSign">
+		SELECT
+			*
+		FROM
+			td_merchant_sign 
+		WHERE
+			id = #{id, jdbcType=VARCHAR} 
+	</select> 
+	
+	<!-- 根据Cust id查询商户设备 -->
+	<select id="selectDeviceLoginById" parameterType="com.qifenqian.bms.merchant.equipment.bean.DeviceLogin" resultType="com.qifenqian.bms.merchant.equipment.bean.DeviceLogin">
+		SELECT
+			d.LOGIN_ID,
+			d.CUST_ID,
+			d.MAC,
+			d.MOBILE,
+			d.CLIENT_TYPE,
+			d.STATUS,
+			d.LOGIN_TIME_M,
+			d.LOGIN_TIME_S,
+			d.LOGIN_TIME_L,
+			c.CUST_NAME merchantName,
+			c.MERCHANT_CODE
+		FROM
+			td_device_login d
+		LEFT JOIN  td_cust_info c ON  d.CUST_ID = c.CUST_ID
+		WHERE
+			1=1
+			<if test="merchantCode != null and merchantCode != '' ">
+				 AND c.MERCHANT_CODE =#{merchantCode, jdbcType=VARCHAR}
+			</if>
+			<if test="merchantName != null and merchantName != '' ">
+				 AND c.CUST_NAME =#{merchantName, jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null and custId != '' ">
+				 AND d.CUST_ID =#{custId, jdbcType=VARCHAR}
+			</if>
+			<if test="mac != null and mac != '' ">
+				 AND d.MAC =#{mac, jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != '' ">
+				 AND d.STATUS =#{status, jdbcType=VARCHAR}
+			</if>
+			<if test="clientType != null and clientType == 'QINTTING' ">
+				 AND (d.CLIENT_TYPE ='QINTTING' or d.CLIENT_TYPE ='QINGTINGv2')
+			</if>
+			<if test="clientType != null and clientType == 'QINGWA' ">
+				 AND (d.CLIENT_TYPE ='QINGWA' or d.CLIENT_TYPE ='QINGWAv2')
+			</if>
+			<if test="clientType != null and clientType == 'QINGWAPRO' ">
+				 AND d.CLIENT_TYPE ='QINGWAPRO'
+			</if>
+			<if test="clientType != null and clientType != '' and clientType != 'QINGWAPRO' and clientType != 'QINGWA' and clientType != 'QINTTING'">
+				 AND d.CLIENT_TYPE = #{clientType, jdbcType=VARCHAR}
+			</if>
+			order by LOGIN_TIME_M desc
+	</select> 
+</mapper>

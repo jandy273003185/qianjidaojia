@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>主页</title>
+
+    <!-- Bootstrap -->
+    <!--<link rel="stylesheet" href="css/swiper.min.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />-->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/commen.js?0"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/addCart.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/signIn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/resetFontSize.js" type="text/javascript"></script>
+    <script src="/script/local.js?v=0.1" type="text/javascript" charset="utf-8"></script>
+
+    <link href="/css/swiper.min.css" rel="stylesheet" />
+    <script src="/js/swiper.min.js"></script>
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="NewVersion/css/base.css" rel="stylesheet" />
+    <link href="NewVersion/css/index.css" rel="stylesheet" />
+</head>
+<body>
+    <!--搜索栏-->
+    <div class="header-search">
+        <div class="location">
+            <span class="location-icon icon"></span>
+            <span id="cityname">定位中</span>
+        </div>
+        <div class="search-input">
+            <div class="search-main">
+                <div  id="gotoSearchProduct" class="search-txt"><img src="/NewVersion/images/search@2x.png"/>  搜索商品、品类</div>
+                <!--<input class="search-txt" id="gotoSearchProduct" placeholder="搜索商品、品类" type="text">-->
+            </div>
+            <div class="search-btn"></div>
+        </div>
+        <div class="search-news">
+            <span class="news-icon icon  icon-menu-news"></span><!--active 红点-->
+        </div>
+    </div>
+    <div class="content">
+        <!-- 轮播图 -->
+        <div class="swiper-container-carousel carousel">
+            <div class="swiper-wrapper carousel-content" id="bannerImg">
+            </div>
+            <div class="swiper-pagination"></div>
+            <!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
+        </div>
+        <!-- 快捷通道 -->
+        <div class="quick-list">
+            <a href="/Newpro.html">
+                <img src="/NewVersion/images/ficon1.png" />
+                <p>新品尝鲜</p>
+            </a>
+            <a href="/pintuan.html">
+                <img src="/NewVersion/images/ficon2.png" />
+                <p>拼团</p>
+            </a>
+            <a href="/classify.html">
+                <img src="/NewVersion/images/ficon3.png" />
+                <p>果蔬蛋品</p>
+            </a>
+            <a href="/discover.html">
+                <img src="/NewVersion/images/ficon4.png" />
+                <p>发现</p>
+            </a>
+        </div>
+        <!-- 滚动消息 -->
+        <div class="swiper-container-news roll-news">
+            <div class="swiper-wrapper roll-news-list" id="noticelist">
+            </div>
+        </div>
+
+        <!-- 爆款直降 -->
+        <div class="hot-title type-title"></div>
+        <div class="commom-list sectionBd" id="productListBox"></div>
+        <!-- 当季新品 -->
+        <div class="news-title type-title"></div>
+        <div class="commom-list sectionBd" id="productListBox2"></div>
+    </div>
+    <!--底部导航-->
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+    <!-- 加入购物车的弹出sku选择-->
+    <div class="tocart">
+        <div class="shade sku__shade">
+            <div class="shadebg"></div>
+            <div class="shade_content">
+                <div class="shade-item specifications_shade">
+                    <span class="btn-close"></span>
+                    <div class="productInfo">
+                        <div class="m-pro clear">
+                            <div class="hd fl">
+                                <div class="img">
+                                    <img src="">
+                                </div>
+                            </div>
+                            <div class="bd">
+                                <h4 class="name"></h4>
+                                <p class="desc">
+                                    <span>库存：<span id="stock"></span>件</span>
+                                </p>
+                                <p class="price">
+                                    <span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_bd">
+                        <div id="skuBoxContent"></div>
+                        <div class="skuBox buyNum_skuBox clear">
+                            <h2 class="skuTitle fl">购买数量</h2>
+                            <div class="flexItem fr">
+                                <div class="selnum">
+                                    <span class="less btn-num icon-minus"></span>
+                                    <div class="textWrap">
+                                        <input type="text" id="pro_num" readonly="readonly">
+                                    </div>
+                                    <span class="more btn-num icon-add"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_ft">
+                        <a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="addCart">确定</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出sku选择 end-->
+    <script src="/NewVersion/Script/index.js"></script>
+    <!--banner模板-->
+    <script id="bannerTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="swiper-slide carousel-item">
+            <a href="{{=value.Url}}"
+               style="background-image:url({{=value.Pic}});">
+            </a>
+        </div>
+        {{~}}
+    </script>
+    <!--消息-->
+    <script id="bannerolTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        {{if(index==0){}}
+        <li data-target="#carousel-example-generic" data-slide-to="{{=index}}" class="active"></li>
+
+        {{ }else{ }}
+        <li data-target="#carousel-example-generic" data-slide-to="{{=index}}"></li>
+        {{ } }}
+        {{~}}
+    </script>
+
+    <!--banner模板  end-->
+    <!--系统消息模板-->
+    <script id="SystemNews" type="text/x-dot-template">
+
+        {{~it.data:value:index}}
+        <p class="swiper-slide"> {{=value.title}}</p>
+        {{~}}
+        {{ if(!it.data.length){ }}
+        <p>
+            暂无数据
+        </p>
+        {{ } }}
+
+
+    </script>
+    <!--系统消息模板  end-->
+    <!-- 爆款直降模板-->
+    <script id="productList" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="commom-item">
+            <a href="details.html?id={{=value.Id}}" class="m-pro" data-id="{{=value.Id}}"><div class="img"><img src="{{=value.ProductImg}}" /></div></a>
+            <p class="head">{{=value.Name}}</p>
+            {{ if(value.Synopsis) { }}
+            <p class="title">{{=value.Synopsis}}</p>
+            {{ }else{ }}
+            <p class="title">暂无产品简介</p>
+            {{ } }}
+            <div class="other m-pro" data-id="{{=value.Id}}">
+                <div class="price">
+                    <span>¥ {{=value.Price}}</span>
+                    <span>￥{{=value.MarketPrice}}</span>
+                </div>
+                <div class="buy buybtn"></div>
+            </div>
+        </div>
+        {{~}}
+
+    </script>
+    <!-- 爆款直降模板  end-->
+    <!-- 当季新品模板-->
+    <script id="NewproductList" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="commom-item">
+            <a href="details.html?id={{=value.Id}}" class="m-pro" data-id="{{=value.Id}}"><div class="img"><img src="{{=value.ProductImg}}" /></div></a>
+            <p class="head">{{=value.Name}}</p>
+            {{ if(value.Synopsis) { }}
+            <p class="title">{{=value.Synopsis}}</p>
+            {{ }else{ }}
+            <p class="title">暂无产品简介</p>
+            {{ } }}
+            <div class="other m-pro" data-id="{{=value.Id}}">
+                <div class="price">
+                    <span>¥ {{=value.Price}}</span>
+                    <span>￥{{=value.MarketPrice}}</span>
+                </div>
+                <div class="buy buybtn"></div>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <!-- 当季新品模板  end-->
+    <script src="/script/local.js?v=1.2" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!--components/certificate/index.wxml-->
+<view class="navbar">
+  <image src="/images/back.png" bindtap="navBack"/>
+  <text>{{title}}</text>
+</view> 
+
+<view class="top">
+  <view class="top-item">
+    <view class="top-item-num">1</view>
+    <view class="top-item-txt">基本信息</view>
+  </view>
+  <view class="top-item">
+    <view class="top-item-num">2</view>
+    <view class="top-item-txt">法人信息</view>
+  </view>
+  <view class="top-item">
+    <view class="top-item-num">3</view>
+    <view class="top-item-txt">结算信息</view>
+  </view>
+  <view class="top-item four">
+    <view class="top-item-num">4</view>
+    <view class="top-item-txt">签约产品</view>
+  </view>
+</view>
+
+<view class="productTitle">签约产品</view>
+<view class="product">
+  <checkbox-group bindchange="checkboxChange">
+    <view class="checkboxProduct"  wx:for="{{productArr}}" wx:key="productId">
+      <label class="checkbox">
+          <checkbox value="{{index}}" checked="{{item.checked}}"/>{{item.productName}}
+      </label>
+      <view>
+        <view class="rateView">
+          <view class="rate">结算费率：</view>
+          <input type="number" class="rateVal" value="{{item.productRate||0.38}}" data-index="{{index}}" bindblur="productRate" /><text class="rate2">%</text>
+        </view>
+      </view>
+      <view class="sn {{snDisplay}}" wx:if="{{item.productId==8}}"><input class="rateVal" data-index="{{index}}" value="{{item.sn}}" placeholder="请输入蜻蜓设备编号SN" placeholder-style="color:#ccc" bindinput="snInput"/></view>
+    </view>
+  </checkbox-group>
+</view>
+
+<button class="next" bindtap="submitFun">提交</button>
+<view class="back" bindtap="back">返回</view>
+
+<view class="ad_popError" wx:if="{{popErrorMsg}}">{{popErrorMsg}}</view>
+
+

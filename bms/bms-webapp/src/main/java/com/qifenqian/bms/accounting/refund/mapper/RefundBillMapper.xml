@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.accounting.refund.mapper.RefundBillMapper">
+	<select id="select" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill" resultType="com.qifenqian.bms.accounting.refund.bean.RefundBill">
+		SELECT
+			RE.*
+		FROM
+			(SELECT
+					T.ORDER_ID,
+					T.ORIGIN_ORDER_ID,
+			  CASE
+			 	WHEN (
+					SELECT
+						RED.TRADE_TYPE
+					FROM
+						TD_TRADE_BILL_MAIN RED
+					WHERE
+						RED.ORDER_ID = T.ORIGIN_ORDER_ID
+				) = '1301'
+					THEN 'RED_PACKET_PAYMENT_REFUND'
+				WHEN (
+					SELECT
+						TBM.IS_NEED_CHARGE
+					FROM
+						TD_TRADE_BILL_MAIN TBM
+					WHERE
+						TBM.ORDER_ID = T.ORIGIN_ORDER_ID
+				) = '0' THEN
+					'BALANCE_PAYMENT_REFUND'
+				ELSE
+					'BANK_CARD_PAYMENT_REFUND'
+				END MSG_TYPE,
+				T.ORIGIN_MER_ORDER_ID,
+				T.REFUND_CUST_ID,
+				M.MERCHANT_CODE MERCHANT_CUST_ID,
+				T.ORIGIN_CORE_SN,
+				T.CURR_CODE,
+				T.ORIGIN_TRANS_AMT,
+				T.REFUND_AMT,
+				T.REFUND_MEMO,
+				DATE_FORMAT(T.SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') AS SUBMIT_TIME,
+				T.REFUND_STATE,
+				IFNULL(DATE_FORMAT(T.REFUND_TIME,'%Y%m%d'),DATE_FORMAT(T.SUBMIT_TIME,'%Y%m%d')) AS WORK_DATE,
+				T.FEE,
+				T.FEE_CUST_ID,
+				T.FEE_STATE,
+				T.CORE_SN,
+				T.CORE_RETURN_CODE,
+				T.CORE_RETURN_MSG,
+				T.MODIFY_ID,
+				DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS MODIFY_TIME,
+				T.AUDIT_STATE,
+				DATE_FORMAT(T.VERIFICATION_TIME,'%Y-%m-%d %H:%i:%s') AS VERIFICATION_TIME,
+				T.VERIFICATION_STATE,
+				T.VERIFICATION_USER,
+				DATE_FORMAT(T.ORIGIN_TRANS_TIME,'%Y-%m-%d %H:%i:%s') AS ORIGIN_TRANS_TIME,
+				I.MOBILE,
+				M.CUST_NAME,
+				H.ID RTN_SEQ
+			FROM
+				TD_REFUND_BILL T
+			JOIN TD_LOGIN_USER_INFO I ON T.REFUND_CUST_ID = I.CUST_ID
+			JOIN TD_CUST_INFO M ON T.MERCHANT_CUST_ID = M.CUST_ID
+			LEFT JOIN (
+				SELECT
+					Y.id,
+					F.MSG_ID
+				FROM
+					STCS.CLEAR_JGKJ_REBACK Y
+				LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+				WHERE
+					F.OPERATE = 'JGKJ_PAYMENT_REFUND'
+			) H ON T.CORE_SN = H.MSG_ID
+			) RE
+		<where>
+			<if test="msgType != null and '' != msgType">
+				AND RE.MSG_TYPE = #{msgType,jdbcType = VARCHAR}
+			</if>
+			<if test="orderId != null and '' != orderId">
+				AND RE.ORDER_ID LIKE CONCAT('%',#{orderId},'%')
+			</if>
+			<if test="originOrderId != null and '' != originOrderId">
+				AND RE.ORIGIN_ORDER_ID LIKE CONCAT('%',#{originOrderId},'%')
+			</if>
+			<if test="rtnSeq != null and '' != rtnSeq">
+				AND RE.RTN_SEQ LIKE CONCAT('%',#{rtnSeq},'%')
+			</if>
+			<if test="mobile != null and '' != mobile">
+				AND RE.MOBILE LIKE CONCAT('%',#{mobile},'%')
+			</if>
+			<if test="merchantCustId != null and '' != merchantCustId">
+				AND RE.MERCHANT_CUST_ID LIKE CONCAT('%',#{merchantCustId},'%')
+			</if>
+			<if test="startWorkDate != null and '' != startWorkDate">
+		 		<![CDATA[ 
+		 			AND RE.WORK_DATE >= #{startWorkDate} 
+	 			]]>
+			</if>
+			<if test="endWorkDate != null and '' != endWorkDate">
+	 		    <![CDATA[ 
+	 				AND RE.WORK_DATE  <= #{endWorkDate}
+	 			]]>
+			</if>
+			<if test="startTime != null and '' != startTime">
+		 		<![CDATA[ 
+		 			AND DATE_FORMAT(RE.SUBMIT_TIME ,'%Y-%m-%d') >= #{startTime} 
+	 			]]>
+			</if>
+			<if test="endTime != null and '' != endTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(RE.SUBMIT_TIME ,'%Y-%m-%d') <= #{endTime}
+	 			]]>
+			</if>
+			<if test="originBeginTime != null and '' != originBeginTime">
+	 			<![CDATA[ 
+	 				AND DATE_FORMAT(RE.ORIGIN_TRANS_TIME ,'%Y-%m-%d') >= #{originBeginTime} 
+	 			]]>
+			</if>
+			<if test="originEndTime != null and '' != originEndTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(RE.ORIGIN_TRANS_TIME ,'%Y-%m-%d') <= #{originEndTime}
+	 			]]>
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='00' ">
+				AND RE.REFUND_STATE ='00'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='01'">
+				AND RE.REFUND_STATE ='01'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='02'">
+				AND RE.REFUND_STATE in ('02','03')
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='04'">
+				AND RE.REFUND_STATE ='04'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='05'">
+				AND RE.REFUND_STATE ='05'
+			</if>
+		</where>
+		ORDER BY RE.SUBMIT_TIME DESC
+
+	</select>
+	<update id="update" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill">
+		UPDATE TD_REFUND_BILL
+		<set>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+			</if>
+			<if test="auditState != null">
+				AUDIT_STATE = #{auditState,jdbcType=VARCHAR},
+			</if>
+			<if test="coreSn != null">
+			    CORE_SN = #{coreSn,jdbcType=VARCHAR},
+			</if>
+			<if test="coreReturnCode != null">
+				CORE_RETURN_CODE = #{coreReturnCode,jdbcType=VARCHAR},
+			</if>
+			<if test="coreReturnMsg != null">
+				CORE_RETURN_MSG = #{coreReturnMsg,jdbcType = VARCHAR},
+			</if>
+			<if test="coreReturnTime != null">
+				CORE_RETURN_TIME = now()
+			</if>
+			<if test="refundState != null">
+				REFUND_STATE = #{refundState,jdbcType=VARCHAR},
+			</if>
+				REFUND_TIME = NOW(),
+				MODIFY_TIME = NOW()
+		</set>
+		WHERE ORDER_ID = #{orderId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="auditRefund" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill">
+		UPDATE TD_REFUND_BILL
+		<set>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+			</if>
+			<if test="auditState != null">
+				AUDIT_STATE = #{auditState,jdbcType=VARCHAR},
+			</if>
+			<if test="refundState != null">
+				REFUND_STATE = #{refundState,jdbcType=VARCHAR},
+			</if>
+			<if test="coreReturnMsg != null">
+				CORE_RETURN_MSG = #{coreReturnMsg,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = now()
+		</set>
+		WHERE ORDER_ID = #{orderId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="selectRefundExcel" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill" resultType="com.qifenqian.bms.accounting.refund.bean.RefundExcel">
+	SELECT  RE.ORDER_ID,
+			RE.ORIGIN_ORDER_ID,
+			RE.RTN_SEQ,
+			CASE RE.MSG_TYPE 
+			WHEN 'BALANCE_PAYMENT_REFUND' THEN '余额支付退款' 
+			WHEN 'RED_PACKET_PAYMENT_REFUND' THEN '红包支付退款' 
+			WHEN 'BANK_CARD_PAYMENT_REFUND' THEN '卡支付退款' 
+			END MSG_TYPE,
+			RE.ORIGIN_MER_ORDER_ID,
+			RE.MOBILE,
+			RE.ORIGIN_TRANS_AMT,
+			RE.ORIGIN_TRANS_TIME,
+			RE.MERCHANT_CUST_ID,
+			RE.CUST_NAME,
+			RE.REFUND_AMT,
+			RE.SUBMIT_TIME,
+			RE.WORK_DATE,
+			RE.FEE,
+			RE.FEE_CUST_ID,
+			CASE
+			WHEN RE.REFUND_STATE IN ('00')
+			THEN '退款成功'
+			WHEN RE.REFUND_STATE IN ('01')
+			THEN '待审核'
+			WHEN RE.REFUND_STATE IN ('02','03')
+			THEN '处理中'
+			WHEN RE.REFUND_STATE IN ('04')
+			THEN '退款失败'
+			WHEN RE.REFUND_STATE IN ('05')
+			THEN '审核不通过'
+			END AS REFUND_STATE,
+			CASE RE.AUDIT_STATE WHEN '01'
+			THEN '待审核'
+			WHEN '02'
+			THEN '审核通过'
+			WHEN '04'
+			THEN '审核不通过'
+			END AS AUDIT_STATE,
+			RE.MODIFY_ID,
+			RE.MODIFY_TIME,
+			CASE RE.VERIFICATION_STATE 
+			WHEN '01' THEN '未核销' 
+			WHEN '02' THEN '已核销' 
+			END AS VERIFICATION_STATE,
+			RE.VERIFICATION_USER,
+			RE.VERIFICATION_TIME
+	FROM(
+		SELECT
+			T.ORDER_ID,
+			T.ORIGIN_ORDER_ID,
+			H.ID RTN_SEQ,
+			CASE
+				WHEN (
+					SELECT
+						RED.TRADE_TYPE
+					FROM
+						TD_TRADE_BILL_MAIN RED
+					WHERE
+						RED.ORDER_ID = T.ORIGIN_ORDER_ID
+				) = '1301'
+					THEN 'RED_PACKET_PAYMENT_REFUND'
+				WHEN (
+					SELECT
+						TBM.IS_NEED_CHARGE
+					FROM
+						TD_TRADE_BILL_MAIN TBM
+					WHERE
+						TBM.ORDER_ID = T.ORIGIN_ORDER_ID
+				) = '0' THEN
+					'BALANCE_PAYMENT_REFUND'
+				ELSE
+					'BANK_CARD_PAYMENT_REFUND'
+				END MSG_TYPE,
+			T.ORIGIN_MER_ORDER_ID,
+			I.MOBILE,
+			T.ORIGIN_TRANS_AMT,
+			DATE_FORMAT(T.ORIGIN_TRANS_TIME,'%Y-%m-%d %H:%i:%s') AS ORIGIN_TRANS_TIME,
+			M.MERCHANT_CODE MERCHANT_CUST_ID,
+			M.CUST_NAME,
+			T.REFUND_AMT,
+			DATE_FORMAT(T.SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') as SUBMIT_TIME,
+			IFNULL(DATE_FORMAT(T.REFUND_TIME,'%Y%m%d'),DATE_FORMAT(T.SUBMIT_TIME,'%Y%m%d')) AS WORK_DATE,
+			T.FEE,
+			T.FEE_CUST_ID,
+			T.REFUND_STATE,
+			T.AUDIT_STATE,
+			T.MODIFY_ID,
+			DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') as MODIFY_TIME,
+			T.VERIFICATION_STATE,
+			T.VERIFICATION_USER,
+			DATE_FORMAT(T.VERIFICATION_TIME,'%Y-%m-%d %H:%i:%s') as VERIFICATION_TIME
+			FROM
+			TD_REFUND_BILL T
+				JOIN TD_LOGIN_USER_INFO I ON T.REFUND_CUST_ID = I.CUST_ID
+				JOIN TD_CUST_INFO M ON T.MERCHANT_CUST_ID = M.CUST_ID
+				LEFT JOIN (
+					SELECT
+						Y.ID,
+						F.MSG_ID
+					FROM
+						STCS.CLEAR_JGKJ_REBACK Y
+					LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+					WHERE
+						F.OPERATE = 'JGKJ_PAYMENT_REFUND'
+				) H ON T.CORE_SN = H.MSG_ID)
+				RE
+		<where>
+			<if test="msgType != null and '' != msgType">
+				AND RE.MSG_TYPE = #{msgType,jdbcType = VARCHAR}
+			</if>
+			<if test="orderId != null and '' != orderId">
+				AND RE.ORDER_ID LIKE CONCAT('%',#{orderId},'%')
+			</if>
+			<if test="originOrderId != null and '' != originOrderId">
+				AND RE.ORIGIN_ORDER_ID LIKE CONCAT('%',#{originOrderId},'%')
+			</if>
+			<if test="rtnSeq != null and '' != rtnSeq">
+				AND RE.RTN_SEQ LIKE CONCAT('%',#{rtnSeq},'%')
+			</if>
+			<if test="mobile != null and '' != mobile">
+				AND RE.MOBILE LIKE CONCAT('%',#{mobile},'%')
+			</if>
+			<if test="merchantCustId != null and '' != merchantCustId">
+				AND RE.MERCHANT_CUST_ID LIKE CONCAT('%',#{merchantCustId},'%')
+			</if>
+			<if test="startWorkDate != null and '' != startWorkDate">
+		 		<![CDATA[ 
+		 			AND RE.WORK_DATE >= #{startWorkDate} 
+	 			]]>
+			</if>
+			<if test="endWorkDate != null and '' != endWorkDate">
+	 		    <![CDATA[ 
+	 				AND RE.WORK_DATE  <= #{endWorkDate}
+	 			]]>
+			</if>
+			<if test="startTime != null and '' != startTime">
+		 		<![CDATA[ 
+		 			AND DATE_FORMAT(RE.SUBMIT_TIME ,'%Y-%m-%d') >= #{startTime} 
+	 			]]>
+			</if>
+			<if test="endTime != null and '' != endTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(RE.SUBMIT_TIME ,'%Y-%m-%d') <= #{endTime}
+	 			]]>
+			</if>
+			<if test="originBeginTime != null and '' != originBeginTime">
+	 			<![CDATA[ 
+	 				AND DATE_FORMAT(RE.ORIGIN_TRANS_TIME ,'%Y-%m-%d') >= #{originBeginTime} 
+	 			]]>
+			</if>
+			<if test="originEndTime != null and '' != originEndTime">
+	 		    <![CDATA[ 
+	 				AND DATE_FORMAT(RE.ORIGIN_TRANS_TIME ,'%Y-%m-%d') <= #{originEndTime}
+	 			]]>
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='00' ">
+				AND RE.REFUND_STATE ='00'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='01'">
+				AND RE.REFUND_STATE ='01'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='02'">
+				AND RE.REFUND_STATE in ('02','03')
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='04'">
+				AND RE.REFUND_STATE ='04'
+			</if>
+			<if test="refundState != null and '' != refundState and refundState=='05'">
+				AND RE.REFUND_STATE ='05'
+			</if>
+		</where>
+		ORDER BY RE.SUBMIT_TIME DESC
+	</select>
+	
+	<update id="refundVerification" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill">
+		UPDATE 
+			TD_REFUND_BILL 
+		SET 
+			VERIFICATION_USER = #{verificationUser,jdbcType=VARCHAR},
+			REFUND_STATE = '00',
+			VERIFICATION_STATE = '02',
+			VERIFICATION_TIME = now()
+		WHERE 
+			ORDER_ID= #{orderId,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertRefundBill" parameterType="com.qifenqian.bms.accounting.refund.bean.RefundBill">
+		INSERT INTO TD_REFUND_BILL(
+			  ORDER_ID,
+			  ORIGIN_ORDER_ID,
+			  REFUND_CUST_ID,
+			  MERCHANT_CUST_ID,
+			  ORIGIN_CORE_SN,
+			  CURR_CODE,
+			  ORIGIN_TRANS_AMT,
+			  REFUND_AMT,
+			  REFUND_MEMO,
+			  SUBMIT_TIME,
+			  REFUND_STATE,
+			  AUDIT_STATE,
+			  VERIFICATION_STATE,
+			  ORIGIN_TRANS_TIME
+		  )VALUES(
+			  #{orderId,		jdbcType = VARCHAR},
+			  #{originOrderId,	jdbcType = VARCHAR},
+			  #{refundCustId,	jdbcType = VARCHAR},
+			  #{merchantCustId,	jdbcType = VARCHAR},
+			  #{originCoreSn,	jdbcType = VARCHAR},
+			  #{currCode,		jdbcType = VARCHAR},
+			  #{originTransAmt,	jdbcType = DECIMAL},
+			  #{refundAmt,		jdbcType = DECIMAL},
+			  #{refundMemo,		jdbcType = VARCHAR},
+			  NOW(),
+			  #{refundState,	jdbcType = VARCHAR},
+			  #{auditState,		jdbcType = VARCHAR},
+			  #{verificationState,	jdbcType = VARCHAR},
+			  #{originTransTime,	jdbcType = TIMESTAMP}
+	  		)
+	</insert>
+	<select id ="findOutOrderId" parameterType="string" resultType="string">
+		select 
+			m.OUT_ORDER_ID
+		FROM
+			td_refund_bill t JOIN 
+			td_trade_bill_main d on t.ORIGIN_ORDER_ID = d.ORDER_ID JOIN 
+			td_merchant_in  m ON d.MER_ORDER_ID = m.OUT_ORDER_ID
+			<where>
+				t.ORIGIN_ORDER_ID = #{orderId,jdbcType=VARCHAR}
+			</where>
+	</select>
+</mapper>

@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="css/details.css" />
+    <link rel="stylesheet" type="text/css" href="css/fenxiang.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="script/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/paysuccess.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+
+        .zhezhao {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 11;
+            background: #000000;
+            /*opacity: 0.5;*/
+            display: none;
+        }
+
+        .codeDiv {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 40%;
+            background: #fff;
+        }
+
+        .img canvas {
+            max-width: 100%;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+
+</head>
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+            <div class="title center">付款成功</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="pay_sucess pd10 center">
+            <div class="bg_fff b-radius" style="padding: .2rem">
+                <div class="sucessbox" style="margin: .3rem 0">
+                    <img src="images/icons/circle_gou.png" />
+                    <h2 class="c_green" style="font-size: .2rem;">支付成功</h2>
+                    <p class="c_999">实付￥1189</p>
+                </div>
+                <a href="javascript:;" class="btn_100 mb15" id="erweima">购买成功二维码</a>
+                <a href="./indexV.html" class="btn_100 btn_border mb15">返回首页</a>
+                <!--拼团成功-->
+                <a href="./member/order.html?orderType=1" class="btn_100 btn_border mb15">查看订单</a>
+            </div>
+        </div>
+    </div>
+    <!--分享的弹窗-->
+    <div class="fenxiang">
+        <div>
+            <p class="fenxiang-title">分享给新朋友</p>
+            <div class="bdsharebuttonbox">
+                <ul class="gb_resItms">
+                    <li>
+                        <a title="分享到微信" href="#" class="bds_weixin " data-cmd="weixin"></a>微信好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ好友" href="#" class="bds_sqq " data-cmd="sqq"></a>QQ好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ空间" href="#" class="bds_qzone " data-cmd="qzone"></a>QQ空间
+                    </li>
+                    <li>
+                        <a title="分享到新浪微博" href="#" class="bds_tsina " data-cmd="tsina"></a>新浪微博
+                    </li>
+                </ul>
+            </div>
+            <p class="fenxiang-colse">取消</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/top.js"></script>
+<!--判断页面跳转，如果有前一页就跳转到前一页，如果没有就跳转首页 -->
+<script>
+    function goBack() {
+        if (window.history.length > 2) {
+            window.history.go(-1);
+        } else {
+            window.location.href = "/indexV.html";
+        }
+    }
+</script>
+</html>

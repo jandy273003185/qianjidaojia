@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.RealTimeBalanceWaterMapper">
+
+	<select id="selectCustBalanceWaterList" resultType="com.qifenqian.bms.accounting.financequery.bean.RealTimeCustBalanceWater" parameterType="com.qifenqian.bms.accounting.financequery.bean.RealTimeCustBalanceWater">
+		SELECT
+		S.CUST_ID,
+		S.ACCT_NAME,
+		F.BUSINESS_TYPE,
+		CASE F.BUSINESS_TYPE
+		WHEN 'RED_PACKET_RECHARGE' THEN
+		'红包充值'
+		WHEN 'RED_PACKET_RECHARGE_REVOKE' THEN
+		'红包充值撤销'
+		WHEN 'REGISTER' THEN
+		'注册'
+		WHEN 'RECHARGE' THEN
+		'充值'
+		WHEN 'RECHARGE_ONLINE' THEN
+		'联机充值'
+		WHEN 'PAYMENT' THEN
+		'支付'
+		WHEN 'PAYMENT_REVOKE' THEN
+		'支付撤销'
+		WHEN 'PAYMENT_REFUND' THEN
+		'支付退款'
+		WHEN 'WITHDRAW' THEN
+		'提现'
+		WHEN 'SETTLE' THEN
+		'结算'
+		WHEN 'WITHDRAW_APPLY' THEN
+		'提现申请'
+		WHEN 'WITHDRAW_REVOKE' THEN
+		'提现申请撤销'
+		WHEN 'SETTLE_APPLY_RECEIVE' THEN
+		'结算申请应收'
+		WHEN 'SETTLE_APPLY_PAY' THEN
+		'结算申请应付'
+		WHEN 'SETTLE_REVOKE_RECEIVE' THEN
+		'结算申请撤销应收'
+		WHEN 'SETTLE_REVOKE_PAY' THEN
+		'结算申请撤销应付'
+		WHEN 'REFUND' THEN
+		'退款'
+		WHEN 'RECHARGE_REVOKE' THEN
+		'充值撤销'
+		WHEN 'RECHARGE_ONLINE_REVOKE' THEN
+		'联机充值撤销'
+		WHEN 'RECHARGE_REFUND' THEN
+		'充值退款'
+		WHEN 'RECEIVE' THEN
+		'收款'
+		WHEN 'RECEIVE_REVOKE' THEN
+		'收款撤销'
+		WHEN 'RECEIVE_REFUND' THEN
+		'收款退款'
+		WHEN 'TRANSFER' THEN
+		'转账'
+		WHEN 'TRANSFER_REVOKE' THEN
+		'转账撤销'
+		WHEN 'FREEZE' THEN
+		'冻结'
+		WHEN 'UNFREEZE' THEN
+		'解冻'
+		WHEN 'ADJUST' THEN
+		'调账'
+		ELSE F.BUSINESS_TYPE
+		END AS businessTypeDsc,
+		F.BALANCE,
+		(F.BALANCE+F.TRANS_AMT) as finalBalance,
+		F.LOAN_FLAG,
+		CASE F.LOAN_FLAG
+		WHEN 'CREDIT' THEN '贷方'
+		WHEN 'DEBIT' THEN '借方'
+		END AS loanFlagDsc,
+		F.TRANS_AMT,
+		F.ONWAY_AMT,
+		F.USABLE_AMT ,
+		F.INST_DATE ,
+		DATE_FORMAT(f.inst_datetime ,'%Y-%m-%d %H:%i:%s') inst_datetime,
+		F.ID
+		FROM ACCT_SEVEN_CUST S
+		INNER JOIN ACCT_SEVEN_CUST_FLOW
+		F ON S.ACCT_ID=F.ACCT_ID
+		WHERE 1=1
+		<if test="custId != null and '' != custId">
+			AND S.CUST_ID = #{custId,jdbcType=VARCHAR}
+		</if>
+		<if test="businessType != null and '' !=businessType">
+			AND F.BUSINESS_TYPE= #{businessType,jdbcType=VARCHAR}
+		</if>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+           <![CDATA[  
+             AND DATE_FORMAT(F.INST_DATE ,'%Y-%m-%d')  >= #{beginWorkDate}  
+           ]]>
+		</if>
+		<if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+             AND DATE_FORMAT(F.INST_DATE ,'%Y-%m-%d') <= #{endWorkDate}  
+            ]]>
+		</if>
+		ORDER BY F.INST_DATETIME DESC, SUBSTRING(F.ID,13)  DESC
+	</select>
+
+	<select id="selectBussBalanceWaterList" resultType="com.qifenqian.bms.accounting.financequery.bean.RealTimeBussBalanceWater" parameterType="com.qifenqian.bms.accounting.financequery.bean.RealTimeBussBalanceWater">
+		SELECT
+		S.CUST_ID,
+		S.ACCT_NAME,
+		CASE F.BUSINESS_TYPE
+		WHEN 'RED_PACKET_RECHARGE' THEN
+		'红包充值'
+		WHEN 'RED_PACKET_RECHARGE_REVOKE' THEN
+		'红包充值撤销'
+		WHEN 'REGISTER' THEN
+		'注册'
+		WHEN 'RECHARGE' THEN
+		'充值'
+		WHEN 'RECHARGE_ONLINE' THEN
+		'联机充值'
+		WHEN 'PAYMENT' THEN
+		'支付'
+		WHEN 'PAYMENT_REVOKE' THEN
+		'支付撤销'
+		WHEN 'PAYMENT_REFUND' THEN
+		'支付退款'
+		WHEN 'WITHDRAW' THEN
+		'提现'
+		WHEN 'SETTLE' THEN
+		'结算'
+		WHEN 'WITHDRAW_APPLY' THEN
+		'提现申请'
+		WHEN 'WITHDRAW_REVOKE' THEN
+		'提现申请撤销'
+		WHEN 'SETTLE_APPLY_RECEIVE' THEN
+		'结算申请应收'
+		WHEN 'SETTLE_APPLY_PAY' THEN
+		'结算申请应付'
+		WHEN 'SETTLE_REVOKE_RECEIVE' THEN
+		'结算申请撤销应收'
+		WHEN 'SETTLE_REVOKE_PAY' THEN
+		'结算申请撤销应付'
+		WHEN 'REFUND' THEN
+		'退款'
+		WHEN 'RECHARGE_REVOKE' THEN
+		'充值撤销'
+		WHEN 'RECHARGE_ONLINE_REVOKE' THEN
+		'联机充值撤销'
+		WHEN 'RECHARGE_REFUND' THEN
+		'充值退款'
+		WHEN 'RECEIVE' THEN
+		'收款'
+		WHEN 'RECEIVE_REVOKE' THEN
+		'收款撤销'
+		WHEN 'RECEIVE_REFUND' THEN
+		'收款退款'
+		WHEN 'TRANSFER' THEN
+		'转账'
+		WHEN 'TRANSFER_REVOKE' THEN
+		'转账撤销'
+		WHEN 'FREEZE' THEN
+		'冻结'
+		WHEN 'UNFREEZE' THEN
+		'解冻'
+		WHEN 'ADJUST' THEN
+		'调账'
+		ELSE F.BUSINESS_TYPE
+		END AS businessTypeDsc,
+		F.BUSINESS_TYPE,
+		F.BALANCE,
+		(F.BALANCE+F.TRANS_AMT) as finalBalance,
+		F.LOAN_FLAG,
+		CASE F.LOAN_FLAG
+		WHEN 'CREDIT' THEN
+		'贷方'
+		WHEN 'DEBIT' THEN
+		'借方'
+		END AS loanFlagDsc,
+		F.TRANS_AMT,
+		F.ONWAY_AMT,
+		F.USABLE_AMT,
+		F.INST_DATE,
+		DATE_FORMAT(F.INST_DATETIME,'%Y-%m-%d %H:%i:%s') inst_datetime,
+		F.ID
+		FROM
+		ACCT_SEVEN_BUSS S
+		INNER JOIN ACCT_SEVEN_BUSS_FLOW F ON S.ACCT_ID = F.ACCT_ID
+		WHERE
+		1 = 1
+		<if test="custId != null and '' != custId">
+			AND S.CUST_ID= #{custId,jdbcType=VARCHAR}
+		</if>
+		<if test="businessType != null and '' !=businessType">
+			AND F.BUSINESS_TYPE= #{businessType,jdbcType=VARCHAR}
+		</if>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(F.INST_DATE ,'%Y-%m-%d') >= #{beginWorkDate}  
+            ]]>
+		</if>
+		<if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(F.INST_DATE ,'%Y-%m-%d') <= #{endWorkDate}  
+            ]]>
+		</if>
+		ORDER BY F.INST_DATETIME DESC, F.ID DESC
+	</select>
+</mapper>

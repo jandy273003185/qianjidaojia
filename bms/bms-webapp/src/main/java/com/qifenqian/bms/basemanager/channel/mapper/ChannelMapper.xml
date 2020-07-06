@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.channel.mapper.ChannelMapper">
+	
+	<select id="getChannelList" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelInfoBean" 
+		resultType="com.qifenqian.bms.basemanager.channel.bean.ChannelInfoBean">
+			select 
+				T.*
+			from 
+				td_channel_info T
+			<where>
+				<if test="channel != '' and channel != null">
+					T.channel= #{channel,jdbcType=VARCHAR}
+				</if>
+				<if test = "channelName != '' and channelName != null">
+					AND T.channel_name like CONCAT('%',#{channelName},'%')
+				</if>
+			</where>
+		
+	</select>
+	<insert id="addChannelInfo" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelInfoBean" >
+		insert into
+		    td_channel_info
+		(
+			channel_id,
+			channel,
+			channel_name,
+			sub_channel,
+			sub_channel_name,
+			modify_id,
+			modify_time,
+			create_id,
+			create_time
+		)
+		VALUES(
+			#{channelId,jdbcType=VARCHAR},
+			#{channel,jdbcType=VARCHAR},
+			#{channelName,jdbcType=VARCHAR},
+			#{subChannel,jdbcType=VARCHAR},
+			#{subChannelName,jdbcType=VARCHAR},
+			#{modifyId,jdbcType=VARCHAR},
+			now(),
+			#{createId,jdbcType=VARCHAR},
+			now()
+		)
+	</insert>
+	<delete id="deleteChannelInfo" parameterType="String">
+		delete from
+			td_channel_info
+		where
+			channel_id = #{channelId,jdbcType=VARCHAR}
+	</delete>
+	<update id="updateChannelInfo" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelInfoBean">
+		update 
+			td_channel_info
+		<set>
+			<if test="channel != null and channel != ''">
+				channel = #{channel,jdbcType=VARCHAR},
+			</if>
+			<if test="channelName != null and channelName != ''">
+				channel_name = #{channelName,jdbcType=VARCHAR},
+			</if>
+			<if test="subChannel != null and subChannel != ''">
+				sub_channel = #{subChannel,jdbcType=VARCHAR},
+			</if>
+			<if test="subChannelName != null and subChannelName != ''">
+				sub_channel_name = #{subChannelName,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId != ''">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="createId != null and createId != ''">
+				create_id = #{createId,jdbcType=VARCHAR},
+			</if>
+			modify_time = now()
+		</set>
+		where
+			channel_id = #{channelId,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="getChannelControlList" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelControlBean" 
+		resultType="com.qifenqian.bms.basemanager.channel.bean.ChannelControlBean">
+			select 
+				T.*
+			from 
+				td_channel_control T
+			<where>
+				<if test="channel != '' and channel != null">
+					T.channel= #{channel,jdbcType=VARCHAR}
+				</if>
+				<if test="mchId != '' and mchId != null">
+					T.mch_id= #{mchId,jdbcType=VARCHAR}
+				</if>
+				<if test="subChannel != '' and subChannel != null">
+					T.sub_channnel= #{subChannel,jdbcType=VARCHAR}
+				</if>
+			</where>
+		
+	</select>
+	<insert id="addChannelControl" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelControlBean" >
+		insert into
+		    td_channel_control
+		(
+			mch_id,
+			channel,
+			sub_channel,
+			status,
+			limit_per_amt,
+			limit_day_count,
+			limit_day_tot_amt,
+			modify_id,
+			modify_time,
+			create_id,
+			create_time
+		)
+		VALUES(
+			#{mchId,jdbcType=VARCHAR},
+			#{channel,jdbcType=VARCHAR},
+			#{subChannel,jdbcType=VARCHAR},
+			#{status,jdbcType=VARCHAR},
+			#{limitPerAmt,jdbcType=VARCHAR},
+			#{limitDayCount,jdbcType=VARCHAR},
+			#{limitDayTotAmt,jdbcType=VARCHAR},
+			#{modifyId,jdbcType=VARCHAR},
+			now(),
+			#{createId,jdbcType=VARCHAR},
+			now()
+		)
+	</insert>
+	<delete id="deleteChannelControl" parameterType="String">
+		delete from
+			td_channel_control
+		where
+			channel = #{channel,jdbcType=VARCHAR}
+		AND
+			mch_id = #{mchId,jdbcType=VARCHAR}
+	</delete>
+	<update id="updateChannelControl" parameterType="com.qifenqian.bms.basemanager.channel.bean.ChannelControlBean">
+		update 
+			td_channel_control
+		<set>
+			<if test="channel != null and channel != ''">
+				channel = #{channel,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status != ''">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="subChannel != null and subChannel != ''">
+				sub_channel = #{subChannel,jdbcType=VARCHAR},
+			</if>
+			<if test="limitPerAmt != null and limitPerAmt != ''">
+				limit_per_amt = #{limitPerAmt,jdbcType=VARCHAR},
+			</if>
+			<if test="limitDayCount != null and limitDayCount != ''">
+				limit_day_count = #{limitDayCount,jdbcType=VARCHAR},
+			</if>
+			<if test="limitDayTotAmt != null and limitDayTotAmt != ''">
+				limit_day_tot_amt = #{limitDayTotAmt,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId != ''">
+				modify_id = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			modify_time = now()
+		</set>
+		where
+			channel = #{channel,jdbcType=VARCHAR}
+		AND
+			mch_id = #{mchId,jdbcType=VARCHAR}
+	</update>
+	
+	
+</mapper>

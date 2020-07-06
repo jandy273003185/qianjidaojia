@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.agent.mapper.AgentSignMapper">
+	
+	<select id="getSignList" parameterType="com.qifenqian.bms.basemanager.agent.bean.AgentSignBean" 
+		resultType="com.qifenqian.bms.basemanager.agent.bean.AgentSignBean">
+			select 
+				a.*,
+				e.user_name auditUserName
+			from 
+				td_agent_sign_merchant a
+			left join 
+				sys_user   e
+			on
+				a.audit_userId = e.user_id
+			<where>
+				<if test="agentId != '' and agentId != null">
+					a.agent_id= #{agentId,jdbcType=VARCHAR}
+				</if>
+				<if test="merchantId != '' and merchantId != null">
+					AND a.merchant_id= #{merchantId,jdbcType=VARCHAR}
+				</if>
+				<if test="signAuditStatus != '' and signAuditStatus != null">
+					AND a.sign_audit_status= #{signAuditStatus,jdbcType=VARCHAR}
+				</if>
+			
+				<if test="startCreateTime != null and startCreateTime != ''"> 
+					<![CDATA[ 
+			 			AND DATE_FORMAT(a.sign_time ,'%Y-%m-%d') >= #{startCreateTime} 
+			 		]]>
+				</if>
+				<if test="endCreateTime != null and endCreateTime != ''"> 
+					<![CDATA[ 
+			   			AND DATE_FORMAT(A.sign_time ,'%Y-%m-%d') <= #{endCreateTime} 
+					]]>
+				</if>
+				
+			</where>
+		
+	</select>
+	
+	<select id="findSignInfo" parameterType="String" 
+		resultType="com.qifenqian.bms.basemanager.agent.bean.AgentSignVO">
+			select 
+				a.*,
+				c.cust_name agentName,
+				d.cust_name merchantName,
+				e.user_name auditUserName
+			from 
+				td_agent_sign_merchant a
+				left join
+				td_cust_info   c
+				on
+					a.agent_id = c.cust_id
+				left join 
+					td_cust_info   d
+				on
+					a.merchant_id = d.cust_id
+				left join 
+					sys_user   e
+				on
+					a.audit_userId = e.user_id
+			where merchant_id  = #{custId,jdbcType = VARCHAR}
+		
+	</select>
+	
+	<select id="findCustInfo" parameterType="String" 
+		resultType="com.qifenqian.bms.basemanager.agent.bean.CustVo">
+			select 
+				t.*,
+				u.mobile,
+				u.email,
+				u.state merchantState,
+				f.fee_code
+			from 
+				td_cust_info t
+				left join TD_LOGIN_USER_INFO u on u.cust_Id = t.cust_Id
+				left join TD_CUST_FEE_RULE f on t.cust_Id = f.cust_Id
+			where  t.cust_id =#{custId,jdbcType = VARCHAR}			
+		
+	</select>
+	
+	<update id="auditNotPass" parameterType="string" >
+		UPDATE
+			td_agent_sign_merchant
+		set 
+			sign_audit_status = '02',memo = #{memo,jdbcType = VARCHAR},audit_userId = #{auditUserId,jdbcType=VARCHAR}
+		where
+			merchant_id = #{custId,jdbcType = VARCHAR} 
+			 
+	</update>
+	
+	<update id="auditPass" parameterType="String" >
+		UPDATE
+			td_agent_sign_merchant
+		set 
+			sign_audit_status = '00',audit_userId = #{auditUserId,jdbcType=VARCHAR},memo = ''
+		where
+			merchant_id = #{custId,jdbcType = VARCHAR};
+			
+	</update>
+	<update id="updateCustInfoAgentFlag" parameterType="string">
+		UPDATE
+			td_cust_info
+		set 
+			agent_flag = #{flag,jdbcType=VARCHAR}
+		where
+			cust_id = #{custId,jdbcType = VARCHAR};
+	</update>
+	
+	<select id="findScanPath" parameterType="String" resultType="String">
+		select 
+			SCAN_COPY_PATH
+		from
+			td_sign_merchant_scan_copy
+		where 
+			merchant_ID = #{custId,jdbcType = VARCHAR}
+	
+	</select>
+</mapper>

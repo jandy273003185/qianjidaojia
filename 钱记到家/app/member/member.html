@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="utf-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css?0" />
+    <link rel="stylesheet" type="text/css" href="/css/fenxiang.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js?1" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?5"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="/script/signIn.js" type="text/javascript" charset="utf-8"></script>-->
+    <!--<script src="/script/Share.js" type="text/javascript" charset="utf-8"></script>-->
+    <!--<script src="/script/WxShare.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/clipboard.js"></script>
+    <style type="text/css">
+        .layui-m-layer0 .layui-m-layerchild {
+            width: 68%;
+        }
+    </style>
+    <link href="/NewVersion/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/NewVersion/css/style_css.css?0" rel="stylesheet" />
+</head>
+
+<body class="bg_fff ac">
+    <div class="main">
+        <div class="memberTop">
+            <a href="set.html" class="btn-set"><img src="../images/nav/set.png" /></a>
+            <div class="conBox">
+                <div class="tx_info">
+                    <div class="tx" onclick="window.location.href='/member/set.html'">
+                        <img src="/images/tx/default.png" id="Avatar" alt="">
+                    </div>
+                    <div class="info">
+                        <p class="name"><span class="gradeImg"></span><span id="NickName" class="spnickname"></span></p>
+                        <p class="perId idno">ID:<span id="MemberID" class="idno"></span></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <ul class="priceList li_33 center">
+            <li>
+                <a href="balance.html">
+                    <p class="price"><span class="fh">￥</span><span id="Wallet" class="ftb">0</span></p>
+                    <p class="title">余额</p>
+                </a>
+            </li>
+            <li>
+                <a href="/coupon/VoucherCenter.html">
+                    <p class="price" id="CouponSum">0</p>
+                    <p class="title">优惠券</p>
+                </a>
+            </li>
+            <li>
+                <a href="integral.html">
+                    <p class="price" id="Score">0</p>
+                    <p class="title">积分</p>
+                </a>
+            </li>
+            <!--<li>
+            <a href="#">
+                <p class="price">1</p>
+                <p class="title">红包</p>
+            </a>
+        </li>-->
+        </ul>
+        <!-- 我的订单 -->
+        <div class="section memberIndex__section order__section">
+            <div class="section__hd weui-cell">
+                <div class="weui-cell__bd">
+                    <p class="title">我的订单</p>
+                </div>
+                <a class="weui-cell__ft" href="/member/order.html?orderType=0">
+                    <span class="more">查看全部订单</span>
+                    <span class="icon-arrow icon-arrowRight"></span>
+                </a>
+            </div>
+            <div class="section__bd">
+                <ul class="dd-navList li_20 block__navList nav_ordertype">
+                    <li>
+                        <a href="order.html?orderType=1" class="outside" data-type="1">
+                            <div class="icon-img">
+                                <img src="../images/nav/toico1.png" alt="">
+                            </div>
+                            <p class="title">待付款</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="order.html?orderType=2" class="outside" data-type="2">
+                            <div class="icon-img">
+                                <img src="../images/nav/toico2.png" alt="">
+                            </div>
+                            <p class="title">待发货</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="order.html?orderType=3" class="outside" data-type="3">
+                            <div class="icon-img">
+                                <img src="../images/nav/toico3.png" alt="">
+                            </div>
+                            <p class="title">配送中</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="order.html?orderType=4" class="outside" data-type="4">
+                            <div class="icon-img">
+                                <img src="../images/nav/toico4.png" alt="">
+                            </div>
+                            <p class="title">待评价</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/aftersale/aftersaleorder.html" class="outside" data-type="5">
+                            <div class="icon-img">
+                                <img src="../images/nav/toico5.png" alt="">
+                            </div>
+                            <p class="title">售后</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 我的订单  end -->
+        <!-- 我的服务
+    <div class="section memberIndex__section" style="display:none;">
+        <div class="section__hd weui-cell">
+            <div class="weui-cell__bd">
+                <p class="title">我的服务</p>
+            </div>
+        </div>
+        <div class="section__bd">
+            <ul class="dd-navList li_25 block__navList dd-navList__40">
+                <li>
+                    <a href="myTeam.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-1.png" alt="">
+                        </div>
+                        <p class="title">团队</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="setUpShop.html" class="outside" id="Owner">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-2.png" alt="">
+                        </div>
+                        <p class="title">开店赚钱</p>
+                    </a>
+                </li>
+                <li class="li__sellerEnter" style="display: none;">
+                    <a href="javascript:;" class="outside" id="btnSellerEnter">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-9.png" alt="">
+                        </div>
+                        <p class="title"></p>
+                    </a>
+                </li>
+                <li>
+                    <a href="subMember.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-3.png" alt="">
+                        </div>
+                        <p class="title">会员中心</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" id="signIn" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-4.png" alt="">
+                        </div>
+                        <p class="title">每日签到</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="customService.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-5.png" alt="">
+                        </div>
+                        <p class="title">客服中心</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="followShop.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-6.png" alt="">
+                        </div>
+                        <p class="title">关注店铺</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="/member/order_fl1.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-7.png" alt="">
+                        </div>
+                        <p class="title">已购礼包</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="/member/order_fl.html" class="outside">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-8.png" alt="">
+                        </div>
+                        <p class="title">已领礼包</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="outside sharebtn">
+                        <div class="icon-img">
+                            <img src="../images/nav/ac-mNav2-1.png" alt="">
+                        </div>
+                        <p class="title">邀请好友</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 我的服务 end -->
+        <!--广告-->
+        <!--<div class="swiperImg pl10 pr10 mb10">
+        <a href="##">
+            <img src="../images/banner/m-ggao1.png" alt="" />
+        </a>
+    </div>-->
+        <div class="mad pl10 pr10 btn-copy">
+            <img src="../images/nav/copy.png" />
+        </div>
+        <!--广告  end-->
+        <div class="yg">
+            <a href="/member/order_fl1.html" class="outside">
+                <div class="icon-img">
+                    <img src="../images/nav/ac-mNav2-7.png?0" alt="">
+                </div>
+            </a>
+        </div>
+        <div class="yg">
+            <a href="/member/order_fl.html" class="outside">
+                <div class="icon-img">
+                    <img src="../images/nav/ac-mNav2-8.png?0" alt="">
+                </div>
+            </a>
+        </div>
+        <!--<div class="yg">
+            <a href="/ReceiveNoGift.html" class="outside">
+                <div class="icon-img">
+                    领取礼包
+                </div>
+            </a>
+        </div>-->
+        <!--推荐好货-->
+        <div class="recommendpro mt20">
+            <div class="title"><img src="../images/nav/tuijian.png" /></div>
+            <ul class="mt15" id="productListBox">
+                <!--<li>
+                <a href="details.html?id=1" class="m-pro" data-id="1">
+                    <div class="pics">
+                        <img src="https://mall.qianjidaojia.com//upload/shop/10000/2019-11-07/2019110717404741528s03238.png">
+                    </div>
+                    <h4>【盐源】丑苹果 约5斤装（9~12枚） </h4>
+                    <p>人工采摘优果 饱满红润细腻 脆甜可口香醇.</p>
+                    <span>¥ 33.9</span>
+                </a>
+            </li>
+            <li class="ma0">
+                <a href="details.html?id=1" class="m-pro" data-id="1">
+                    <div class="pics">
+                        <img src="https://mall.qianjidaojia.com//upload/shop/10000/2019-11-07/2019110717404741528s03238.png">
+                    </div>
+                    <h4>【盐源】丑苹果 约5斤装（9~12枚） </h4>
+                    <p>人工采摘优果 饱满红润细腻 脆甜可口香醇</p>
+                    <span>¥ 33.9</span>
+                </a>
+            </li>-->
+            </ul>
+            <div class="cb"></div>
+        </div>
+        <!--推荐好货-->
+        <script id="productList" type="text/x-dot-template">
+            {{~it:value:index}}
+            {{if(((index+1)%2)==0){}}
+            <li class="ma0">
+                {{ }else{ }}
+            <li>
+                {{ } }}
+                <a href="/details.html?id={{=value.Id}}" class="m-pro" data-id="{{=value.Id}}">
+                    <div class="pics">  <img src="{{=value.ProductImg}}" /></div>
+                    <h4>{{=value.Name}}</h4>
+                    {{ if(value.Synopsis) { }}
+                    <p>{{=value.Synopsis}}</p>
+                    {{ }else{ }}
+                    <p>暂无产品简介</p>
+                    {{ } }}
+                    <span>¥ {{=value.Price}}</span>
+                </a>
+            </li>
+            {{~}}
+
+        </script>
+        <!--推荐好货 end-->
+    </div>
+    <!--底部-->
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer">
+
+    </nav>
+
+
+    <!--分享的弹窗-->
+    <div class="fenxiang">
+        <div>
+            <p class="fenxiang-title">邀请好友</p>
+            <div class="bdsharebuttonbox">
+                <ul class="gb_resItms">
+                    <li>
+                        <a title="分享到微信" href="#" class="bds_weixin " data-cmd="weixin" data-url=""></a>微信好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ好友" href="#" class="bds_sqq " data-cmd="sqq" data-url=""></a>QQ好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ空间" href="#" class="bds_qzone " data-cmd="qzone" data-url=""></a>QQ空间
+                    </li>
+                    <li>
+                        <a title="分享到新浪微博" href="#" class="bds_tsina " data-cmd="tsina" data-url=""></a>新浪微博
+                    </li>
+                </ul>
+            </div>
+            <p class="fenxiang-colse">取消</p>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            var idx = layer.open({
+                type: 2
+                , content: 'loading...'
+            });
+            var s = setInterval(function () {
+                if (!iswx() && !sc.auth.isLogin()) {
+                    window.location.href = "/login.html";
+                }                
+                if (!iswx() || (iswx() && isWxLoginOver == true)) {
+                    clearInterval(s);
+                    layer.close(idx);
+                    setTimeout(function () {
+                        //登录过了
+                        if (sc.utils.isNullOrEmpty(token)) {
+                            userId = sc.utils.getCookieValue("UserId");
+                            token = sc.utils.getCookieValue("Token");
+                        }
+                        // 初始化分享链接
+                        GetMemberInfo(function (data) {
+                            var url = 'https://www.qianjidaojia.com/register.html?referralCode=' + data.data.ReferralCode + '&id=';
+                            $(".fenxiang a").attr("data-url", url);
+                        });
+                        var url = 'api/shop/MemberMerchantStatus';
+                        var callback = function (data) {
+                            console.log(data);
+                            if (data.code === 0) {
+                                $('.li__sellerEnter').show();
+                                if (data.data.ShopStatus === 1) {
+                                    //入驻申请成功并审核成功
+                                    $('.li__sellerEnter .title').text("商家店铺");
+                                    $('#btnSellerEnter').click(function () {
+                                        location.href = '/member/storeIndex.html?shopId=' + data.data.ShopId + '';
+                                    });
+                                }
+                                else {
+                                    //
+                                    $('.li__sellerEnter .title').text("商家入驻");
+                                    $('#btnSellerEnter').click(function () {
+                                        location.href = '/member/sellerEnter.html';
+                                    });
+                                }
+                            } else if (data.code == 1) {
+                                layer.open({
+                                    content: "参数错误",
+                                    skin: 'msg',
+                                    time: 2 //2秒后自动关闭
+                                });
+                            } else if (data.code == 2) {
+                                layer.open({
+                                    content: "亲，您已经掉线，请重新登录！",
+                                    skin: 'msg',
+                                    time: 2 //2秒后自动关闭
+                                });
+                                setTimeout(function () {
+                                    location.href = "/login.html";
+                                }, 2000);
+                            } else if (data.code == 99) {
+                                layer.open({
+                                    content: "服务器开了个小差！",
+                                    skin: 'msg',
+                                    time: 2 //2秒后自动关闭
+                                });
+                            }
+                        }
+                        sc.post(url, {
+                            "UserId": userId,
+                            "Token": token
+                        }, callback);
+                        MemberindexPage();
+                    },100);
+                }              
+            }, 300);
+            clipBordText = '钱记到家';
+            //复制内容到粘贴板
+            $('.btn-copy').on('click', function () {
+                new Clipboard('.mad', {
+                    text: function () {
+                        return "钱记到家";
+                    }
+                });
+                var index = layer.open({
+                    content: '已复制,请前往微信添加',
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+                $(".layui-m-layer").each(function (d) {
+                    if ($(this).attr("index") == index) {
+                        $(this).find(".layui-m-layer-msg").css("bottom", "20px");
+                    }
+                });
+            });
+            // 底部调用
+            $("#index-footer").load("/footerV.html");
+            goodsList('', '', '', '', 1, '', 'q', 1); //商品推荐
+        });
+        //商品推荐
+        var pageIndex = 1; //当前页
+        var pageSize = 4;
+        function goodsList(Pid, hot, recommend, newProduct, explosive, searchkey, sortname, sortorder) {
+            var url = 'api/Goods/GoodsList';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data.length > 0) {
+                        if (explosive) {
+                            var arrText = doT.template($("#productList").text()); //爆款直降
+                            $("#productListBox")[0].innerHTML += arrText(data.data);
+                        }
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "cid": Pid,
+                "page": pageIndex,
+                "pageSize": pageSize,
+                "hot": hot,
+                "recommend": recommend,
+                "newProduct": newProduct,
+                "explosive": explosive,
+                "searchkey": searchkey,
+                "sortname": sortname, //j为按价格，s为时间排序
+                "sortorder": sortorder //0为倒叙，1为升序
+            }, callback, error);
+        }
+
+    </script>
+
+</body>
+
+</html>

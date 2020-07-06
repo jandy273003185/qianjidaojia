@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.subAccountOrder.mapper.MerchantSubAccountOrderMapper">
+	
+	
+	<!-- 查询商户分账列表 -->
+	<select id="selectSubAccountOrderList" parameterType="com.qifenqian.bms.merchant.subAccountOrder.bean.MerchantSubAccouontOrderBean" resultType="com.qifenqian.bms.merchant.subAccountOrder.bean.MerchantSubAccouontOrderBean" >
+		SELECT
+			t.ID,
+			t.ORDER_ID,
+			t.SETTLE_ID,
+			t.CHANNEL,
+			t.CHANNEL_SETTLE_ID,
+			t.STATUS,
+			t.MSG,
+			t.DESC,
+			t.QUERY_COUNT,
+			t.INPUT_TIME
+		FROM
+			combinedpayment.td_merchant_settle_trade t			
+		<where>
+			1=1
+			<if test="id != null and id != '' "> 
+				AND t.ID = #{id, jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and orderId != '' "> 
+				AND t.ORDER_ID = #{orderId, jdbcType=VARCHAR}
+			</if>
+			<if test="settleId != null and settleId != '' "> 
+				AND t.SETTLE_ID =#{settleId, jdbcType=VARCHAR}
+			</if>
+			<if test="channel != null and channel != '' "> 
+				AND t.CHANNEL =#{channel, jdbcType=VARCHAR}
+			</if>
+			<if test="channelSettleId != null and channelSettleId != '' "> 
+				AND t.CHANNEL_SETTLE_ID LIKE CONCAT('%',#{channelSettleId, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="status != null and status != '' "> 
+				AND t.STATUS =#{status, jdbcType=VARCHAR}
+			</if>
+			<if test="msg != null and msg != '' "> 
+				AND t.MSG =#{msg, jdbcType=VARCHAR}
+			</if>
+			<if test="queryCount != null and queryCount != '' "> 
+				AND t.QUERY_COUNT =#{queryCount, jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.INPUT_TIME DESC
+	</select>
+
+</mapper>

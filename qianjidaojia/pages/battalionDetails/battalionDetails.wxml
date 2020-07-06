@@ -1,0 +1,74 @@
+<!--pages/battalionDetails/battalionDetails.wxml-->
+<view class="myInfo" bindtap="onUser">
+  <image class="bg" src="../../images/index/regimentalbg.png"></image>
+  <view class="userinfo">
+      <image  class="userinfo-avatar" src="{{headimgurl}}" mode="cover"></image>
+      <view class="name"> 
+        <text class="userinfo-nickname">{{nickname}}</text>
+        <text class="remark" wx:if="{{groupremark}}">备注名:{{groupremark}}</text>
+      </view>
+        <myIcon iconClass="icon_ament" class="edit" bindtap="ament"></myIcon>
+  </view>
+</view>
+
+<view class="content-up">
+    <view class="survey">营长概况</view>
+    <view class=" flex justs alic">
+        <view class="item borR">
+            <view class="surveyBox flex justs alic">
+                <view class="today">今日客户</view>
+                <view class="num">{{offineuserTodayTotal}}<text class="unit">人</text>
+                </view>
+            </view>
+            <view class="surveyBox flex justs  alic">
+                <text class="today">累计客户</text>
+                <text class="num">{{offineuserTotal}}<text class="unit">人</text></text>
+            </view>
+        </view>
+        <view class="item">
+            <view class="surveyBox flex justs  alic">
+                <text class="today">今日购买订单</text>
+                <text class="num">{{offineorderTodayTotal}}<text class="unit">笔</text></text>
+            </view>
+            <view class="surveyBox flex justs  alic">
+                <text class="today">累计订单</text>
+                <text class="num">{{offineorderTotal}}<text class="unit">笔</text></text>
+            </view>
+        </view>
+    </view>
+</view>
+<!-- 营长收益 -->
+<view class="battalion">
+    <view class="battalionAll">营长总收益</view>
+    <view class="earnings flex justs alic">
+        <view  class="today">待结算收益</view>
+        <view class="num">{{commissionDelayPriceTotalY}}<text class="unit">元</text></view>
+    </view>
+    <view class="earnings flex justs alic">
+        <view  class="today">累计收益</view>
+        <view class="num">{{commissionPriceTotalY}}<text class="unit">元</text></view>
+    </view>
+</view>
+<!-- 团长收益 -->
+<view class="battalion mar">
+    <view class="battalionAll">团长收益</view>
+    <view class="earnings flex justs alic">
+        <view  class="today">今日预估团队收益</view>
+        <view class="num">{{commissionPriceTodayTotal}}<text class="unit">元</text></view>
+    </view>
+    <view class="earnings flex justs alic">
+        <view  class="today">待结算团队收益</view>
+        <view class="num">{{commissionDelayPriceTotal}}<text class="unit">元</text></view>
+    </view>
+    <view class="earnings flex justs alic">
+        <view  class="today">累计团队收益</view>
+        <view class="num">{{commissionPriceTotal}}<text class="unit">元</text></view>
+    </view>
+</view>
+<myModal bindconfirm="confirm" bindconcel="concel" isModal="{{isModal}}">
+    <view slot="title" class="title">添加或修改备注</view>
+    <input slot="main" class="input" placeholder="请输入备注名称" placeholder-class="placeholder" value="{{GroupRemark}}" bindinput="inputRemark"></input>
+</myModal>
+
+
+<view class="bottom-txt">转 发 分 享 ，手 有 余 香</view>

@@ -1,0 +1,116 @@
+/* pages/battalionEarnings/battalionEarnings.wxss */
+.status text.activeBlue{
+    color:rgba(69,131,248,1);
+    border:2rpx solid rgba(69,131,248,1);
+}
+.status text.activeRed{
+    color:rgba(247,65,70,1);
+    border:2rpx solid rgba(247,65,70,1);
+}
+.fontBlue{
+    color:rgba(69,131,248,1);
+}
+.fontRed{
+    color:rgba(247,65,70,1);
+}
+.vlineRed{
+    border-right: 4rpx solid rgba(224,2,2,1);
+}
+.vlineBlue {
+    border-right: 4rpx solid #4583f8;
+}
+.borRed{
+    border-bottom: 2rpx solid rgba(224,2,2,1);
+}
+.borBlue{
+    border-bottom: 2rpx solid rgba(69, 131, 248, 1);
+}
+
+
+page {
+    background-color: #fdfafe;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 0 24rpx 0;
+    border-radius: 14rpx;
+}
+
+.status text {
+    border: 2rpx solid #c0c0c0;
+    font-size: 30rpx;
+    color: #c0c0c0;
+    padding: 2rpx 10rpx;
+    border-radius: 14rpx;
+    margin-left: 24rpx;
+}
+
+/* .active {
+    border: 2rpx solid #4583f8 !important;
+    color: #4583f8 !important;
+} */
+
+image {
+    margin-top: 20rpx;
+    width: 100%;
+    height: 206rpx;
+}
+
+.up {
+    color: #fff;
+    top: 113rpx;
+    position: absolute;
+    height: 206rpx;
+    width: 100%;
+    display: flex;
+}
+
+.up-left, .up-right {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    text-align: center;
+    line-height: 83rpx;
+    font-size: 28rpx;
+    padding: 20rpx 0;
+}
+
+.num {
+    font-size: 48rpx;
+}
+
+.down {
+    /* height: 206rpx; */
+    height: 150rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.down-left, .down-right {
+    width: 50%;
+    text-align: center;
+    font-size: 28rpx;
+}
+
+.num2 {
+    
+    font-size: 48rpx;
+}
+
+.detail {
+    height: 45rpx;
+    font-size: 36rpx;
+    
+    line-height: 45rpx;
+    
+}
+
+.down-txt {
+    font-size: 28rpx;
+    color: #333;
+}
+
+

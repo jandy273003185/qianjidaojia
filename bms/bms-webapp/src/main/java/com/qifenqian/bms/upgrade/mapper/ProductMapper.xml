@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.upgrade.mapper.ProductMapper">
+	<select id="getProductAuditList"  resultType="com.qifenqian.bms.upgrade.bean.ProductAuding" parameterType="com.qifenqian.bms.upgrade.bean.ProductAuding">
+    	SELECT
+			t1.*,
+			t2.CUST_NAME,
+			t2.CUST_ID,
+			t3.APP_ID,
+		  	t3.APP_DOWNLOAD_ADDRESS,
+			t3.APP_NAME,
+			t3.QC_APP_ID,
+			t3.QC_PLAY,
+			t3.SERVICE_NUMBER,
+			t2.register_way,
+			t2.CUST_ADD as representativeAddr,
+			t3.WEBSITE,
+			(SELECT
+				a.AUDIT_INFO
+			FROM
+				(
+					SELECT
+						AUDIT_INFO,
+						AUDIT_STATUS,
+						AUDIT_TIME,
+						AUDIT_TYPE,
+						ID,
+						MERCHANT_CODE,
+						USER_ID,(
+							case 
+									when AUDIT_TYPE = '05' then 'OA_PAY'
+									when AUDIT_TYPE = '02' then 'SCAN_PAY'
+									when AUDIT_TYPE = '03' then 'H5_PAY'
+									when AUDIT_TYPE = '06' then 'MINI_PAY'
+									when AUDIT_TYPE = '04' then 'APP_PAY'
+									when AUDIT_TYPE = '07' then 'BLUESEA_PAY'
+									else '0'
+							end
+						 )type
+					FROM
+						TD_AUDIT_RECODE_INFO
+					ORDER BY
+						TD_AUDIT_RECODE_INFO.AUDIT_TIME DESC
+				) a
+			where type != '0' and a.MERCHANT_CODE = t1.merchant_code and a.type = t1.product_code
+			GROUP BY a.merchant_code,a.audit_type) as auditInfo
+		FROM
+			td_customer_product_info t1
+		INNER JOIN td_cust_info t2 on t1.merchant_code = t2.MERCHANT_CODE
+		INNER JOIN td_authorized_info t3 on t3.MERCHANT_CODE = t1.MERCHANT_CODE
+		WHERE
+			t1.sign_status in ('02','04','00') and t2.STATE = '00' and t1.cust_type='0'
+			<if test="merchantCode !=null and merchantCode !='' ">
+				AND t1.merchant_code =#{merchantCode, jdbcType = VARCHAR}
+			</if>
+			<if test="productCode !=null and productCode !='' ">
+				AND t1.product_code =#{productCode, jdbcType = VARCHAR}
+			</if>
+			<if test="custName !=null and custName !='' ">
+				AND t2.CUST_NAME LIKE CONCAT('%',#{custName, jdbcType = VARCHAR},'%')
+			</if>
+			ORDER BY t1.create_time DESC
+	</select>
+	
+	<select id="getAgencyAudingListExport"  resultType="com.qifenqian.bms.upgrade.bean.ProductExport" parameterType="com.qifenqian.bms.upgrade.bean.ProductAuding">
+    	SELECT
+			t1.*,
+			t2.CUST_NAME,
+			t3.APP_ID,
+		  	t3.APP_DOWNLOAD_ADDRESS,
+			t3.APP_NAME,
+			t3.QC_APP_ID,
+			t3.QC_PLAY,
+			t3.SERVICE_NUMBER,
+			t2.register_way,
+			t2.REPRESENTATIVE_ADDR,
+			t3.WEBSITE
+		FROM
+			td_customer_product_info t1
+		INNER JOIN td_cust_info t2 on t1.merchant_code = t2.MERCHANT_CODE
+		INNER JOIN td_authorized_info t3 on t3.MERCHANT_CODE = t1.MERCHANT_CODE
+		WHERE
+			t1.sign_status = '01' and t2.STATE = '00' and t1.cust_type='0'
+			<if test="merchantCode !=null and merchantCode !='' ">
+				AND t1.merchant_code =#{merchantCode, jdbcType = VARCHAR}
+			</if>
+			<if test="productCode !=null and productCode !='' ">
+				AND t1.product_code =#{productCode, jdbcType = VARCHAR}
+			</if>
+			<if test="custName !=null and custName !='' ">
+				AND t2.CUST_NAME LIKE CONCAT('%',#{custName, jdbcType = VARCHAR},'%')
+			</if>
+			
+	</select>
+	
+	<select id="findScanPath"  resultType="String" parameterType="String">
+    	SELECT
+			t1.SCAN_COPY_PATH
+		FROM
+			TD_CUST_SCAN_COPY t1
+		INNER JOIN td_cust_info t2 on t1.CUST_ID = t2.CUST_ID
+		WHERE
+			t2.MERCHANT_CODE = #{merchantCode} and  t1.CERTIFY_TYPE= #{type}  
+	</select>
+	
+	
+	<select id="ProductByMerchantCode"  resultType="com.qifenqian.bms.upgrade.bean.ProductAuding" parameterType="String">
+    	SELECT
+			c.*
+		FROM
+			td_customer_product_info c
+		inner join td_merchant_apply_info a on a.agent_id = c.merchant_code
+		where a.merchant_id = #{merchantCode}
+	</select>
+	
+	<select id="selCustInfoByMerchantCode"  resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="String">
+    	SELECT
+			*
+		FROM
+			td_login_user_info t1
+		inner join td_cust_info t2 on t1.cust_id = t2.cust_id
+		where t2.merchant_code = #{merchantCode}
+	</select>
+	
+	<update id="updateProduct" parameterType="com.qifenqian.bms.upgrade.bean.ProductAuding">
+		UPDATE td_customer_product_info c  	
+		<set>
+			<if test="signStatus !=null and signStatus !='' ">
+				sign_status = #{signStatus, jdbcType = VARCHAR},
+			</if>
+		</set>	
+		WHERE 
+			c.id = #{id, jdbcType = VARCHAR}
+		<if test="merchantCode !=null and merchantCode !='' ">
+			AND c.merchant_code = #{merchantCode, jdbcType = VARCHAR}
+		</if>
+		<if test="productCode !=null and productCode !='' ">
+			AND c.product_code = #{productCode, jdbcType = VARCHAR}
+		</if>
+		 
+	</update>
+	
+	<insert id="insertAuditRecode" parameterType="com.qifenqian.bms.upgrade.bean.TdAuditRecodeInfo">
+		INSERT INTO `stcdb`.`td_audit_recode_info` (
+			`ID`,
+			`MERCHANT_CODE`,
+			`AUDIT_STATUS`,
+			`AUDIT_INFO`,
+			`AUDIT_TYPE`,
+			`AUDIT_TIME`,
+			`USER_ID`
+		)
+		VALUES
+			(
+				#{id, 		jdbcType = VARCHAR},
+				#{merchantCode, 		jdbcType = VARCHAR},
+				#{auditStatus, 		jdbcType = VARCHAR},
+				#{auditInfo, 		jdbcType = VARCHAR},
+				#{auditType, 		jdbcType = VARCHAR},
+				#{auditTime, 		jdbcType = VARCHAR},
+				#{userId, 		jdbcType = VARCHAR}
+			)
+	</insert>
+	
+	
+	
+	
+
+
+</mapper>

@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>意见反馈</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <style type="text/css">
+        .selectType {
+            border: 1px solid #E5E5E5;
+            background-color: #fff;
+            border-radius: .06rem;
+            padding: .08rem .1rem;
+            margin-bottom: .1rem;
+            line-height: 1.5;
+            font-size: .15rem;
+            position: relative;
+            padding-right: .6rem;
+        }
+
+            .selectType:after {
+                top: 0;
+                right: 0;
+                position: absolute;
+                content: "";
+                width: .4rem;
+                height: 100%;
+                background: url('/images/icons/down.png') center no-repeat;
+                background-size: .12rem auto;
+            }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/set.html" class="btn_back"></a>
+				<div class="title center">意见反馈</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="feedback ml10 mr10 mt20 mb20">
+				<!--<input type="text" class="weui-input" id="tel" />-->
+				<div class="selectType">
+					<input type="text" readonly="readonly" id="reasonType" data-code="" class="weui-input" placeholder="请选择反馈类型" />
+				</div>
+				<div class="inputArea">
+					<textarea name="" rows="" cols="" id="inputAreaTxt" class="weui-input" placeholder="请写下您的意见或建议"></textarea>
+					<p class="fl tips red"></p>
+					<p class="text_r counter"><span class="num">0</span>/200</p>
+				</div>
+				<p class="tips">每一条反馈我们都会认真对待，我们将定期选出优秀反馈意见，发送积分奖励哦！</p>
+			</div>
+			<div class="ftbtn pt30 pb30">
+				<a href="javascript:;" id="submitFeedBack" class="btn">提交</a>
+				<a href="feedbackList.html" class="btn btn-clarity mt10">查看反馈记录</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var typeCode;
+			var txt;
+			var userId = sc.utils.getCookieValue("UserId");
+			var token = sc.utils.getCookieValue("Token");
+			$(function() {
+
+				$('.selectType').click(function() {
+					var str = '<div class="pop-Reason">';
+					str = '<div class="pop-hd center c_333">请选择反馈类型</div>';
+					str += '<ul class="wenList center reasonList">';
+					str += '</ul>';
+					str += '</div>';
+					layer.open({
+						type: 1,
+						content: str,
+						anim: 'up',
+						style: 'position:fixed; bottom:0; left:0; width: 100%;'
+					});
+					getFeedBackType($('.reasonList'));
+				});
+				$('#inputAreaTxt').keyup(function() {
+					var maxLength = 200;
+					var num = $.trim(this.value).length;
+					var numbox = $(this).parents('.inputArea').find('.counter .num');
+					if(num > maxLength) {
+						$(this).parents('.inputArea').find('.tips').text('最多可输入200个字符!');
+						numbox.text(maxLength);
+						$(this).val($(this).val().substr(0, maxLength));
+					} else {
+						$(this).parents('.inputArea').find('.tips').text('');
+						numbox.text(num);
+					}
+				})
+			});
+
+			function memberFeedBack() {
+				var url = 'api/User/MemberFeedBack';
+				var callback = function(data) {
+					if(data.code == 0) {
+						layer.open({
+							content: '提交成功！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						setTimeout(function() {
+							window.location.href = "/member/member.html";
+						}, 2000);
+					} else if(data.code == 1) {
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					} else if(data.code == 2) {
+						layer.open({
+							content: '亲，您已掉线，请重新登录！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					} else if(data.code == 99) {
+						layer.open({
+							content: '服务器开了个小差！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				}
+				sc.post(url, {
+					"UserId": userId,
+					"Token": token,
+					"Content": txt,
+					"Type": typeCode
+				}, callback);
+			}
+
+			//获取反馈类型
+			function getFeedBackType(obj) {
+				var url = 'api/User/FeedBackType';
+				var callback = function(data) {
+					if(data.code == 0) {
+						var opt = "";
+						for(var i = 0; i < data.data.length; i++) {
+							opt += '<li data-code="' + data.data[i].code + '">' + data.data[i].message + '</li>';
+						}
+						obj.append(opt);
+						obj.find('li').click(function() {
+							$(this).addClass('active').siblings().removeClass('active');
+							var Reason = $(this).text();
+							$('#reasonType').val(Reason);
+							$('#reasonType').attr("data-code", $(this).attr("data-code"));
+							layer.closeAll();
+						});
+						//提交
+						$('#submitFeedBack').click(function() {
+							if(valInputOther()) {
+								memberFeedBack();
+							}
+						});
+
+					} else if(data.code == 1) {
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					} else if(data.code == 2) {
+						layer.open({
+							content: '亲，您已掉线，请重新登录！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					} else if(data.code == 99) {
+						layer.open({
+							content: '服务器开了个小差！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				}
+				sc.get(url, {}, callback);
+			}
+
+			function valInputOther() {
+				typeCode = $('#reasonType').attr('data-code');
+				txt = $.trim($('#inputAreaTxt').val());
+				if(!typeCode) {
+					layer.open({
+						content: '请选择反馈类型！',
+						skin: 'msg',
+						time: 2 //2秒后自动关闭
+					});
+					return false;
+				}
+				if(!txt) {
+					layer.open({
+						content: '请输入你要反馈的内容！',
+						skin: 'msg',
+						time: 2 //2秒后自动关闭
+					});
+					if(txt.length < 10) {
+						layer.open({
+							content: '最少输入10个字！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+					return false;
+				}
+				return true;
+			}
+		
+		</script>
+	</body>
+
+</html>

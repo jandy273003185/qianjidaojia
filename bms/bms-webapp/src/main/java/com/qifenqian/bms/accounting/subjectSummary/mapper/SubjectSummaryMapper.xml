@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.subjectSummary.mapper.SubjectSummaryMapper">
+	<select id="selectSubjectSummary" resultType="com.qifenqian.bms.accounting.subjectSummary.bean.SubjectSummary" parameterType="com.qifenqian.bms.accounting.subjectSummary.bean.SubjectSummary">
+	SELECT
+	S.ID,
+	S.SUBJECT_ID,
+	I.SUBJECT_NAME,
+	S.WORK_DATE,
+	S.LAST_AMOUNT,
+	S.AMOUNT_D,
+	S.AMOUNT_C,
+	S.FINAL_AMOUNT
+	FROM
+	ACCTING_SUBJECT_SUMMARY S
+	LEFT JOIN ACCTING_SUBJECT_INFO I ON
+	S.SUBJECT_ID = I.ID
+	WHERE
+	S.WORK_DATE = #{workDate,jdbcType=VARCHAR}
+	<if test="subjectName != null and subjectName != '' ">
+	 and I.SUBJECT_NAME LIKE CONCAT('%',#{subjectName,jdbcType=VARCHAR},'%')
+	</if>
+	</select>
+</mapper>

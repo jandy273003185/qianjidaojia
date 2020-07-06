@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "myicon":"../../components/myicon/index"
+  }
+}

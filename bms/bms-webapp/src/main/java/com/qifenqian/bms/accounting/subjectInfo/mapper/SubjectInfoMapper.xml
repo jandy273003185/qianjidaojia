@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.subjectInfo.mapper.SubjectInfoMapper">
+	<select id="list" resultType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo">
+		SELECT p.* FROM ACCTING_SUBJECT_INFO p WHERE p.STATE ='VALID'
+	</select>
+	
+	<select id="selectSubjectCode" resultType="java.lang.String" parameterType="string">
+		SELECT COUNT(S.SUBJECT_CODE) FROM ACCTING_SUBJECT_INFO S
+		WHERE S.SUBJECT_CODE=#{subjectCode,jdbcType=VARCHAR} AND s.STATE ='VALID'
+	</select>
+	<insert id="createSubjectInfo" parameterType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo">
+		INSERT INTO ACCTING_SUBJECT_INFO(
+		SUBJECT_CODE,
+		SUBJECT_NAME,
+		SUBJECT_TYPE,
+		SUBJECT_LEVEL,
+		PARENT_CODE,
+		CURR_CODE,
+		SUBJECT_AMT,
+		CREATOR,
+		CREATE_TIME,
+		STATE,
+		MEMO)
+		VALUES(
+		#{subjectCode,jdbcType=VARCHAR},
+		#{subjectName,jdbcType=VARCHAR},
+		#{subjectType,jdbcType=VARCHAR},
+		#{subjectLevel,jdbcType=VARCHAR},
+		#{parentCode,jdbcType=VARCHAR},
+		#{currCode,jdbcType=VARCHAR},
+		#{subjectAmt,jdbcType=DECIMAL},
+		#{creator,jdbcType=VARCHAR},
+		now(),
+		'VALID',
+		#{memo,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<select id="selectSubjectInfo" parameterType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo" resultType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo">
+		SELECT 
+		S.ID,
+		S.SUBJECT_CODE,
+		S.SUBJECT_NAME,
+		S.SUBJECT_TYPE,
+		S.SUBJECT_LEVEL,
+		S.PARENT_CODE,
+		S.CURR_CODE,
+		S.SUBJECT_AMT,
+		(SELECT U.USER_NAME FROM STCDB.SYS_USER U WHERE U.USER_ID =S.CREATOR) CREATOR,
+		S.CREATE_TIME,
+		(SELECT U.USER_NAME FROM STCDB.SYS_USER U WHERE U.USER_ID =S.LASTUPDATE_USER) LASTUPDATE_USER,
+		S.LASTUPDATE_TIME,
+		S.STATE,
+		S.MEMO FROM stcs.ACCTING_SUBJECT_INFO S
+		WHERE S.STATE='VALID'
+		<if test="subjectName != null and subjectName != '' ">
+			and S.SUBJECT_NAME LIKE CONCAT('%',#{subjectName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="subjectCode != null  and subjectCode != '' ">
+			and S.SUBJECT_CODE LIKE CONCAT('%',#{subjectCode,jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY S.SUBJECT_CODE
+	</select>
+
+	<update id="updateSubjectInfo" parameterType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo">
+		UPDATE ACCTING_SUBJECT_INFO S
+		<set>
+			<if test="subjectCode != null">
+				S.SUBJECT_CODE = #{subjectCode,jdbcType=VARCHAR},
+			</if>
+			<if test="subjectName != null">
+				S.SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR},
+			</if>
+			<if test="subjectType != null">
+				S.SUBJECT_TYPE = #{subjectType,jdbcType=VARCHAR},
+			</if>
+			<if test="subjectLevel != null">
+				S.SUBJECT_LEVEL = #{subjectLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="parentCode != null">
+				S.PARENT_CODE = #{parentCode,jdbcType=VARCHAR},
+			</if>
+			<if test="currCode != null">
+				S.CURR_CODE = #{currCode,jdbcType=VARCHAR},
+			</if>
+			<if test="subjectAmt != null">
+				S.SUBJECT_AMT = #{subjectAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="lastUpdateUser != null">
+				S.LASTUPDATE_USER = #{lastUpdateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				S.MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			S.LASTUPDATE_TIME = now()
+		</set>
+		WHERE S.ID=#{id,jdbcType=VARCHAR}
+	</update>
+
+	<update id="deleteSubjectInfo" parameterType="com.qifenqian.bms.accounting.subjectInfo.bean.SubjectInfo" >
+		UPDATE ACCTING_SUBJECT_INFO S
+		SET S.STATE ='DISABLE',
+		S.LASTUPDATE_USER = #{lastUpdateUser,jdbcType=VARCHAR},
+		S.LASTUPDATE_TIME = now()
+		WHERE S.ID=#{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

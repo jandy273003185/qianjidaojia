@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.bank.mapper.BankMapper">
+
+	<!-- 写入单个用户 -->
+	<insert id="insertBank" parameterType="com.qifenqian.bms.basemanager.bank.bean.Bank">
+		INSERT INTO TB_BANK_CODE (
+			BANK_CODE,
+		  	BANK_TYPE,
+		  	BANK_NAME,
+		  	MY_BANK_TYPE,
+		  	CITY_CODE,
+		  	CCPC,
+		  	ORDER_BY	
+			) VALUES (
+			#{bankCode, 	jdbcType=VARCHAR},
+		  	#{bankType, 	jdbcType=VARCHAR},
+		  	#{bankName, 	jdbcType=VARCHAR},
+		  	#{myBankType, 	jdbcType=VARCHAR},
+		  	#{cityCode, 	jdbcType=VARCHAR},
+		  	#{ccpc, 		jdbcType=VARCHAR},
+		  	#{orderBy, 		jdbcType=INTEGER}
+		)
+	</insert>
+	
+	
+	<delete id="deleteBankByBankCode" parameterType="string">
+		DELETE FROM TB_BANK_CODE 
+		WHERE BANK_CODE = #{bankCode,jdbcType=VARCHAR}
+	</delete>
+	<!-- 根据角色编号查询角色信息 -->
+	<select id="selectBankByBankCode" parameterType="string" resultType="com.qifenqian.bms.basemanager.bank.bean.Bank">
+		SELECT U.*
+		  FROM TB_BANK_CODE U
+		WHERE U.BANK_CODE = #{bankCode, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 更新角色信息 -->
+	<update id="updateBank" parameterType="com.qifenqian.bms.basemanager.bank.bean.Bank">
+		update TB_BANK_CODE
+		<set>
+			<if test="bankType != null">
+				BANK_TYPE = #{bankType,jdbcType=VARCHAR},
+			</if>
+			<if test="bankName != null">
+				BANK_NAME = #{bankName,jdbcType=VARCHAR},
+			</if>
+			<if test="myBankType != null">
+				MY_BANK_TYPE = #{myBankType,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCode != null">
+				CITY_CODE = #{cityCode,jdbcType=VARCHAR},
+			</if>
+			<if test="ccpc != null">
+				CCPC = #{ccpc,jdbcType=VARCHAR},
+			</if>
+			<if test="orderBy != null">
+				ORDER_BY = #{orderBy,jdbcType=VARCHAR},
+			</if>
+		</set>
+			where BANK_CODE = #{bankCode,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询用户列表 -->
+	<select id="selectBanks" resultType="com.qifenqian.bms.basemanager.bank.bean.Bank" parameterType="com.qifenqian.bms.basemanager.bank.bean.Bank">
+		SELECT U.* 
+	    FROM TB_BANK_CODE U 
+	    <where>
+			<if test="bankCode != null and bankCode != '' "> AND U.BANK_CODE LIKE CONCAT('%',#{bankCode, jdbcType=VARCHAR},'%')</if>
+			<if test="bankName != null and bankName != '' "> AND U.BANK_NAME LIKE CONCAT('%',#{bankName, jdbcType=VARCHAR},'%')</if>
+		</where>
+		ORDER BY U.BANK_CODE
+	</select>
+</mapper>

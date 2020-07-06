@@ -1,0 +1,112 @@
+        body {
+            background-color: #F5F5F5;
+            padding: 0;
+            margin: 0;
+            font-family: PingFangSC-Regular, PingFang SC;
+        }
+        
+        .content {
+            margin: 0.2rem;
+            background: #ffffff;
+            padding: 0.3rem;
+        }
+        
+        .store {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .storeName {
+            font-size: 0.32rem;
+            color: #4C4C4C;
+            font-weight: 550;
+        }
+        
+        .totalNum {
+            color: #A4A4A4;
+            font-size: 0.24rem;
+        }
+        
+        .goods {
+            display: flex;
+            padding: 0.3rem 0;
+        }
+        
+        .goodsImg {
+            width: 1.44rem;
+            height: 1.44rem;
+            background: #F5F5F5;
+        }
+        
+        .goodsImg>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .goods-right {
+            margin-left: 0.2rem;
+        }
+        
+        .goodsName {
+            font-size: 0.26rem;
+            color: #4C4C4C;
+            width: 4.8rem;
+            height: 0.72rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .num {
+            font-size: 0.24rem;
+            color: #A4A4A4;
+        }
+        
+        .price {
+            color: #FF4343;
+            font-size: 0.26rem;
+            font-weight: 550;
+        }
+        
+        .line {
+            border-bottom: 1px solid #EEEEEE;
+        }
+        
+        .down {
+            position: fixed;
+            bottom: 0;
+            height: 0.96rem;
+            background: #ffffff;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0.2rem 0 0.4rem;
+        }
+        
+        .total {
+            color: #4C4C4C;
+            font-size: 0.28rem;
+            font-weight: 550;
+        }
+        
+        .totalAmount {
+            color: #FF4343;
+            font-size: 0.32rem;
+            font-weight: 550;
+            margin-left: 0.22rem;
+        }
+        
+        .goOrder {
+            width: 3.76rem;
+            height: 0.76rem;
+            color: #ffffff;
+            font-size: 0.32rem;
+            background: #028A3C;
+            border-radius: 0.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.clearjgkj.mapper.ClearJgkjMapper">
+	<select id="selectJgkjRegisterByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT
+			F.ACCT_ID,
+			T.ID,
+			T.TRANS_FLOW_ID,
+			T.TRANS_CODE,
+			T.STATUS,
+			T.RTN_CARD_NO,
+			T.PIN,
+			T.UPDATE_DATETIME,
+			T.BAL_STATUS
+		FROM
+			TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_REGISTER T ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectJgkjRebackByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT
+			F.ACCT_ID,
+			T.ID,
+			T.TRANS_FLOW_ID,
+			T.BUSINESS_TYPE,
+			T.TRANS_CODE,
+			T.CARD_NO,
+			T.ORIGIN_JGKJ_SEQ,
+			T.ORIGIN_JGKJ_DATE,
+			T.CURR_CODE,
+			T.ORIGIN_TRANS_AMT,
+			T.REBACK_AMT,
+			T.BRIEF,
+			T.PIN_OPTION,
+			T.PIN,
+			T.SEND_DATETIME,
+			T.WORK_DATE,
+			T.SEND_DATE,
+			T.SEND_TIME,
+			T.STATUS,
+			T.INST_DATE,
+			T.INST_DATETIME,
+			T.RTN_DATE,
+			T.RTN_TIME,
+			T.RTN_SEQ,
+			T.RTN_CODE,
+			T.RTN_INFO,
+			T.RTN_CARD_NO,
+			T.RTN_BALANCE,
+			T.UPDATE_DATETIME,
+			T.BAL_STATUS
+		FROM
+			TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_REBACK T ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectJgkjModifyByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT
+			F.ACCT_ID,
+			T.ID,
+			T.TRANS_FLOW_ID,
+			T.TRANS_CODE,
+			T.STATUS,
+			T.RTN_CARD_NO,
+			T.UPDATE_DATETIME,
+			T.BAL_STATUS
+		FROM
+			TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_MODIFY T ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectJgkjFreezeByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT
+			F.ACCT_ID,
+			T.ID,
+			T.CARD_NO,
+			T.TRANS_FLOW_ID,
+			T.TRANS_CODE,
+			T.BUSINESS_TYPE,
+			T.STATUS,
+			T.SEND_TIME,
+			T.SEND_DATE,
+			T.WORK_DATE,
+			T.INST_DATETIME,
+			T.RTN_CARD_NO,
+			T.RTN_INFO,
+			T.RTN_SEQ,
+			T.RTN_DATE,
+			T.RTN_TIME,
+			T.UPDATE_DATETIME,
+			T.BAL_STATUS,
+			T.BRIEF
+		FROM
+			TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_FREEZE T ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+		
+	<select id="selectJgkjTradeByFLowId" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT 
+			  F.ACCT_ID,
+			  T.ID,
+			  T.TRANS_FLOW_ID,
+			  T.BUSINESS_TYPE,
+			  T.TRANS_CODE,
+			  T.CARD_NO,
+			  T.CURR_CODE,
+			  T.TRANS_AMT,
+			  T.ORDER_NO,
+			  T.ORDER_MEMO,
+			  T.PIN,
+			  T.SEND_DATETIME,
+			  T.WORK_DATE,
+			  T.SEND_DATE,
+			  T.SEND_TIME,
+			  T.STATUS,
+			  T.INST_DATE,
+			  T.INST_DATETIME,
+			  T.RTN_DATE,
+			  T.RTN_TIME,
+			  T.RTN_SEQ,
+			  T.RTN_CODE,
+			  T.RTN_INFO,
+			  T.RTN_CARD_NO,
+			  T.RTN_AMT,
+			  T.RTN_BALANCE,
+			  T.UPDATE_DATETIME,
+			  T.BAL_STATUS
+		  FROM 
+		 	TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_TRADE T ON F.ID = T.TRANS_FLOW_ID
+		  WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectJgkjRechargeByFLowId" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT 
+			  F.ACCT_ID,
+			  T.ID,
+			  T.TRANS_FLOW_ID,
+			  T.BUSINESS_TYPE,
+			  T.TRANS_CODE,
+			  T.CARD_NO,
+			  T.CURR_CODE,
+			  T.TRANS_AMT,
+			  T.TYPE,
+			  T.RECHARGE_MODE,
+			  T.CHANNEL,
+			  T.CHANNEL_MERCHANT,
+			  T.CHANNEL_SERIAL_SEQ,
+			  T.SEND_DATETIME,
+			  T.WORK_DATE,
+			  T.SEND_DATE,
+			  T.SEND_TIME,
+			  T.STATUS,
+			  T.INST_DATE,
+			  T.INST_DATETIME,
+			  T.RTN_DATE,
+			  T.RTN_TIME,
+			  T.RTN_SEQ,
+			  T.RTN_CODE,
+			  T.RTN_INFO,
+			  T.RTN_CARD_NO,
+			  T.RTN_AMT,
+			  T.RTN_BALANCE,
+			  T.UPDATE_DATETIME,
+			  T.BAL_STATUS
+		  FROM 
+		 	TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_RECHARGE T ON F.ID = T.TRANS_FLOW_ID
+		  WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectJgkjTransferByFLowId" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkjTransfer">
+		SELECT 
+			  F.ACCT_ID,
+			  T.ID,
+			  T.TRANS_FLOW_ID,
+			  T.BUSINESS_TYPE,
+			  T.TRANS_CODE,
+			  T.DEBIT_CARD_NO,
+			  T.CREDIT_CARD_NO,
+			  T.CURR_CODE,
+			  T.TRANS_AMT,
+			  T.PIN,
+			  T.SEND_DATETIME,
+			  T.WORK_DATE,
+			  T.SEND_DATE,
+			  T.SEND_TIME,
+			  T.STATUS,
+			  T.INST_DATE,
+			  T.INST_DATETIME,
+			  T.RTN_DATE,
+			  T.RTN_TIME,
+			  T.RTN_SEQ,
+			  T.RTN_CODE,
+			  T.RTN_INFO,
+			  T.RTN_CARD_NO,
+			  T.RTN_AMT,
+			  T.RTN_BALANCE,
+			  T.UPDATE_DATETIME,
+			  T.BAL_STATUS
+		  FROM 
+		 	TRANS_RECORD_FLOW F LEFT JOIN 
+			CLEAR_JGKJ_TRANSFER T ON F.ID = T.TRANS_FLOW_ID
+		  WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectCardNoByTransFlowId" parameterType="string" resultType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		SELECT
+			C.CARD_NO
+		FROM
+		ACCT_JGKJ_CARD C
+		JOIN TRANS_RECORD_FLOW F ON C.CUST_ID = F.CUST_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateClearJgkjTrade" parameterType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+	    UPDATE CLEAR_JGKJ_TRADE T
+			<set>
+				<if test="workDate!=null and workDate !=''">
+					T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+				</if>
+				<if test="status!=null and status !=''">
+					T.STATUS = #{status,jdbcType = VARCHAR},
+				</if>
+					T.UPDATE_DATETIME = NOW()
+			</set>
+		WHERE T.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateClearJgkjRecharge" parameterType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		UPDATE CLEAR_JGKJ_RECHARGE T
+			<set>
+				<if test="workDate!=null and workDate !=''">
+					T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+				</if>
+				<if test="status!=null and status !=''">
+					T.STATUS = #{status,jdbcType = VARCHAR},
+				</if>
+					T.UPDATE_DATETIME = NOW()
+			</set>
+		WHERE T.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateClearJgkjReback" parameterType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		UPDATE CLEAR_JGKJ_REBACK T
+			<set>
+				<if test="workDate!=null and workDate !=''">
+					T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+				</if>
+				<if test="status!=null and status !=''">
+					T.STATUS = #{status,jdbcType = VARCHAR},
+				</if>
+					T.UPDATE_DATETIME = NOW()
+			</set>
+		WHERE T.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateJgkjTransfer" parameterType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkjTransfer">
+		UPDATE CLEAR_JGKJ_TRANSFER T
+			<set>
+				<if test="workDate!=null and workDate !=''">
+					T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+				</if>
+				<if test="status!=null and status !=''">
+					T.STATUS = #{status,jdbcType = VARCHAR},
+				</if>
+					T.UPDATE_DATETIME = NOW()
+			</set>
+		WHERE T.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateJgkjFreeze" parameterType="com.qifenqian.bms.accounting.exception.dao.clearjgkj.bean.ClearJgkj">
+		UPDATE CLEAR_JGKJ_FREEZE T
+			<set>
+				<if test="workDate!=null and workDate !=''">
+					T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+				</if>
+				<if test="status!=null and status !=''">
+					T.STATUS = #{status,jdbcType = VARCHAR},
+				</if>
+					T.UPDATE_DATETIME = NOW()
+			</set>
+		WHERE T.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+</mapper>

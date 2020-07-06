@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.protocoltemplate.mapper.ProtocolTemplateMapper">
+	<insert id="insert" parameterType="com.qifenqian.bms.basemanager.protocoltemplate.bean.ProtocolTemplate">
+		INSERT INTO BMS_PROTOCOL_TEMPLATE(
+		ID,
+		PROTOCOL_TEMPLATE_NAME,
+		PROTOCOL_TYPE,
+		PROTOCOL_VERSION,
+		PROTOCOL_TEMPLATE,
+		STATUS,
+		VALID_DATE,
+		DISABLE_DATE,
+		MEMO,
+		merchant_Type,
+		INST_USER,
+		INST_DATETIME
+		)values(
+		#{id, 				jdbcType = VARCHAR},
+		#{protocolTemplateName, jdbcType = VARCHAR},
+		#{protocolType, 	jdbcType = VARCHAR},
+		#{protocolVersion, 	jdbcType = VARCHAR},
+		#{protocolTemplate, jdbcType = VARCHAR},
+		#{status, 			jdbcType = VARCHAR},
+		#{validDate, 		jdbcType = VARCHAR},
+		#{disableDate, 		jdbcType =VARCHAR},
+		#{memo, 			jdbcType = VARCHAR},
+		#{merchantType, 	jdbcType = VARCHAR},
+		#{instUser, 		jdbcType = VARCHAR},
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterType="com.qifenqian.bms.basemanager.protocoltemplate.bean.ProtocolTemplate">
+		UPDATE BMS_PROTOCOL_TEMPLATE
+		<set>
+			<if test="protocolVersion!=null">
+				PROTOCOL_VERSION = #{protocolVersion,jdbcType = VARCHAR},
+			</if>
+			<if test="protocolTemplate">
+				PROTOCOL_TEMPLATE = #{protocolTemplate,jdbcType = VARCHAR},
+			</if>
+			<if test="disableDate!=null">
+				DISABLE_DATE = #{disableDate,jdbcType = VARCHAR},
+			</if>
+			<if test="memo!=null">
+				MEMO = #{memo,jdbcType = VARCHAR},
+			</if>
+			<if test="updateUser!=null">
+				UPDATE_USER = #{updateUser,jdbcType = VARCHAR},
+			</if>
+			<if test="merchantType!=null">
+				merchant_Type = #{merchantType,jdbcType = VARCHAR},
+			</if>
+			<if test="status!=null">
+				STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+			UPDATE_DATETIME =now()
+			WHERE ID = #{id,jdbcType = VARCHAR}
+		</set>
+	</update>
+
+	<select id="select" parameterType="com.qifenqian.bms.basemanager.protocoltemplate.bean.ProtocolTemplate" resultType="com.qifenqian.bms.basemanager.protocoltemplate.bean.ProtocolTemplate">
+		SELECT
+			*
+		FROM
+			BMS_PROTOCOL_TEMPLATE
+		<where>
+			<if test="protocolType != null and protocolType != ''">
+				AND PROTOCOL_TYPE = #{protocolType,jdbcType=VARCHAR}
+			</if>
+			<if test="protocolTemplateName != null and protocolTemplateName != ''">
+				AND PROTOCOL_TEMPLATE_NAME = #{protocolTemplateName,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != ''">
+				AND STATUS = #{status,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY inst_datetime DESC
+	</select>
+	
+	<select id="selectTemplateById" resultType="com.qifenqian.bms.basemanager.protocoltemplate.bean.ProtocolTemplate" parameterType="string">
+		SELECT
+			*
+		FROM
+			BMS_PROTOCOL_TEMPLATE 
+		WHERE 
+			ID = #{id, jdbcType = VARCHAR}
+	</select>
+</mapper>

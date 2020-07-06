@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.basemanager.custInfo.mapper.TdCustInfoMapper">
+	<select id="selectCustInfos" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			U.CUST_ID,
+			U.CUST_NAME,
+			L.EMAIL,
+			L.MOBILE,
+			U.TRUST_CERTIFY_LVL,
+			L.STATE,
+			DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			U.QFB_ACC_ID,
+			U.QFQ_ACC_ID,
+			C.CERTIFY_NAME,
+			U.CERTIFY_NO,
+			U.CUST_ADD,
+			U.COMMENT,
+			P.CREATE_TIME as createBlackAndWhiterTime,
+			P.PRIVILEGE_CODE as blackAdnWhiteCode
+		FROM
+			TD_LOGIN_USER_INFO L
+			LEFT JOIN TD_CUST_INFO U ON U.CUST_ID = L.CUST_ID
+			LEFT JOIN TB_CERTIFY_TYPE C ON U.CERTIFY_TYPE = C.CERTIFY_TYPE
+			LEFT JOIN
+			TD_PRIVILEGE_CONTROLLER P ON P.CUST_ID = L.CUST_ID
+		<where>
+			AND U.CUST_TYPE = 0 AND (MERCHANT_FLAG !=2 OR MERCHANT_FLAG is NULL)
+			<if test="custName != null and custName != ''">
+				AND U.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="custId != null and custId != ''">
+				AND U.CUST_ID LIKE CONCAT('%',#{custId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND L.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="certifyNo != null and certifyNo != ''">
+				AND U.CERTIFY_NO = #{certifyNo,jdbcType = VARCHAR}
+			</if>
+			<if test="email != null and email != ''">
+				AND L.EMAIL LIKE CONCAT('%',#{email,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="state != null and state != ''">
+				AND L.STATE =#{state,jdbcType=VARCHAR}
+			</if>
+			<if test="trustCertifyLvl != null and trustCertifyLvl != ''">
+				AND U.TRUST_CERTIFY_LVL =#{trustCertifyLvl,jdbcType=VARCHAR}
+			</if>
+			<if test="startTime != null and startTime != ''"> 
+				<![CDATA[ 
+				 AND DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d') >= #{startTime} 
+				 ]]>
+			</if>
+			<if test="endTime != null and endTime != ''"> 
+				<![CDATA[ 
+				   AND DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d') <= #{endTime} 
+				]]>
+			</if>
+			<if test="blackAdnWhiteCode!=null and  blackAdnWhiteCode!='' ">
+				AND p.PRIVILEGE_CODE=#{blackAdnWhiteCode}
+			</if>
+		</where>
+		ORDER BY U.CREATE_TIME DESC
+	</select>
+	
+	<select id="exportCustInfos" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfoExcel">
+		SELECT
+			U.CUST_ID,
+			U.CUST_NAME,
+			L.EMAIL,
+			L.MOBILE,
+			CASE U.TRUST_CERTIFY_LVL
+			WHEN '0' THEN '未认证'
+			WHEN '1' THEN '1级认证'
+			WHEN '2' THEN '2级认证'
+			WHEN '3' THEN '3级认证'
+			ELSE U.TRUST_CERTIFY_LVL END TRUST_CERTIFY_LVL,
+			CASE L.STATE
+			WHEN '00' THEN '正常'
+			WHEN '01 ' THEN '停用'
+			WHEN '02' THEN '登录账户冻结'
+			WHEN '03' THEN '注册待激活'
+			ELSE L.STATE END state,
+			DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			U.QFB_ACC_ID,
+			U.QFQ_ACC_ID,
+			C.CERTIFY_NAME,
+			U.CERTIFY_NO,
+			U.CUST_ADD,
+			U.COMMENT,
+			DATE_FORMAT(P.CREATE_TIME ,'%Y-%m-%d %H:%i:%s') as createBlackAndWhiterTime,
+			P.PRIVILEGE_CODE as blackAdnWhiteCode
+		FROM
+			TD_LOGIN_USER_INFO L
+			LEFT JOIN TD_CUST_INFO U ON U.CUST_ID = L.CUST_ID
+			LEFT JOIN TB_CERTIFY_TYPE C ON U.CERTIFY_TYPE = C.CERTIFY_TYPE
+			LEFT JOIN
+			TD_PRIVILEGE_CONTROLLER P ON P.CUST_ID = L.CUST_ID
+		<where>
+			AND U.CUST_TYPE = 0
+			<if test="custName != null and custName != ''">
+				AND U.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="custId != null and custId != ''">
+				AND U.CUST_ID LIKE CONCAT('%',#{custId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND L.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="certifyNo != null and certifyNo != ''">
+				AND U.CERTIFY_NO = #{certifyNo,jdbcType = VARCHAR}
+			</if>
+			<if test="email != null and email != ''">
+				AND L.EMAIL LIKE CONCAT('%',#{email,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="state != null and state != ''">
+				AND L.STATE =#{state,jdbcType=VARCHAR}
+			</if>
+			<if test="trustCertifyLvl != null and trustCertifyLvl != ''">
+				AND U.TRUST_CERTIFY_LVL =#{trustCertifyLvl,jdbcType=VARCHAR}
+			</if>
+			<if test="startTime != null and startTime != ''"> 
+				<![CDATA[ 
+				 AND DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d') >= #{startTime} 
+				 ]]>
+			</if>
+			<if test="endTime != null and endTime != ''"> 
+				<![CDATA[ 
+				   AND DATE_FORMAT(U.CREATE_TIME ,'%Y-%m-%d') <= #{endTime} 
+				]]>
+			</if>
+			<if test="blackAdnWhiteCode!=null and  blackAdnWhiteCode!='' ">
+				AND p.PRIVILEGE_CODE=#{blackAdnWhiteCode}
+			</if>
+		</where>
+		ORDER BY U.CREATE_TIME DESC
+	</select>
+	<select id="selectLoginInfo" parameterType="string" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdLoginUserInfo">
+		SELECT T.* 
+		FROM TD_LOGIN_USER_INFO T
+		WHERE T.CUST_ID = #{custId}
+	</select>
+	
+	<select id="selectLoginAndcustInfo" parameterType="string" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT T.*,A.MOBILE
+		FROM TD_CUST_INFO T  
+		JOIN TD_LOGIN_USER_INFO A
+		ON 	 T.CUST_ID = A.CUST_ID
+		WHERE T.CUST_ID=#{custId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectById" parameterType="string" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT T.* FROM
+		TD_CUST_INFO T
+		WHERE T.CUST_ID = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<update id="updateCustInfo" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		UPDATE TD_CUST_INFO
+		<set>
+			<if test="certifyType != null">
+				CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR},
+			</if>
+			<if test="custName != null">
+				CUST_NAME = #{custName,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyNo != null">
+				CERTIFY_NO = #{certifyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="comment != null">
+				COMMENT = #{comment,jdbcType=VARCHAR},
+			</if>
+			MODIFY_TIME = now()
+		</set>
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="validateMobile" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="string">
+		SELECT c.*
+		FROM TD_LOGIN_USER_INFO c
+		WHERE c.MOBILE = #{mobile,jdbcType=VARCHAR}
+	</select>
+
+	<update id="updateCustLoginInfo" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		UPDATE TD_LOGIN_USER_INFO
+		<set>
+			<if test="mobile!= null and mobile!= '' ">
+				MOBILE = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="email!= null and email!= '' ">
+				EMAIL = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId!= null and modifyId!= '' ">
+				MODIFY_ID= #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state != ''">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state == '02'">
+				FREEZE_TIME = now(),
+			</if>
+			MODIFY_TIME = now()
+		</set>
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateInfo" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		UPDATE TD_CUST_INFO
+		<set>
+			<if test="custName != null">
+				CUST_NAME = #{custName,jdbcType=VARCHAR},
+			</if>
+			<if test="tradePwd != null">
+				TRADE_PWD = #{tradePwd,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyType != null">
+				CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyNo != null">
+				CERTIFY_NO = #{certifyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="custType != null">
+				CUST_TYPE = #{custType,jdbcType=VARCHAR},
+			</if>
+			<if test="merchantFlag != null">
+				MERCHANT_FLAG = #{merchantFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="custScore != null">
+				CUST_SCORE = #{custScore,jdbcType=VARCHAR},
+			</if>
+			<if test="custLvl != null">
+				CUST_LVL = #{custLvl,jdbcType=VARCHAR},
+			</if>
+			<if test="trustCertifyAuditState != null">
+				TRUST_CERTIFY_AUDIT_STATE = #{trustCertifyAuditState,jdbcType=VARCHAR},
+			</if>
+			<if test="trustCertifyLvl != null">
+				TRUST_CERTIFY_LVL = #{trustCertifyLvl,jdbcType=VARCHAR},
+			</if>
+			<if test="custInfoLvl != null">
+				CUST_INFO_LVL = #{custInfoLvl,jdbcType=VARCHAR},
+			</if>
+			<if test="custAdd != null">
+				CUST_ADD = #{custAdd,jdbcType=VARCHAR},
+			</if>
+			<if test="custPostCode != null">
+				CUST_POST_CODE = #{custPostCode,jdbcType=VARCHAR},
+			</if>
+			<if test="businessLicense != null">
+				BUSINESS_LICENSE = #{businessLicense,jdbcType=VARCHAR},
+			</if>
+			<if test="taxRegCert != null">
+				TAX_REG_CERT = #{taxRegCert,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeCertType != null">
+				REPRESENTATIVE_CERT_TYPE = #{representativeCertType,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeCertNo != null">
+				REPRESENTATIVE_CERT_NO = #{representativeCertNo,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeName != null">
+				REPRESENTATIVE_NAME = #{representativeName,jdbcType=VARCHAR},
+			</if>
+			<if test="regCapital != null">
+				REG_CAPITAL = #{regCapital,jdbcType=VARCHAR},
+			</if>
+			<if test="entType != null">
+				ENT_TYPE = #{entType,jdbcType=VARCHAR},
+			</if>
+			<if test="industryBelong != null">
+				INDUSTRY_BELONG = #{industryBelong,jdbcType=VARCHAR},
+			</if>
+			<if test="yearTurnover != null">
+				YEAR_TURNOVER = #{yearTurnover,jdbcType=VARCHAR},
+			</if>
+			<if test="merchantWebSite != null">
+				MERCHANT_WEB_SITE = #{merchantWebSite,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state!=''">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="isUseCertification != null">
+				IS_USE_CERTIFICATION = #{isUseCertification,jdbcType=VARCHAR},
+			</if>
+			<if test="isUseMsg != null">
+				IS_USE_MSG = #{isUseMsg,jdbcType=VARCHAR},
+				
+			</if>
+			<if test="isClear != null and isClear!='' ">
+				IS_CLEAR = #{isClear,jdbcType=VARCHAR},
+				
+			</if>
+			<if test="createId != null">
+				CREATE_ID = #{createId,jdbcType=VARCHAR},
+				
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+				
+			</if>
+			<if test="fcontactunitNumber != null">
+				FCONTACTUNIT_NUMBER = #{fcontactunitNumber,jdbcType=VARCHAR},
+				
+			</if>
+			<if test="authId != null">
+				AUTH_ID = #{authId,jdbcType=INTEGER},
+			</if>
+			<if test="merchantCode == '' and merchantCode=null">
+				MERCHANT_CODE = NULL,
+			</if>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = now()
+		</set>
+			WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+<update id="updateTdCustInfo" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdLoginUserInfo">
+	 UPDATE TD_CUST_INFO
+	 <set>
+		
+			<if test="state!= null and state!=''">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="state!= null and state!=''">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test=" fcontactunitNumber!= null">
+				FCONTACTUNIT_NUMBER = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="trustCertifyAuditState != null">
+				TRUST_CERTIFY_AUDIT_STATE = #{trustCertifyAuditState,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = now()
+		</set>
+			WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	 
+	
+</update>
+	<select id="validateCustMobile" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdLoginUserInfo" parameterType="string" >
+		SELECT C.*
+		FROM TD_LOGIN_USER_INFO c
+		WHERE c.MOBILE = #{mobile,jdbcType=VARCHAR}
+		AND C.CUST_ID !=#{custId,jdbcType=VARCHAR}
+		and C.ROLE_ID = 'per'
+	</select>
+	
+	<select id="validateEmail" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdLoginUserInfo" parameterType="string" >
+		SELECT C.*
+		FROM TD_LOGIN_USER_INFO c
+		WHERE C.EMAIL = #{email,jdbcType=VARCHAR}
+		AND C.CUST_ID !=#{custId,jdbcType=VARCHAR}
+		and C.ROLE_ID = 'per'
+	</select>
+	
+	<select id="validateMerchantName" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="string">
+		SELECT
+			*
+		FROM
+			td_cust_info T
+		WHERE
+			T.CUST_TYPE = 1
+		AND
+			T.CUST_NAME = #{name,jdbcType=VARCHAR}
+			
+	</select>
+	<select id="selectByBean" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT 
+			* 
+		FROM
+			td_cust_info t
+		<where>
+			<if test="merchantCode != null">
+				t.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null">
+				t.CUST_ID = #{custId,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null">
+				t.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+	</select>
+	<select id="isAllList" parameterType="string" resultType="string">
+		SELECT
+			*
+		FROM
+			(
+				SELECT
+					s.role_code
+				FROM
+					stcdb.sys_user_role ur
+				LEFT JOIN stcdb.sys_role s ON ur.role_id = s.role_id
+				WHERE
+					ur.user_id = #{userId,jdbcType=VARCHAR}
+			) t
+		WHERE
+			t.role_code = 'DataQueryAuthority'
+	</select>
+
+	<select id="isAddMerchant" parameterType="string" resultType="string">
+	select
+		*
+		
+		from
+		(
+		SELECT
+			s.role_id
+			FROM
+				stcdb.sys_user_role ur
+			LEFT JOIN stcdb.sys_role s ON ur.role_id = s.role_id
+			WHERE
+				ur.user_id = #{userId,jdbcType=VARCHAR}
+		) t
+		where t.role_id in(
+		SELECT 
+			f.ROLE_ID
+			from
+		 sys_role_function f
+		 where
+		 f.FUNCTION_ID ='874'
+		) LIMIT 1;
+	</select>
+
+	<select id="selectByMerchantCode" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="java.lang.String" >
+		select
+		*
+		from td_cust_info
+		where MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+	</select>
+	<!-- 根据merchantFlag 查询用户信息 -->
+	<select id="selectByMerchantFlag" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="java.lang.String" >
+		select
+		*
+		from td_cust_info
+		where MERCHANT_FLAG = #{merchantFlag,jdbcType=VARCHAR}
+		
+	</select>
+	
+</mapper>

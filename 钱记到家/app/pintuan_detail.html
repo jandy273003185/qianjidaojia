@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/swiper.min.css" />
+    <link rel="stylesheet" href="css/fsgallery.css" />
+    <!--<link rel="stylesheet" type="text/css" href="css/default-skin.css"/>
+    <link rel="stylesheet" type="text/css" href="css/photoswipe.css"/>-->
+    <link rel="stylesheet" href="css/details.css" />
+    <link rel="stylesheet" href="css/praise.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <link rel="stylesheet" type="text/css" href="css/fenxiang.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--<script src="js/photoswipe-ui-default.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/photoswipe.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js " type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/fs_forse.js"></script>
+    <script type="text/javascript" src="js/commen.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="js/swiper.min.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/pintuan.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/Share.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/pintuan_detail.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/WxShare.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .btn-grey {
+            background: #ccc !important;
+            color: #fff !important;
+        }
+
+        .pro_Pintuan .pinlist .box {
+            padding: .1rem 0;
+        }
+
+        .pinRecord__shadeAll .shadeContent {
+            background-color: #fff;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .pinRecord__shadeAll .pop-pintuan {
+            padding: .12rem;
+        }
+
+        .shadeContent__hd {
+            position: relative;
+        }
+
+        .pinlist .pinbtn {
+            line-height: .3rem;
+        }
+
+        .pinbtn.btn_disable {
+            border-color: #C2C2C2 !important;
+        }
+
+        .pinlist li:last-child .box {
+            border-bottom: none;
+        }
+    </style>
+    <script>
+        function goBack() {
+            if (window.history.length > 2) {
+                window.history.go(-1);
+            } else {
+                window.location.href = "/indexV.html";
+            }
+        }
+    </script>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+            <div class="head">
+                <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+                <div class="title center">商品详情</div>
+                <a href="javascript:;" class="icon_r icons_share sharebtn"></a>
+            </div>
+		</div>
+		<div class="main">
+            <div class="product">
+                <div id="productBanner_div"></div>
+                <script id="productBanner_tpl" type="text/x-dot-template">
+                    <!--详情banner-->
+                    <div class="swiper-container d_banner">
+                        <a href="/indexV.html" class="icons icons_home"></a>
+                        <div class="swiper-wrapper">
+                            {{~it.ProductImgList:value:index }}
+                            <div class="swiper-slide">
+                                <div class="img" style="background-image: url({{=value.PicUrl}});"></div>
+                            </div>
+                            {{~}}
+                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    <!--详情banner end-->
+                </script>
+
+                <!--产品信息-->
+                <div class="pro_info">
+                    <!--拼团显示倒计时-->
+                    <div class="activity pin">
+                        <div class="left">
+                            <div class="left-1">
+                                <i>￥</i><span class="price"></span>
+                            </div>
+                            <div class="left-2">
+                                <span class="counterPrice"></span>
+                                <span class="people"></span>
+                            </div>
+                        </div>
+                        <div class="right fr">
+                            <span class="lab">距离结束还剩</span>
+                            <div class="Countdown">
+                                <span class="dd"></span>
+                                <span class="num hh"></span>
+                                <span>:</span>
+                                <span class="num mm"></span>
+                                <span>:</span>
+                                <span class="num ss"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--拼团显示倒计时 end-->
+                    <div class="infoItem pro-bd">
+
+                    </div>
+
+                </div>
+                <!--拼团-->
+                <div class="pro_Pintuan bg_fff mb10">
+                    <div class="dd-Hd">
+                        <span class="PTips"></span>
+                        <a href="javascript:;" class="Pinmore more arrow-r">查看更多</a>
+                    </div>
+                    <div class="dd-Bd">
+                        <ul class="pinlist pinlistBox_ing"></ul>
+                    </div>
+                </div>
+                <!--拼团玩法-->
+                <div class="pro_Pinway bg_fff mb10">
+                    <div class="dd-Hd center">
+                        <span>拼团玩法</span>
+                    </div>
+                    <div class="dd-Bd">
+                        <div class="text_r"><a href="javascript:;" class="rulebtn">规则</a></div>
+                        <div class="img">
+                            <img src="images/of/rule.png" />
+                        </div>
+                    </div>
+                </div>
+                <!--评价-->
+                <div class="pro_Praise bg_fff mb10">
+                    <div class="dd-Hd">
+                        <span>商品评价(<span id="aprriseNum"></span>)</span>
+                        <a href="javascript:;" class="more arrow-r" id="gotoPraiseList">查看更多</a>
+                    </div>
+                    <div class="dd-Bd">
+                        <div class="Praiselist" id="appriseList"></div>
+                    </div>
+                </div>
+                <!--详情-->
+                <div class="pro_Detail bg_fff">
+                    <div class="dd-Hd">
+                        <span>商品详情</span>
+                    </div>
+                    <div class="dd-Bd">
+                        <!--属性-->
+                        <!--<div class="attribute pd10">
+                <p>规格：1盒</p>
+                <p>重量：1000g盒</p>
+                <p>保质期：到货即可食用</p>
+                <p>包装：普通</p>
+                <p>贮存方法：冷藏</p>
+            </div>-->
+                        <!--详情描述-->
+                        <!--<div class="proDesc">
+                <img src="images/of/dd1.jpg" />
+                <img src="images/of/d4.jpg" />
+                <img src="images/of/dd2.jpg" />
+            </div>-->
+                    </div>
+                </div>
+            </div>
+		</div>
+
+		<!--拼团底部-->
+		<div class="null50">
+			<footer class="dd_footer">
+				<div class="btnGroup">
+					<a href="javascript:;" class="btn2 btn-Add">我要参团</a>
+					<a href="javascript:;" class="btn2 btn-Open"><span class="price"></span>一键开团</a>
+				</div>
+			</footer>
+		</div>		
+		<!--拼团底部 end-->
+
+		<!--弹出sku选择-->
+		<div class="shade sku__shade eq__shade">
+			<div class="shadebg"></div>
+			<div class="shade_content">
+				<div class="shade-item specifications_shade">
+					<span class="btn-close"></span>
+					<div class="productInfo">
+						<div class="m-pro clear">
+							<div class="hd fl">
+								<div class="img">
+									<img src="images/of/pt1.jpg">
+								</div>
+							</div>
+							<div class="bd">
+								<h4 class="name"></h4>
+								<p class="desc"><span>库存：<span id="stock"></span>件</span>
+								</p>
+								<p class="price">团购价：<span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="shade_bd">
+						<!--<div class="skuBox addr_skuBox">
+							<h2 class="skuTitle">配送区域</h2>
+							<div class="skuCon">
+								<span class="place">深圳市 龙华区</span>
+							</div>
+						</div>-->
+						<div id="skuBoxContent" >
+							
+						</div>
+
+						<div class="skuBox buyNum_skuBox clear">
+							<h2 class="skuTitle fl">购买数量</h2>
+							<div class="flexItem fr">
+								<div class="selnum">
+									<span class="less btn-num icon-minus" style="display:none;"></span>
+									<div class="textWrap">
+										<input type="text" id="pro_num" readonly="readonly">
+									</div>
+									<span class="more btn-num icon-add" style="display:none;"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="shade_ft">
+						<a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="Offered" style="display: none;">确定</a>
+						<a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="openGroup" style="display: none;">确定</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出sku选择 end-->
+		<!--分享的弹窗-->
+		<div class="fenxiang">
+			<div>
+				<p class="fenxiang-title">分享给新朋友</p>
+				<div class="bdsharebuttonbox">
+					<ul class="gb_resItms">
+						<li>
+							<a title="分享到微信" href="#" class="bds_weixin " data-cmd="weixin" data-url="http://qjdj.wtvxin.com/details.html?id="></a>微信好友 </li>
+						<li>
+							<a title="分享到QQ好友" href="#" class="bds_sqq " data-cmd="sqq" data-url="http://qjdj.wtvxin.com/details.html?id="></a>QQ好友 </li>
+						<li>
+							<a title="分享到QQ空间" href="#" class="bds_qzone " data-cmd="qzone" data-url="http://qjdj.wtvxin.com/details.html?id="></a>QQ空间 </li>
+						<li>
+							<a title="分享到新浪微博" href="#" class="bds_tsina " data-cmd="tsina" data-url="http://qjdj.wtvxin.com/details.html?id="></a>新浪微博 </li>
+					</ul>
+				</div>
+				<p class="fenxiang-colse">取消</p>
+			</div>
+		</div>
+		
+		<!--该产品的参团列表弹窗-->
+		<div class="shadeAll pinRecord__shadeAll">
+			<div class="mask">
+				<div class="shade alignCenter__shade">
+					<div class="shade__bd">
+						<div class="shadeContent">
+							<div class="shadeContent__hd center">
+								<span class="title color_ff4e17">正在拼团</span>
+								<span class="btn_close"></span>
+							</div>
+							<div class="shadeContent__bd">
+								<div class="pop-pintuan">
+									<ul class="pinlist shade__pinlistBox_ing"></ul>
+								</div> 	
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+	</body>
+	<script type="text/javascript" src="js/top.js"></script>
+
+    <!--该产品的参团列表模板-->
+    <script id="proGroupListTemp" type="text/x-dot-template">
+    	{{~it:value:index}}
+    	{{? index<2 }}
+    	<li data-recordid={{=value.Id}}>
+			<div class="box clear">
+                <div class="img fl">
+                    {{? value.MemberHeadImg}}
+                    <img src="{{=value.MemberHeadImg}}" />
+                    {{??}}
+                    <img src="/images/tx/default.png" />
+                    {{?}}
+                </div>
+				<div class="right">
+					<div class="ct-num">
+						<p>还差<span class="c_Org">{{=(value.RemainingNum)}}</span>人成团</p>
+						<p>剩余<span class="time endtime" data-endtime="{{=value.EndTime}}">00:00:00</span></p>
+					</div>
+					{{? groupRecordId}}
+						{{? groupRecordId ===value.Id }}
+						<button class="btn pinbtn {{? value.IsOkJoin===1}}btn_disable{{?}}" {{? value.IsOkJoin===1}} disabled="disabled"{{?}}>去参团</button>
+						{{?}}
+					
+					{{??}}
+					<button class="btn pinbtn {{? value.IsOkJoin===1}}btn_disable{{?}}" {{? value.IsOkJoin===1}} disabled="disabled"{{?}}>去参团</button>
+					{{?}}
+				</div>	
+				<div class="name">
+					{{=value.MemberHeadNick}}
+				</div>
+			</div>
+		</li>
+		{{?}}
+    	{{~}}
+    	
+    </script>	
+    <!--该产品的参团列表模板  end-->
+    
+    <!--弹窗的该产品的参团列表模板-->
+    <script id="ShadeProGroupListTemp" type="text/x-dot-template">
+    	{{~it:value:index}}
+	    <li data-recordid={{=value.Id}}>
+	    	<div class="box clear">
+	    		<div class="img fl">
+	    			{{? value.MemberHeadImg}}
+					<img src="{{=value.MemberHeadImg}}"/>
+					{{??}}
+					<img src="/images/tx/default.png"/>
+					{{?}}
+	    		</div>
+	    		<div class="right fr"><button class="btn pinbtn {{? value.IsOkJoin===1}}btn_disable{{?}}" {{? value.IsOkJoin===1}}disabled="disabled"{{?}}>去参团</button></div>
+				<div class="txtbox">
+					<div class="name text">{{=value.MemberHeadNick}}</div>
+					<p class="c_999">剩余<span class="time endtime" data-endtime="{{=value.EndTime}}">00:00:00</span><span style="margin-left:.1rem;">差<span class="c_Org">{{=(value.RemainingNum)}}</span>人成团</span></p>	
+				</div>
+	    	</div>
+	    </li>
+       {{~}}
+    </script>
+    <!--弹窗的该产品的参团列表模板  end-->
+	<!--评论列表模板-->
+	<script id="appriseTemp" type="text/x-dot-template">
+		{{~it:value:index}} 
+		{{? index<3 }} 
+		<div class="item_praise" data-id="{{=value.Id}}">
+			<div class="p_top clear">
+				<div class="user fl">
+					{{? value.MemberHeadImg}}
+					<img src="{{=value.MemberHeadImg}}"> {{?? }}
+					<img src="/images/tx/default.png"> {{?}}
+					<!--<p class="text name">{{=value.MemberName}}</p>-->
+					<p class="text name">{{=cutTel(value.MemberName)}}</p>
+				</div>
+				<span class="time fr">{{=value.AddTime}}</span>
+			</div>
+			<div class="p_desc">
+				{{=value.ContentText}}
+			</div>
+			{{? sc.slicePicString(value.EvaluateImgList).length}}
+			<div class="tu_showAll">
+				<ul class="tu_show clear thumbnails">
+					{{ for(var i=0;i<sc.slicePicString(value.EvaluateImgList).length;i++){ }}
+					{{ if(i>2){ }}
+					<li style="display: none;">
+						<div class="pictrueAll">
+							<div class="pictrue">
+								<img src="{{=sc.slicePicString(value.EvaluateImgList)[i]}}" alt="">
+							</div>
+						</div>
+					</li>
+					{{ }else{ }}
+					<li>
+						<div class="pictrueAll">
+							<div class="pictrue">
+								<img src="{{=sc.slicePicString(value.EvaluateImgList)[i]}}" alt="">
+							</div>
+						</div>
+					</li>
+					{{ } }}
+					{{ } }}
+				</ul>
+				{{if(sc.slicePicString(value.EvaluateImgList).length>2){ }}
+				<span class="num">共{{=sc.slicePicString(value.EvaluateImgList).length}}张</span>
+				{{ } }}
+			</div>
+			{{?}}
+			{{ if(value.Reply){ }}
+			<div class="reply">
+			  <div class="flexItem label">商家回复：</div>
+			  <div class="flexItem flex1">
+			       <div class="con">{{value.Reply}}</div>
+			  </div>
+			</div>
+			{{ } }}
+		</div>
+		{{?}} 
+		{{~}} 
+		{{ if(!it.length){ }}
+		<div class="center" style="padding:.3rem;font-size: .15rem;color:#505050;">暂无数据</div>
+		{{ } }}
+	</script>
+	<!--评论列表模板  end-->
+	<script type="text/javascript">
+		function cutTel(tel){
+			var ptel = tel.substr(8,tel.length-1);
+			var ptel2 = sc.utils.truncateString(tel,4);
+			return ptel2+"****"+ptel;
+		}
+	</script>
+	  
+</html>

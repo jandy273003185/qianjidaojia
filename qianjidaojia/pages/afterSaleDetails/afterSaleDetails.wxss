@@ -1,0 +1,129 @@
+/* pages/afterSaleDetails/afterSaleDetails.wxss */
+.goods{
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  color: #333333;
+}
+.goods-up{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 22rpx 0;
+}
+.order-type,.deal-status{ 
+  color: #09B007;
+}
+.merchant{
+  margin-left: 14rpx;
+  font-family:PingFangSC-Medium,PingFang SC;
+  font-weight:500;
+  font-size: 34rpx;
+}
+.goods-middle{
+  display: flex;
+  justify-content: space-between;
+}
+.goods-img{
+  width: 140rpx;
+  height: 140rpx;
+}
+image{
+  width: 100%;
+  height: 100%;
+}
+.goods-title{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 80rpx;
+  white-space:nowrap;
+}
+.goods-txt{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 200rpx;
+  margin: 0 20rpx;
+}
+.num{
+  width: 50rpx;
+}
+.price{
+  color: #FF7387;
+  font-size: 36rpx;
+}
+.refund-money{
+  color: #FF7387;
+  font-size: 26rpx;
+}
+.specText{
+  margin:6rpx 0 10rpx 0;
+  font-size: 22rpx;
+  color: #999999;
+}
+.down{
+  margin-top: 40rpx;
+  padding: 20rpx;
+  background: #ffffff;
+}
+.down-item{
+  color: #999999;
+  font-size: 26rpx;
+  height: 40rpx;
+}
+.copy{
+  margin-left: 20rpx;
+  color: #333333;
+}
+.kefu{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333333;
+  font-size: 26rpx;
+  border-top:1px solid #eeeeee;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+}
+.kefu-img{
+  width: 44rpx;
+  height: 48rpx;
+  margin-right: 12rpx;
+}
+.status{
+  color: #09B007;
+}
+/* 弹窗 */
+.box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 999;
+}
+.qrcodeHide{
+  display: none;
+}
+.dialog{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #fff; */
+  border-radius: 10rpx;
+  width: 80%;
+  padding-top: 40rpx;
+  position: absolute;
+  padding-bottom: 30rpx;
+  top:50%;
+  left:50%;
+  transform:translateX(-50%) translateY(-50%);
+  -ms-transform:translateX(-50%) translateY(-50%);
+  -moz-transform:translateX(-50%) translateY(-50%);
+  -webkit-transform:translateX(-50%) translateY(-50%);
+  -o-transform:translateX(-50%) translateY(-50%);
+}

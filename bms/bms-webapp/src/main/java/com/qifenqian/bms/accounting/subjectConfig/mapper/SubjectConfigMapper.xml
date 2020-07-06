@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.subjectConfig.mapper.SubjectConfigMapper">
+
+	<select id="selectSubjectConfig" resultType="com.qifenqian.bms.accounting.subjectConfig.bean.SubjectConfig" parameterType="com.qifenqian.bms.accounting.subjectConfig.bean.SubjectConfig">
+		SELECT
+			S.ID, 
+			S.SUBJECT_D, 
+			S.SUBJECT_C, 
+			S.PAY_ACC_TYPE,
+			S.RCV_ACC_TYPE,
+			CASE S.TRAD_TYPE
+				WHEN 'ONL_TO_SEV' THEN '网银入账七分钱'
+				WHEN 'CAD_TO_SEV' THEN '快捷支付至七分钱'
+				WHEN 'SEV_TO_CAD' THEN '七分钱至银行卡'
+				WHEN 'SEV_TO_SEV' THEN '七分钱至七分钱'
+				WHEN 'SEV_TO_QFB' THEN '七分钱至七分宝'
+				WHEN 'QFB_TO_SEV' THEN '七分宝至七分钱'
+				WHEN 'FREEZE' THEN '冻结'
+				WHEN 'CHARGE' THEN '七分钱到手续费CGL'
+				WHEN 'SEV_TO_SEV1' THEN '七分钱至七分钱担保'
+				WHEN 'SEV1_TO_SEV' THEN '七分钱担保至七分钱'
+				WHEN 'SEV_TO_SEV2' THEN '七分钱至七分钱费用'
+			END AS tradType,
+			S.STATE,
+			(select U.user_name from stcdb.sys_user U where u.user_id =S.CREATOR) CREATOR,
+			DATE_FORMAT(S.CREATE_TIME,'%Y-%m-%d %H:%i:%s') as createTime,
+			(select U.user_name from stcdb.sys_user U where u.user_id =S.LASTUPDATE_USER) LASTUPDATE_USER,
+			DATE_FORMAT(S.LASTUPDATE_TIME,'%Y-%m-%d %H:%i:%s') as lastupdateTime,
+			S.MEMO
+		FROM stcs.ACCTING_SUBJECT_CONFIG S
+		WHERE S.STATE='VALID'
+		<if test="tradType != null  and tradType != '' ">
+			AND S.TRAD_TYPE = #{tradType,jdbcType=VARCHAR}
+		</if>
+		<if test="payAccType != null  and payAccType != '' ">
+			AND S.PAY_ACC_TYPE = #{payAccType,jdbcType=VARCHAR}
+		</if>
+		<if test="rcvAccType != null  and rcvAccType != '' ">
+			AND S.RCV_ACC_TYPE = #{rcvAccType,jdbcType=VARCHAR}
+		</if>
+		<if test="subjectC != null  and subjectC != '' ">
+			AND S.SUBJECT_C = #{subjectC,jdbcType=VARCHAR}
+		</if>
+		<if test="subjectD != null  and subjectD != '' ">
+			AND S.SUBJECT_D = #{subjectD,jdbcType=VARCHAR}
+		</if>
+		<if test="id != null and id != '' ">
+			AND S.ID LIKE CONCAT('%',#{id,jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY S.ID DESC
+	</select>
+
+	<insert id="insertSubjectConfig" parameterType="com.qifenqian.bms.accounting.subjectConfig.bean.SubjectConfig">
+		INSERT INTO ACCTING_SUBJECT_CONFIG (
+		SUBJECT_D,
+		SUBJECT_C,
+		PAY_ACC_TYPE,
+		RCV_ACC_TYPE,
+		TRAD_TYPE,
+		STATE,
+		CREATOR,
+		CREATE_TIME,
+		MEMO
+		)
+		VALUES (
+		#{subjectD,		jdbcType=VARCHAR},
+		#{subjectC,		jdbcType=VARCHAR},
+		#{payAccType,	jdbcType=VARCHAR},
+		#{rcvAccType,	jdbcType=VARCHAR},
+		#{tradType,		jdbcType=VARCHAR},
+		'VALID',
+		#{creator,		jdbcType=VARCHAR},
+		now(),
+		#{memo,			jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateSubjectConfig" parameterType="com.qifenqian.bms.accounting.subjectConfig.bean.SubjectConfig">
+		UPDATE ACCTING_SUBJECT_CONFIG
+			<set>
+		   	<if test="subjectD != null and subjectD !=''">
+				SUBJECT_D = #{subjectD,jdbcType=VARCHAR},
+			</if>
+			<if test="subjectC != null and subjectC !=''">
+				SUBJECT_C = #{subjectC,jdbcType=VARCHAR},
+			</if>
+			<if test="payAccType != null and payAccType !=''">
+				PAY_ACC_TYPE = #{payAccType,jdbcType=VARCHAR},
+			</if>
+			<if test="rcvAccType != null and rcvAccType !=''">
+				RCV_ACC_TYPE = #{rcvAccType,jdbcType=VARCHAR},
+			</if>
+			<if test="tradType != null and tradType !=''">
+				TRAD_TYPE = #{tradType,jdbcType=VARCHAR},
+			</if>
+			<if test="lastupdateUser != null and lastupdateUser !=''">
+				LASTUPDATE_USER = #{lastupdateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null and memo !=''">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			LASTUPDATE_TIME = now()
+	   </set>
+		WHERE ID =#{id,jdbcType=VARCHAR}
+	</update>
+
+	<delete id="deleteSubjectConfig" parameterType="com.qifenqian.bms.accounting.subjectConfig.bean.SubjectConfig">
+		UPDATE ACCTING_SUBJECT_CONFIG
+		SET STATE			='DISABLE',
+			LASTUPDATE_USER = #{lastupdateUser,jdbcType=VARCHAR},
+			LASTUPDATE_TIME = now()
+		WHERE ID =#{id,jdbcType=INTEGER}
+	</delete>
+</mapper>

@@ -1,0 +1,79 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box
+}
+/*html {
+  font-size: 13.3333333333vw !important;
+}*/
+
+@media screen and (min-width: 751px) {
+  html {
+    font-size: 100px !important;
+  }
+}
+
+body {
+  max-width: 750px;
+  margin: 0 auto;
+  font-size: 0.12rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 400
+}
+
+b,em,i,small,th {
+  font-style: normal
+}
+
+a {
+  color: inherit;
+  text-decoration: none
+}
+
+li,ol,ul {
+  list-style: none
+}
+
+iframe {
+  display: block;
+  border: 0
+}
+
+img {
+  border: 0;
+  vertical-align: top
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0
+}
+
+button,input,select,textarea {
+  outline: none;
+  border-radius: 0;
+  border: 0;
+  background-color: #fff
+}
+
+a,div {
+  -webkit-tap-highlight-color: transparent
+}
+
+input[type=password],input[type=text],textarea {
+  resize: none;
+  outline: 0;
+  -webkit-appearance: none;
+  white-space: pre-wrap;
+  word-wrap: break-word
+}
+
+audio,embed,iframe,object,video {
+  height: auto;
+}
+
+body{
+  background-color: #F2F2F2;
+}

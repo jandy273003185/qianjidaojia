@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>修改登录密码</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="defaultPage">
+			<div class="h45">
+				<div class="head">
+					<a href="/member/accountSafe.html" class="btn_back"></a>
+					<div class="title center">修改登录密码</div>
+				</div>
+			</div>
+			<div class="main">				
+				<div class="weui-cells alone__weui-cells applyForm">
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input type="password" class="weui-input" id="pwd1" placeholder="请输入6~18位数字与字母组合的新密码" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input type="password" class="weui-input" id="pwd2" placeholder="请确认密码" />
+						</div>
+					</div>
+					<div class="weui-cell sendCode__weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt c_999" id="xghm"></p>
+						</div>
+						<div class="code" id="sendCode">
+							<span>获取验证码</span>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<input type="text" class="weui-input" id="VerifyCode" placeholder="输入验证码" />
+						</div>
+					</div>
+				</div>
+				<div class="ftbtn pt30 pb30">
+					<a href="javascript:;" class="btn" id="submitBtn">提交</a>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			$(function() {
+				var code = "", //输入的验证码
+					Pwdtype=1,
+					phoneNumber="";
+				GetMemberInfo(function(data) {
+					//显示绑定手机号
+					phoneNumber=data.data.Mobile;
+					if(data.data.Mobile){
+						$("#xghm").text(plusXing(phoneNumber, 3, 4,'*'));
+					}else{
+						$("#xghm").html('<span class="red">未绑定</span>');
+					}
+				});
+				//点击发送验证码
+				$('#sendCode').click(function() {
+					var newPwd1 = $.trim($('#pwd1').val()),
+						newPwd2 = $.trim($('#pwd2').val());
+					if(newPwd1==newPwd2){						
+						if(!has_click) {
+							GetUpdatePswCode(phoneNumber,Pwdtype);
+						}	
+					}else{
+						layer.open({
+							content: '两次输入不相同，请重新输入！',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}				
+				});
+				
+				//	点击确认
+				$('#submitBtn').click(function(){
+					code = $.trim($('#VerifyCode').val());	
+					var newPwd1 = $.trim($('#pwd1').val()),
+						newPwd2 = $.trim($('#pwd2').val());
+					if(VerifyUpdatePsw(newPwd1,newPwd2,code)){
+						UpdatePassword(phoneNumber,code,newPwd2);
+					}
+				})
+				
+			})
+		</script>
+	</body>
+
+</html>

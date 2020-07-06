@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.adjust.dao.AccountingAdjustMainMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMain" >
+    <id column="op_id" property="opId" jdbcType="VARCHAR" />
+    <result column="process_instance_id" property="processInstanceId" jdbcType="VARCHAR" />
+    <result column="handle_datetime" property="handleDatetime" jdbcType="TIMESTAMP" />
+    <result column="handler_uid" property="handlerUid" jdbcType="VARCHAR" />
+    <result column="check_datetime" property="checkDatetime" jdbcType="TIMESTAMP" />
+    <result column="checker_uid" property="checkerUid" jdbcType="VARCHAR" />
+    <result column="approval_datetime" property="approvalDatetime" jdbcType="TIMESTAMP" />
+    <result column="manager_uid" property="managerUid" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="single_flag" property="singleFlag" jdbcType="VARCHAR" />
+    <result column="finished_flag" property="finishedFlag" jdbcType="VARCHAR" />
+    <result column="delete_datetime" property="deleteDatetime" jdbcType="TIMESTAMP" />
+    <result column="relation_op_id" property="relationOpId" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="HistoryListResultMap" type="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustHistoryListBean" >
+    <result column="op_id" property="opId" jdbcType="VARCHAR" />
+    <result column="process_instance_id" property="processInstanceId" jdbcType="VARCHAR" />
+    <result column="handle_datetime" property="handleDatetime" jdbcType="TIMESTAMP" />
+    <result column="handler_uid" property="handlerUid" jdbcType="VARCHAR" />
+    <result column="check_datetime" property="checkDatetime" jdbcType="TIMESTAMP" />
+    <result column="checker_uid" property="checkerUid" jdbcType="VARCHAR" />
+    <result column="approval_datetime" property="approvalDatetime" jdbcType="TIMESTAMP" />
+    <result column="manager_uid" property="managerUid" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="single_flag" property="singleFlag" jdbcType="VARCHAR" />
+    <result column="finished_flag" property="finishedFlag" jdbcType="VARCHAR" />
+    <result column="delete_datetime" property="deleteDatetime" jdbcType="TIMESTAMP" />
+    <result column="relation_op_id" property="relationOpId" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="entry_id" property="entryId" jdbcType="VARCHAR" />
+    <result column="debit_acct_type" property="debitAcctType" jdbcType="VARCHAR" />
+    <result column="debit_acct_no" property="debitAcctNo" jdbcType="VARCHAR" />
+    <result column="debit_acct_name" property="debitAcctName" jdbcType="VARCHAR" />
+    <result column="debit_cust_id" property="debitCustId" jdbcType="VARCHAR" />
+    <result column="debit_subject_id" property="debitSubjectId" jdbcType="VARCHAR" />
+    <result column="credit_acct_type" property="creditAcctType" jdbcType="VARCHAR" />
+    <result column="credit_acct_no" property="creditAcctNo" jdbcType="VARCHAR" />
+    <result column="credit_acct_name" property="creditAcctName" jdbcType="VARCHAR" />
+    <result column="credit_cust_id" property="creditCustId" jdbcType="VARCHAR" />
+    <result column="credit_subject_id" property="creditSubjectId" jdbcType="VARCHAR" />
+    <result column="curcde" property="curcde" jdbcType="VARCHAR" />
+    <result column="amt" property="amt" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="SingleHistoryListResultMap" type="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustSingleHistoryListBean" >
+    <result column="op_id" property="opId" jdbcType="VARCHAR" />
+    <result column="process_instance_id" property="processInstanceId" jdbcType="VARCHAR" />
+    <result column="handle_datetime" property="handleDatetime" jdbcType="TIMESTAMP" />
+    <result column="handler_uid" property="handlerUid" jdbcType="VARCHAR" />
+    <result column="check_datetime" property="checkDatetime" jdbcType="TIMESTAMP" />
+    <result column="checker_uid" property="checkerUid" jdbcType="VARCHAR" />
+    <result column="approval_datetime" property="approvalDatetime" jdbcType="TIMESTAMP" />
+    <result column="manager_uid" property="managerUid" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="single_flag" property="singleFlag" jdbcType="VARCHAR" />
+    <result column="finished_flag" property="finishedFlag" jdbcType="VARCHAR" />
+    <result column="delete_datetime" property="deleteDatetime" jdbcType="TIMESTAMP" />
+    <result column="relation_op_id" property="relationOpId" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="entry_id" property="entryId" jdbcType="VARCHAR" />
+    <result column="acct_no" property="acctNo" jdbcType="VARCHAR" />
+    <result column="acct_name" property="acctName" jdbcType="VARCHAR" />
+    <result column="acct_type" property="acctType" jdbcType="VARCHAR" />
+    <result column="curcde" property="curcde" jdbcType="VARCHAR" />
+    <result column="amt" property="amt" jdbcType="DECIMAL" />
+    <result column="usable_amt" property="usableAmt" jdbcType="DECIMAL" />
+    <result column="onway_amt" property="onwayAmt" jdbcType="DECIMAL" />
+    <result column="is_adjust_JGKJ" property="isAdjustJGKJ" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    op_id, process_instance_id, handle_datetime, handler_uid, check_datetime, checker_uid, 
+    approval_datetime, manager_uid, org_id, single_flag, finished_flag, delete_datetime, relation_op_id, 
+    memo
+  </sql>
+  <sql id="History_Column_List" >
+    m.op_id, process_instance_id, handle_datetime, handler_uid, check_datetime, checker_uid, 
+    approval_datetime, manager_uid, org_id, single_flag, finished_flag, delete_datetime, relation_op_id, 
+    memo, 
+    entry_id, debit_acct_type, debit_acct_no, debit_acct_name, debit_cust_id, 
+    debit_subject_id, credit_acct_type, credit_acct_no, credit_acct_name, credit_cust_id, 
+    credit_subject_id, curcde, amt
+  </sql>
+  <sql id="Single_History_Column_List" >
+    m.op_id, process_instance_id, handle_datetime, handler_uid, check_datetime, checker_uid, 
+    approval_datetime, manager_uid, org_id, single_flag, finished_flag, delete_datetime, relation_op_id, 
+    memo, 
+    entry_id, acct_no, acct_name, acct_type, curcde, amt, usable_amt, onway_amt, 
+    is_adjust_JGKJ
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMainExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_adjust_main
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_adjust_main
+    where op_id = #{opId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey4Lock" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_adjust_main
+    where op_id = #{opId,jdbcType=VARCHAR} for update 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bms_td_accounting_adjust_main
+    where op_id = #{opId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMainExample" >
+    delete from bms_td_accounting_adjust_main
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMain" >
+    insert into bms_td_accounting_adjust_main (op_id, process_instance_id, handle_datetime, 
+      handler_uid, check_datetime, checker_uid, 
+      approval_datetime, manager_uid, org_id, single_flag, 
+      finished_flag, delete_datetime, relation_op_id, 
+      memo)
+    values (#{opId,jdbcType=VARCHAR}, #{processInstanceId,jdbcType=VARCHAR}, NOW(), 
+      #{handlerUid,jdbcType=VARCHAR}, #{checkDatetime,jdbcType=TIMESTAMP}, #{checkerUid,jdbcType=VARCHAR}, 
+      #{approvalDatetime,jdbcType=TIMESTAMP}, #{managerUid,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{singleFlag,jdbcType=VARCHAR}, 
+      #{finishedFlag,jdbcType=VARCHAR}, #{deleteDatetime,jdbcType=TIMESTAMP}, #{relationOpId,jdbcType=VARCHAR}, 
+      #{memo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMain" >
+    insert into bms_td_accounting_adjust_main
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        op_id,
+      </if>
+      <if test="processInstanceId != null" >
+        process_instance_id,
+      </if>
+        handle_datetime,
+      <if test="handlerUid != null" >
+        handler_uid,
+      </if>
+      <if test="checkDatetime != null" >
+        check_datetime,
+      </if>
+      <if test="checkerUid != null" >
+        checker_uid,
+      </if>
+      <if test="approvalDatetime != null" >
+        approval_datetime,
+      </if>
+      <if test="managerUid != null" >
+        manager_uid,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+       <if test="singleFlag != null" >
+        single_flag,
+      </if>
+      <if test="finishedFlag != null" >
+        finished_flag,
+      </if>
+      <if test="deleteDatetime != null" >
+        delete_datetime,
+      </if>
+      <if test="relationOpId != null" >
+        relation_op_id,
+      </if>
+      <if test="memo != null" >
+        memo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        #{opId,jdbcType=VARCHAR},
+      </if>
+      <if test="processInstanceId != null" >
+        #{processInstanceId,jdbcType=VARCHAR},
+      </if>
+       NOW(),
+      <if test="handlerUid != null" >
+        #{handlerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="checkDatetime != null" >
+        #{checkDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkerUid != null" >
+        #{checkerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalDatetime != null" >
+        #{approvalDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="managerUid != null" >
+        #{managerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="singleFlag != null" >
+        #{singleFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="finishedFlag != null" >
+        #{finishedFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteDatetime != null" >
+        #{deleteDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationOpId != null" >
+        #{relationOpId,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null" >
+        #{memo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMainExample" resultType="java.lang.Integer" >
+    select count(*) from bms_td_accounting_adjust_main
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update bms_td_accounting_adjust_main
+    <set >
+      <if test="record.opId != null" >
+        op_id = #{record.opId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processInstanceId != null" >
+        process_instance_id = #{record.processInstanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDatetime != null" >
+        handle_datetime = NOW(),
+      </if>
+      <if test="record.handlerUid != null" >
+        handler_uid = #{record.handlerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkDatetime != null" >
+        check_datetime = #{record.checkDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.checkerUid != null" >
+        checker_uid = #{record.checkerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approvalDatetime != null" >
+        approval_datetime = #{record.approvalDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.managerUid != null" >
+        manager_uid = #{record.managerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgId != null" >
+        org_id = #{record.orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.singleFlag != null" >
+        single_flag = #{record.singleFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.finishedFlag != null" >
+        finished_flag = #{record.finishedFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleteDatetime != null" >
+        delete_datetime = #{record.deleteDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.relationOpId != null" >
+        relation_op_id = #{record.relationOpId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null" >
+        memo = #{record.memo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update bms_td_accounting_adjust_main
+    set op_id = #{record.opId,jdbcType=VARCHAR},
+      process_instance_id = #{record.processInstanceId,jdbcType=VARCHAR},
+      handle_datetime = #{record.handleDatetime,jdbcType=TIMESTAMP},
+      handler_uid = #{record.handlerUid,jdbcType=VARCHAR},
+      check_datetime = #{record.checkDatetime,jdbcType=TIMESTAMP},
+      checker_uid = #{record.checkerUid,jdbcType=VARCHAR},
+      approval_datetime = #{record.approvalDatetime,jdbcType=TIMESTAMP},
+      manager_uid = #{record.managerUid,jdbcType=VARCHAR},
+      org_id = #{record.orgId,jdbcType=VARCHAR},
+      single_flag = #{record.singleFlag,jdbcType=VARCHAR},
+      finished_flag = #{record.finishedFlag,jdbcType=VARCHAR},
+      delete_datetime = #{record.deleteDatetime,jdbcType=TIMESTAMP},
+      relation_op_id = #{record.relationOpId,jdbcType=VARCHAR},
+      memo = #{record.memo,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMain" >
+    update bms_td_accounting_adjust_main
+    <set >
+      <if test="processInstanceId != null" >
+        process_instance_id = #{processInstanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDatetime != null" >
+        handle_datetime = #{handleDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handlerUid != null" >
+        handler_uid = #{handlerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="checkDatetime != null" >
+        check_datetime = #{checkDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkerUid != null" >
+        checker_uid = #{checkerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalDatetime != null" >
+        approval_datetime = #{approvalDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="managerUid != null" >
+        manager_uid = #{managerUid,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="singleFlag != null" >
+        single_flag = #{singleFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="finishedFlag != null" >
+        finished_flag = #{finishedFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteDatetime != null" >
+        delete_datetime = #{deleteDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationOpId != null" >
+        relation_op_id = #{relationOpId,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null" >
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where op_id = #{opId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustMain" >
+    update bms_td_accounting_adjust_main
+    set process_instance_id = #{processInstanceId,jdbcType=VARCHAR},
+      handle_datetime = #{handleDatetime,jdbcType=TIMESTAMP},
+      handler_uid = #{handlerUid,jdbcType=VARCHAR},
+      check_datetime = #{checkDatetime,jdbcType=TIMESTAMP},
+      checker_uid = #{checkerUid,jdbcType=VARCHAR},
+      approval_datetime = #{approvalDatetime,jdbcType=TIMESTAMP},
+      manager_uid = #{managerUid,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      single_flag = #{singleFlag,jdbcType=VARCHAR},
+      finished_flag = #{finishedFlag,jdbcType=VARCHAR},
+      delete_datetime = #{deleteDatetime,jdbcType=TIMESTAMP},
+      relation_op_id = #{relationOpId,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR}
+    where op_id = #{opId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectHistoryList" resultMap="HistoryListResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustHistoryListBean" >
+   SELECT
+			M.OP_ID,
+			PROCESS_INSTANCE_ID,
+			DATE_FORMAT(HANDLE_DATETIME,'%Y-%m-%d %H:%i:%s') AS HANDLE_DATETIME,
+			HANDLER_UID,
+			CHECK_DATETIME,
+			CHECKER_UID,
+			APPROVAL_DATETIME,
+			MANAGER_UID,
+			ORG_ID,
+			SINGLE_FLAG,
+			FINISHED_FLAG,
+			DELETE_DATETIME,
+			RELATION_OP_ID,
+			MEMO,
+			ENTRY_ID,
+		CASE DEBIT_ACCT_TYPE
+		WHEN 'SEVEN_CUST' THEN
+			'七分钱客户账户'
+		WHEN 'SEVEN_BUSS' THEN
+			'七分钱商户账户'
+		WHEN 'SEVEN_INNER' THEN
+			'七分钱内部账户'
+		ELSE
+			DEBIT_ACCT_TYPE
+		END DEBIT_ACCT_TYPE,
+			DEBIT_ACCT_NO,
+			DEBIT_ACCT_NAME,
+			DEBIT_CUST_ID,
+			DEBIT_SUBJECT_ID,	
+		CASE CREDIT_ACCT_TYPE
+		WHEN 'SEVEN_CUST' THEN
+			'七分钱客户账户'
+		WHEN 'SEVEN_BUSS' THEN
+			'七分钱商户账户'
+		WHEN 'SEVEN_INNER' THEN
+			'七分钱内部账户'
+		ELSE
+			CREDIT_ACCT_TYPE
+		END CREDIT_ACCT_TYPE,
+			CREDIT_ACCT_NO,
+			CREDIT_ACCT_NAME,
+			CREDIT_CUST_ID,
+			CREDIT_SUBJECT_ID,
+			CURCDE,
+			AMT
+		FROM
+			BMS_TD_ACCOUNTING_ADJUST_MAIN M
+		INNER JOIN BMS_TD_ACCOUNTING_ADJUST_DETAIL D ON M.OP_ID = D.OP_ID
+		WHERE
+			M.FINISHED_FLAG = 1
+    <if test="debitAcctNo != null and debitAcctNo != '' " >
+        and  d.debit_acct_no = #{debitAcctNo,jdbcType=VARCHAR} 
+    </if>
+     <if test="creditAcctNo != null and creditAcctNo != '' " >
+        and  d.credit_acct_no = #{creditAcctNo,jdbcType=VARCHAR}
+    </if>
+    <if test="handleDateStart != null and handleDateStart != '' " >
+        <![CDATA[ and date_format(m.handle_datetime, '%Y-%m-%d') >= #{handleDateStart,jdbcType=VARCHAR} ]]>
+    </if>
+    <if test="handleDateEnd != null and handleDateEnd != '' " >
+        <![CDATA[ and date_format(m.handle_datetime, '%Y-%m-%d') <= #{handleDateEnd,jdbcType=VARCHAR} ]]>
+    </if>
+    order by m.op_id
+  </select>
+  <select id="selectSingleHistoryList" resultMap="SingleHistoryListResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustSingleHistoryListBean" >
+	SELECT
+			M.OP_ID,
+			PROCESS_INSTANCE_ID,
+			DATE_FORMAT(HANDLE_DATETIME,'%Y-%m-%d %H:%i:%s') AS HANDLE_DATETIME,
+			HANDLER_UID,
+			CHECK_DATETIME,
+			CHECKER_UID,
+			APPROVAL_DATETIME,
+			MANAGER_UID,
+			ORG_ID,
+			SINGLE_FLAG,
+			FINISHED_FLAG,
+			DELETE_DATETIME,
+			RELATION_OP_ID,
+			MEMO,
+			ENTRY_ID,
+			ACCT_NO,
+			ACCT_NAME,
+			CASE ACCT_TYPE
+		WHEN 'SEVEN_CUST' THEN
+			'七分钱客户账户'
+		WHEN 'SEVEN_BUSS' THEN
+			'七分钱商户账户'
+		WHEN 'SEVEN_INNER' THEN
+			'七分钱内部账户'
+		ELSE
+			ACCT_TYPE
+		END ACCT_TYPE,
+		 CURCDE,
+		 AMT,
+		 USABLE_AMT,
+		 ONWAY_AMT,
+		 IS_ADJUST_JGKJ
+		FROM
+			BMS_TD_ACCOUNTING_ADJUST_MAIN M
+		INNER JOIN BMS_TD_ACCOUNTING_SINGLE_ADJUST_DETAIL D ON M.OP_ID = D.OP_ID
+		WHERE
+			M.FINISHED_FLAG = 1
+    <if test="acctNo != null and acctNo != '' " >
+        and d.acct_no = #{acctNo,jdbcType=VARCHAR}
+    </if>
+    <if test="handleDateStart != null and handleDateStart != '' " >
+        <![CDATA[ and date_format(m.handle_datetime, '%Y-%m-%d') >= #{handleDateStart,jdbcType=VARCHAR} ]]>
+    </if>
+    <if test="handleDateEnd != null and handleDateEnd != '' " >
+        <![CDATA[ and date_format(m.handle_datetime, '%Y-%m-%d') <= #{handleDateEnd,jdbcType=VARCHAR} ]]>
+    </if>
+    order by m.op_id
+  </select> 
+</mapper>

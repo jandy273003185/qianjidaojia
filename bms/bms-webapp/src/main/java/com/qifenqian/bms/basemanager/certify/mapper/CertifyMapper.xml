@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.certify.mapper.CertifyMapper">
+
+	<resultMap type="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean" id="identityDetailList">  
+	    <result column="file_id" property="fileId" jdbcType="VARCHAR" />  
+	    <result column="validate_id" property="validateId" jdbcType="VARCHAR" />  
+	    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+	    <result column="cust_id" property="custId" jdbcType="VARCHAR" />  
+	    <result column="work_date" property="workDate" jdbcType="VARCHAR" />  
+	    <result column="cust_name" property="custName" jdbcType="VARCHAR" />  
+	    <result column="certify_no" property="certifyNo" jdbcType="VARCHAR" />  
+	</resultMap>  
+	
+	<!-- 查询用户列表 -->
+	<select id="selectCertifys" resultType="com.qifenqian.bms.basemanager.certify.bean.Certify" parameterType="com.qifenqian.bms.basemanager.certify.bean.Certify">
+		SELECT U.* 
+	    FROM TB_CERTIFY_TYPE U 
+	    <where>
+	    	<if test="certifyType != null and certifyType != '' ">AND U.CERTIFY_TYPE = #{certifyType, jdbcType=VARCHAR}</if>
+	   		<if test="certifyName != null and certifyName != '' ">AND U.CERTIFY_NAME LIKE CONCAT('%',#{certifyName, jdbcType=VARCHAR},'%')</if>
+	    </where>
+		ORDER BY U.CERTIFY_TYPE
+	</select>
+	
+	 <delete id="deleteBankByBankCode" parameterType="string">
+	 	DELETE FROM TB_CERTIFY_TYPE
+	 	WHERE CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR}
+	 </delete>
+	 
+	 <insert id="insertCertify" parameterType="com.qifenqian.bms.basemanager.certify.bean.Certify">
+	 	INSERT INTO TB_CERTIFY_TYPE (
+			CERTIFY_TYPE,
+		  	CERTIFY_NAME
+			) VALUES (
+			#{certifyType, 	jdbcType=VARCHAR},
+		  	#{certifyName, 	jdbcType=VARCHAR}
+		)
+	 </insert>
+	 
+	 	<!-- 更新角色信息 -->
+	<update id="updateCertify" parameterType="com.qifenqian.bms.basemanager.certify.bean.Certify">
+		UPDATE TB_CERTIFY_TYPE
+		<set>
+			<if test="certifyName != null">
+				CERTIFY_NAME = #{certifyName,jdbcType=VARCHAR},
+			</if>
+		</set>
+			where CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询认证文件 -->
+	<select id="getFileList" resultType="com.qifenqian.bms.basemanager.certify.bean.FileBean" parameterType="com.qifenqian.bms.basemanager.certify.bean.FileBean">
+		select
+			 *
+		from 
+			bms_identity_file_receive b
+		<where>
+			<if test="fileType != null and fileType != ''">
+				and b.file_Type = #{fileType,    jdbcType=VARCHAR}
+			</if>
+			<if test="workDate != null and workDate != ''">
+				and b.work_date = #{workDate,    jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 查询实名认证验证详情 -->
+	<select id="getIdentityDetail" resultType="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean" parameterType="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean">
+		select 
+			b.*,
+			s.user_name dealUserName
+		from
+			bms_identity_detail b
+		left join
+			sys_user s
+		on
+			b.deal_user = s.user_id
+		<where>
+			<if test="fileId != null and fileId != ''">
+				and b.file_id = #{fileId,    jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				and b.mobile = #{mobile,    jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != ''">
+				and b.status = #{status,    jdbcType=VARCHAR}
+			</if>
+			<if test="dealStatus != null and dealStatus != ''">
+				and b.deal_status = #{dealStatus,    jdbcType=VARCHAR}
+			</if>
+		</where>	
+	
+	</select>
+	
+	<!-- 处理验证明细 -->
+	<update id="dealValidateDetail" parameterType = "String">
+		update 
+			bms_identity_detail b
+		set 
+		    b.deal_memo=#{memo,jdbcType = VARCHAR},
+		    b.deal_status="00",
+		    b.deal_user = #{auditUserId,jdbcType=VARCHAR}
+		where 
+			b.validate_id = #{validateId,jdbcType = VARCHAR}
+		and
+			b.file_id = #{fileId,jdbcType = VARCHAR}
+	</update>
+	
+	 <select id="selectByFileName" resultType="com.qifenqian.bms.basemanager.certify.bean.FileBean">
+    	SELECT T.*
+    	  FROM BMS_IDENTITY_FILE_RECEIVE T
+    	 WHERE T.FILE_NAME = #{fileName,	jdbcType=VARCHAR}	
+    	 AND T.STATUS != 'INVALID'
+    </select>
+    <update id="updateFile" parameterType="com.qifenqian.bms.basemanager.certify.bean.FileBean">
+    	UPDATE BMS_IDENTITY_FILE_RECEIVE T
+   	    <set>
+	    	<if test="fileName != null">
+	        	T.FILE_NAME 	= #{fileName,	jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="status != null">
+	        	T.STATUS 	= #{status,		jdbcType=VARCHAR},
+	      	</if>
+	      		T.UPDATE_DATETIME = now()
+   		 </set>
+    	 WHERE T.FILE_ID 	= #{fileId,		jdbcType=VARCHAR}
+    </update>
+    
+    <insert id="insertFile" parameterType="com.qifenqian.bms.basemanager.certify.bean.FileBean">
+     INSERT INTO BMS_IDENTITY_FILE_RECEIVE (
+			FILE_ID,
+			UPLOAD_DATE,
+			FILE_NAME,
+			FILE_TYPE,
+			WORK_DATE,
+			STORAGE_PATH,
+			TOTAL_COUNT,
+			INST_DATE,
+			STATUS
+		) VALUES (
+			#{fileId,			jdbcType=VARCHAR},
+			CURDATE(),
+			#{fileName,			jdbcType=VARCHAR},
+			#{fileType,			jdbcType=VARCHAR},
+			#{workDate,			jdbcType=VARCHAR},
+			#{storagePath,		jdbcType=VARCHAR},
+			#{totalCount,		jdbcType=INTEGER},
+			CURDATE(),
+			#{status,			jdbcType=VARCHAR}
+        )  
+    
+    </insert>
+    
+    <delete id="deleteIdentityDetailBean" parameterType="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean">
+    	DELETE FROM BMS_IDENTITY_DETAIL WHERE FILE_ID = #{fileId,jdbcType = VARCHAR}
+    </delete>
+    
+    <insert id="insertIdentityDetail" useGeneratedKeys="false" parameterType="java.util.List">  
+	    INSERT INTO BMS_IDENTITY_DETAIL (FILE_ID,VALIDATE_ID,CUST_NAME,CERTIFY_NO,WORK_DATE,INST_DATE)   
+	    VALUES  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.fileId},#{item.validateId},#{item.custName},#{item.certifyNo},#{item.workDate},CURDATE())  
+	    </foreach>  
+	</insert>  
+	
+	<update id="updateIdentityDetialList" parameterType="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean">
+		UPDATE BMS_IDENTITY_DETAIL T,
+			 TD_CUST_INFO U,
+			 TD_LOGIN_USER_INFO L
+		 SET 
+		 	T.CUST_ID = U.CUST_ID,
+			T.MOBILE = L.MOBILE
+			WHERE
+				T.CERTIFY_NO = U.CERTIFY_NO
+			AND T.CUST_NAME = U.CUST_NAME
+			AND U.CUST_ID = L.CUST_ID
+			AND U.CUST_TYPE = '0'
+			AND t.WORK_DATE = #{workDate,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateIdentityDetial" parameterType="com.qifenqian.bms.basemanager.certify.bean.IdentityDetailBean">
+		UPDATE BMS_IDENTITY_DETAIL D
+    		<set>
+			<if test="rtnCode!=null and rtnCode!=''">
+				D.RTN_CODE = #{rtnCode,jdbcType = VARCHAR},
+			</if>
+			<if test="status!=null and status!=''">
+				D.STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+			<if test="rtnMsg!=null and rtnMsg!=''">
+				D.RTN_MSG = #{rtnMsg,jdbcType = VARCHAR},
+			</if>
+			<if test="dealStatus!=null and dealStatus!=''">
+				D.DEAL_STATUS = #{dealStatus,jdbcType = VARCHAR},
+			</if>
+			 D.UPDATE_DATETIME = NOW()
+		</set>
+		WHERE 
+		D.VALIDATE_ID = #{validateId,jdbcType = VARCHAR} 
+		AND D.WORK_DATE = #{workDate,jdbcType = VARCHAR}
+	</update>
+</mapper>

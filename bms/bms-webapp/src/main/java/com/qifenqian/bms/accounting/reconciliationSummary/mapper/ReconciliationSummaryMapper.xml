@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.reconciliationSummary.mapper.ReconciliationSummaryMapper" >
+<resultMap type="com.qifenqian.bms.accounting.reconciliationSummary.bean.Summary" id="basicResultMap">
+	<result property="paychannelType" column="PAYCHANNEL_TYPE"/>
+	<result property="success_total" column="SUCCESS_TOTAL"/>
+	<result property="success_amt" column="SUCCESS_AMT"/>
+	<result property="lack_total" column="LACK_TOTAL"/>
+	<result property="lack_amt" column="LACK_AMT"/>
+	<result property="lose_total" column="LOSE_TOTAL"/>
+	<result property="lose_amt" column="LOSE_AMT"/>
+	<result property="diff_total" column="DIFF_TOTAL"/>
+	<result property="diff_amt" column="DIFF_AMT"/>
+	<result property="create_time" column="CREATE_TIME"/>
+	
+</resultMap>
+
+<resultMap type="com.qifenqian.bms.accounting.reconciliationSummary.bean.ReconDetail" id="successResultMap">
+	<result property="id" column="ID"/>
+	<result property="orderId" column="ORDER_ID"/>
+	<result property="oldOrderId" column="OLD_ORDER_ID"/>
+	<result property="paychannelType" column="PAYCHANNEL_TYPE"/>
+	<result property="tradeAmt" column="TRADE_AMT"/>
+	<result property="reconResult" column="RECON_RESULT"/>
+	<result property="tradeTime" column="TRADE_TIME"/>
+	<result property="createTime" column="CREATE_TIME"/>
+	
+</resultMap>
+
+<resultMap type="com.qifenqian.bms.accounting.reconciliationSummary.bean.ReconDiff" id="DiffResultMap">
+	<result property="Id" column="ID"/>
+	<result property="orderId" column="ORDER_ID"/>
+	<result property="paychannelType" column="PAYCHANNEL_TYPE"/>
+	<result property="tradeAmt" column="TRADE_AMT"/>
+	<result property="reconResult" column="RECON_RESULT"/>
+	<result property="inOut" column="IN_OUT"/>
+	<result property="createTime" column="CREATE_TIME"/>
+	
+</resultMap>
+
+	<!-- 分页对账信息 -->  
+	<select id="selectSummary" resultType="com.qifenqian.bms.accounting.reconciliationSummary.mapper.ReconciliationSummaryMapper" parameterType="com.qifenqian.bms.accounting.reconciliationSummary.bean.Summary" resultMap="basicResultMap">  
+  			select   
+  			* 
+  			from td_channel_recon_rst T
+  			where 1=1
+			<if test="createTime != null and createTime != ''">
+		 		 AND date_format(T.CREATE_TIME, '%Y-%m-%d') = #{createTime}
+			</if>
+			<if test="paychannelType != null and paychannelType != ''">
+				  AND  T.PAYCHANNEL_TYPE = #{paychannelType ,jdbcType = VARCHAR} 
+			</if>
+  			ORDER BY T.CREATE_TIME DESC
+	</select> 
+	 
+	<!-- 交易明细 -->
+	<select id="selectByReconResult" resultMap="successResultMap">  
+  			select
+  			t.ID,   
+  			t.ORDER_ID,
+  			t.OLD_ORDER_ID,
+  			t.PAYCHANNEL_TYPE,
+  			t.TRADE_AMT,
+  			t.RECON_RESULT,
+  			t.IN_OUT,  	
+  			t.TRADE_TIME,		
+  			t.CREATE_TIME
+  			from td_channel_recon_detail  t
+			where 1=1
+			<if test="reconResult != null and reconResult != '' "> 
+				and t.RECON_RESULT = #{reconResult, jdbcType=VARCHAR} 
+			</if>
+			<if test="orderId != null and orderId != '' "> 
+				AND t.ORDER_ID =#{orderId, jdbcType=VARCHAR} 
+			</if>
+			<if test="oldOrderId != null and oldOrderId != '' "> 
+				AND t.OLD_ORDER_ID =#{oldOrderId, jdbcType=VARCHAR} 
+			</if>
+			<if test="inOut != null and inOut != '' ">
+				AND t.IN_OUT = #{inOut, jdbcType=VARCHAR}
+			</if>
+			 <if test="paychannelType != null and paychannelType != '' ">
+				AND t.PAYCHANNEL_TYPE = #{paychannelType, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null and createTime != '' ">
+				AND date_format(t.CREATE_TIME, '%Y-%m-%d') = #{createTime}
+			</if>   
+			ORDER BY T.TRADE_TIME ASC
+	</select>  
+	
+	<select id="selectByErrorDisposal" resultMap="DiffResultMap">
+			select 
+			t.ID,
+			t.ORDER_ID,
+			t.PAYCHANNEL_TYPE,
+			t.TRADE_AMT,
+			t.RECON_RESULT,
+			t.IN_OUT,
+			t.DEAL_FLAG,
+			t.CREATE_TIME
+			from td_channel_recon_diff t
+			where 
+			  1=1
+			 <if test="dealFlag != null and dealFlag != ''"> 
+			and	 t.DEAL_FLAG =#{dealFlag, jdbcType=VARCHAR} 
+			</if>
+			<if test="createTimeMax != null and createTimeMax != '' "> AND CONCAT(DATE_ADD(#{createTimeMax, jdbcType=VARCHAR}, INTERVAL 1 DAY), ' 00:00:00') &gt; T.CREATE_TIME</if>
+			<if test="createTimeMin != null and createTimeMin != '' "> AND T.CREATE_TIME &gt;= CONCAT(#{createTimeMin, jdbcType=VARCHAR}, ' 00:00:00')</if> 
+			<if test="Id != null and Id != '' "> 
+				and t.ID = #{Id, jdbcType=VARCHAR} 
+			</if>
+			<if test="orderId != null and orderId != '' "> 
+				AND t.ORDER_ID =#{orderId, jdbcType=VARCHAR} 
+			</if>
+			<if test="paychannelType != null and paychannelType != '' "> 
+				AND t.PAYCHANNEL_TYPE =#{paychannelType, jdbcType=VARCHAR} 
+			</if>
+			<if test="tradeAmt != null and tradeAmt != '' ">
+				AND t.TRADE_AMT = #{tradeAmt, jdbcType=VARCHAR}
+			</if>
+			 <if test="reconResult != null and reconResult != '' ">
+				AND t.RECON_RESULT = #{reconResult, jdbcType=VARCHAR}
+			</if>
+			 <if test="inOut != null and inOut != '' ">
+				AND t.IN_OUT = #{inOut, jdbcType=VARCHAR}
+			</if>
+			<if test="createTime != null and createTime != '' ">
+				AND date_format(t.CREATE_TIME, '%Y-%m-%d') = #{createTime}
+			</if>   
+			order by t.CREATE_TIME desc
+	</select>
+	
+	<update id="updateByErrorDisposal" parameterType="com.qifenqian.bms.accounting.reconciliationSummary.bean.ReconDiff">
+		UPDATE TD_CHANNEL_RECON_DIFF T
+		<set>
+			T.DEAL_FLAG = 1
+		</set>
+		WHERE T.ORDER_ID =#{orderId, jdbcType=VARCHAR} 
+	</update>
+</mapper> 

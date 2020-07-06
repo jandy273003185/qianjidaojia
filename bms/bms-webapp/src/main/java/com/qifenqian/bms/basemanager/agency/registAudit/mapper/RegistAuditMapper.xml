@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.agency.registAudit.mapper.RegistAuditMapper">
+	<!-- 查询服务商列表 -->
+	<select id="listMerchant" resultType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+		SELECT distinct
+			C.*,
+			DATE_FORMAT(C.CREATE_TIME,'%Y-%m-%d %H:%i:%s') createTime,
+			U.EMAIL AS EMAIL,
+			U.MOBILE AS MOBILE,
+			U.STATE merchantState,
+			C.STATE auditState,
+			A.AUDIT_INFO aduitMessage,
+			S.USER_NAME aduitUserName,
+			M.USER_NAME custManagerName
+		FROM TD_CUST_INFO C 
+		INNER JOIN TD_LOGIN_USER_INFO U 
+		ON C.CUST_ID = U.CUST_ID
+		LEFT JOIN TD_AUDIT_RECODE_INFO A
+		ON C.MERCHANT_CODE = A.MERCHANT_CODE
+		LEFT JOIN SYS_USER S
+		ON A.USER_ID = S.USER_ID
+		LEFT JOIN SYS_USER M
+		ON C.CUSTMANAGER IS NOT NULL AND C.CUSTMANAGER = M.USER_ID
+		<where>
+			 C.MERCHANT_FLAG = '3' AND C.STATE !="" AND C.MERCHANT_CODE !=""
+			 <if test="startCreateTime != null and '' != startCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(C.CREATE_TIME   ,'%Y-%m-%d')>= #{startCreateTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(C.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if>  
+			<if test="auditState != null and auditState != '' ">
+			 	AND C.STATE = #{auditState, jdbcType=VARCHAR} 
+			 </if>
+			<if test="merchantState != null and merchantState != '' "> 
+				AND U.STATE = #{merchantState, jdbcType=VARCHAR} 
+			</if>
+			<if test="custName != null and custName != '' ">
+			 	AND C.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+			  </if>
+			<if test="email != null and email != '' "> 
+				AND U.EMAIL LIKE CONCAT('%',#{email},'%')
+			</if>
+			<if test="mobile != null and mobile != '' "> 
+				AND U.MOBILE LIKE CONCAT('%',#{mobile},'%')
+			</if>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 	AND C.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+			</if>
+			<if test="custManager !=null and custManager != '' ">
+				AND C.CUSTMANAGER = M.USER_ID AND M.USER_NAME LIKE CONCAT('%',#{custManager},'%')
+			</if> 
+		</where>
+		ORDER BY C.CREATE_TIME    DESC	    		
+	</select>
+	
+	<!-- 查询服务商审核状态 -->
+	<select id="selectStateOfMerchant" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			STATE
+		FROM
+			TD_CUST_INFO
+		WHERE
+			MERCHANT_CODE=#{merchantCode}
+	</select>
+	
+	<!-- 查询服务商信息  -->
+	<select id="queryMerchantInfo" parameterType="java.lang.String" resultType="com.qifenqian.bms.upgrade.merchant.bean.MerchantRegisterInfo">
+		SELECT
+			a.*,t.*,
+			c.SCAN_COPY_PATH as businessLicenseFPath,
+		    c2.SCAN_COPY_PATH as openAccountPath,
+		    c1.SCAN_COPY_PATH as idCardFPath,
+			c1.CERTIFY_BEGIN_TIME ,
+		    c1.CERTIFY_END_TIME,
+		    c3.SCAN_COPY_PATH as bankCardPhotoPath,
+			c4.SCAN_COPY_PATH as idCardScPhotoPath,
+		    a.representative_cert_no as representativeCertNo,
+		    a.REPRESENTATIVE_NAME as representativeName,
+		    a.representative_addr as custAdd,
+		    p.product_code,
+			p.sign_rate
+		FROM
+			td_login_user_info t
+		LEFT JOIN td_cust_info a ON t.cust_id = a.cust_id
+		LEFT JOIN td_customer_product_info p ON a.MERCHANT_CODE = p.merchant_code
+		<!-- 
+		LEFT JOIN TD_CERTIFICATE_AUTH h ON h.cust_id = t.cust_id 
+		LEFT JOIN TD_CUST_SCAN_COPY c ON h.auth_id = c.auth_id and c.CERTIFY_TYPE='02'
+		LEFT JOIN TD_CUST_SCAN_COPY c1 ON h.auth_id = c1.auth_id and c1.CERTIFY_TYPE='04'
+		LEFT JOIN TD_CUST_SCAN_COPY c2 ON h.auth_id = c2.auth_id and c2.CERTIFY_TYPE='03'
+    	LEFT JOIN TD_CUST_SCAN_COPY c3 ON h.auth_id = c3.auth_id and c3.CERTIFY_TYPE='10'
+		LEFT JOIN TD_CUST_SCAN_COPY c4 ON h.auth_id = c4.auth_id and c4.CERTIFY_TYPE='11'
+		-->
+		LEFT JOIN TD_CUST_SCAN_COPY c  ON t.cust_id  = c.cust_id and c.CERTIFY_TYPE ='02'
+		LEFT JOIN TD_CUST_SCAN_COPY c1 ON t.cust_id = c1.cust_id and c1.CERTIFY_TYPE='04'
+		LEFT JOIN TD_CUST_SCAN_COPY c2 ON t.cust_id = c2.cust_id and c2.CERTIFY_TYPE='03'
+    	LEFT JOIN TD_CUST_SCAN_COPY c3 ON t.cust_id = c3.cust_id and c3.CERTIFY_TYPE='10'
+		LEFT JOIN TD_CUST_SCAN_COPY c4 ON t.cust_id = c4.cust_id and c4.CERTIFY_TYPE='11'
+	   	WHERE
+	   		 a.merchant_code = #{merchantCode,jdbcType = VARCHAR}   	
+	</select>
+	
+	<!-- 导出表格 -->
+	<select id="exportlist" resultType="com.qifenqian.bms.basemanager.merchant.bean.MerchantExport" parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+		SELECT
+			C.MERCHANT_CODE,
+			C.CUST_NAME,
+			C.TRADE_PWD,
+			C.ATTACH_STR,
+			U.WRONG_PWD_COUNT,
+			C.CERTIFY_TYPE,
+			C.CERTIFY_NO,
+			C.CUST_TYPE,
+			U.STATE merchantState,
+			U.EMAIL,
+			C.MERCHANT_FLAG,
+			C.CUST_SCORE,
+			C.CUST_LVL,
+			C.TRUST_CERTIFY_LVL,
+			C.TRUST_CERTIFY_AUDIT_STATE,
+			C.CUST_INFO_LVL,
+			C.CUST_ADD,
+			C.CUST_POST_CODE,
+			C.BUSINESS_LICENSE,
+			C.TAX_REG_CERT,
+			C.REPRESENTATIVE_CERT_TYPE,
+			C.REPRESENTATIVE_CERT_NO,
+			C.REPRESENTATIVE_NAME,
+			C.REG_CAPITAL,
+			C.ENT_TYPE,
+			C.INDUSTRY_BELONG,
+			C.YEAR_TURNOVER,
+			C.MERCHANT_WEB_SITE,
+			C.IS_USE_CERTIFICATION,
+			C.IS_USE_MSG,
+			C.QFQ_ACC_ID,
+			C.QFB_ACC_ID,
+			C.CREATE_ID,
+			C.CREATE_TIME,
+			C.MODIFY_ID,
+			C.MODIFY_TIME,
+			C.BUSINESS_TERM,
+			C.BUSINESS_REG_ADDR,
+			C.CONTACT_PHONE,
+			C.FCONTACTUNIT_NUMBER,
+			C.ORG_INST_CODE,
+			C.REPRESENTATIVE_ADDR,
+			C.REPRESENTATIVE_MOBILE,
+			C.AGENT_NAME,
+			C.AGENT_CERT_TYPE,
+			C.AGENT_CERT_CODE,
+			C.AGENT_MOBILE,
+			C.COMP_MAIN_ACCT,
+			C.COMP_ACCT_BANK,
+			C.PWD_FREEZE_TIME,
+			C.COMP_VERIFY_AMT,
+			C.BRANCH_BANK,
+			C.BANK_ACCT_NAME,
+			C.COMMENT,
+			C.STATE auditState
+		FROM TD_CUST_INFO C 
+		INNER JOIN TD_LOGIN_USER_INFO U 
+		ON C.CUST_ID = U.CUST_ID
+		LEFT JOIN TD_AUDIT_RECODE_INFO A
+		ON C.MERCHANT_CODE = A.MERCHANT_CODE
+		LEFT JOIN SYS_USER S
+		ON A.USER_ID = S.USER_ID
+		<where>
+			 C.MERCHANT_FLAG = '3' AND C.STATE !="" AND C.MERCHANT_CODE !="" 
+			 <if test="startCreateTime != null and '' != startCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(C.CREATE_TIME   ,'%Y-%m-%d')>= #{startCreateTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(C.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if>  
+			<if test="auditState != null and auditState != '' ">
+			 	AND C.STATE = #{auditState, jdbcType=VARCHAR} 
+			 </if>
+			<if test="merchantState != null and merchantState != '' "> 
+				AND U.STATE = #{merchantState, jdbcType=VARCHAR} 
+			</if>
+			<if test="custName != null and custName != '' ">
+			 	AND C.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+			  </if>
+			<if test="email != null and email != '' "> 
+				AND U.EMAIL LIKE CONCAT('%',#{email},'%')
+			</if>
+			<if test="mobile != null and mobile != '' "> 
+				AND U.MOBILE LIKE CONCAT('%',#{mobile},'%')
+			</if>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 	AND C.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+			 </if>
+		</where>
+		ORDER BY C.CREATE_TIME DESC	    		
+	</select>
+	
+	<!-- 插入审核信息 -->
+	<insert id="insertAuditInfo" parameterType="com.qifenqian.bms.upgrade.merchant.bean.TdAuditRecodeInfo">
+		INSERT INTO TD_AUDIT_RECODE_INFO
+		(
+			`ID`,
+			`MERCHANT_CODE`,
+			`AUDIT_STATUS`,
+			`AUDIT_INFO`,
+			`AUDIT_TYPE`,		
+			`AUDIT_TIME`,
+			`USER_ID`
+		)
+		VALUES
+		(
+			#{id},
+			#{merchantCode},
+			#{status},
+			#{auditInfo},
+			#{auditType},
+			#{auditTime},
+			#{userId}
+		)	
+	</insert>
+		<!-- 删除审核信息 -->
+	<delete id="deleteAuditInfo" parameterType="com.qifenqian.bms.upgrade.merchant.bean.TdAuditRecodeInfo" >
+		DELETE	
+		FROM 
+			TD_AUDIT_RECODE_INFO
+		WHERE 
+			MERCHANT_CODE=#{merchantCode} AND AUDIT_TYPE=#{auditType}
+	</delete>
+	<!-- 将审核结果更新到各个表中 -->
+	<update id="updateStatusForAuditResult" parameterType="java.lang.String">
+		UPDATE 
+			TD_CUST_INFO C, TD_LOGIN_USER_INFO U, TD_MERCHANT_APPLY_INFO A,TD_CUSTOMER_PRODUCT_INFO P
+		SET 
+			C.STATE=#{custStatus},U.STATE=#{userStatus},A.APPLY_STATUS=#{applyStatus},P.SIGN_STATUS=#{custStatus} 
+		WHERE 
+			C.MERCHANT_CODE=#{merchantId}
+		AND 
+			C.CUST_ID=U.CUST_ID
+		AND 
+			C.MERCHANT_CODE = A.AGENT_ID
+		AND 
+			C.MERCHANT_CODE = P.MERCHANT_CODE;
+	</update>
+	
+	
+	<!-- 账户信息-查询银行信息 -->
+	<select id="selectBankByBankCode" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.TbBankCode">
+		SELECT
+			t.bank_code,
+			t.bank_type,
+			t.bank_name,
+			t.my_bank_type,
+			t.city_code,
+			t.ccpc,
+			t.order_by
+		FROM
+			tb_bank_code t
+		WHERE
+			t.bank_name = #{bankCode, jdbcType=VARCHAR} 
+	</select>
+	
+	<!-- 商户信息- 查询授权产品-->
+	<select id="queryMerchantProduct" resultType="com.qifenqian.bms.upgrade.merchant.bean.MerchantRegisterInfo">
+		SELECT
+			p.product_code,
+			p.sign_rate
+		FROM
+			td_customer_product_info p
+		LEFT JOIN  td_cust_info c 
+		ON p.merchant_code = c.merchant_code
+		WHERE
+			c.merchant_code = #{merchantCode, jdbcType=VARCHAR} 
+	</select>
+	
+	<!--根据custId获取用户登录信息-->
+	<select id="getUserInfoByCustId" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdLoginUserInfo" parameterType="java.lang.String">
+		SELECT 
+			*
+		FROM 
+			TD_LOGIN_USER_INFO 
+		WHERE
+			CUST_ID=#{custId}		
+	</select>
+	
+	<!-- 根据custId获取用户信息 -->
+	<select id="getCustInfoByCustId" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" parameterType="java.lang.String">
+		SELECT 
+			*
+		FROM 
+			TD_CUST_INFO
+		WHERE 
+			CUST_ID=#{custId}
+	</select>
+	
+	
+</mapper>

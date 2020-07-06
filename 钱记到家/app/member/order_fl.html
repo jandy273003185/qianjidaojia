@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>已领礼包</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/details.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/order_fl.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .zhezhao {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 11;
+            background: #000000;
+            /*opacity: 0.5;*/
+            display: none;
+        }
+
+        .codeDiv {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 40%;
+            background: #fff;
+        }
+
+        .img canvas {
+            max-width: 100%;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .li_20 li {
+            width: 25%;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/member.html" class="btn_back"></a>
+				<div class="title center">已领礼包</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="tabListBox fixed bg_f6f6f6 pA10">
+				<ul class="dd_tabList li_20">
+					<li class="active" data-type="0">
+						<a href="/member/order_fl.html?GiforderType=0">
+							<span>全部</span>
+						</a>
+					</li>
+					<li data-type="1">
+						<a href="/member/order_fl.html?GiforderType=1">
+							<span>待发货</span>
+						</a>
+					</li>
+					<li data-type="2">
+						<a href="/member/order_fl.html?GiforderType=2">
+							<span>已发货</span>
+						</a>
+					</li>
+					<li data-type="3">
+						<a href="/member/order_fl.html?GiforderType=3">
+							<span>已收货</span>
+						</a>
+					</li>
+					
+				</ul>
+			</div>			
+			<div class="Orderlist pt62 pl10 pr10" id="Orderlist">
+				<div id="Orderlist_Div"></div>				
+			</div>
+		</div>
+		<script id="Orderlist_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.data.length; i++){ }} 
+			<!--如果是企业购订单-->
+			
+			<div class="orderitem" data-Id="{{d.data[i].Id}}" data-No="{{d.data[i].OrderNo}}" data-wuliu="{{d.data[i].ExpressOrderId}}" data-ProductId="{{d.data[i].ProductId}}">
+				<div class="item-hd">
+					<a href="/member/storeIndex.html?shopId={{d.data[i].ShopId}}" class="ordertype fl">{{d.data[i].ShopName}}</a>
+					{{#  if(d.data[i].ReceiveStatus === 0){ }}
+					<span class="orderstatus fr">待领取</span>
+					{{#  } }}
+					{{#  if(d.data[i].ReceiveStatus === 1){ }}
+					<span class="orderstatus fr">待发货</span>
+					{{#  } }}
+					{{#  if(d.data[i].ReceiveStatus === 2){ }}
+					<span class="orderstatus fr">已发货</span>
+					{{#  } }}
+					{{#  if(d.data[i].ReceiveStatus === 3){ }}
+					<span class="orderstatus fr">已收货</span>
+					{{#  } }}
+				</div>
+				<div class="item-prolist" onclick="location='orderDetail_fl.html?Id={{d.data[i].Id}}&OrderNo={{d.data[i].OrderNo}}'">
+					
+					<div class="proitem" data-Id="" data-pid="">
+						<div class="img fl">
+							<img src="{{d.data[i].PicNo}}">
+						</div>
+						<div class="descbox">
+							<div class="titleBox flex">
+								<div class="flex1 flexItem"><p class="title ellipsis">{{d.data[i].Title}} </p></div>
+								<div class="flexItem">x<span class="num">1</span></div>
+							</div>
+							<p class="price">￥{{d.data[i].Price}}</p>
+						</div>
+					</div>										
+					
+				</div>
+				<div class="item-ft">
+					<div class="ft-count">
+						<div class="flex flexAlignCenter">							
+							
+							<div class="flexItem">共1件商品</div>
+							<div class="flexItem flex1 text_r">
+								<p class="txt ellipsis">合计：<span class="price"><span class="fh" style="font-size: .13rem;">￥</span>{{d.data[i].Price}}</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="ft-btns text_r">
+						{{#  if(d.data[i].ReceiveStatus===0){ }}
+							<!--待领取-->
+						  	<a class="btn0 wuliubtn" href="logistics_fl.html?Id={{d.data[i].Id}}&OrderNo={{d.data[i].OrderNo}}">查看物流</a>
+						  	<a class="btn0 Receiptbtn active" href="javascript:;" onclick="ReceiptBtn(this)">确认收货</a>
+						{{#  } else if(d.data[i].ReceiveStatus===1){ }}
+							<!--待发货-->
+							<a class="btn0 remindbtn" href="javascript:;" onclick="RemindBtn(this)">提醒发货</a>						
+						{{#  } else if(d.data[i].ReceiveStatus===2){ }}
+							<!--已发货-->
+						  	<a class="btn0 wuliubtn" href="logistics_fl.html?Id={{d.data[i].Id}}&OrderNo={{d.data[i].OrderNo}}">查看物流</a>
+						  	<a class="btn0 Receiptbtn active" href="javascript:;" onclick="ReceiptBtn(this)">确认收货</a>
+						{{#  } else if(d.data[i].ReceiveStatus===3){ }}
+							<!--已收货-->
+							<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+						  	<a class="btn0 wuliubtn" href="logistics_fl.html?Id={{d.data[i].Id}}&OrderNo={{d.data[i].OrderNo}}">查看物流</a>
+						{{#  } }} 
+					</div>  
+				</div>
+			</div>
+			
+		{{# } }} 	
+		</script>	
+	</body>
+
+</html>

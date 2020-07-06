@@ -1,0 +1,7 @@
+<!--pages/earningsDetails/earningsDetails.wxml-->
+<scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+  <view class="item" wx:for="{{listArr}}">
+    <view class="money"><text>{{item.Remark}}</text><text>{{item.Change}}</text></view>
+    <view class="time">{{item.AddTime}}</view>
+  </view>
+</scroll-view>

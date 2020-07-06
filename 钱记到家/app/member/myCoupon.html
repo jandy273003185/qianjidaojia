@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>优惠券</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">优惠券</div>
+			</div>
+		</div>
+		<div class="main couponList">			
+			<div id="Couponlist_Div"></div>
+			<script id="Couponlist_Tpl" type="text/html">
+				{{# for(var i = 0; i< d.length; i++){ }} 
+					{{# if(d[i].Enables==3){ }} 
+					<!--3表示已过期-->
+					<div class="item overdue__item" data-id="{{d[i].Id}}">
+					{{# } else if(d[i].Enables==2){ }}
+					<!--2表示已使用-->
+					<div class="item used__item" data-id="{{d[i].Id}}">
+					{{# } else { }}	
+					<div class="item" data-id="{{d[i].Id}}">	
+					{{# } }}
+						<div class="left">
+							{{# if(d[i].DiscountType==2){ }}
+								{{#  
+								  function rebate(){
+								  	var number = d[i].Denomination*10;
+								    return number;
+								  }
+								}}	
+							<span class="priceArea left_priceArea center">{{rebate()}}<span class="fh">折</span></span>
+							{{# } else{ }}
+							<span class="priceArea left_priceArea center"><span class="fh">￥</span>{{d[i].Denomination}}</span>
+							{{# } }}
+							<div class="titleBox">								 
+								<p class="useNeed">
+									{{# if(d[i].DiscountType==2){ }}
+										[折扣券]
+									{{# } else{ }}
+										[优惠券]
+									{{# } }}
+									{{# if(d[i].ScopeOfUse){ }}
+									<span>{{d[i].ScopeOfUse}}</span>
+									{{# } }}
+								</p>																
+								<span class="title">{{d[i].Title}}</span>								
+							</div>							
+							<p class="validTime">有效期：{{sc.utils.dateFormat(sc.utils.toDate(d[i].AddTime), "yyyy.MM.dd")}}-{{sc.utils.dateFormat(sc.utils.toDate(d[i].EndTime), "yyyy.MM.dd")}}</p>
+						</div>
+						<div class="right">
+							<span class="type">优惠券</span>
+						</div>
+					</div>
+				{{# } }} 
+			</script>
+			
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			var pageNum = 0,pageSize = 6;	
+			$('.couponList').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+					pageNum++;
+					// 0商品,1企业,3全部
+					CouponList(3,pageNum,pageSize,function(data){
+						var gettpl = document.getElementById('Couponlist_Tpl').innerHTML;
+						if(data.data.length == 0 && !data.isok){
+							me.lock();
+		                    me.noData();
+		                    me.resetload();                    
+		                    if (pageNum == 1) {
+								$(".dropload-down").remove();
+								emptytpl($('.couponList'));
+		                    }
+						}
+						else if(data.data.length<pageSize){
+							setTimeout(function () {
+								laytpl(gettpl).render(data.data, function(html) {
+									//得到的模板渲染到html
+									$('#Couponlist_Div').append(html);
+								});
+								
+								me.resetload();	
+							},1000);
+							me.lock("down");
+							me.noData();
+						}
+						else{
+							if(pageNum == 1){
+								$("#Couponlist_Div").html("");
+							}
+							setTimeout(function() {
+								laytpl(gettpl).render(data.data, function(html) {
+									//得到的模板渲染到html
+									$('#Couponlist_Div').append(html);
+								});								
+								me.resetload();
+							}, 1000);
+						}
+					},me)
+				}
+			})
+	
+		})
+	</script>
+</html>

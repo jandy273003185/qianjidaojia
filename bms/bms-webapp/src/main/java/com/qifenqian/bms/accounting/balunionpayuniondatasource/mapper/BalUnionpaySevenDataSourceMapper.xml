@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.balunionpayuniondatasource.mapper.BalUnionpaySevenDataSourceMapper">
+	<select id="selectUnionpaySevenDataSourceList" resultType="com.qifenqian.bms.accounting.balunionpayuniondatasource.bean.BalUnionpaySevenDataSource" parameterType="com.qifenqian.bms.accounting.balunionpayuniondatasource.bean.BalUnionpaySevenDataSource">
+			SELECT
+				C.ID,
+				T.CLEAR_ID,
+				T.TRANS_FLOW_ID,
+				T.WORK_DATE,
+				T.CUST_ID,
+				T.ACCT_ID,
+				IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = T.TRANS_TYPE),T.TRANS_TYPE) TRANS_TYPE,
+				T.ACCT_NO,
+				T.PAY_CARD_TYPE,
+				T.ORDER_ID,
+				T.QUERY_ID,
+				T.ORIG_QRY_ID,
+				T.TXN_TIME,
+				T.CURRENCY_CODE,
+				T.TXN_AMT,
+				T.RESP_CODE,
+				T.RESP_MSG,
+				T.RESP_TIME,
+				T.SETTLE_AMT,
+				T.SETTLE_CURRENCY_CODE,
+				T.SETTLE_DATE,
+				T.TRACE_NO,
+				T.TRACE_TIME,
+				T.TXN_TYPE,
+				T.TXN_SUB_TYPE,
+				T.BIZ_TYPE,
+				T.ACCESS_TYPE,
+				T.MER_ID,
+				T.REQ_RESERVED,
+				T.RESERVED,
+				T.EXCHANGE_DATE,
+				T.EXCHANGE_RATE,
+				T.VPC_TRANS_DATA,
+				T.PAY_TYPE,
+				T.PAY_CARD_NO,
+				T.PAY_CARD_ISSUE_NAME,
+				T.BIND_ID,
+				T.BRIEF,
+				T.INST_DATE,
+				DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS instDatetime
+			FROM
+				BAL_UNIONPAY_SEVEN_DATA_SOURCE T
+				LEFT JOIN CLEAR_JGKJ_RECHARGE C 
+				ON T.QUERY_ID = C.CHANNEL_SERIAL_SEQ
+		<where>
+			<if test="transFlowId != null and transFlowId!= '' ">
+				AND T.TRANS_FLOW_ID LIKE CONCAT('%',#{transFlowId,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="id != null and id!= '' ">
+				AND C.ID LIKE CONCAT('%',#{id,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="transType != null and transType != '' ">
+				AND T.TRANS_TYPE LIKE CONCAT('%',#{transType,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="workDate != null and workDate != '' ">
+				AND T.WORK_DATE LIKE CONCAT('%',#{workDate,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+		ORDER BY T.INST_DATETIME DESC
+	</select>
+</mapper>

@@ -1,0 +1,216 @@
+    body {
+        background-color: #FDFAFE;
+        padding: 0;
+        margin: 0;
+        font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    }
+    
+    .goods {
+        display: flex;
+        margin: 0.24rem 0;
+        padding: 0.32rem 0;
+        background: #ffffff;
+        height: 2.64rem;
+    }
+    
+    .goods-img {
+        width: 1.64rem;
+        height: 1.64rem;
+    }
+    
+    .goods-img>img {
+        width: 100%;
+        height: 100%;
+        padding: 0.2rem;
+    }
+    
+    .goods-img>p {
+        color: #FF7387;
+        font-size: 0.26rem;
+        line-height: 0.36rem;
+        width: 1.64rem;
+        text-align: center;
+    }
+    
+    .refund-reason {
+        height: 2.4rem;
+        background: #ffffff;
+        padding: 0.28rem 0.2rem;
+    }
+    
+    .refund-reason>div {
+        display: flex;
+        align-items: center;
+        height: 0.6rem;
+        font-size: 0.32rem;
+        font-family: PingFangSC-Regular, PingFang SC;
+        line-height: 0.6rem;
+    }
+    
+    .refund-reason>div:first-child {
+        justify-content: space-between;
+    }
+    
+    .refund-title {
+        font-weight: 400;
+        color: #333333;
+    }
+    
+    .refund-txt {
+        display: flex;
+        align-items: center;
+    }
+    
+    .select {
+        color: #909090;
+        font-size: 0.3rem;
+    }
+    
+    .arrow {
+        width: 0.16rem;
+        height: 0.24rem;
+        margin-left: 0.08rem;
+    }
+    
+    .refund-font {
+        font-weight: 550;
+        padding-right: 0.16rem;
+    }
+    
+    .refund-money {
+        color: #FF7387;
+        font-weight: 550;
+    }
+    
+     ::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: #999999;
+        font-size: 0.32rem;
+    }
+    
+     ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: #999999;
+        font-size: 0.32rem;
+    }
+    
+     :-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: #999999;
+        font-size: 0.32rem;
+    }
+    
+    input {
+        font-size: 0.32rem;
+    }
+    
+    .upload-img {
+        background: #ffffff;
+        margin-top: 0.24rem;
+        padding: 0.28rem 0.2rem 0 0.2rem;
+    }
+    
+    .upload-img>p {
+        font-size: 0.32rem;
+        font-weight: 550;
+        color: #333333;
+    }
+    
+    .evaluation-down {
+        display: flex;
+        flex-wrap: wrap;
+        /* justify-content: space-between; */
+    }
+    
+    .photo-div {
+        display: flex;
+        padding-bottom: 0.2rem;
+        margin-right: 0.175rem;
+    }
+    
+    .photo>img {
+        width: 1.6rem;
+        height: 1.6rem;
+        margin: 0.2rem 0 0.2rem 0;
+        border-radius: 0.1rem;
+    }
+    
+    .del {
+        margin: -0.8rem 0 0 0;
+        width: 1.6rem;
+        text-align: center;
+        background: #7f7f7f;
+        color: #ffffff;
+        border-bottom-left-radius: 0.1rem;
+        border-bottom-right-radius: 0.1rem;
+        position: absolute;
+        opacity: 0.9;
+        line-height: 0.6rem;
+        font-size: 0.3rem;
+    }
+    
+    .submit {
+        display: flex;
+        background: #2db961;
+        color: #ffffff;
+        padding: 0.2rem;
+        border-radius: 1rem;
+        margin: 0.3rem 0.8rem;
+        justify-content: center;
+        margin-top: 1rem;
+        font-size: 0.32rem;
+    }
+    /*模态框*/
+    
+    .modal_cover {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, .6);
+    }
+    
+    .modal {
+        position: absolute;
+        width: 5.16rem;
+        background: white;
+        z-index: 99;
+        height: 5.48rem;
+        /* 水平垂直居中 */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        /* 超出高度右侧出现垂直滚动条 */
+        overflow: auto;
+        overflow-x: hidden;
+        font-size: 0.28rem;
+        font-family: SourceHanSansSC-Normal, SourceHanSansSC;
+        font-weight: 400;
+        columns: #333333;
+    }
+    
+    .reason {
+        line-height: 0.9rem;
+        height: 4.58rem;
+        overflow: scroll;
+    }
+    
+    .reason>p {
+        padding: 0 0.3rem;
+    }
+    
+    .reason>p:not(:first-child) {
+        border-top: 1px solid #eeeeee;
+    }
+    
+    .modal>button {
+        background: linear-gradient(135deg, rgba(9, 176, 7, 1) 0%, rgba(2, 155, 0, 1) 100%);
+        box-shadow: 0 0.02rem 0.06rem 0 rgba(2, 156, 1, 0.24);
+        color: #ffffff;
+        line-height: 0.9rem;
+        width: 100%;
+        text-align: center;
+        font-size: 0.32rem;
+    }

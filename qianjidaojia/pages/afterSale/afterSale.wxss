@@ -1,0 +1,145 @@
+/* pages/afterSale/afterSale.wxss */
+page{
+  background-color: #FDFAFE;
+  overflow-y: hidden;
+}
+.deviceScroll{
+  overflow:scroll;
+}
+.status{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20rpx 0 0 0;
+  padding: 20rpx 30rpx;
+  background-color: #ffffff;
+  border-radius: 14rpx;
+  font-size: 32rpx;
+  color: #000000;
+}
+.status text{
+  padding-bottom: 10rpx;
+}
+.active{
+  border-bottom: 4rpx solid #09B007;
+  color: #09B007;
+}
+
+.goods{
+  background-color: #ffffff;
+  margin: 30rpx 0;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  color: #333333;
+}
+.goods-up{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 22rpx 0;
+}
+.order-type,.deal-status{ 
+  color: #09B007;
+}
+.merchant{
+  margin-left: 14rpx;
+  font-family:PingFangSC-Medium,PingFang SC;
+  font-weight:500;
+  font-size: 34rpx;
+}
+.goods-middle{
+  display: flex;
+  justify-content: space-between;
+  /* border-top: 2rpx solid #d4d4d4;
+  border-bottom: 2rpx solid #d4d4d4; */
+  padding: 20rpx 0 ;
+}
+.goods-img{
+  width: 140rpx;
+  height: 140rpx;
+}
+image{
+  width: 100%;
+  height: 100%;
+}
+.goods-title{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 80rpx;
+  white-space:nowrap;
+}
+.goods-txt{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 200rpx;
+  padding: 10rpx 0;
+  margin: 0 20rpx;
+}
+.num{
+  width: 50rpx;
+}
+.price{
+  color: #FF7387;
+  font-size: 36rpx;
+}
+.goods-down{
+  padding: 20rpx 0 0 0;
+}
+.total{
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+}
+.del{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20rpx;
+}
+.del>text{
+  border: 2rpx solid #999999;
+  padding: 8rpx 26rpx;
+  border-radius: 50rpx;
+  margin-left: 20rpx;
+}
+.evaluate{
+  color: #f1683e;
+  border: 1rpx solid #f1683e !important;
+}
+.btn-gray{
+  color: #999999;
+}
+.btn-red{
+  color: #FF7387;
+  border: 1rpx solid #FF7387 !important;
+}
+/*模态框*/
+.modal{position:fixed; top:0; right:0; bottom:0; left:0; z-index:1000;}
+.modal-cancel{position:absolute; z-index:2000; top:0; right:0; bottom: 0; left:0; background:rgba(0,0,0,0.3);}
+.bottom-dialog-body{width:100%; position:absolute; z-index:3000; bottom:0; left:0;background:#dfdede;}
+/*动画前初始位置*/
+.bottom-positon{-webkit-transform:translateY(100%);transform:translateY(100%);}
+ 
+/* 底部弹出框 */
+.bottom-positon{
+  text-align: center;
+}
+.Mselect{
+  margin-bottom: 20rpx;
+}
+.Mselect view{
+  padding: 26rpx 0;
+  background: #fff;
+}
+.Mselect view:not(:last-of-type){
+  border-bottom: 1px solid #dfdede;
+}
+.Mcancel{
+  background: #fff;
+  padding: 26rpx 0;
+}
+.single-status{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -20rpx;
+  color: #999999;
+}

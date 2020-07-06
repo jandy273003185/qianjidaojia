@@ -1,0 +1,50 @@
+/* pages/nickName/nickName.wxss */
+page{background-color:#FDFAFE;}
+.tips{
+  color:#666666;
+  font-size: 22rpx;
+  padding: 18rpx 0 18rpx 36rpx; 
+}
+.content{
+  display: flex;
+  justify-content: space-between;
+  padding: 36rpx 32rpx;
+  margin-top: 18rpx;
+  background-color: #ffffff;
+}
+.content>input{
+  color: #333333;
+  font-size: 30rpx;
+  width: 500rpx;
+}
+.content>image{
+  width:36rpx;
+  height: 36rpx;
+}
+.finish{
+  width: 500rpx;
+  margin: 0 auto;
+  padding: 20rpx;
+  text-align: center;
+  background:linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+  box-shadow:0rpx 4rpx 12rpx 0rpx rgba(2,156,1,0.24);
+  border-radius:40rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+  margin-top: 800rpx;
+}
+
+.radio-group{
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+.radio{
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eeeeee;
+}
+.sex-txt{
+  position: absolute;
+  right: 30rpx;
+  margin-top: -18rpx;
+}

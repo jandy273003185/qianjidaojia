@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.market.mapper.ManagerMapper">
+	<select id="selectManagerList" resultType="com.qifenqian.bms.basemanager.market.bean.Manager" parameterType="com.qifenqian.bms.basemanager.market.bean.Manager">
+	
+		select 
+			M.USER_CODE,
+			M.USER_NAME,
+			(SELECT U.USER_NAME FROM sys_user U WHERE U.user_id = M.TEAM_LEADER_ID)TEAM_LEADER_NAME,
+			M.TEAM_LEADER_ID,
+			M.CREATE_TIME,
+			M.UPDATE_TIME,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =M.UPDATE_ID) UPDATE_ID
+			
+		from bms_manager_info M
+		<where>
+			<if test="null != userCode and userCode != ''">
+			AND M.USER_CODE = #{userCode,jdbcType=VARCHAR}
+			</if>
+			<if test="null != teamLeaderId and teamLeaderId != ''">
+			AND M.TEAM_LEADER_NAME = #{teamLeaderName,jdbcType=VARCHAR}
+			</if>
+			<if test="null != userName and userName != ''">
+			AND M.USER_NAME = #{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="createStartTime != null and createStartTime != ''"> 
+				<![CDATA[ 
+				 AND DATE_FORMAT(M.CREATE_TIME ,'%Y-%m-%d') >= #{createStartTime} 
+				 ]]>
+			</if>
+			<if test="createEndTime != null and createEndTime != ''"> 
+				<![CDATA[ 
+				   AND DATE_FORMAT(M.CREATE_TIME ,'%Y-%m-%d') <= #{createEndTime} 
+				]]>
+			</if>
+		</where>
+	
+	
+	</select>	
+	
+	
+	
+	<update id="updateManagerList" parameterType="com.qifenqian.bms.basemanager.market.bean.Manager">
+		update bms_manager_info
+		<set>
+			
+			<if test="null != teamLeaderId and teamLeaderId != ''">
+				TEAM_LEADER_ID = #{teamLeaderId,jdbcType=VARCHAR},
+			</if>
+			<if test="null != updateId and updateId != ''">
+				UPDATE_ID = #{updateId,jdbcType=VARCHAR},
+			</if>
+				UPDATE_TIME = now()
+		</set>
+			WHERE USER_CODE = #{userCode,jdbcType=INTEGER}
+	</update>
+	
+	
+	<select id="selectNewManagerList" resultType="com.qifenqian.bms.basemanager.market.bean.Manager" parameterType="com.qifenqian.bms.basemanager.market.bean.Manager">
+		 select 
+			U.USER_CODE,
+			U.USER_NAME,
+			DATE_FORMAT(U.inst_datetime ,'%Y-%m-%d %H:%i:%s') as CREATE_TIME
+		from sys_user U
+		<where>
+			U.user_code not in (SELECT user_code FROM bms_manager_info)
+			<if test="null != userCode and userCode != ''">
+			AND U.USER_CODE = #{userCode,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="null != userName and userName != ''">
+			AND U.USER_NAME = #{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="createStartTime != null and createStartTime != ''"> 
+				<![CDATA[ 
+				 AND DATE_FORMAT(M.CREATE_TIME ,'%Y-%m-%d') >= #{createStartTime} 
+				 ]]>
+			</if>
+			<if test="createEndTime != null and createEndTime != ''"> 
+				<![CDATA[ 
+				   AND DATE_FORMAT(M.CREATE_TIME ,'%Y-%m-%d') <= #{createEndTime} 
+				]]>
+			</if>
+		</where>
+		
+		
+	</select>
+	
+	<insert id="insertNewManagerList"  parameterType="com.qifenqian.bms.basemanager.market.bean.Manager">
+		
+		INSERT INTO 
+		stcdb.bms_manager_info(
+		USER_CODE,
+		USER_NAME,
+		CREATE_TIME)
+		VALUES(
+		#{userCode, jdbcType=VARCHAR},
+		#{userName, jdbcType=VARCHAR},
+		#{createTime, jdbcType=VARCHAR}
+		)
+		
+	</insert>
+	
+	
+	<select id="selectManangerJurisdiction" parameterType="com.qifenqian.bms.basemanager.market.bean.MarketRole" resultType="com.qifenqian.bms.basemanager.market.bean.MarketRole" >
+	
+		 SELECT 
+			 R.USER_ROLE,
+			 R.USER_CODE
+		FROM bms_market_role_info R
+		
+		where
+	R.USER_CODE = #{userCode,jdbcType=VARCHAR}
+			
+		
+	</select>
+	
+	<select id="selectManageUserInfo"  resultType="com.qifenqian.bms.platform.web.admin.user.bean.User" >
+	
+		SELECT 
+			R.USER_ID,
+			T.USER_NAME,
+		    T.USER_CODE
+		FROM BMS_MARKET_ROLE_INFO T 
+		JOIN SYS_USER R
+		WHERE R.USER_CODE=T.USER_CODE
+			
+		
+	</select>
+	
+	<select id="getManager" parameterType="java.lang.String"  resultType="com.qifenqian.bms.basemanager.market.bean.Manager" >
+		SELECT	
+			M.USER_CODE,
+			M.USER_NAME,
+			M.TEAM_LEADER_ID
+		FROM BMS_MANAGER_INFO M
+		WHERE
+			M.USER_CODE=#{userCode}	
+	</select>
+</mapper>

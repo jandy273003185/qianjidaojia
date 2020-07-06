@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>已购礼包</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/details.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <link href="/css/swiper.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/jquery.qrcode.min.js"></script>
+    <script src="../script/html2canvas.min.js"></script>
+    <script src="../script/canvas2image.js"></script>
+    <script src="/js/swiper.min.js"></script>
+    <script src="/script/order_fl1.js?1" type="text/javascript" charset="utf-8"></script>
+
+
+    <style type="text/css">
+        .zhezhao {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            background: rgba(4,4,4,0.49);
+            display: none;
+        }
+
+        .codeDiv {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 4%;
+            background: url("../images/codebg.png");
+            border-radius: 0.07rem;
+            height: 100%;
+            position: absolute;
+            left: 5%;
+            display: none;
+            background-size: 100% 100%;
+        }
+
+        .btn_closed {
+            margin-top: 5%;
+            display: block;
+        }
+
+        .img canvas {
+            max-width: 100%;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .pop-qyCode,.page1 {
+            margin-top: 19%;
+        }
+
+            .pop-valid {
+                text-align: center;
+                font-size: .14rem;
+                font-family: SourceHanSansSC-Bold,SourceHanSansSC;
+                font-weight: bold;
+                color: rgba(255,255,255,1)
+            }
+
+
+        .scrollFix {
+            overflow: hidden;
+            /*position: fixed;*/
+            width: 100%;
+        }
+
+        .carousel {
+            width: 100%;
+            /*height: 1rem;*/
+            overflow: hidden;
+            position: relative;
+        }
+
+        .txts {
+            font-size: .18rem;
+            font-family: SourceHanSansSC-Bold,SourceHanSansSC;
+            font-weight: bold;
+            color: rgba(255,255,255,1);
+            line-height: 27px;
+            text-align: center;
+            background: url(../images/pro_no_b.png);
+            width: 0.77rem;
+            height: .27rem;
+            background-size: 100% 100%;
+            margin: 0 auto;
+            margin-top: .42rem;
+        }
+
+        .swiper-button-next {
+            background-image: url(/images/swiper-button-next_n.png);
+            top: 65.5%;
+            right: 6%;
+            width: .15rem;
+            height: .29rem;
+            background-size: 100% 100%;
+        }
+
+        .swiper-button-prev {
+            background-image: url('/images/swiper-button-pre_n.png');
+            top: 65.5%;
+            left: 6%;
+            width: .15rem;
+            height: .29rem;
+            background-size: 100% 100%;
+        }
+
+        /*#myqrcode {
+            height: 2rem;
+        }*/
+        .swiper-container {
+            width: 100%;
+        }
+
+        .qrcode_div {
+            margin-top: .15rem;
+        }
+
+            .qrcode_div canvas, #currentImg {
+                width: .74rem;
+                height: .74rem;
+                margin: 0 auto;
+                position: absolute;
+                top: .15rem;
+                right: .16rem;
+            }
+
+
+        .pro-txt2 {
+            height: .36rem;
+            font-size: .12rem;
+            font-family: SourceHanSansSC-Medium,SourceHanSansSC;
+            font-weight: 600;
+            color: rgba(102,102,102,1);
+            line-height: .18rem;
+            text-align: center;
+        }
+
+        .pro-txt1 {
+            font-size: .12rem;
+            color: rgba(102,102,102,1);
+            line-height: .18rem;
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            top: 93%;
+            z-index: 9999;
+            display: none;
+        }
+
+            .pro-txt1 div {
+                font-family: SourceHanSansSC-Medium,SourceHanSansSC;
+                font-weight: 600;
+            }
+
+        #createImg {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 4%;
+            background: #fff;
+            border-radius: 0.07rem;
+            height: 100%;
+            left: 5%;
+            position: absolute;
+            display: none;
+        }
+
+        .statusCol0 {
+            color: #EF1941;
+            font-weight: bold;
+        }
+
+        .statusCol3 {
+            color: #09B007;
+            font-weight: bold;
+        }
+
+        .chao10 {
+            margin-top: .25rem;
+        }
+
+        .eml {
+            width: 2rem;
+            height: .4rem;
+            font-size: .14rem;
+            font-family: SourceHanSansSC-Medium,SourceHanSansSC;
+            font-weight: 500;
+            color: rgba(51,51,51,1);
+            line-height: .2rem;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .input {
+            width: 3.11rem;
+            height: .44rem;
+            border-radius: .08rem;
+            border: .02rem solid rgba(102,102,102,1);
+            margin: 0 auto;
+            padding-left: .1rem;
+            z-index: 99;
+            margin-top: .15rem;
+        }
+
+        .tijiao {
+            background: linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+            box-shadow: 0px 4px 12px 0px rgba(2,156,1,0.24);
+            border-radius: .2rem;
+            font-size: .16rem;
+            font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+            font-weight: 400;
+            color: rgba(255,255,255,1);
+            text-align: center;
+            line-height: .4rem;
+            margin: .2rem .27rem 0rem;
+        }
+
+        .redv {
+            position: relative;
+            height: 5.3rem;
+        }
+        .bgpro_qrdesc {
+            background: url(../images/pro_qrdesc.png);
+            background-size: 100% 100%;
+            margin: 0 auto;
+            height: 1.04rem;
+            width: 3rem;
+            position: relative;
+            margin-top: .2rem;
+        }
+        #bgfff {
+            height: 100%;
+            background: rgba(255,255,255,1);
+            border-radius: 14px;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            margin: 0 auto;
+            /* left: 5%; */
+            opacity: .5;
+            z-index: 9;
+            display: none;
+        }
+
+        .page1, .page2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .page2 {
+            display: none;
+        }
+
+        .gqtext {
+            color: rgba(239,25,65,1);
+            font-size: .14rem;
+            z-index: 999;
+            position: absolute;
+            font-weight: bold;
+            display: none;
+        }
+
+            .gqtext div {
+                text-align: center;
+                font-weight: bold;
+                font-family: SourceHanSansSC-Medium,SourceHanSansSC;
+                margin-top: .84rem;
+            }
+
+        .arrow {
+            opacity: 1;
+            width: 25%;
+        }
+
+        .chaoqi1 {
+            width: 100%;
+            z-index: 999;
+            position: absolute;
+            margin-top: 0.7rem;
+            text-align: center;
+        }
+
+        .chaoqi2 {
+            color: rgba(239,25,65,1);
+            font-size: .14rem;
+            font-weight: bold;
+        }
+
+        .pro {
+            background-size: 100%;
+            width: 2.54rem;
+            height: 1.48rem;
+            margin: 0 auto;
+            margin-top: 19%;
+            border: 4px solid #FFD998;
+            overflow: hidden;
+            border-radius: .09rem;
+            background: #fff;
+            vertical-align: middle;
+        }
+
+            .pro img {
+                height: 1.28rem;
+                margin-top: 0.06rem;
+            }
+    </style>
+
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/member.html" class="btn_back"></a>
+				<div class="title center">已购礼包</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="tabListBox fixed bg_f6f6f6 pA10">
+				<ul class="dd_tabList li_50">
+					<li class="active" data-type="0">
+						<a href="/member/order_fl1.html?orderType=0">
+							<span>全部</span>
+						</a>
+					</li>
+					<li data-type="1">
+						<a href="/member/order_fl1.html?orderType=1">
+							<span>待付款</span>
+						</a>
+					</li>
+					<!--<li data-type="2">
+						<a href="/member/order_fl1.html?orderType=2">
+							<span>待发货</span>
+						</a>
+					</li>
+					<li data-type="3">
+						<a href="/member/order_fl1.html?orderType=3">
+							<span>配送中</span>
+						</a>
+					</li>
+					<li data-type="4">
+						<a href="/member/order_fl1.html?orderType=4">
+							<span>已完成</span>
+						</a>
+					</li>-->
+				</ul>
+			</div>			
+			<div class="Orderlist pt62 pl10 pr10" id="Orderlist">
+				<div id="Orderlist_Div"></div>				
+			</div>
+		</div>
+        <div class="zhezhao">
+            <img class="btn_closed" src="/images/close.png" onclick="CloseCeng()"/>
+            <div class="redv">
+                <div id="fcode" class="codeDiv">
+                    <div class="pop-qyCode">
+                        <div class="pop-valid"></div>
+                        <div class="pro">
+                            <img src="../images/noPic.jpg" class="proImg" crossorigin="anonymous"/>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="txts"></div>
+                        <div class="bgpro_qrdesc">
+                            <img src="" id="currentImg" />
+                        </div>
+                    </div>
+                </div>
+                <div id="copyfcode" class="codeDiv">
+                    <div class="page1">
+                        <div class="pop-valid"></div>
+                        <div class="pro">
+                            <img src="../images/noPic.jpg" class="proImg" crossorigin="anonymous" />
+                        </div>
+                        <div class="mychaoemail">
+                        </div>
+                    </div>
+                    <div class="page2">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper" id="mycodelist"></div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                        <div class="pro-txt1"><div>长按二维码保存到本地(左右滑动查看更多)</div></div>
+                    </div>
+                    <div id="bgfff" class="expiredv"></div>
+                </div>
+            </div>
+        </div>
+        <div id="canvaslist" style="display:none;"></div>
+        <canvas id="canvas" style="display: none"></canvas>
+		<script id="Orderlist_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.length; i++){ }} 
+			<!--如果是企业购订单,目前只有一个礼包，过期时间是一致的-->
+			
+			<div class="orderitem" data-Id="{{d[i].OrderId}}" data-No="{{d[i].OrderNumber}}" data-expiretime="{{d[i].orderDetails[0].QrcodeExpireTime}}" data-email="{{d[i].orderDetails[0].QrcodeByEmail}}" data-proImg="{{d[i].orderDetails[0].ProductImg}}" data-IsExpire="{{d[i].orderDetails[0].IsExpire}}">
+				<div class="item-hd">
+					<a href="/member/storeIndex.html?shopId={{d[i].ShopId}}" class="ordertype fl">{{d[i].ShopName}}</a>
+					<span class="orderstatus fr">{{d[i].StatusName}}</span>
+				</div>
+				<div class="item-prolist" onclick="location='orderDetail_yg.html?OrderNo={{d[i].OrderNumber}}&typefl=0'">
+					{{# for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+					<div class="proitem" data-Id="{{d[i].orderDetails[j].Id}}" data-pid="{{d[i].orderDetails[j].ProductId}}">
+						<div class="img fl">
+							<img src="{{d[i].orderDetails[j].ProductImg}}">
+						</div>
+						<div class="descbox">
+							<div class="titleBox flex">
+								<div class="flex1 flexItem"><p class="title ellipsis">{{d[i].orderDetails[j].ProductName}} </p></div>
+								<div class="flexItem">x<span class="num">{{d[i].orderDetails[j].ProductCount}}</span></div>
+							</div>
+							<p class="price">￥{{d[i].orderDetails[j].UnitPrice}}</p>
+						</div>
+					</div>										
+					{{# } }} 
+				</div>
+				<div class="item-ft">
+					<div class="ft-count">
+						<div class="flex flexAlignCenter">							
+							{{# var num = 0; for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+								{{#  
+								  (function(j){
+								  	num += parseInt(d[i].orderDetails[j].ProductCount);
+								    return num;
+								  })(j);
+								}}									
+							{{# } }}
+							<div class="flexItem">共{{num}}件商品</div>
+							<div class="flexItem flex1 text_r">
+								<p class="txt ellipsis">合计：<span class="price"><span class="fh" style="font-size: .13rem;">￥</span>{{d[i].TotalPrice}}</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="ft-btns text_r">
+						{{#  if(d[i].StatusId==0){ }}
+							<!--待付款-->
+							<!--<a class="btn0 cancelbtn erweima" href="javascript:void(0);">查看二维码</a>-->
+						  	<a class="btn0 cancelbtn" href="javascript:;" onclick="CancelBtn(this)">取消订单</a>
+						  	{{# var urldata = ""; for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+								{{#  
+								  (function(j){
+								  	urldata = encodeURIComponent("orderno=" + d[i].OrderNumber+"&gotoType=1");
+								    return urldata;
+								  })(j);
+								}}									
+							{{# } }}
+							<a class="btn0 paybtn active" href="/pay.html?{{urldata}}">付款</a>
+						{{#  } else if(d[i].StatusId==13){ }}
+							<!--已完成-->
+						<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+						<a class="btn0 erweima" href="javascript:void(0);" onclick="clickEWM(this)">查看二维码</a>
+						{{#  } else if(d[i].StatusId==14){ }}							
+							<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+						{{#  } else { }}
+							<a class="btn0 erweima" href="javascript:void(0);" onclick="clickEWM(this)">查看二维码</a>
+							
+						{{#  } }} 
+					</div>  
+				</div>
+			</div>
+			<!--如果是普通订单-->
+			
+			
+			
+		{{# } }} 	
+		</script>	
+    <!--弹窗-->
+    <div class="fcrs">
+        <div class="dvceng">
+            <img src="/images/er.png" />
+            <img class="know" src="/images/know.png" />
+        </div>
+    </div>
+	</body>
+	<script type="text/javascript">
+        $(function () {
+            OrderPageint();
+        });
+	</script>
+</html>

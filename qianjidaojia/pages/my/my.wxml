@@ -1,0 +1,93 @@
+<!--my.wxml-->
+<view class="container2">
+  <view class="myInfo" bindtap="onUser">
+    <image class="bg" src="images/bg.png"></image>
+    <view class="userinfo">
+      <!-- <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button> 
+      <block wx:else>-->
+      <block>
+        <!-- <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userinfo.avatarUrl}}" mode="cover"></image> -->
+        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{Avatar}}" mode="cover"></image>
+        <view class="name"> 
+          <text class="userinfo-nickname">{{nickName}}</text>
+          <text class="ID">ID:{{ID}}</text>
+        </view>
+        <image class="arrow" src="images/arrow.png"></image>
+      </block>
+    </view>
+    <!-- <image class="set" src="images/set.png"></image> -->
+  </view>
+
+  <view class="account">
+    <view class="account-item">
+      <view><text class="symbol">¥</text><text class="account-num">{{balance}}</text></view>
+      <view><text class="account-txt">余额</text></view>
+    </view>
+    <navigator url="/pages/discountCoupon/discountCoupon">
+      <view class="account-item">
+        <view><text class="account-num">{{coupon}}</text></view>
+        <view><text class="account-txt">优惠劵</text></view>
+      </view>
+    </navigator>
+    <view class="account-item">
+      <view><text class="account-num">{{integral}}</text></view>
+      <view><text class="account-txt">积分</text></view>
+    </view>
+  </view>
+
+  <view class="order">
+    <view class="order-item">
+      <view class="order-item-txt"><text>我的订单</text></view>
+      <view class="order-item-txt2" bindtap="onOrder"><text>查看全部订单</text><image class="arrow2" src="images/arrow2.png"></image></view>
+    </view>
+    <view class="order-item2">
+      <view class="order-item-txt3" bindtap="orderStatus" data-status="1"><text wx:if="{{paymentNum}}" class="circleNum">{{paymentNum}}</text><image class="order-img" src="images/obligation.png"></image><text>待付款</text></view>
+      <view class="order-item-txt3" bindtap="orderStatus" data-status="2"><text wx:if="{{sendGoodsNum}}" class="circleNum">{{sendGoodsNum}}</text><image class="order-img" src="images/peding.png"></image><text>待发货</text></view>
+      <view class="order-item-txt3" bindtap="orderStatus" data-status="3"><text wx:if="{{distributionNum}}" class="circleNum">{{distributionNum}}</text><image class="order-img" src="images/receiving.png"></image><text>配送中</text></view>
+      <view class="order-item-txt3" bindtap="orderStatus" data-status="4"><text wx:if="{{evaluateNum}}" class="circleNum">{{evaluateNum}}</text><image class="order-img" src="images/evaluated.png"></image><text>待评价</text></view>
+      <!-- <view class="order-item-txt3" bindtap="afterSale"><text wx:if="{{afterSaleNum}}" class="circleNum">{{afterSaleNum}}</text><image class="order-img" src="images/afterSale.png"></image><text>售后</text></view> -->
+      <navigator url="/pages/afterSale/afterSale">
+        <view class="order-item-txt3"><text wx:if="{{afterSaleNum}}" class="circleNum">{{afterSaleNum}}</text><image class="order-img" src="images/afterSale.png"></image><text>售后</text></view>
+      </navigator>
+    </view>
+  </view>
+  
+  <view class="copy">
+    <image class="copy-img" src="images/copy.png" bindtap="copy" data-text="钱记到家" bindtap='copyText'></image>
+  </view>
+  
+  <!-- <view class="bag">
+    <image class="bag-img" src="images/alreayBag.png"></image>
+    <image class="bag-img" src="images/broughtBag.png"></image>
+  </view> -->
+
+  <view class="recommend"><image class="recommend-img" src="images/recommend.png"></image></view>
+
+  <view class="content">
+    <view class="goods" wx:for="{{listArr}}" wx:key="index" catchtap="goodsDetails" data-id="{{item.ProId}}">
+      <view class="goods-img-view"><image class="goods-img" src="{{item.ProductImg}}"></image></view>
+      <view class="goods-content">
+        <view class="goods-title">{{item.Name}}</view>
+        <view class="goods-txt">{{item.Synopsis}}</view>
+        <view class="goods-info">
+          <view>
+            <view class="now-price"><text class="symbol2">¥</text><text>{{item.Price}}</text></view>
+            <view class="old-price">¥{{item.MarketPrice}}</view>
+          </view>
+          <view class="cart-img-view">
+          <!-- <image class="cart-img" src="images/shoppingCart.png"></image> -->
+            <image data-proId="{{item.ProId}}" data-proName="{{item.Name}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proStock="{{item.Stock}}" data-proimg="{{item.ProductImg}}" class="cart-img" src="../../images/index/shoppingCart.png" catchtap="addCart"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="box {{qrcodeHide}}" bindtap="qrcode">
+  <view class="dialog"><image mode="widthFix" src="/images/qrcode.png"></image></view>
+</view>
+
+  <!-- 点击加入购物车 -->
+<addCart id="cart" isCart="{{isCart}}" animation="{{animation}}" proId="{{proId}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}" nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}" bind:cartNum="cartNum"></addCart>
+
+<tabbar id="tabbar"></tabbar>

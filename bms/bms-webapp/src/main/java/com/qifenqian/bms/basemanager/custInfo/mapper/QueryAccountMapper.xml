@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.custInfo.mapper.QueryAccountMapper">
+	<select id="getActSevenCustList" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT Q.ACCT_ID as qfqAccId, Q.BALANCE as qfqTotalAmt
+		FROM
+		ACCT_SEVEN_CUST Q
+		WHERE
+		Q.CUST_ID=#{custId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryBankCardList" parameterType="string" resultType="com.sevenpay.invoke.transaction.querybankcard.bean.BankCard">
+		SELECT 
+			CUST_ID,
+			BANK_CARD_NO,
+			BANK_NAME
+		 FROM ACCT_BANK_CARD 
+		 WHERE CUST_ID = #{custId,jdbcType = VARCHAR}
+	</select>
+	<update id="updateAcctNameByCustName" parameterType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo" >
+		update stcs.acct_seven_cust set acct_name = #{custName,jdbcType = VARCHAR}
+		where CUST_ID= #{custId,jdbcType = VARCHAR}
+	</update>
+</mapper>

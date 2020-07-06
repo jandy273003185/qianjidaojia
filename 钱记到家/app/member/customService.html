@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>客服</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <style type="text/css">
+        .layui-m-layer0 .layui-m-layerchild {
+            width: 68%;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">客服</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="customContent">
+				<div class="customImg">
+					<img src="../images/icons/custom.png" alt="" />
+				</div>
+				<div class="btnGroup btnGroup2">
+
+					<!--<a href="" class="btn btn-active"><span>在线客服</span></a>-->
+
+					<a href="javascript:;" class="btn btn-active" id="QQSevice"><span>在线客服</span></a>
+					<a href="javascript:;" class="btn btn-tel"><span class="icon-tel">客服热线</span></a>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				$('.btn-tel').click(function() {
+					var strHtml = '<div class="pop"><div class="pop-hd" style="color:#505050;">客服电话</div><p class="tips">如您遇到商品质量问题或订单相关问题，建议您自己使用自助服务进行处理，或联系在线客服解决</p><div class="btnGroup btnGroup2"><a href="tel:0755-82837166" class="btn  btn-active">继续联系客服热线</a><span class="btn btn_cancel">取消</span></div></div>';
+					layer.open({
+						content: strHtml
+					});
+					$('.pop .btn').click(function() {
+						layer.closeAll() //关闭所有层
+					})
+				});
+				var ua = navigator.userAgent;
+				var ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+					isIphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+					isAndroid = ua.match(/(Android)\s+([\d.]+)/),
+					isMobile = isIphone || isAndroid;
+				$('#QQSevice').click(function() {
+					if(isMobile) {
+					    //判断是否是移动设备打开。browser代码在下面
+						var nu = ua.toLowerCase(); //获取判断用的对象
+						if(nu.match(/MicroMessenger/i)=="micromessenger") {
+							//在微信中打开
+							location.href = 'http://sighttp.qq.com/msgrd?v=1&uin=506234937';
+						} else {
+							location.href = 'mqqwpa://im/chat?chat_type=wpa&uin=506234937&version=1&src_type=web&web_src=oicqzone.com';
+
+						}
+					} else {
+						location.href = 'http://sighttp.qq.com/msgrd?v=1&uin=506234937';
+					}
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

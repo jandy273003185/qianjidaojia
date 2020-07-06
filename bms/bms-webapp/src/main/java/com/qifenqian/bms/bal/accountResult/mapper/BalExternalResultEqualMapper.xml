@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.bal.accountResult.mapper.BalExternalResultEqualMapper">
+
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+    <id column="equal_id" jdbcType="INTEGER" property="equalId" />
+    <result column="data_id" jdbcType="INTEGER" property="dataId" />
+    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="clear_id" jdbcType="VARCHAR" property="clearId" />
+    <result column="work_date" jdbcType="VARCHAR" property="workDate" />
+    <result column="batch_id" jdbcType="VARCHAR" property="batchId" />
+    <result column="bal_result" jdbcType="VARCHAR" property="balResult" />
+    <result column="bal_memo" jdbcType="VARCHAR" property="balMemo" />
+    <result column="inst_user" jdbcType="INTEGER" property="instUser" />
+    <result column="inst_date" jdbcType="VARCHAR" property="instDate" />
+    <result column="inst_datetime" jdbcType="TIMESTAMP" property="instDatetime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    equal_id, data_id, channel_id, file_id, seq, clear_id, work_date, batch_id, bal_result, 
+    bal_memo, inst_user, inst_date, inst_datetime
+  </sql>
+  <select id="selectByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqualExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bal_external_result_equal
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bal_external_result_equal
+    where equal_id = #{equalId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bal_external_result_equal
+    where equal_id = #{equalId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqualExample">
+    delete from bal_external_result_equal
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+    insert into bal_external_result_equal (equal_id, data_id, channel_id, 
+      file_id, seq, clear_id, 
+      work_date, batch_id, bal_result, 
+      bal_memo, inst_user, inst_date, 
+      inst_datetime)
+    values (#{equalId,jdbcType=INTEGER}, #{dataId,jdbcType=INTEGER}, #{channelId,jdbcType=INTEGER}, 
+      #{fileId,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{clearId,jdbcType=VARCHAR}, 
+      #{workDate,jdbcType=VARCHAR}, #{batchId,jdbcType=VARCHAR}, #{balResult,jdbcType=VARCHAR}, 
+      #{balMemo,jdbcType=VARCHAR}, #{instUser,jdbcType=INTEGER}, #{instDate,jdbcType=VARCHAR}, 
+      #{instDatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+    insert into bal_external_result_equal
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equalId != null">
+        equal_id,
+      </if>
+      <if test="dataId != null">
+        data_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="seq != null">
+        seq,
+      </if>
+      <if test="clearId != null">
+        clear_id,
+      </if>
+      <if test="workDate != null">
+        work_date,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="balResult != null">
+        bal_result,
+      </if>
+      <if test="balMemo != null">
+        bal_memo,
+      </if>
+      <if test="instUser != null">
+        inst_user,
+      </if>
+      <if test="instDate != null">
+        inst_date,
+      </if>
+      <if test="instDatetime != null">
+        inst_datetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equalId != null">
+        #{equalId,jdbcType=INTEGER},
+      </if>
+      <if test="dataId != null">
+        #{dataId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null">
+        #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="clearId != null">
+        #{clearId,jdbcType=VARCHAR},
+      </if>
+      <if test="workDate != null">
+        #{workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="balResult != null">
+        #{balResult,jdbcType=VARCHAR},
+      </if>
+      <if test="balMemo != null">
+        #{balMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="instUser != null">
+        #{instUser,jdbcType=INTEGER},
+      </if>
+      <if test="instDate != null">
+        #{instDate,jdbcType=VARCHAR},
+      </if>
+      <if test="instDatetime != null">
+        #{instDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqualExample" resultType="java.lang.Integer">
+    select count(*) from bal_external_result_equal
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update bal_external_result_equal
+    <set>
+      <if test="record.equalId != null">
+        equal_id = #{record.equalId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dataId != null">
+        data_id = #{record.dataId,jdbcType=INTEGER},
+      </if>
+      <if test="record.channelId != null">
+        channel_id = #{record.channelId,jdbcType=INTEGER},
+      </if>
+      <if test="record.fileId != null">
+        file_id = #{record.fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.seq != null">
+        seq = #{record.seq,jdbcType=INTEGER},
+      </if>
+      <if test="record.clearId != null">
+        clear_id = #{record.clearId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workDate != null">
+        work_date = #{record.workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.batchId != null">
+        batch_id = #{record.batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.balResult != null">
+        bal_result = #{record.balResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.balMemo != null">
+        bal_memo = #{record.balMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instUser != null">
+        inst_user = #{record.instUser,jdbcType=INTEGER},
+      </if>
+      <if test="record.instDate != null">
+        inst_date = #{record.instDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instDatetime != null">
+        inst_datetime = #{record.instDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update bal_external_result_equal
+    set equal_id = #{record.equalId,jdbcType=INTEGER},
+      data_id = #{record.dataId,jdbcType=INTEGER},
+      channel_id = #{record.channelId,jdbcType=INTEGER},
+      file_id = #{record.fileId,jdbcType=VARCHAR},
+      seq = #{record.seq,jdbcType=INTEGER},
+      clear_id = #{record.clearId,jdbcType=VARCHAR},
+      work_date = #{record.workDate,jdbcType=VARCHAR},
+      batch_id = #{record.batchId,jdbcType=VARCHAR},
+      bal_result = #{record.balResult,jdbcType=VARCHAR},
+      bal_memo = #{record.balMemo,jdbcType=VARCHAR},
+      inst_user = #{record.instUser,jdbcType=INTEGER},
+      inst_date = #{record.instDate,jdbcType=VARCHAR},
+      inst_datetime = #{record.instDatetime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+    update bal_external_result_equal
+    <set>
+      <if test="dataId != null">
+        data_id = #{dataId,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="clearId != null">
+        clear_id = #{clearId,jdbcType=VARCHAR},
+      </if>
+      <if test="workDate != null">
+        work_date = #{workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="balResult != null">
+        bal_result = #{balResult,jdbcType=VARCHAR},
+      </if>
+      <if test="balMemo != null">
+        bal_memo = #{balMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="instUser != null">
+        inst_user = #{instUser,jdbcType=INTEGER},
+      </if>
+      <if test="instDate != null">
+        inst_date = #{instDate,jdbcType=VARCHAR},
+      </if>
+      <if test="instDatetime != null">
+        inst_datetime = #{instDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where equal_id = #{equalId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+    update bal_external_result_equal
+    set data_id = #{dataId,jdbcType=INTEGER},
+      channel_id = #{channelId,jdbcType=INTEGER},
+      file_id = #{fileId,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      clear_id = #{clearId,jdbcType=VARCHAR},
+      work_date = #{workDate,jdbcType=VARCHAR},
+      batch_id = #{batchId,jdbcType=VARCHAR},
+      bal_result = #{balResult,jdbcType=VARCHAR},
+      bal_memo = #{balMemo,jdbcType=VARCHAR},
+      inst_user = #{instUser,jdbcType=INTEGER},
+      inst_date = #{instDate,jdbcType=VARCHAR},
+      inst_datetime = #{instDatetime,jdbcType=TIMESTAMP}
+    where equal_id = #{equalId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectList" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual" resultType="com.qifenqian.bms.bal.accountResult.bean.BalExternalResultEqual">
+  		SELECT 
+			b.*,
+			C.channel_name,
+			D.type_name  balResultName
+    	FROM
+    		bal_batch t
+		INNER JOIN  bal_external_result_equal b ON b.batch_id = t.batch_id AND t.status='BAL_OVER' 
+		left join
+			base_channel C
+		on
+			C.channel_id = T.channel_id
+		left join 
+		    base_type D
+		on
+			D.type_code=B.bal_result
+		<where>
+			<if test="beginWorkDate != null and '' != beginWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date >= #{beginWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="endWorkDate != null and '' != endWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date  <= #{endWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="batchId != null and '' != batchId">  
+	            <![CDATA[  
+	              AND  b.batch_id  like CONCAT('%',#{batchId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="clearId != null and '' != clearId">  
+	            <![CDATA[  
+	              AND  b.clear_id  like CONCAT('%',#{clearId},'%')         
+	            ]]>  
+	        </if>
+	         <if test="channelId != null and '' != channelId">  
+	            <![CDATA[  
+	              AND  b.channel_id = #{channelId}        
+	            ]]>  
+	        </if>
+	        <!-- <if test="channelId != null and channelId != '' "> AND T.CHANNEL_ID = #{channelId,jdbcType=VARCHAR}</if> -->
+		</where>
+		ORDER BY B.WORK_DATE DESC
+  </select>
+</mapper>

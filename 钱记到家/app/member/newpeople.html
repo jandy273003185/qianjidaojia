@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新人专享</title>
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/resetFontSize.js" type="text/javascript"></script>
+    <link href="../NewVersion/HomeV3/css/base.css" rel="stylesheet" />
+    <link href="../css/newuser.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <!-- 倒计时 -->
+        <div class="countdown">
+            <div class="time">
+                <div class="hour1">0</div>
+                <div class="hour2">0</div>
+                <div class="min1">0</div>
+                <div class="min2">0</div>
+            </div>
+        </div>
+        <div class="good-list" id="prolist">
+
+        </div>
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+    <script id="prolistTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="item clearfix">
+            <img src="{{=value.ProImg}}" class="proimg" />
+            <div class="detail fl">
+                <div class="tit">{{=value.ProductTitle}}</div>
+                <p>{{=value.Synopsis}}</p>
+                <div class="price">原价：<span>¥{{=value.MarketPrice}}</span></div>
+                <div class="realprice ">
+                    <div class="pricejia">
+                        <span>¥</span>{{=value.NewUserPrice}}
+                    </div>
+                    <a href="javascript:;" class="gobuy" onclick="G.Detail({{=value.ProductId}},{{=value.PreferentialId}})"><img src="../images/buy.png" /></a>
+                </div>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <script>
+        var pageIndex = 1;
+        var pageSize = 5;
+        var isEnd = false;
+        var msg = "";
+        var idx = layer.open({
+            type: 2
+            , content: 'loading...'
+        });
+        $(function () {
+            window.location.href = "/indexv.html";
+
+
+            if (!iswx()) {
+                if (!sc.auth.isLogin())
+                    location.href = "/login.html";
+                else
+                    G.Init();
+            } else {
+                var s = setInterval(function () {
+                    if (sc.auth.isLogin()) {
+                        clearInterval(s);
+                        G.Init();
+                    }
+                }, 300);
+            }
+            $("#index-footer").load("/footerV.html");
+        });
+        var G = {
+            Init: function () {
+                layer.close(idx);
+                $(".container").show();
+                dropDownEvent(G.ProductList());
+                G.UserInfo();
+            },
+            ProductList: function () {
+                var callback = function (data) {
+                    if (data.code == 0) {
+                        if (data.data.length > 0) {
+                            var arrText = doT.template($("#prolistTemp").text());
+                            $("#prolist").append(arrText(data.data));
+                        }
+                    } else if (data.code == -1) { //登录超时
+                        setTimeout(function () {
+                            location.href = "/login.html";
+                        }, 1000);
+                    } else {
+                        layer.open({
+                            shade: 0,
+                            content: "<div id='toast' class='toast'>" + data.msg + "</div>",
+                            skin: 'myskin',
+                            time: 2 //2秒后自动关闭
+                        });
+                    }
+                }
+                var url = "api/User/NewUserWelfareProductList";
+                sc.post(url, {
+                    "PageIndex": pageIndex,
+                    "PageSize": pageSize
+                }, callback);
+            },
+            UserInfo: function () {
+                var callback = function (data) {
+                    if (data.code == 0) {
+                        if (data.data != "") {
+                            G.DTime(data.data.EndTime);
+                        }
+                    } else if (data.code == -1) { //登录超时
+                        setTimeout(function () {
+                            location.href = "/login.html";
+                        }, 1000);
+                    } else {
+                        layer.open({
+                            shade: 0,
+                            content: "<div id='toast' class='toast'>" + data.msg + "</div>",
+                            skin: 'myskin',
+                            time: 2 //2秒后自动关闭
+                        });
+                        if (data.code == -3)
+                            msg = data.msg;
+                    }
+                }
+                var url = "api/User/NewUserWelfare";
+                sc.post(url, {
+                    "UserId": sc.utils.getCookieValue("UserId"),
+                    "Token": sc.utils.getCookieValue("Token")
+                }, callback);
+            },
+            DTime: function (endDateStr) {
+                //结束时间
+                var endDate = new Date(endDateStr);
+                //当前时间
+                var nowDate = new Date();
+                //相差的总秒数
+                var totalSeconds = parseInt((endDate - nowDate) / 1000);
+                //天数
+                var days = Math.floor(totalSeconds / (60 * 60 * 24));
+                //取模（余数）
+                var modulo = totalSeconds % (60 * 60 * 24);
+                //小时数
+                var hours = Math.floor(modulo / (60 * 60));
+                modulo = modulo % (60 * 60);
+                //分钟
+                var minutes = Math.floor(modulo / 60);
+                //秒
+                var seconds = modulo % 60;
+
+                console.log("还剩:" + days + "天" + hours + "小时" + minutes + "分钟" + seconds + "秒");
+
+                hours = hours + days * 24;//总小时数
+
+
+                if (hours == "0" && minutes == "0") {
+                    layer.open({
+                        shade: 0,
+                        content: "<div id='toast' class='toast'>您不具备资格</div>",
+                        skin: 'myskin',
+                        time: 2 //2秒后自动关闭
+                    });
+                    msg = "您不具备资格";
+                } else {
+                    if (hours < 10) {
+                        $(".hour1").html(0);
+                        $(".hour2").html(hours);
+                    } else {
+                        $(".hour1").html((hours + "").substring(0, 1));
+                        $(".hour2").html((hours + "").substring(1));
+                    }
+                    if (minutes < 10) {
+                        $(".min1").html(0);
+                        $(".min2").html(minutes);
+                    } else {
+                        $(".min1").html((minutes + "").substring(0, 1));
+                        $(".min2").html((minutes + "").substring(1));
+                    }
+                    var cst = setTimeout(function () {
+                        G.DTime(endDateStr);
+                    }, 30000);
+                }
+            },
+            Detail: function (proId, PreferentialId) {
+                if (msg == "") {
+                    window.location.href = "/details.html?id=" + proId + "&PreferentialId=" + PreferentialId;
+                } else {
+                    layer.open({
+                        shade: 0,
+                        content: "<div id='toast' class='toast'>您不具备资格</div>",
+                        skin: 'myskin',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        }
+
+
+        function dropDownEvent(Fn) {
+            $(window).scroll(function () {
+                var scrollTop = parseFloat($(this).scrollTop()),
+                    scrollHeight = $(document).height(),
+                    windowHeight = parseFloat($(this).height()),
+                    totalHeight = scrollTop + windowHeight;
+                if (scrollTop + windowHeight >= scrollHeight - 0.7) {
+                    pageIndex++;
+                    G.ProductList();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

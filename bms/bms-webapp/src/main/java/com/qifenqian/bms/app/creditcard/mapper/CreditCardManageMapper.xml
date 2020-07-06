@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.app.creditcard.mapper.CreditCardManageMapper">
+	<!-- 查询信用卡申请链接列表 -->
+	<select id="selectCreditCardList" parameterType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean" resultType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean">
+		SELECT
+			CARD_ID,
+			CARD_NAME,
+			LINK_URL,
+			STATUS,
+			SORT,
+			CREATE_TIME
+		FROM
+			TD_APP_CREDIT_CARD 
+		<where>
+			<if test="cardName != null and cardName!= '' "> AND CARD_NAME LIKE CONCAT('%',#{cardName, jdbcType=VARCHAR},'%')</if>
+			<if test="status != null and status != '' "> AND STATUS =#{status, jdbcType=VARCHAR}</if>
+		</where>
+		ORDER BY SORT
+	</select>
+	
+	<insert id="saveCreditCardManage" parameterType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean">
+		INSERT INTO TD_APP_CREDIT_CARD 
+		(
+			`CARD_ID`,
+			`CARD_NAME`,
+			`LINK_URL`,
+			`STATUS`,
+			`SORT`,
+			`CREATE_TIME`
+		)
+		VALUES
+		(
+			#{cardId},
+			#{cardName},
+			#{linkUrl},
+			#{status},
+			#{sort},
+			#{createTime}	
+		)	
+	</insert>
+	
+	<update id="updateCreditCardManage" parameterType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean">
+		UPDATE TD_APP_CREDIT_CARD
+		<set>
+			CARD_NAME=#{cardName},
+			LINK_URL=#{linkUrl},
+			SORT=#{sort},
+			STATUS=#{status},
+		</set>
+		WHERE CARD_ID=#{cardId}
+	</update>
+	
+	<select id="getSortByCardId" parameterType="java.lang.String" resultType="int">
+		SELECT 
+			SORT
+		FROM 
+			TD_APP_CREDIT_CARD
+		WHERE
+			CARD_ID=#{cardId}
+	</select>
+	
+	<select id="listCreditCardBySort" parameterType="int"   resultType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean">
+		SELECT
+			CARD_ID,
+			CARD_NAME,
+			LINK_URL,
+			STATUS,
+			SORT
+		FROM
+			TD_APP_CREDIT_CARD 
+		WHERE
+		<![CDATA[
+			SORT>=#{oldSort} and SORT<=#{newSort}
+		]]>	
+		ORDER BY SORT
+	</select>
+	
+	<update id="updateSortByCardId" parameterType="com.qifenqian.bms.app.creditcard.bean.CreditCardManageBean">
+		UPDATE TD_APP_CREDIT_CARD
+		SET
+			SORT=#{sort}
+		WHERE CARD_ID=#{cardId}
+	</update>
+	
+	<delete id="deleteCreditCardByCardId" parameterType="java.lang.String">
+		DELETE
+		FROM
+			TD_APP_CREDIT_CARD
+		WHERE
+			CARD_ID=#{cardId}
+	</delete>
+</mapper>

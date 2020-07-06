@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.acctsevencust.mapper.AcctSevenCustMapper">
+
+	<select id="getAcctSevenCust" resultType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCust" parameterType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCust">
+		SELECT
+			A.ACCT_ID,
+			T.CUST_NAME ACCT_NAME,
+			A.CUST_ID,
+			U.MOBILE,
+			A.BALANCE,
+			A.BALANCE_FLAG,
+			A.FREEZE_AMT,
+			A.SUBJECT_ID,
+			A.ONWAY_AMT,
+			A.USABLE_AMT,
+			A.STATUS,
+			A.INST_DATE,
+			DATE_FORMAT(A.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS INST_DATETIME,
+			A.JGKJ_CARD_NO
+		FROM
+			STCS.ACCT_SEVEN_CUST A
+		JOIN TD_LOGIN_USER_INFO U ON A.CUST_ID = U.CUST_ID
+		JOIN TD_CUST_INFO T ON A.CUST_ID = T.CUST_ID
+		WHERE
+			1 = 1
+		<if test="mobile!='' and mobile!=null">
+			AND U.MOBILE =#{mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="acctName!='' and acctName!=null">
+			AND A.ACCT_NAME LIKE CONCAT('%',#{acctName},'%')
+		</if>
+		<if test="jgkjCardNo!='' and jgkjCardNo!=null">
+			AND A.JGKJ_CARD_NO LIKE CONCAT('%',#{jgkjCardNo},'%')
+		</if>
+		<if test="acctId!='' and acctId!=null">
+			AND A.ACCT_ID LIKE CONCAT('%',#{acctId},'%')
+		</if>
+		<if test="status!='' and status!=null">
+			AND A.STATUS = #{status,jdbcType = VARCHAR}
+		</if>
+		<if test="createBeginTime != null and createBeginTime != ''"> 
+			<![CDATA[ 
+			 AND DATE_FORMAT(A.INST_DATETIME ,'%Y-%m-%d') >= #{createBeginTime} 
+			 ]]>
+		</if>
+		<if test="createEndTime != null and createEndTime != ''"> 
+			<![CDATA[ 
+			   AND DATE_FORMAT(A.INST_DATETIME ,'%Y-%m-%d') <= #{createEndTime} 
+			]]>
+		</if>
+		ORDER BY A.INST_DATETIME DESC
+	</select>
+	
+	<select id="getAccountByCustId" parameterType="string" resultType="string">
+		SELECT 
+			A.ACCT_ID 
+		FROM 
+			STCS.ACCT_SEVEN_CUST A 
+		WHERE 
+			A.CUST_ID = #{custId,jdbcType = VARCHAR}
+	</select>
+</mapper>

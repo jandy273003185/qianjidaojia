@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.CustScanMapper">
+
+	<insert id="insertCustScan" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		INSERT INTO TD_CUST_SCAN_COPY (
+			AUTH_ID,
+			CUST_ID,
+			CERTIFY_TYPE,
+			CERTIFY_NO,
+			CUST_NAME,
+			SCAN_COPY_PATH,
+			UPLOAD_TIME,
+			CREATE_ID,
+			CREATE_TIME,
+			CERTIFY_BEGIN_TIME,
+			CERTIFY_END_TIME
+		) VALUES (
+			#{authId, 		jdbcType = VARCHAR},
+			#{custId, 		jdbcType = VARCHAR},
+		  	#{certifyType, 	jdbcType = VARCHAR},
+		  	#{certifyNo, 	jdbcType = VARCHAR},
+		  	#{custName, 	jdbcType = VARCHAR},
+		  	#{scanCopyPath, jdbcType = VARCHAR},
+		  	NOW(),
+		  	#{createId, 	jdbcType = VARCHAR},
+		  	NOW(),
+		  	#{certifyBeginTime, 	jdbcType = VARCHAR},
+		  	#{certifyEndTime, 	jdbcType = VARCHAR}
+		)
+	</insert>
+	
+	<select id="ListTdCustScanCopy" resultType="com.qifenqian.bms.basemanager.merchant.bean.CustScan" parameterType="java.lang.String">
+		SELECT * FROM TD_CUST_SCAN_COPY
+		WHERE SCAN_COPY_PATH like '%data%'
+		<if test="custId !=null and custId !=''">
+			AND CUST_ID = #{custId, jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="findPath" resultType="string" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		SELECT 
+			S.SCAN_COPY_PATH 
+		FROM 
+			TD_CUST_SCAN_COPY S 
+		<where>
+			S.STATUS ='00'
+			<if test="custId != null and custId !='' ">
+			AND S.CUST_ID = #{custId,jdbcType = VARCHAR} 
+			</if>
+			<if test="certifyType != null and certifyType !='' ">
+			AND S.CERTIFY_TYPE = #{certifyType, jdbcType = VARCHAR}
+			</if>
+			<if test="authId != null and authId !='' ">
+			AND S.AUTH_ID = #{authId,jdbcType =VARCHAR}
+			</if>
+			ORDER BY S.CREATE_TIME DESC	
+			LIMIT 1 
+		</where>
+	</select>
+	<select id="findPathByIdAndType" resultType="string" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		SELECT 
+			S.SCAN_COPY_PATH
+		FROM 
+			TD_CUST_SCAN_COPY S 
+		WHERE  S.CUST_ID = #{custId,jdbcType = VARCHAR} 
+		AND S.CERTIFY_TYPE=#{certifyType, jdbcType = VARCHAR}
+		AND S.CREATE_TIME IN (
+		(	SELECT 
+				MAX(Y.CREATE_TIME) 
+			FROM 
+				TD_CUST_SCAN_COPY Y 
+			WHERE 
+				Y.CUST_ID = #{custId,jdbcType = VARCHAR}  
+			AND 
+				Y.CERTIFY_TYPE=#{certifyType, jdbcType = VARCHAR}
+		));
+	</select>
+	
+	<!-- 根据扫描件类型和客户姓名查询扫描件 -->
+	<select id="findCountCustScanInfo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan" resultType="int">
+		select count(*) from td_cust_scan_copy where CERTIFY_TYPE =#{certifyType} and CUST_ID = #{custId}
+		<!-- <where>
+			<if test="certifyType != null and certifyType != ''">
+				CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR} 
+			</if>
+			<if test="custName != null and custName != ''">
+				CUST_NAME = #{custName,jdbcType=VARCHAR}
+			</if>
+		</where> -->
+	</select>
+	
+	<update id="updateCustScan" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		UPDATE  TD_CUST_SCAN_COPY U  	
+		<set>
+			<if test="custName !=null and custName !='' ">
+				CUST_NAME = #{custName, jdbcType = VARCHAR},
+			</if>
+			<if test="certifyNo !=null and certifyNo !='' ">
+				CERTIFY_NO = #{certifyNo, jdbcType = VARCHAR},
+			</if>
+			<if test="scanCopyPath != null and scanCopyPath !=''">
+				SCAN_COPY_PATH = #{scanCopyPath,jdbcType = VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+			<if test="modifyId !=null">
+				MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+			</if>
+			MODIFY_TIME = NOW()
+		</set>	
+		WHERE U.CUST_ID = #{custId, jdbcType = VARCHAR} 
+		AND U.CERTIFY_TYPE = #{certifyType,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateCustScanById" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		UPDATE TD_CUST_SCAN_COPY U  	
+		<set>
+			<if test="custName !=null and custName !='' ">
+				CUST_NAME = #{custName, jdbcType = VARCHAR},
+			</if>
+			<if test="certifyNo !=null and certifyNo !='' ">
+				CERTIFY_NO = #{certifyNo, jdbcType = VARCHAR},
+			</if>
+			<if test="scanCopyPath != null and scanCopyPath !=''">
+				SCAN_COPY_PATH = #{scanCopyPath,jdbcType = VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+			<if test="modifyId !=null">
+				MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+			</if>
+			MODIFY_TIME = NOW()
+		</set>	
+		WHERE U.CUST_ID = #{custId, jdbcType = VARCHAR}
+	</update>
+	
+	<select id="findByidScanPath"  parameterType="string" resultType="string">
+		SELECT 
+			S.SCAN_COPY_PATH 
+		FROM 
+			TD_CUST_SCAN_COPY S
+		WHERE    
+		S.CUST_ID = #{CUSTID,jdbcType = VARCHAR}
+	</select>
+	
+	<insert id="insertCertificateAuth" useGeneratedKeys="true" keyProperty="authId" parameterType="com.qifenqian.bms.basemanager.photo.bean.CertificateAuth">
+		INSERT INTO TD_CERTIFICATE_AUTH(
+			  CUST_ID,
+			  CERTIFICATE_STATE,
+			  AUTH_RESULT_CODE,
+			  AUTH_RESULT_DESC,
+			  CREATE_ID,
+			  CREATE_TIME
+		  	)VALUES(
+			  #{custId, 			jdbcType = VARCHAR},
+		  	  #{certificateState, 	jdbcType = VARCHAR},
+		  	  #{authResultCode, 	jdbcType = VARCHAR},
+		  	  #{authResultDesc, 	jdbcType = VARCHAR},
+		  	  #{createId, 			jdbcType = VARCHAR},
+		  	  NOW()
+			)
+	</insert>
+	
+	<!-- 保存微商户审核信息 -->
+	<insert id="saveTinyCertificateAuth" useGeneratedKeys="true" keyProperty="authId" parameterType="com.qifenqian.bms.basemanager.photo.bean.CertificateAuth">
+		insert into TD_CERTIFICATE_AUTH(
+				CUST_ID,
+				CERTIFICATE_STATE,
+				CREATE_ID,
+				CREATE_TIME
+			)values(
+				#{custId, 			jdbcType = VARCHAR},
+				#{certificateState, jdbcType = VARCHAR},
+				#{createId, 			jdbcType = VARCHAR},
+				now()
+			)
+	</insert>
+
+</mapper>

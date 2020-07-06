@@ -1,0 +1,124 @@
+<!--pages/index/index.wxml-->
+
+<!--  头部横向banner图片  -->
+<swiper class="swiper-banner" indicator-dots="{{indicatorDots}}" indicator-color="{{indicatorColor}}" indicator-active-color="{{indicatorActiveColor}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" circular="{{circular}}">
+    <block wx:for="{{bannerList}}" wx:key="*this">
+        <swiper-item class="banner-item">
+            <image class="item-image" src="{{item.Pic}}" bindtap="toDetails" data-id="{{item.ProId}}"></image>
+        </swiper-item>
+    </block>
+</swiper>
+<!--顶部介绍  -->
+<view class="top-introduce flex justs alic">
+    <block wx:for="{{introduceList}}" wx:key="index">
+        <image class="introduceImg " src="{{item}}"></image>
+    </block>
+</view>
+<!-- 纵向文字轮播 -->
+<view class="swiperBox flex justfs alic">
+    <myIcon class="notice" iconClass="icon_notice"></myIcon>
+    <swiper class="swiper-text" autoplay="true" interval="5000" duration="{{duration}}" circular="true" vertical="true">
+        <block wx:for="{{noticeList}}" wx:key="*this">
+            <swiper-item class="text-item hid-ell">
+                <text class="item-text">{{item.title}}</text>
+            </swiper-item>
+        </block>
+    </swiper>
+</view>
+<!-- 主体部分 -->
+<view class="main">
+    <!-- 精选商品头部标题 -->
+    <view wx:if="{{selectionList.length>0}}" class="selectTitle">
+        <view class="titleBox">
+            <!-- 如钱记精选等title图标 -->
+            <!-- <image src="{{selectionList[0].TitlePic}}"></image> -->
+            <image src="../../images/index/qianji_select.png"></image>
+            <!-- <view class="moreBox">
+                <view class="more">更多</view>
+                <myIcon iconClass="icon_more " class="moreIcon" color="{{iconColor}}"></myIcon>
+            </view> -->
+        </view>
+    </view>
+    <!-- 钱记精选 -->
+    <block wx:for="{{selectionList}}" wx:key="index">
+        <view class="selectshoping" catchtap="toDetails" data-id="{{item.ProId}}">
+            <image class="goodsImg" src="{{item.Pic}}" mode="aspectFit"></image>
+            <view class="goodsinfo flex alifs colu justs">
+                <view class="nameinfo flex alic justfs">
+                    <view class="selectIcon">精选</view>
+                    <view class="goodsName hid-ell">{{item.Title}}</view>
+                </view>
+                <view class="textinfo"><rich-text nodes="{{item.Content}}"></rich-text></view>
+                <view class="price flex alic justs">
+                    <view class="left flex alic justfs">
+                        <view class="oldPrice">￥{{item.MarketPrice}}
+                            <view class='line'></view>
+                        </view>
+                        <view class="nowPrice">活动价：￥{{item.Price}}</view>
+                    </view>
+                    <myIcon iconClass="icon_shoppingCort" class="cortIcon" color="#14B312" catchtap="addCart" data-proId="{{item.ProId}}" data-proName="{{item.Title}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proimg="{{item.Pic}}"></myIcon>
+                </view>
+            </view>
+
+        </view>
+    </block>
+
+    <!-- 厨房宝典等分类  -->
+    <block wx:if="{{homeGoodsList.length>0}}" wx:for="{{homeGoodsList}}"  wx:key="idx" wx:for-item="itemName">
+        <view class="selectTitle padT0" wx:if="{{itemName.ProductList.length>0}}">
+            <view class="titleBox-img">
+                <image src="{{itemName.PicUrl}}"></image> 
+            </view>
+        </view>
+        <view class="cookhouse flex justs alifs flexwp">
+            <block wx:for="{{itemName.ProductList}}" wx:key="index" wx:for-item="item">
+                <view class="cookgoods" catchtap="toDetails" data-id="{{item.ProId}}">
+                    <view class="cookImg">
+                        <image src="{{item.ProductImg}}"></image>
+                    </view>
+                    <view class="goodsName hid-ell">{{item.Title}}</view>
+                    <view class="goodsText hid-ell">{{item.Synopsis}}</view>
+                    <view class="nowPrice"><text class="nowPrice-symbol">￥</text><text class="nowPrice-num">{{item.Price}}</text></view>
+                    <view class="oldPrice">￥{{item.MarketPrice}}
+                        <view class="line"></view>
+                    </view>
+                    <!-- 团长佣金 -->
+                    <view wx:if="{{role==1}}" class="brokerageBox flex colu justs alifs">
+                        <text class="brokerage">佣金比例:{{item.CommissionRate}}%</text>
+                        <text class="brokerage">预计可赚:￥{{item.CommissionPrice}}</text> 
+                    </view>
+                    <!-- 营长佣金 -->
+                    <view wx:if="{{role==2}}" class="brokerageBox flex colu justs alifs">
+                        <text class="brokerage">佣金比例:{{item.SecondCommissionRate}}%</text>
+                        <text class="brokerage">预计可赚:￥{{item.SecondCommissionPrice}}</text>
+                    </view>
+
+                    <image data-proId="{{item.ProId}}" data-proName="{{item.Title}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proStock="{{item.Stock}}" data-proimg="{{item.ProductImg}}" class="shoppingCart" src="../../images/index/shoppingCart.png" catchtap="addCart"></image>
+                </view>
+            </block>
+        </view>
+    </block>
+
+
+</view>
+<!-- 首页弹窗 -->
+<!-- <view class="toast" wx:if="{{istoast}}">
+    <view class="toastBox">
+        <image class="bgImg" src="{{imgList.bg}}"></image>
+        <view class="toastImg">
+            <image src="{{imgList.toastgoods}}" class="toastgoods"></image>
+            <image src="{{imgList.discount_coupon}}" class="discount_coupon"></image>
+        </view>
+        <image class="close" src="../../images/index/toast_close.png" bindtap="closeToast"></image>
+    </view>
+</view> -->
+<!-- tabbar底部导航栏 -->
+<tabbar id="tabbar"></tabbar>
+<!-- 团长入口图标 -->
+<movable-area class="moveA" wx:if="{{moveImg}}">
+    <movable-view catchtap="intoCentre" class="moveV" x="{{x}}" y="{{y}}" direction="all">
+        <image class="moveImg" src="{{moveImg}}" mode="widthFix"></image>
+    </movable-view>
+</movable-area>
+<!-- 点击加入购物车 -->
+<addCart id="cart" isCart="{{isCart}}" animation="{{animation}}"  proId="{{proId}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}" nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}" bind:cartNum="cartNum"></addCart>

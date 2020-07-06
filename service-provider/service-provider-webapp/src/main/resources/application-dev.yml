@@ -1,0 +1,44 @@
+app:
+   service:
+      version: 1.0.0
+      
+dubbo:
+  application:
+    name: service-provider
+    qosEnable: false
+  registry:
+    address: zookeeper://192.168.1.131:2181
+    file: /data/dubbo/dubbo-service-provider.cache
+
+
+images:
+  relativePaths: /pic/**
+  absolutePaths: D://picture
+  uri: https://sp.qifenqian.com/
+  relativePath: /pic/
+
+spring:
+  redis:
+    database: 0
+    host: 192.168.1.19
+    port: 6379
+    password: pass123
+    timeout: 20000
+    pool:
+    jedis:
+      pool:
+        max-active: 68
+        min-idle: 0
+        max-idle: 8
+        max-wait: -1
+
+
+wxauth:
+  #填写公众号的APPID
+  appid: wxce65746e62998dce
+  #填写公众号的APPSECRET
+  appsecret: 67c3aebf0e3e397df1fce595b837353b
+  #这里的token要和微信公众号号网页填写的token一样
+  token: ok_ok_token
+swagger:
+  enable: true

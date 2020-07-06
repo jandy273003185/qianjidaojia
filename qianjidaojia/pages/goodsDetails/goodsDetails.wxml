@@ -1,0 +1,167 @@
+<!--pages/goodsDetails/goodsDetails.wxml-->
+<!--  头部横向banner图片  -->
+<view class="swiperBox">
+    <swiper class="swiper-banner" autoplay="true" interval="3000" duration="1000" circular="true" bindchange="swiperChange">
+        <block wx:for="{{goodsInfo.ProductImgList}}" wx:key="index">
+            <swiper-item class="banner-item">
+                <image class="item-image" src="{{item.PicUrl}}"></image>
+            </swiper-item>
+        </block>
+    </swiper>
+    <view class="imgPage">{{showCurrent}}/{{length}}</view>
+</view>
+<view class="main">
+    <!-- 商品价格等介绍 -->
+    <view class="info">
+        <view class="nowPrice flex justfs alic">
+            <view class="price">￥{{goodsInfo.ProductPrice}}</view>
+            <image class="activityImg" src="../../images/goodsDetails/activity.png"></image>
+        </view>
+        <view class="oldPrice">原价：
+            <view class="number">￥{{goodsInfo.MarketPrice}}
+                <view class="line"></view>
+            </view>
+        </view>
+        <view class="goodsName ">{{goodsInfo.ProductName}}</view>
+        <view class="goodsText">{{goodsInfo.Synopsis}}</view>
+        <view class="expressage flex justs alic">
+            <view>快递：{{numberUtil.expressage(goodsInfo.Postage)}}</view>
+            <view>已售{{goodsInfo.SalesVolume}}</view>
+        </view>
+    </view>
+    <!-- 优惠卷你和满减等优惠活动 -->
+    <!-- <view class="coupon flex justs alic marb">
+        <view class="card flex justfs alic">
+            <view class="cardInco">优惠券</view>
+            <text>领取优惠券</text>
+        </view>
+        <myIcon iconClass="icon_more" color="#333" class="more"></myIcon>
+    </view>
+    <view class="coupon flex justs alic">
+        <view class="card flex justfs alic">
+            <view class="cardInco">满减</view>
+            <text>满199元减去80元</text>
+        </view>
+        <myIcon iconClass="icon_more" color="#333" class="more"></myIcon>
+    </view> -->
+    <!-- 评价 -->
+    <view wx:if="{{role==1}}" class="coupon flex justs alic">
+        <view class="card flex justfs alic">
+            <view class="cardInco rate">佣金比例: {{goodsInfo.CommissionRate}}%</view>
+            <view class="cardInco rate">预计可赚: ￥{{goodsInfo.CommissionPrice}}</view>
+        </view>
+    </view>
+    <view wx:if="{{role==2}}" class="coupon flex justs alic">
+        <view class="card flex justfs alic">
+            <view class="cardInco rate">佣金比例: {{goodsInfo.SecondCommissionRate}}%</view>
+            <view class="cardInco rate">预计可赚: ￥{{goodsInfo.SecondCommissionPrice}}</view>
+        </view>
+    </view>
+    <view class="estimate">
+        <navigator url="/pages/discountCoupon/discountCoupon">
+            <view class="estimateTitle flex justs alic">
+                <view class="estimatNumber coupon-txt">优惠券</view>
+                <view bindtap="toLookAll">
+                    <myIcon iconClass="icon_more" class="marl"></myIcon>
+                </view>
+            </view>
+        </navigator> 
+    </view>
+
+    <view class="estimate">
+        <view class="estimateTitle flex justs alic">
+            <view class="estimatNumber">商品评价（{{goodsInfo.EvaluateCount}}）</view>
+            <view bindtap="toLookAll">查看全部
+                <myIcon iconClass="icon_more" class="marl"></myIcon>
+            </view>
+        </view>
+        <block wx:for="{{estimateList}}" wx:key="idx" wx:for-index="idx" wx:for-item="item">
+            <view class="estimateText">
+                <view class="flex justs alic">
+                    <view class="personnel flex justfs alic">
+                        <image class="personnelImg" src="{{item.MemberHeadImg}}"></image>
+                        <view class="personnelName">{{item.MemberName}}</view>
+                    </view>
+                    <text class="estimateTime">{{item.AddTime}}</text>
+                </view>
+
+                <view class="personnelText">{{item.ContentText}}</view>
+                <view class="imgBox flex justfs alic">
+                    <block wx:for="{{item.EvaluateImgList}}" wx:key="index" wx:for-item="imgItem">
+                        <image class="estimateImg" src="{{imgItem}}"></image>
+                    </block>
+                </view>
+                <view class="shopReply" wx:if="{{item.Reply}}">
+                    <view class="flex justs alic">
+                        <text class="replyTitle">商家回复:</text>
+                        <text class="estimateTime">{{item.ReplyTime}}</text>
+                    </view>
+                    <view class="replyText">
+                        {{item.Reply}}
+                    </view>
+                </view>
+            </view>
+
+        </block>
+
+
+    </view>
+    <!-- 商店信息 -->
+    <view class="shoppingGrade">
+        <view class="shopping flex justs alic">
+            <view class="flex justs alifs">
+                <image class="shoppingImg" src="{{goodsInfo.ShopLogo}}"></image>
+                <view class="shoppingName">{{goodsInfo.ShopName}}</view>
+            </view>
+            <view class="flex justs alifs">
+                <view class="attention" wx:if="{{!isAttention}}" bindtap="clickAttention">关注</view>
+                <view class="attention already" wx:if="{{isAttention}}" bindtap="clickAttention">已关注</view>
+                <view class="intoShopping" bindtap="intoShop">进入店铺</view>
+            </view>
+        </view>
+        <view class="grade flex justs alic">
+            <view class="gradeType">商品描述
+                <text>5.0</text>
+            </view>
+            <view class="gradeType">卖家服务
+                <text>5.0</text>
+            </view>
+            <view class="gradeType">物流服务
+                <text class="green">5.0</text>
+            </view>
+        </view>
+    </view>
+    <view class="contentDetail"><text class="contentDetail-line"></text><text class="contentDetail-title">商品详情</text><text class="contentDetail-line"></text></view>
+    <view class="rich-text"><rich-text nodes="{{ContentDetail}}"></rich-text></view>
+
+    <!-- footer -->
+    <view class="footer flex justs alic">
+        <view class="left flex justs alic">
+            <navigator url="/pages/index/index" open-type="switchTab">
+              <view class="marr flex justc alic colu">
+                  <image class="iconImg" src="../../images/tabbar/index1.png"></image>
+                  <text class="iconName">首页</text>
+              </view>
+            </navigator>
+            <navigator url="/pages/shoppingCart/shoppingCart" open-type="switchTab">
+              <view class="shoppingcart flex justc alic colu">
+                  <image class="iconImg" src="../../images/tabbar/shoppingCart1.png"></image>
+                  <text class="iconName">购物车</text>
+                  <text class="goodsNumber" wx:if='{{isNum}}'>{{goodsNumber}}</text>
+              </view>
+            </navigator>
+        </view>
+        <view class="right flex justs alic">
+            <view class="buy addCart" bindtap="addCart" data-click="add" data-proId="{{goodsInfo.ProductId}}" data-proName="{{goodsInfo.ProductName}}" data-proOldP="{{goodsInfo.MarketPrice}}" data-proPrice="{{goodsInfo.ProductPrice}}" data-proStock="{{goodsInfo.Stock}}"
+                data-proimg="{{goodsInfo.ProductImgList[0].PicUrl}}">加入购物车</view>
+            <view data-click="buy" data-proId="{{goodsInfo.ProductId}}" data-proName="{{goodsInfo.ProductName}}" data-proOldP="{{goodsInfo.MarketPrice}}" data-proPrice="{{goodsInfo.ProductPrice}}" data-proStock="{{goodsInfo.Stock}}" data-proimg="{{goodsInfo.ProductImgList[0].PicUrl}}"
+                class="buy gobuy" bindtap="addCart">立即购买</view>
+        </view>
+    </view>
+    <!-- 加入购物车的弹窗 -->
+    <addCart id="cart" bindconfirmAdd="confirmAdd" catch:myevent="specification" data-proId="{{id}}" flag="true" bindconfirmBuy="confirmBuy" isCart="{{isCart}}" animation="{{animation}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}"  nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}" click="{{click}}"></addCart>
+    <!-- 弹窗提示组件 -->
+    <myToast toastNum="{{toastNum}}" isToast="{{isToast}}" toastText="{{toastText}}"></myToast>
+</view>
+
+<wxs module="numberUtil" src="../../utils/util.wxs"></wxs>

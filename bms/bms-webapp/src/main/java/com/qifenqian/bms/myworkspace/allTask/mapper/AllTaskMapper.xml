@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.myworkspace.allTask.mapper.AllTaskMapper">
+
+	<select id="getAllTaskbyRole"  resultType="com.qifenqian.bms.myworkspace.allTask.bean.AllTaskBean">
+		SELECT 
+			T.* ,P.NAME_ proName ,U.REAL_NAME realName
+		FROM 
+			ACT_HI_TASKINST T, ACT_RE_PROCDEF P, ACT_HI_PROCINST R,sys_user U
+		
+		<where>
+			T.ASSIGNEE_ = #{userId,jdbcType=VARCHAR}
+			<!-- AND
+			T.CATEGORY_ in 
+			<foreach collection="roleIds" item="roleId" index="index"
+            open="(" close=")" separator=",">
+            #{roleId}
+        	</foreach> -->
+        	AND
+        	P.KEY_ != 'proMerchantAudit' <!-- 排除前台注册 -->
+			AND
+			T.PROC_DEF_ID_ = P.ID_
+			AND
+			T.PROC_INST_ID_ = R.PROC_INST_ID_
+			AND
+			R.START_USER_ID_ = U.USER_ID
+			<if test="allTaskBean.id != null and '' != allTaskBean.id">  
+		            <![CDATA[  
+		              AND T.ID_ = #{allTaskBean.id} 
+		            ]]>  
+        		</if>  
+        		<if test="allTaskBean.name != null and '' != allTaskBean.name">  
+		            <![CDATA[  
+		              AND T.NAME_ = #{allTaskBean.name} 
+		            ]]>  
+        		</if> 
+				<if test="allTaskBean.startUserId != null and '' != allTaskBean.startUserId">  
+		            <![CDATA[  
+		              AND U.REAL_NAME = #{allTaskBean.startUserId} 
+		            ]]>  
+        		</if>  
+				<if test="allTaskBean.taskBeginTime != null and '' != allTaskBean.taskBeginTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(T.START_TIME_ ,'%Y-%m-%d') >= #{allTaskBean.taskBeginTime}  
+		            ]]>  
+        		</if>  
+		        <if test="allTaskBean.taskEndTime != null and '' != allTaskBean.taskEndTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(T.START_TIME_ ,'%Y-%m-%d') <= #{allTaskBean.taskEndTime}  
+		            ]]>  
+		        </if> 
+		</where>
+	</select>
+	
+	<select id="getTasks" parameterType="com.qifenqian.bms.myworkspace.allTask.bean.AllTaskBean" resultType="com.qifenqian.bms.myworkspace.allTask.bean.AllTaskBean">
+		SELECT 
+			T.* ,P.NAME_ proName ,U.REAL_NAME realName
+		FROM 
+			ACT_HI_TASKINST T, ACT_RE_PROCDEF P, ACT_HI_PROCINST R,sys_user U
+			<where>
+				P.KEY_ != 'proMerchantAudit' <!-- 排除前台注册 -->
+				and 
+				T.PROC_DEF_ID_ = P.ID_
+				AND
+				T.PROC_INST_ID_ = R.PROC_INST_ID_
+				AND
+				R.START_USER_ID_ = U.USER_ID
+				<if test="id != null and '' != id">  
+		            <![CDATA[  
+		              AND T.ID_ = #{id} 
+		            ]]>  
+        		</if>  
+        		<if test="auditStatu == null or '' == auditStatu">  
+		           
+        		</if>  
+        		<if test="'yes' == auditStatu">  
+		           <![CDATA[  
+		              AND T.END_TIME_ IS NOT NULL
+		            ]]> 
+        		</if>
+        		<if test="'no' == auditStatu">  
+		            <![CDATA[  
+		              AND T.END_TIME_ IS NULL
+		            ]]> 
+        		</if>
+        		<if test="name != null and '' != name">  
+		            <![CDATA[  
+		              AND T.NAME_ = #{name} 
+		            ]]>  
+        		</if> 
+				<if test="startUserId != null and '' != startUserId">  
+		            <![CDATA[  
+		              AND U.REAL_NAME = #{startUserId} 
+		            ]]>  
+        		</if>  
+				<if test="taskBeginTime != null and '' != taskBeginTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(T.START_TIME_ ,'%Y-%m-%d') >= #{taskBeginTime}  
+		            ]]>  
+        		</if>  
+		        <if test="taskEndTime != null and '' != taskEndTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(T.START_TIME_ ,'%Y-%m-%d') <= #{taskEndTime}  
+		            ]]>  
+		        </if> 
+			</where>
+		ORDER BY 
+			T.START_TIME_ DESC
+			
+	</select>
+	<select id="getTaskById" parameterType="string" resultType="com.qifenqian.bms.myworkspace.allTask.bean.AllTaskBean">
+		SELECT
+			T.* ,P.NAME_ proName ,U.REAL_NAME realName
+		FROM
+			ACT_HI_TASKINST T, ACT_RE_PROCDEF P, ACT_HI_PROCINST R,sys_user U
+		WHERE
+			T.ID_ = #{taskId,jdbcType=VARCHAR}
+			AND
+			T.PROC_DEF_ID_ = P.ID_
+			AND
+			T.PROC_INST_ID_ = R.PROC_INST_ID_
+			AND
+			R.START_USER_ID_ = U.USER_ID
+	</select>
+</mapper>

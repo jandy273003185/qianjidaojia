@@ -1,0 +1,72 @@
+// rem 单位换算：定为 75px 只是方便运算，750px-75px、640-64px、1080px-108px，如此类推
+base=750
+
+vw(num)
+ vw=(num /base) * 100vw
+html,body,ul{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: vw(26);
+  font-family '微软雅黑';
+}
+  button{
+    border none
+    outline none
+  }
+  a{
+    text-decoration none
+  }
+  li{
+    list-style none
+  }
+  .flex_r{
+    display: flex;
+    justify-content flex-end
+    align-items center
+  }
+.flex_l{
+  display: flex;
+  justify-content flex-start
+  align-items center
+}
+  .flex_s_b{
+    display: flex;
+    justify-content space-between
+    align-items center
+  }
+.flex_center{
+  display: flex;
+  justify-content center
+  align-items center
+}
+.van-ellipsis{
+  font-size vw(26)
+}
+.van-field__control{
+  font-size vw(26)
+}
+.van-tabs__nav--line{
+  padding-top vw(10)
+  height: vw(80);
+  line-height: vw(80);
+  padding-bottom :0;
+  
+}
+.van-tab span{
+  line-height vw(50);
+}
+.van-search__action{
+  font-size vw(26)
+}
+.van-field__left-icon .van-icon, .van-field__right-icon .van-icon{
+  font-size :vw(30)
+}
+.van-tabs--line .van-tabs__wrap{
+  height vw(90)
+  line-height vw(90)
+  
+}
+.van-tabs__line{
+  bottom:vw(6) !important;
+}

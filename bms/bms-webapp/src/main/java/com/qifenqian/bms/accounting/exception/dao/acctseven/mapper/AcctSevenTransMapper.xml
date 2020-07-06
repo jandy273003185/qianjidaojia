@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.acctseven.mapper.AcctSevenTransMapper">
+	<select id="selectCustAccountByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+	     	SELECT
+			  	F.ACCT_ID,
+			  	T.ID,
+				T.TRANS_FLOW_ID,
+				T.BUSINESS_TYPE,
+				T.BALANCE,
+				T.CURR_CODE,
+				T.TRANS_AMT,
+				T.ONWAY_AMT,
+				T.USABLE_AMT,
+				T.LOAN_FLAG,
+				T.WORK_DATE,
+				T.BRIEF,
+				T.INST_DATE,
+				T.INST_DATETIME
+		FROM
+			STCS.TRANS_RECORD_FLOW F LEFT JOIN 
+			STCS.ACCT_SEVEN_CUST_FLOW T  ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectAcctSevenBussFlow" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+	     	select * from stcs.acct_seven_buss_flow t1
+					left join stcs.trans_record_flow t2 on t1.trans_flow_id = t2.id 
+					left join stcs.trans_record t3 on t3.msg_id = t2.msg_id
+					left join stcdb.td_trade_bill_main t4 on t4.CORE_SN = t3.msg_id
+			where  t2.trans_step = 'S05_SEVEN_BUSS_RECEIVE' and t4.ORDER_ID=#{orderId,jdbcType = VARCHAR};
+	</select>
+	
+	<select id="selectBussAccountByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+	   SELECT
+			  F.ACCT_ID,
+			  T.ID,
+			  T.TRANS_FLOW_ID,
+			  T.BUSINESS_TYPE,
+			  T.BALANCE,
+			  T.CURR_CODE,
+			  T.TRANS_AMT,
+			  T.ONWAY_AMT,
+			  T.USABLE_AMT,
+			  T.LOAN_FLAG,
+			  T.SETTLE_AMT,
+			  T.WORK_DATE,
+			  T.BRIEF,
+			  T.INST_DATE,
+			  T.INST_DATETIME
+		FROM
+			STCS.TRANS_RECORD_FLOW F LEFT JOIN 
+			STCS.ACCT_SEVEN_BUSS_FLOW T  ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectInnerAccountByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">		
+		SELECT
+			  	F.ACCT_ID,
+				T.ID,
+				T.TRANS_FLOW_ID,
+				T.ACCT_ID,
+				T.BUSINESS_TYPE,
+				T.BALANCE,
+				T.CURR_CODE,
+				T.TRANS_AMT,
+				T.LOAN_FLAG,
+				T.WORK_DATE,
+				T.BRIEF,
+				T.INST_DATE,
+				T.INST_DATETIME
+		FROM
+			STCS.TRANS_RECORD_FLOW F LEFT JOIN 
+			STCS.ACCT_SEVEN_INNER_FLOW T  ON F.ID = T.TRANS_FLOW_ID
+		WHERE
+			F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateCustAccountFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+		UPDATE ACCT_SEVEN_CUST_FLOW F
+			<set>
+				<if test="workDate!=null and workDate!=''">
+					F.WORK_DATE= #{workDate,jdbcType = VARCHAR}
+				</if>
+			</set>
+		WHERE F.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateBussAccountFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+		UPDATE ACCT_SEVEN_BUSS_FLOW F
+			<set>
+				<if test="workDate!=null and workDate!=''">
+					F.WORK_DATE= #{workDate,jdbcType = VARCHAR},
+				</if>
+			</set>
+		WHERE F.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateBussAccountFlowProCha" parameterType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+		UPDATE ACCT_SEVEN_BUSS_FLOW F
+			<set>
+				<if test="productCode!=null and productCode!=''">
+					F.product_code= #{productCode,jdbcType = VARCHAR},
+				</if>
+				<if test="channelCode!=null and channelCode!=''">
+					F.channel_code= #{channelCode,jdbcType = VARCHAR},
+				</if>
+			</set>
+		WHERE F.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+	
+	
+	
+	<update id="updateInnerAccountFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenTrans">
+		UPDATE ACCT_SEVEN_INNER_FLOW F
+			<set>
+				<if test="workDate!=null and workDate!=''">
+					F.WORK_DATE= #{workDate,jdbcType = VARCHAR},
+				</if>
+			</set>
+		WHERE F.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+</mapper>

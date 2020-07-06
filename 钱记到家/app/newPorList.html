@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>当季新品</title>
+    <link href="/NewVersion/HomeV3/css/base.css" rel="stylesheet" />
+    <link href="/NewVersion/HomeV3/css/index.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+    <script src="js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/resetFontSize.js" type="text/javascript"></script>
+    <script src="script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="script/addCart.js?V=0.1" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <!-- 轮播图 -->
+    <div class="swiper-container-carousel carousel" style="height:1.4rem">
+        <div class="swiper-wrapper carousel-content" id="bannerImg">
+            <img src="../images/banner/d1.png" style="width:100%;"/>
+        </div>
+        <div class="swiper-pagination"></div>
+        <!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
+    </div>
+    <!-- 轮播图结束 -->
+    <!-- 商品列表 -->
+    <div class="good-list" id="NewproductList">
+
+
+
+    </div>
+    <!-- 商品列表结束 -->
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+    <!-- 加入购物车的弹出sku选择-->
+    <div class="tocart">
+        <div class="shade sku__shade">
+            <div class="shadebg"></div>
+            <div class="shade_content">
+                <div class="shade-item specifications_shade">
+                    <span class="btn-close"></span>
+                    <div class="productInfo">
+                        <div class="m-pro clear">
+                            <div class="hd fl">
+                                <div class="img">
+                                    <img src="">
+                                </div>
+                            </div>
+                            <div class="bd">
+                                <h4 class="name"></h4>
+                                <p class="desc">
+                                    <span>库存：<span id="stock"></span>件</span>
+                                </p>
+                                <p class="price">
+                                    <span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_bd">
+                        <div id="skuBoxContent"></div>
+                        <div class="skuBox buyNum_skuBox clear">
+                            <h2 class="skuTitle fl">购买数量</h2>
+                            <div class="flexItem fr">
+                                <div class="selnum">
+                                    <span class="less btn-num icon-minus"></span>
+                                    <div class="textWrap">
+                                        <input type="text" id="pro_num" readonly="readonly">
+                                    </div>
+                                    <span class="more btn-num icon-add"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_ft">
+                        <a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="addCart">确定</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="bannerTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="swiper-slide carousel-item">
+            <a href="{{=value.Url}}"
+               style="background-image:url({{=value.Pic}});">
+            </a>
+        </div>
+        {{~}}
+    </script>
+    <!--爆款直降模板-->
+    <script id="NewproductListTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="item clearfix">
+            <img src="{{=value.ProductImg}}"  class="proimg"/>
+            <div class="detail">
+                <div class="tit">{{=value.Name}}</div>
+                {{ if(value.Synopsis) { }}
+                <p>{{=value.Synopsis}}</p>
+                {{ }else{ }}
+                <p>暂无产品简介</p>
+                {{ } }}
+                <div class="realprice"><span>¥</span>{{=value.Price}}</div>
+                <div class="price clearfix">原价：<span>{{=value.MarketPrice}}</span> <a href="/details.html?id={{=value.Id}}" class="gobuy" data-id="{{=value.Id}}"><img src="/NewVersion/HomeV3/images/l1.png" /></a> </div>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <!--爆款直降模板 end-->
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var id = "";
+        var pageIndex = 1;
+        var pageSize = 10;
+        var isEnd = false;
+        $(function () {
+            $("#index-footer").load("footerV.html");
+            getBanner(1);
+            goodsList('', '', '', 1, '', '', 's', 0, pageIndex, pageSize); //当季新品
+
+            //滚动事件
+            window.onscroll = function () {
+                if (getScrollTop() + getClientHeight() == getScrollHeight()) {
+                    if (isEnd === false) {
+                        var isScroll = true;
+                        pageIndex++;
+                        goodsList('', '', '', 1, '', '', 's', 0, pageIndex, pageSize); //当季新品
+                    } else {
+                        isEnd = true;
+                        //							layer.open({
+                        //								content: '已加载完',
+                        //								skin: 'msg',
+                        //								time: 2 //2秒后自动关闭
+                        //							});
+                    }
+                }
+            }
+        });
+
+        function getBanner(type) {
+            //var url = "/api/Banner/BannerList";
+            //var calback = function (data) {
+            //    if (data.code == 0) {
+            //        if (type === 1) {
+            //            //首页轮播banner
+            //            var interText = doT.template($("#bannerTemp").text());
+            //            $("#bannerImg").html(interText(data.data));
+            //            // 轮播图
+            //            var swiper = new Swiper('.swiper-container-carousel', {
+            //                autoplay: {
+            //                    delay: 2500,
+            //                    disableOnInteraction: false,
+            //                },
+            //                pagination: {
+            //                    el: '.swiper-pagination',
+            //                    clickable: true,
+            //                },
+            //            });
+            //        }
+            //        if (type === 3) {
+            //            //首页产品广告banner
+            //            var interText2 = doT.template($("#proBannerTemp").text());
+            //            $(".proBanner").html(interText2(data.data));
+            //        }
+            //    }
+            //}
+            //sc.post(url, {
+            //    "type": type
+            //}, calback);
+        }
+
+        function goodsList(Pid, hot, recommend, newProduct, explosive, searchkey, sortname, sortorder, pageIndex, pageSize) {
+            var url = 'api/Goods/GoodsList';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data.length > 0) {
+                        if (explosive) {
+                            if (pageIndex == 1) {
+                                var arrText = doT.template($("#ExplosiveProlistTemp").text()); //爆款直降
+                                $("#ExplosiveProlist").html(arrText(data.data));
+                            } else {//为你推荐
+
+                            }
+                        } else if (newProduct) {
+                            //当季新品
+                            var arrText2 = doT.template($("#NewproductListTemp").text()); //当季新品
+                            $("#NewproductList").html(arrText2(data.data));;
+                        } else if (recommend) {
+                            var arrText1 = doT.template($("#RecommendTemp").text());
+                            $("#RecommendDiv").html(arrText1(data.data));
+                        }
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "cid": Pid,
+                "page": pageIndex,
+                "pageSize": pageSize,
+                "hot": hot,
+                "recommend": recommend,
+                "newProduct": newProduct,
+                "explosive": explosive,
+                "searchkey": searchkey,
+                "sortname": sortname, //j为按价格，s为时间排序
+                "sortorder": sortorder //0为倒叙，1为升序
+            }, callback, error);
+        }
+
+        //分页 上拉加载更多
+        //获取滚动条当前的位置 
+        function getScrollTop() {
+            var scrollTop = 0;
+            if (document.documentElement && document.documentElement.scrollTop) {
+                scrollTop = document.documentElement.scrollTop;
+            } else if (document.body) {
+                scrollTop = document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+
+        //获取当前可视范围的高度 
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+            } else {
+                clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+            }
+            return clientHeight;
+        }
+
+        //获取文档完整的高度 
+        function getScrollHeight() {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        }
+
+    </script>
+</body>
+</html>

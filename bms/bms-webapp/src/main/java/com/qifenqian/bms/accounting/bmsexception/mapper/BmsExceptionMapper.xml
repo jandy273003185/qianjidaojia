@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.bmsexception.mapper.BmsExceptionMapper">
+
+	<select id="selectBmsExceptionList" parameterType="com.qifenqian.bms.accounting.bmsexception.bean.BmsException" resultType="com.qifenqian.bms.accounting.bmsexception.bean.BmsException">
+		SELECT
+		  EXCE_ID,
+		  EXCE_TYPE,
+		  LEVEL,
+		  MODEL,
+		  BUS_TYPE,
+		  EX_CODE,
+		  EX_DESC,
+		  CURRENT_STATE,
+		  DESCRIPTION,
+		  DATE_FORMAT(CREATEDATE,'%Y-%m-%d %H:%i:%s') as createDate,
+		  DATE_FORMAT(UPDATEDATE,'%Y-%m-%d %H:%i:%s') as updateDate,
+		  UPDATEBY,
+		  ORDER_ID
+		FROM
+		BMS_EXCEPTION 
+		WHERE 1=1
+		<if test="orderId != null and '' != orderId">
+			AND ORDER_ID LIKE CONCAT('%',#{orderId},'%')
+		</if>
+		<if test="model != null and '' != model">
+			AND MODEL = #{model}
+		</if>
+		<if test="busType != null and '' != busType">
+			AND BUS_TYPE = #{busType}
+		</if>
+		<if test="currentState != null and '' != currentState">
+			AND CURRENT_STATE = #{currentState}
+		</if>
+		<if test="beginCreateTime != null and '' != beginCreateTime">
+	 		<![CDATA[ 
+	 			AND DATE_FORMAT(CREATEDATE ,'%Y-%m-%d') >= #{beginCreateTime} 
+ 			]]>
+		</if>
+		<if test="endCreateTime != null and '' != endCreateTime">
+ 		    <![CDATA[ 
+ 				AND DATE_FORMAT(CREATEDATE ,'%Y-%m-%d') <= #{endCreateTime}
+ 			]]>
+		</if>
+		<if test="beginUpdateTime != null and '' != beginUpdateTime">
+	 		<![CDATA[ 
+	 			AND DATE_FORMAT(UPDATEDATE ,'%Y-%m-%d') >= #{beginUpdateTime} 
+ 			]]>
+		</if>
+		<if test="endUpdateTime != null and '' != endUpdateTime">
+ 		    <![CDATA[ 
+ 				AND DATE_FORMAT(UPDATEDATE ,'%Y-%m-%d') <= #{endUpdateTime}
+ 			]]>
+		</if>
+		ORDER BY CREATEDATE DESC
+	</select>
+</mapper>

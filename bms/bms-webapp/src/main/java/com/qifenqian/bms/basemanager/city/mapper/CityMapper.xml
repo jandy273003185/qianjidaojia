@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.city.mapper.CityMapper">
+
+    <select id="selectCitys" resultType="com.qifenqian.bms.basemanager.city.bean.City"
+            parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+        SELECT
+        PRO.PROVINCE_ID,
+        PRO.PROVINCE_NAME,
+        CI.CITY_ID,
+        CI.CITY_NAME,
+        AR.AREA_ID,
+        AR.AREA_CODE,
+        AR.AREA_NAME
+        FROM
+        TB_PROVINCE PRO LEFT JOIN
+        TB_CITY CI ON PRO.PROVINCE_ID = CI.PROVINCE_ID
+        LEFT JOIN TB_AREA_INFO AR ON CI.CITY_ID = AR.CITY_ID
+        <where>
+            <if test="provinceName != null and provinceName != ''">
+                AND PRO.PROVINCE_NAME LIKE CONCAT('%',#{provinceName,jdbcType = VARCHAR},'%')
+            </if>
+            <if test="cityName != null and cityName != ''">
+                AND CI.CITY_NAME LIKE CONCAT('%',#{cityName,jdbcType = VARCHAR},'%')
+            </if>
+            <if test="areaCode != null and areaCode != ''">
+                AND AR.AREA_CODE = #{areaCode,jdbcType = VARCHAR}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                AND AR.AREA_NAME LIKE CONCAT('%',#{areaName,jdbcType = VARCHAR},'%')
+            </if>
+        </where>
+        ORDER BY PRO.PROVINCE_ID
+    </select>
+
+    <select id="selectAllProvince" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+	SELECT 
+		P.PROVINCE_ID,
+		P.PROVINCE_NAME 
+	FROM 
+		TB_PROVINCE P
+	</select>
+    <select id="selectSpProvince" resultType="com.qifenqian.bms.basemanager.city.bean.RegionsBean">
+		SELECT 
+		P.PROVINCE_ID,
+		P.PROVINCE_NAME 
+	FROM 
+		tb_sp_province P
+	</select>
+    <select id="getCityByProvinceId" parameterType="string" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT 
+			C.CITY_ID,
+			C.CITY_NAME 
+		FROM 
+			TB_CITY C 
+		WHERE 
+			C.PROVINCE_ID = #{provinceId,jdbcType = VARCHAR}  
+	</select>
+
+    <select id="getSpCityByProvinceId" parameterType="string"
+            resultType="com.qifenqian.bms.basemanager.city.bean.RegionsBean">
+		SELECT 
+			C.CITY_ID,
+			C.CITY_NAME 
+		FROM 
+			tb_sp_city C 
+		WHERE 
+			C.PROVINCE_ID = #{provinceId,jdbcType = VARCHAR}  
+	</select>
+
+    <select id="getAreaByCityId" parameterType="string" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT 
+			A.AREA_ID,
+			A.AREA_NAME 
+		FROM 
+			TB_AREA_INFO A 
+		WHERE 
+			A.CITY_ID = #{cityId,jdbcType = VARCHAR}
+	</select>
+
+    <select id="getSpAreaByCityId" parameterType="string"
+            resultType="com.qifenqian.bms.basemanager.city.bean.RegionsBean">
+		SELECT 
+			A.AREA_ID,
+			A.AREA_NAME 
+		FROM 
+			tb_sp_area A 
+		WHERE 
+			A.CITY_ID = #{cityId,jdbcType = VARCHAR}
+	</select>
+
+    <select id="getAreaByAreaId" parameterType="string" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT
+			P.PROVINCE_ID,
+			P.PROVINCE_NAME,
+			C.CITY_ID,
+			C.CITY_NAME,
+			A.AREA_ID,
+			A.AREA_NAME
+		FROM
+			TB_AREA_INFO A,
+			TB_CITY C,
+			TB_PROVINCE P
+		WHERE 
+			A.CITY_ID = C.CITY_ID 
+		AND C.PROVINCE_ID = P.PROVINCE_ID
+		AND A.AREA_ID = #{areaId,jdbcType = VARCHAR}
+	</select>
+
+    <insert id="addProvince" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+			INSERT INTO TB_PROVINCE (
+			PROVINCE_ID,
+		  	PROVINCE_NAME
+			) 
+			SELECT 
+				MAX(P.PROVINCE_ID) + 1,
+			  	#{provinceName, jdbcType = VARCHAR}
+		  	FROM TB_PROVINCE P
+	</insert>
+
+    <insert id="addCity" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+			INSERT INTO TB_CITY (
+			CITY_ID,
+		  	CITY_NAME,
+		  	PROVINCE_ID
+			) SELECT 
+			MAX(C.CITY_ID)+1,
+		  	#{cityName, 	jdbcType = VARCHAR},
+		  	#{provinceId, 	jdbcType = INTEGER}
+		  	FROM TB_CITY C
+	</insert>
+
+    <insert id="addArea" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+		INSERT INTO TB_AREA_INFO (
+			AREA_ID,
+		  	AREA_CODE,
+		  	AREA_LEVEL,
+		  	AREA_NAME,
+		  	CITY_ID,
+		  	PROVINCE_ID
+			)SELECT 
+			MAX(T.AREA_ID)+1,
+		  	#{areaCode, 	jdbcType = INTEGER},
+		  	#{areaLevel, 	jdbcType = INTEGER},
+		  	#{areaName, 	jdbcType = VARCHAR},
+		  	#{cityId, 		jdbcType = INTEGER},
+		  	#{provinceId, 	jdbcType = INTEGER}
+		FROM TB_AREA_INFO T
+	</insert>
+
+    <update id="updateProvince" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+        UPDATE TB_PROVINCE P
+        <set>
+            <if test="provinceName!=''">
+                P.PROVINCE_NAME = #{provinceName, jdbcType = VARCHAR}
+            </if>
+        </set>
+        WHERE P.PROVINCE_ID = #{provinceId, jdbcType = INTEGER}
+    </update>
+
+    <update id="updateCity" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+        UPDATE TB_CITY C
+        <set>
+            <if test="cityName!=''">
+                C.CITY_NAME = #{cityName, jdbcType = VARCHAR}
+            </if>
+        </set>
+        WHERE C.CITY_ID = #{cityId, jdbcType = INTEGER}
+    </update>
+
+    <update id="updateArea" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+        UPDATE TB_AREA_INFO A
+        <set>
+            <if test="areaCode>0">
+                A.AREA_CODE = #{areaCode, jdbcType = INTEGER},
+            </if>
+            <if test="areaName!=''">
+                A.AREA_NAME = #{areaName, jdbcType = VARCHAR}
+            </if>
+        </set>
+        WHERE A.AREA_ID = #{areaId, jdbcType = INTEGER}
+    </update>
+
+    <delete id="deleteProvince" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+		DELETE FROM TB_PROVINCE 
+		WHERE PROVINCE_ID = #{provinceId,jdbcType = VARCHAR}
+	</delete>
+
+    <delete id="deleteCity" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+		DELETE FROM TB_CITY 
+		WHERE CITY_ID = #{cityId,jdbcType = VARCHAR}
+	</delete>
+
+    <delete id="deleteArea" parameterType="com.qifenqian.bms.basemanager.city.bean.City">
+		DELETE FROM TB_AREA_INFO 
+		WHERE AREA_ID = #{areaId,jdbcType = VARCHAR}
+	</delete>
+
+    <select id="findProvineAndCity" parameterType="string"
+            resultType="com.qifenqian.bms.basemanager.city.bean.ProvinceCityBean">
+		SELECT 
+			T.PROVINCE_ID,
+			T.PROVINCE_NAME,
+			C.CITY_ID,
+			C.CITY_NAME
+		FROM
+			TB_PROVINCE T JOIN TB_CITY C 
+			ON T.PROVINCE_ID = C.PROVINCE_ID 
+		WHERE 
+			T.PROVINCE_ID = #{provinceId,jdbcType = VARCHAR}  
+			AND C.CITY_ID = #{cityId,jdbcType = VARCHAR}
+	</select>
+
+    <select id="findProvineNameById" parameterType="java.lang.Integer" resultType="string">
+		SELECT C.PROVINCE_NAME 
+		FROM TB_PROVINCE C 
+		WHERE C.PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+	</select>
+
+    <select id="findCityName" parameterType="com.qifenqian.bms.basemanager.city.bean.City" resultType="string">
+		SELECT C.CITY_NAME 
+		FROM TB_CITY C 
+		WHERE C.CITY_ID = #{cityId,jdbcType=INTEGER} 
+		AND C.PROVINCE_ID = #{provinceId,jdbcType=INTEGER}
+	</select>
+
+
+    <!-- 账户信息-查询省份列表 -->
+    <select id="getProvinceLists" resultType="com.qifenqian.bms.basemanager.city.bean.CityNew">
+		SELECT
+			t.province_id,
+			t.province_name
+		FROM
+			tb_sp_province  t
+		
+	</select>
+    <!-- 账户信息-查询城市列表 -->
+    <select id="getCityList" parameterType="com.qifenqian.bms.basemanager.city.bean.CityNew"
+            resultType="com.qifenqian.bms.basemanager.city.bean.CityNew">
+        SELECT
+        t.city_id,
+        t.city_name,
+        t.province_id
+        FROM
+        tb_sp_city t
+        <where>
+            <if test="provinceId != null">
+                AND t.province_id = #{provinceId, jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by t.city_id
+    </select>
+
+    <!-- 账户信息-查询区域列表 -->
+    <select id="getAreaList" parameterType="com.qifenqian.bms.basemanager.city.bean.CityNew"
+            resultType="com.qifenqian.bms.basemanager.city.bean.CityNew">
+        SELECT
+        t.area_id,
+        t.area_name,
+        t.city_id
+        FROM
+        tb_sp_area t
+        <where>
+            <if test="cityId != null and cityId != ''">
+                AND t.city_id = #{cityId,jdbcType = VARCHAR}
+            </if>
+        </where>
+        order by t.area_id
+    </select>
+
+
+    <resultMap id="provinceVOMap" type="com.qifenqian.bms.v2.biz.common.bean.vo.ProvinceVO">
+        <result column="province_id" property="provinceId" jdbcType="VARCHAR"/>
+        <result column="province_name" property="provinceName" jdbcType="VARCHAR"/>
+        <collection property="cityVOS" ofType="com.qifenqian.bms.v2.biz.common.bean.vo.CityVO">
+            <result column="city_Id" property="cityId" jdbcType="VARCHAR"/>
+            <result column="city_name" property="cityName" jdbcType="VARCHAR"/>
+            <collection property="areaVOS" ofType="com.qifenqian.bms.v2.biz.common.bean.vo.AreaVO">
+                <result column="area_id" property="areaId" jdbcType="VARCHAR"/>
+                <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+            </collection>
+        </collection>
+    </resultMap>
+	<select id="selectProvinceTree" resultMap="provinceVOMap">
+		SELECT
+			p.province_id,
+			p.province_name,
+			c.city_id,
+			c.city_name,
+			a.area_id,
+			a.area_name
+		FROM
+			tb_sp_province p
+			LEFT JOIN tb_sp_city c ON p.province_id = c.province_id
+			LEFT JOIN tb_sp_area a ON a.city_id = c.city_id
+	</select>
+</mapper>

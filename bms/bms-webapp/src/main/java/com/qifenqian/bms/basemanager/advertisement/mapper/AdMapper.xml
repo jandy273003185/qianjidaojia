@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.basemanager.advertisement.mapper.AdMapper">
+	<select id="selectAdList" resultType="com.qifenqian.bms.basemanager.advertisement.bean.Ad" parameterType="com.qifenqian.bms.basemanager.advertisement.bean.Ad">
+		SELECT 
+		  A.AD_ID,
+		  A.AD_NAME,
+		  A.IMAGE_PATH,
+		  A.URL,
+		  A.IS_VALID,
+		  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = A.CREATE_ID) CREATE_ID,
+		  DATE_FORMAT(A.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS CREATE_TIME,
+		  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = A.MODIFY_ID) MODIFY_ID,
+		  DATE_FORMAT(A.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS MODIFY_TIME
+	    FROM 
+	    	TD_INDEX_SLIDE_AD A
+	    <where>
+			<if test="adName != null and adName != '' "> 
+				AND A.AD_NAME  LIKE CONCAT('%',#{adName, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="imagePath != null and imagePath != '' "> 
+				AND A.IMAGE_PATH  LIKE CONCAT('%',#{imagePath, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="isValid != null and isValid != '' "> 
+				AND A.IS_VALID  = #{isValid, jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY A.CREATE_TIME DESC
+	</select>
+	
+	<insert id="insertAd"  parameterType="com.qifenqian.bms.basemanager.advertisement.bean.Ad">
+		INSERT INTO TD_INDEX_SLIDE_AD (
+			AD_ID,
+			AD_NAME,
+		  	IMAGE_PATH,
+		  	URL,
+		  	IS_VALID,
+		  	CREATE_ID,
+		  	MODIFY_ID,
+		  	CREATE_TIME
+			) VALUES (
+			#{adId, 		jdbcType = VARCHAR},
+			#{adName, 		jdbcType = VARCHAR},
+		  	#{imagePath, 	jdbcType = VARCHAR},
+		  	#{url, 			jdbcType = VARCHAR},
+		  	#{isValid, 		jdbcType = VARCHAR},
+		  	#{createId, 	jdbcType = VARCHAR},
+		  	#{createId, 	jdbcType = VARCHAR},
+		  	now()
+		)
+	</insert>
+
+	<update id="updateAd" parameterType="com.qifenqian.bms.basemanager.advertisement.bean.Ad">
+		UPDATE TD_INDEX_SLIDE_AD
+		<set>
+			<if test="adName != null">
+				AD_NAME = #{adName,jdbcType = VARCHAR},
+			</if>
+			<if test="imagePath != null">
+				IMAGE_PATH = #{imagePath,jdbcType = VARCHAR},
+			</if>
+			<if test="url != null">
+				URL = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="isValid != null">
+				IS_VALID = #{isValid,jdbcType = VARCHAR},
+			</if>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType = VARCHAR},
+			</if>
+				MODIFY_TIME = NOW()
+		</set>
+			WHERE AD_ID = #{adId,jdbcType = VARCHAR}
+	</update>
+	
+	<select id="selectAdById" resultType="com.qifenqian.bms.basemanager.advertisement.bean.Ad" parameterType="string">
+		SELECT U.* 
+	    FROM TD_INDEX_SLIDE_AD U 
+	    WHERE AD_ID = #{adId,jdbcType = VARCHAR}
+	</select>
+</mapper>

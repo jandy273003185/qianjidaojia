@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.settle.mapper.MerchantSettleMapper">
+	
+	<select id="selectList" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+    	SELECT T.ID,
+				M.MERCHANT_CODE,
+				T.CUST_ID,
+				M.CUST_NAME MERCHANT_NAME,
+				T.WORK_DATE,
+				T.SETTLE_BEGIN_DATE,
+				T.SETTLE_END_DATE,
+				T.RECEIVE_COUNT,
+				T.RECEIVE_TOTAL_AMT,
+				T.RECEIVE_TOTAL_FEE,
+				T.REVOKE_COUNT,
+				T.REVOKE_TOTAL_AMT,
+				T.REVOKE_TOTAL_FEE,
+				T.REFUND_COUNT,
+				T.REFUND_TOTAL_AMT,
+				T.REFUND_TOTAL_FEE,
+				T.WITHDRAW_COUNT,
+				T.WITHDRAW_TOTAL_AMT,
+				T.WITHDRAW_TOTAL_FEE,
+				T.TRANSFER_IN_COUNT,
+				T.TRANSFER_IN_TOTAL_AMT,
+				T.TRANSFER_IN_TOTAL_FEE,
+				T.TRANSFER_OUT_COUNT,
+				T.TRANSFER_OUT_TOTAL_AMT,
+				T.TRANSFER_OUT_TOTAL_FEE,
+				T.MERCHANT_RECEIVABLE,
+				T.MERCHANT_PAYABLE,
+				T.SETTLE_AMT,
+				T.FINISH_DATE,
+				T.STATUS,
+				(CASE T.STATUS WHEN 'INIT' THEN '待确认' WHEN 'AUDIT_PASS' THEN '待核销' WHEN 'VERIFIED' THEN '已核销' WHEN 'INVALID' THEN '无效' END) STATUS_STR,
+				T.PROTOCOL_ID,
+				A1.COLUMN_VALUE BANK_CARD_NO,
+    		    A3.COLUMN_VALUE BANK_CARD_NAME,
+    		    A4.COLUMN_VALUE BANK_NAME,
+				T.MEMO,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.INST_USER) INST_USER_NAME,
+				T.INST_DATE,
+				DATE_FORMAT(T.INST_DATETIME, '%Y-%m-%d %H:%i:%s') INST_DATETIME_STR,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.AUDIT_USER) AUDIT_USER_NAME,
+				DATE_FORMAT(T.AUDIT_DATETIME, '%Y-%m-%d %H:%i:%s') AUDIT_DATETIME_STR,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.VERIFIED_USER) VERIFIED_USER_NAME,
+				DATE_FORMAT(T.VERIFIED_DATETIME, '%Y-%m-%d %H:%i:%s') VERIFIED_DATETIME_STR,
+				T.APPLY_CORE_ID,
+				T.SETTLE_CORE_ID,
+				K.CLEAR_ID,
+				T.bat_no,
+				T.t_flag,
+				(CASE WHEN (SELECT COUNT(1) FROM BMS_MERCHANT_SETTLE_DETAIL WHERE TOGETHER_ID = T.ID) > 0 THEN 'Y' ELSE 'N' END) IS_TOGETHER
+    	  FROM BMS_MERCHANT_SETTLE T
+    	  JOIN td_cust_info M ON T.CUST_ID = M.CUST_ID
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID AND A1.COLUMN_CODE = 'bankCardNo'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A2 ON A2.PROTOCOL_ID = T.PROTOCOL_ID AND A2.COLUMN_CODE = 'merchantName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID AND A3.COLUMN_CODE = 'bankCardName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID AND A4.COLUMN_CODE = 'bankName'
+		  LEFT JOIN BMS_CLEAR_KINGDEE_PAY K ON T.APPLY_CORE_ID = K.OPER_ID 
+    	 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 AND M.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+			 </if>
+			<if test="workDateMax != null and workDateMax != '' ">
+			 AND #{workDateMax, jdbcType=VARCHAR} >= T.WORK_DATE
+			 </if>
+			<if test="workDateMin != null and workDateMin != '' ">
+			 AND T.WORK_DATE >= #{workDateMin, jdbcType=VARCHAR}
+			 </if>
+			<if test="status != null and status != '' "> 
+			AND T.STATUS = #{status, jdbcType=VARCHAR}
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'yes' "> 
+			AND T.SETTLE_AMT = 0
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'no' "> 
+			AND T.SETTLE_AMT != 0
+			</if>
+			<if test="applyCoreId != null and applyCoreId != '' "> 
+			AND T.APPLY_CORE_ID = #{applyCoreId,jdbcType=VARCHAR}
+			</if>
+			<if test="clearId != null and clearId != '' "> 
+			AND K.CLEAR_ID = #{clearId,jdbcType=VARCHAR}
+			</if>
+			<if test="protocolId != null and protocolId != '' "> 
+			AND T.PROTOCOL_ID = #{protocolId,jdbcType = VARCHAR}
+			</if>
+			<if test="id != null and id != '' "> 
+			AND T.ID = #{id,jdbcType = VARCHAR}
+			</if>
+			<if test="batNo != null and batNo != '' ">
+			 AND T.bat_no = #{batNo,jdbcType=VARCHAR}
+			 </if>
+		 	<if test="isT_O !='' and isT_O != null and isT_O == 'YES' ">
+			and T.t_flag = 'T0'
+			</if>
+			<if test="isT_O !='' and isT_O != null and isT_O == 'NO' ">
+			and T.t_flag != 'T0'
+			</if>
+			AND M.MERCHANT_FLAG in ('0','2')
+		</where>
+		ORDER BY T.WORK_DATE DESC, T.AUDIT_DATETIME DESC
+	</select>
+	
+	<select id="selectAgencyList" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+    	SELECT T.ID,
+				M.MERCHANT_CODE,
+				T.CUST_ID,
+				M.CUST_NAME MERCHANT_NAME,
+				T.WORK_DATE,
+				T.SETTLE_BEGIN_DATE,
+				T.SETTLE_END_DATE,
+				T.RECEIVE_COUNT,
+				T.RECEIVE_TOTAL_AMT,
+				T.RECEIVE_TOTAL_FEE,
+				T.REVOKE_COUNT,
+				T.REVOKE_TOTAL_AMT,
+				T.REVOKE_TOTAL_FEE,
+				T.REFUND_COUNT,
+				T.REFUND_TOTAL_AMT,
+				T.REFUND_TOTAL_FEE,
+				T.WITHDRAW_COUNT,
+				T.WITHDRAW_TOTAL_AMT,
+				T.WITHDRAW_TOTAL_FEE,
+				T.TRANSFER_IN_COUNT,
+				T.TRANSFER_IN_TOTAL_AMT,
+				T.TRANSFER_IN_TOTAL_FEE,
+				T.TRANSFER_OUT_COUNT,
+				T.TRANSFER_OUT_TOTAL_AMT,
+				T.TRANSFER_OUT_TOTAL_FEE,
+				T.MERCHANT_RECEIVABLE,
+				T.MERCHANT_PAYABLE,
+				T.SETTLE_AMT,
+				T.FINISH_DATE,
+				T.STATUS,
+				(CASE T.STATUS WHEN 'INIT' THEN '待确认' WHEN 'AUDIT_PASS' THEN '待核销' WHEN 'VERIFIED' THEN '已核销' WHEN 'INVALID' THEN '无效' END) STATUS_STR,
+				T.PROTOCOL_ID,
+				A1.COLUMN_VALUE BANK_CARD_NO,
+    		    A3.COLUMN_VALUE BANK_CARD_NAME,
+    		    A4.COLUMN_VALUE BANK_NAME,
+				T.MEMO,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.INST_USER) INST_USER_NAME,
+				T.INST_DATE,
+				DATE_FORMAT(T.INST_DATETIME, '%Y-%m-%d %H:%i:%s') INST_DATETIME_STR,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.AUDIT_USER) AUDIT_USER_NAME,
+				DATE_FORMAT(T.AUDIT_DATETIME, '%Y-%m-%d %H:%i:%s') AUDIT_DATETIME_STR,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.VERIFIED_USER) VERIFIED_USER_NAME,
+				DATE_FORMAT(T.VERIFIED_DATETIME, '%Y-%m-%d %H:%i:%s') VERIFIED_DATETIME_STR,
+				T.APPLY_CORE_ID,
+				T.SETTLE_CORE_ID,
+				K.CLEAR_ID,
+				(CASE WHEN (SELECT COUNT(1) FROM BMS_MERCHANT_SETTLE_DETAIL WHERE TOGETHER_ID = T.ID) > 0 THEN 'Y' ELSE 'N' END) IS_TOGETHER
+    	  FROM BMS_MERCHANT_SETTLE T
+    	  JOIN TD_CUST_INFO M ON T.CUST_ID = M.CUST_ID
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID  AND A1.COLUMN_CODE = 'bankCardNo'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A2 ON A2.PROTOCOL_ID = T.PROTOCOL_ID  AND A2.COLUMN_CODE = 'merchantName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID  AND A3.COLUMN_CODE = 'bankCardName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID  AND A4.COLUMN_CODE = 'bankName'
+		  LEFT JOIN BMS_CLEAR_KINGDEE_PAY K ON T.APPLY_CORE_ID = K.OPER_ID 
+    	 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 AND M.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+			 </if>
+			<if test="workDateMax != null and workDateMax != '' ">
+			 AND #{workDateMax, jdbcType=VARCHAR} >= T.WORK_DATE
+			 </if>
+			<if test="workDateMin != null and workDateMin != '' ">
+			 AND T.WORK_DATE >= #{workDateMin, jdbcType=VARCHAR}
+			 </if>
+			<if test="status != null and status != '' "> 
+			AND T.STATUS = #{status, jdbcType=VARCHAR}
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'yes' "> 
+			AND T.SETTLE_AMT = 0
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'no' "> 
+			AND T.SETTLE_AMT != 0
+			</if>
+			<if test="applyCoreId != null and applyCoreId != '' "> 
+			AND T.APPLY_CORE_ID = #{applyCoreId,jdbcType=VARCHAR}
+			</if>
+			<if test="clearId != null and clearId != '' "> 
+			AND K.CLEAR_ID = #{clearId,jdbcType=VARCHAR}
+			</if>
+			<if test="protocolId != null and protocolId != '' "> 
+			AND T.PROTOCOL_ID = #{protocolId,jdbcType = VARCHAR}
+			</if>
+			<if test="id != null and id != '' "> 
+			AND T.ID = #{id,jdbcType = VARCHAR}
+			</if>
+			AND M.MERCHANT_FLAG in ('3')
+		</where>
+		ORDER BY T.WORK_DATE DESC, T.AUDIT_DATETIME DESC
+	</select>
+	
+	<select id="selectSingle" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+		SELECT T.*,
+			   A1.COLUMN_VALUE BANK_CARD_NO,
+    		   M.CUST_NAME MERCHANT_NAME,
+    		   A3.COLUMN_VALUE BANK_CARD_NAME,
+    		   A4.COLUMN_VALUE BANK_NAME
+    	  FROM BMS_MERCHANT_SETTLE T
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID  AND A1.COLUMN_CODE = 'bankCardNo'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID  AND A3.COLUMN_CODE = 'bankCardName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID  AND A4.COLUMN_CODE = 'bankName'
+    	  LEFT JOIN TD_CUST_INFO M ON T.CUST_ID = M.CUST_ID
+    	  
+    	  WHERE T.ID = #{id, jdbcType=VARCHAR}
+	</select>
+  
+  	<update id="updateById" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+  		UPDATE BMS_MERCHANT_SETTLE T
+  		<set>
+  			<if test="finishDate != null">
+				T.FINISH_DATE 	= #{finishDate, 	jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				T.STATUS 	= #{status, 	jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				T.MEMO 	= #{memo, 	jdbcType=VARCHAR},
+			</if>
+			<if test="auditUser != null">
+				T.AUDIT_USER 	= #{auditUser, 	jdbcType=VARCHAR},
+			</if>
+			<if test="auditDatetime != null">
+				T.AUDIT_DATETIME 	= #{auditDatetime, 	jdbcType=TIMESTAMP},
+			</if>
+			<if test="verifiedUser != null">
+				T.VERIFIED_USER 	= #{verifiedUser, 	jdbcType=VARCHAR},
+			</if>
+			<if test="verifiedDatetime != null">
+				T.VERIFIED_DATETIME 	= #{verifiedDatetime, 	jdbcType=TIMESTAMP},
+			</if>
+			<if test="applyCoreId != null">
+				T.apply_core_id 	= #{applyCoreId, 	jdbcType=VARCHAR},
+			</if>
+			<if test="settleCoreId != null">
+				T.settle_core_id 	= #{settleCoreId, 	jdbcType=VARCHAR},
+			</if>
+  		</set>
+  		WHERE T.ID = #{id, 	jdbcType=VARCHAR}
+  	</update>
+  	
+  	<update id="updateToSettle" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+  		UPDATE TR_MERCHANT_SETTLE T
+  			SET T.SETTLE_STATUS = '1', 
+  			T.FINISH_DATE = #{finishDate, jdbcType=VARCHAR}
+  		WHERE T.CUST_ID = #{custId, jdbcType=VARCHAR}
+  		  AND T.TRAN_DATE >= #{settleBeginDate, jdbcType=VARCHAR}
+  		  AND #{settleEndDate, jdbcType=VARCHAR} >= T.TRAN_DATE
+  	</update>
+  	
+  	<select id="selectExportList" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettleExport">
+    	SELECT  T.ID,
+    			T.APPLY_CORE_ID,
+				M.MERCHANT_CODE, 
+				M.CUST_NAME MERCHANT_NAME,
+				T.WORK_DATE,
+				T.SETTLE_BEGIN_DATE,
+				T.SETTLE_END_DATE,
+				T.RECEIVE_COUNT,
+				T.RECEIVE_TOTAL_AMT,
+				T.RECEIVE_TOTAL_FEE,
+				T.REVOKE_COUNT,
+				T.REVOKE_TOTAL_AMT,
+				T.REVOKE_TOTAL_FEE,
+				T.REFUND_COUNT,
+				T.REFUND_TOTAL_AMT,
+				T.REFUND_TOTAL_FEE,
+				T.WITHDRAW_COUNT,
+				T.WITHDRAW_TOTAL_AMT,
+				T.WITHDRAW_TOTAL_FEE,
+				T.TRANSFER_IN_COUNT,
+				T.TRANSFER_IN_TOTAL_AMT,
+				T.TRANSFER_IN_TOTAL_FEE,
+				T.TRANSFER_OUT_COUNT,
+				T.TRANSFER_OUT_TOTAL_AMT,
+				T.TRANSFER_OUT_TOTAL_FEE,
+				T.MERCHANT_RECEIVABLE,
+				T.MERCHANT_PAYABLE,
+				T.SETTLE_AMT,
+				T.FINISH_DATE,
+				T.STATUS,
+				T.PROTOCOL_ID,
+				A1.COLUMN_VALUE BANK_CARD_NO,
+    		    A3.COLUMN_VALUE BANK_CARD_NAME,
+    		    A4.COLUMN_VALUE BANK_NAME,
+				T.MEMO,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.INST_USER) INST_USER_NAME,
+				T.INST_DATE,
+				DATE_FORMAT(T.INST_DATETIME, '%Y-%m-%d %H:%i:%s') INST_DATETIME,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.AUDIT_USER) AUDIT_USER_NAME,
+				DATE_FORMAT(T.AUDIT_DATETIME, '%Y-%m-%d %H:%i:%s') AUDIT_DATETIME,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.VERIFIED_USER) VERIFIED_USER_NAME,
+				DATE_FORMAT(T.VERIFIED_DATETIME, '%Y-%m-%d %H:%i:%s') VERIFIED_DATETIME,
+				K.CLEAR_ID,
+				T.bat_no,
+				T.t_flag
+    	  FROM BMS_MERCHANT_SETTLE T
+    	  JOIN td_cust_info M ON T.CUST_ID = M.CUST_ID
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID  AND A1.COLUMN_CODE = 'bankCardNo'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A2 ON A2.PROTOCOL_ID = T.PROTOCOL_ID  AND A2.COLUMN_CODE = 'merchantName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID  AND A3.COLUMN_CODE = 'bankCardName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID  AND A4.COLUMN_CODE = 'bankName'
+    	  LEFT JOIN BMS_CLEAR_KINGDEE_PAY K ON T.APPLY_CORE_ID = K.OPER_ID 
+    	 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 AND M.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+			 </if>
+			<if test="workDateMax != null and workDateMax != '' ">
+			 AND #{workDateMax, jdbcType=VARCHAR} >= T.WORK_DATE
+			 </if>
+			<if test="workDateMin != null and workDateMin != '' "> 
+			AND T.WORK_DATE >= #{workDateMin, jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != '' "> 
+			AND T.STATUS = #{status, jdbcType=VARCHAR}
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'yes' "> 
+			AND T.SETTLE_AMT = 0
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'no' "> 
+			AND T.SETTLE_AMT != 0
+			</if>
+			<if test="applyCoreId != null and applyCoreId != '' "> 
+			AND T.APPLY_CORE_ID = #{applyCoreId,jdbcType=VARCHAR}
+			</if>
+			<if test="clearId != null and clearId != '' "> 
+			AND K.CLEAR_ID = #{clearId,jdbcType=VARCHAR}
+			</if>
+			<if test="protocolId != null and protocolId != '' "> 
+			AND T.PROTOCOL_ID = #{protocolId,jdbcType = VARCHAR}
+			</if>
+			<if test="id != null and id != '' "> 
+			AND T.ID = #{id,jdbcType = VARCHAR}
+			</if>
+			<if test="batNo != null and batNo != '' ">
+			 AND T.bat_no = #{batNo,jdbcType=VARCHAR}
+			 </if>
+			 <if test="isT_O !='' and isT_O != null and isT_O == 'YES' ">
+			and T.t_flag = 'T0'
+			</if>
+			<if test="isT_O !='' and isT_O != null and isT_O == 'NO' ">
+			and T.t_flag != 'T0'
+			</if>
+			AND M.MERCHANT_FLAG in ('0','2')
+		</where>
+		ORDER BY T.WORK_DATE ,T.AUDIT_DATETIME DESC
+	</select>
+	
+	<select id="selectAgencyExportList" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettleExport">
+    	SELECT  T.ID,
+    			T.APPLY_CORE_ID,
+				M.MERCHANT_CODE, 
+				M.CUST_NAME MERCHANT_NAME,
+				T.WORK_DATE,
+				T.SETTLE_BEGIN_DATE,
+				T.SETTLE_END_DATE,
+				T.RECEIVE_COUNT,
+				T.RECEIVE_TOTAL_AMT,
+				T.RECEIVE_TOTAL_FEE,
+				T.REVOKE_COUNT,
+				T.REVOKE_TOTAL_AMT,
+				T.REVOKE_TOTAL_FEE,
+				T.REFUND_COUNT,
+				T.REFUND_TOTAL_AMT,
+				T.REFUND_TOTAL_FEE,
+				T.WITHDRAW_COUNT,
+				T.WITHDRAW_TOTAL_AMT,
+				T.WITHDRAW_TOTAL_FEE,
+				T.TRANSFER_IN_COUNT,
+				T.TRANSFER_IN_TOTAL_AMT,
+				T.TRANSFER_IN_TOTAL_FEE,
+				T.TRANSFER_OUT_COUNT,
+				T.TRANSFER_OUT_TOTAL_AMT,
+				T.TRANSFER_OUT_TOTAL_FEE,
+				T.MERCHANT_RECEIVABLE,
+				T.MERCHANT_PAYABLE,
+				T.SETTLE_AMT,
+				T.FINISH_DATE,
+				T.STATUS,
+				T.PROTOCOL_ID,
+				A1.COLUMN_VALUE BANK_CARD_NO,
+    		    A3.COLUMN_VALUE BANK_CARD_NAME,
+    		    A4.COLUMN_VALUE BANK_NAME,
+				T.MEMO,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.INST_USER) INST_USER_NAME,
+				T.INST_DATE,
+				DATE_FORMAT(T.INST_DATETIME, '%Y-%m-%d %H:%i:%s') INST_DATETIME,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.AUDIT_USER) AUDIT_USER_NAME,
+				DATE_FORMAT(T.AUDIT_DATETIME, '%Y-%m-%d %H:%i:%s') AUDIT_DATETIME,
+				(SELECT REAL_NAME FROM sys_user WHERE USER_ID = T.VERIFIED_USER) VERIFIED_USER_NAME,
+				DATE_FORMAT(T.VERIFIED_DATETIME, '%Y-%m-%d %H:%i:%s') VERIFIED_DATETIME,
+				K.CLEAR_ID
+    	  FROM BMS_MERCHANT_SETTLE T
+    	  JOIN TD_CUST_INFO M ON T.CUST_ID = M.CUST_ID
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID  AND A1.COLUMN_CODE = 'bankCardNo'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A2 ON A2.PROTOCOL_ID = T.PROTOCOL_ID  AND A2.COLUMN_CODE = 'merchantName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID  AND A3.COLUMN_CODE = 'bankCardName'
+    	  LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID  AND A4.COLUMN_CODE = 'bankName'
+    	  LEFT JOIN BMS_CLEAR_KINGDEE_PAY K ON T.APPLY_CORE_ID = K.OPER_ID 
+    	 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 AND M.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+			 </if>
+			<if test="workDateMax != null and workDateMax != '' ">
+			 AND #{workDateMax, jdbcType=VARCHAR} >= T.WORK_DATE
+			 </if>
+			<if test="workDateMin != null and workDateMin != '' "> 
+			AND T.WORK_DATE >= #{workDateMin, jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != '' "> 
+			AND T.STATUS = #{status, jdbcType=VARCHAR}
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'yes' "> 
+			AND T.SETTLE_AMT = 0
+			</if>
+			<if test="settleAmtIsZero != null and settleAmtIsZero == 'no' "> 
+			AND T.SETTLE_AMT != 0
+			</if>
+			<if test="applyCoreId != null and applyCoreId != '' "> 
+			AND T.APPLY_CORE_ID = #{applyCoreId,jdbcType=VARCHAR}
+			</if>
+			<if test="clearId != null and clearId != '' "> 
+			AND K.CLEAR_ID = #{clearId,jdbcType=VARCHAR}
+			</if>
+			<if test="protocolId != null and protocolId != '' "> 
+			AND T.PROTOCOL_ID = #{protocolId,jdbcType = VARCHAR}
+			</if>
+			<if test="id != null and id != '' "> 
+			AND T.ID = #{id,jdbcType = VARCHAR}
+			</if>
+			AND M.MERCHANT_FLAG = '3'
+		</where>
+		ORDER BY T.WORK_DATE ,T.AUDIT_DATETIME DESC
+	</select>
+	
+	
+  	<select id="selectListByIds" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+    	SELECT T.*
+    	  FROM BMS_MERCHANT_SETTLE T
+         WHERE T.ID IN
+         	<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+               #{item}
+       		</foreach>
+       	 ORDER BY T.SETTLE_BEGIN_DATE
+  	</select> 
+  	
+  	<select id="selectDetailListByTogetherId" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+    	SELECT T.*
+    	  FROM BMS_MERCHANT_SETTLE_DETAIL T
+         WHERE T.TOGETHER_ID = #{togetherId, jdbcType=VARCHAR}
+       	 ORDER BY T.SETTLE_BEGIN_DATE
+  	</select> 
+  	
+  	<update id="insertSettleDetailById" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+  		insert into bms_merchant_settle_detail(
+			settle_id,
+			cust_id,
+			work_date,
+			settle_begin_date,
+			settle_end_date,
+			protocol_id,
+			receive_count,
+			receive_total_amt,
+			receive_total_fee,
+			revoke_count,
+			revoke_total_amt,
+			revoke_total_fee,
+			refund_count,
+			refund_total_amt,
+			refund_total_fee,
+			withdraw_count,
+			withdraw_total_amt,
+			withdraw_total_fee,
+			transfer_in_count,
+			transfer_in_total_amt,
+			transfer_in_total_fee,
+			transfer_out_count,
+			transfer_out_total_amt,
+			transfer_out_total_fee,
+			merchant_receivable,
+			merchant_payable,
+			settle_amt,
+			finish_date,
+			status,
+			memo,
+			inst_user,
+			inst_date,
+			inst_datetime,
+			audit_user,
+			audit_datetime,
+			verified_user,
+			verified_datetime,
+			apply_core_id,
+			settle_core_id,
+			together_id
+  		)
+  		select 
+  			id,
+  			cust_id,
+			work_date,
+			settle_begin_date,
+			settle_end_date,
+			protocol_id,
+			receive_count,
+			receive_total_amt,
+			receive_total_fee,
+			revoke_count,
+			revoke_total_amt,
+			revoke_total_fee,
+			refund_count,
+			refund_total_amt,
+			refund_total_fee,
+			withdraw_count,
+			withdraw_total_amt,
+			withdraw_total_fee,
+			transfer_in_count,
+			transfer_in_total_amt,
+			transfer_in_total_fee,
+			transfer_out_count,
+			transfer_out_total_amt,
+			transfer_out_total_fee,
+			merchant_receivable,
+			merchant_payable,
+			settle_amt,
+			finish_date,
+			status,
+			memo,
+			inst_user,
+			inst_date,
+			inst_datetime,
+			audit_user,
+			audit_datetime,
+			verified_user,
+			verified_datetime,
+			apply_core_id,
+			settle_core_id,
+			#{togetherId, jdbcType=VARCHAR}
+  		from BMS_MERCHANT_SETTLE t
+  		where T.ID = #{id, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<delete id="deleteSettleById" parameterType="java.lang.String">
+  		delete from BMS_MERCHANT_SETTLE where id = #{id, jdbcType=VARCHAR}
+  	</delete>
+  	
+  	<insert id="insertSettle" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+  		insert into bms_merchant_settle(
+  			id,
+			cust_id,
+			work_date,
+			settle_begin_date,
+			settle_end_date,
+			protocol_id,
+			receive_count,
+			receive_total_amt,
+			receive_total_fee,
+			revoke_count,
+			revoke_total_amt,
+			revoke_total_fee,
+			refund_count,
+			refund_total_amt,
+			refund_total_fee,
+			withdraw_count,
+			withdraw_total_amt,
+			withdraw_total_fee,
+			transfer_in_count,
+			transfer_in_total_amt,
+			transfer_in_total_fee,
+			transfer_out_count,
+			transfer_out_total_amt,
+			transfer_out_total_fee,
+			merchant_receivable,
+			merchant_payable,
+			settle_amt,
+			status,
+			memo,
+			inst_user,
+			inst_date
+  		) VALUES(
+  			#{id,					jdbcType=VARCHAR},
+			#{custId,				jdbcType=VARCHAR},
+			#{workDate,				jdbcType=VARCHAR},
+			#{settleBeginDate,		jdbcType=VARCHAR},
+			#{settleEndDate,		jdbcType=VARCHAR},
+			#{protocolId,			jdbcType=VARCHAR},
+			#{receiveCount,			jdbcType=VARCHAR},
+			#{receiveTotalAmt,		jdbcType=DECIMAL},
+			#{receiveTotalFee,		jdbcType=DECIMAL},
+			#{revokeCount,			jdbcType=INTEGER},
+			#{revokeTotalAmt,		jdbcType=DECIMAL},
+			#{revokeTotalFee,		jdbcType=DECIMAL},
+			#{refundCount,			jdbcType=INTEGER},
+			#{refundTotalAmt,		jdbcType=DECIMAL},
+			#{refundTotalFee,		jdbcType=DECIMAL},
+			#{withdrawCount,		jdbcType=INTEGER},
+			#{withdrawTotalAmt,		jdbcType=DECIMAL},
+			#{withdrawTotalFee,		jdbcType=DECIMAL},
+			#{transferInCount,		jdbcType=INTEGER},
+			#{transferInTotalAmt,	jdbcType=DECIMAL},
+			#{transferInTotalFee,	jdbcType=DECIMAL},
+			#{transferOutCount,		jdbcType=INTEGER},
+			#{transferOutTotalAmt,	jdbcType=DECIMAL},
+			#{transferOutTotalFee,	jdbcType=DECIMAL},
+			#{merchantReceivable,	jdbcType=DECIMAL},
+			#{merchantPayable,		jdbcType=DECIMAL},
+			#{settleAmt,			jdbcType=DECIMAL},
+			#{status,				jdbcType=VARCHAR},
+			#{memo,					jdbcType=VARCHAR},
+			#{instUser,				jdbcType=VARCHAR},
+			#{instDate,				jdbcType=VARCHAR}
+  		)
+  	</insert>
+  	
+  	<update id="insertSettleByTogetherBean" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+  		INSERT INTO BMS_MERCHANT_SETTLE(
+			ID,
+			CUST_ID,
+			WORK_DATE,
+			SETTLE_BEGIN_DATE,
+			SETTLE_END_DATE,
+			PROTOCOL_ID,
+			RECEIVE_COUNT,
+			RECEIVE_TOTAL_AMT,
+			RECEIVE_TOTAL_FEE,
+			REVOKE_COUNT,
+			REVOKE_TOTAL_AMT,
+			REVOKE_TOTAL_FEE,
+			REFUND_COUNT,
+			REFUND_TOTAL_AMT,
+			REFUND_TOTAL_FEE,
+			WITHDRAW_COUNT,
+			WITHDRAW_TOTAL_AMT,
+			WITHDRAW_TOTAL_FEE,
+			transfer_in_count,
+			transfer_in_total_amt,
+			transfer_in_total_fee,
+			transfer_out_count,
+			transfer_out_total_amt,
+			transfer_out_total_fee,
+			MERCHANT_RECEIVABLE,
+			MERCHANT_PAYABLE,
+			SETTLE_AMT,
+			FINISH_DATE,
+			STATUS,
+			MEMO,
+			INST_USER,
+			INST_DATE
+  		)
+  		SELECT 
+  			SETTLE_ID,
+  			CUST_ID,
+			WORK_DATE,
+			SETTLE_BEGIN_DATE,
+			SETTLE_END_DATE,
+			PROTOCOL_ID,
+			RECEIVE_COUNT,
+			RECEIVE_TOTAL_AMT,
+			RECEIVE_TOTAL_FEE,
+			REVOKE_COUNT,
+			REVOKE_TOTAL_AMT,
+			REVOKE_TOTAL_FEE,
+			REFUND_COUNT,
+			REFUND_TOTAL_AMT,
+			REFUND_TOTAL_FEE,
+			WITHDRAW_COUNT,
+			WITHDRAW_TOTAL_AMT,
+			WITHDRAW_TOTAL_FEE,
+			transfer_in_count,
+			transfer_in_total_amt,
+			transfer_in_total_fee,
+			transfer_out_count,
+			transfer_out_total_amt,
+			transfer_out_total_fee,
+			MERCHANT_RECEIVABLE,
+			MERCHANT_PAYABLE,
+			SETTLE_AMT,
+			FINISH_DATE,
+			'INIT',
+			MEMO,
+			#{instUser, jdbcType=VARCHAR},
+			#{instDate, jdbcType=VARCHAR}
+  		FROM BMS_MERCHANT_SETTLE_DETAIL T
+  		WHERE T.TOGETHER_ID = #{togetherId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	
+  	<update id="updateSettleDetailByTogetherId" parameterType="java.lang.String">
+  		UPDATE BMS_MERCHANT_SETTLE_DETAIL T
+  			SET T.STATUS = 'INVALID'
+  		WHERE T.TOGETHER_ID = #{togetherId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<insert id="insertChildSettle" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantChildSettle">
+	  	INSERT INTO BMS_MERCHANT_CHILD_SETTLE(
+	  		ORDER_ID,
+	  		SETTLE_ID,
+	  		CUST_ID,
+	  		STATUS,
+	  		CREATE_ID,
+	  		CREATE_TIME,
+	  		OPER_TYPE
+	  	)VALUES(
+	  		#{orderId,	jdbcType = VARCHAR},
+	  		#{settleId,	jdbcType = VARCHAR},
+	  		#{custId,	jdbcType = VARCHAR},
+	  		#{status,	jdbcType = VARCHAR},
+	  		#{createId,	jdbcType = VARCHAR},
+	  		NOW(),
+	  		#{operType,	jdbcType = VARCHAR}
+	  	)
+  	</insert>
+  	
+  	<update id="updateChildSettle" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantChildSettle">
+  		UPDATE BMS_MERCHANT_CHILD_SETTLE T
+  		<set>
+	  		<if test="status!=null and status!='' ">
+	  			T.STATUS = #{status,jdbcType = VARCHAR},
+	  		</if>
+	  		<if test="coreReturnCode!=null and coreReturnCode!='' ">
+	  			T.CORE_RETURN_CODE = #{coreReturnCode,jdbcType = VARCHAR},
+	  		</if>
+	  		<if test="coreReturnMsg!=null and coreReturnMsg!='' ">
+	  			T.CORE_RETURN_MSG = #{coreReturnMsg,jdbcType = VARCHAR},
+	  		</if>
+	  		<if test="coreSn!=null and coreSn!='' ">
+	  			T.CORE_SN = #{coreSn,jdbcType = VARCHAR},
+	  		</if>
+	  			T.CORE_RETURN_TIME = NOW()
+  		</set>
+  		WHERE T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+  	</update>
+  	
+  	<select id="selectCronSnByApplyCordId" parameterType="string" resultType="string">
+	  	SELECT 
+	  		T.CORE_SN 
+	  	FROM 
+	  	BMS_MERCHANT_CHILD_SETTLE T 
+	  	WHERE T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	  	AND T.STATUS = '02'
+  	</select>
+  	<select id="selectTdloginUserInfoByMouble" parameterType="string" resultType="string">
+  	
+  	SELECT  t.MOBILE FROM   td_login_user_info t
+  	
+  	 WHERE t.CUST_ID= #{custId,jdbcType = VARCHAR}
+	  
+  	</select>
+</mapper>

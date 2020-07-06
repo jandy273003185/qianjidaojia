@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提交退款</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/submitRefund.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div class="goodsList">
+        <div class="goods line">
+            <div class="goodsImg"><img src="" alt=""></div>
+            <div class="goods-right">
+                <p class="goodsName">roaringwild ss18 咆哮猛兽 观察原生面料印花短袖roaringwild ss18 咆哮猛兽 观察原生面料印花短袖roaringwild ss18 咆哮猛兽 观察原生面料印花短袖</p>
+                <p class="num">x2</p>
+                <p class="price">¥ 189.00</p>
+            </div>
+        </div>
+
+        <div class="goods line">
+            <div class="goodsImg"><img src="" alt=""></div>
+            <div class="goods-right">
+                <p class="goodsName">roaringwild ss18 咆哮猛兽 观察原生面料印花短袖roaringwild ss18 咆哮猛兽 观察原生面料印花短袖roaringwild ss18 咆哮猛兽 观察原生面料印花短袖</p>
+                <p class="num">x2</p>
+                <p class="price">¥ 189.00</p>
+            </div>
+        </div>
+
+        <div class="item distribution">
+            <span class="item-title">退款原因</span>
+            <div class="select"><span id="refundVal">请选择</span><img class="arrow" src="../images/arrow-right.png" alt=""></div>
+        </div>
+        <div class="item "><span class="item-title">退款金额</span><span class="subtotal">¥ 90</span></div>
+        <div class="item "><span class="item-title">退款说明:</span><input id="refundExplain" type="text" placeholder="选填"></div>
+    </div>
+
+    <div class="down">
+        <p>上传凭证</p>
+        <div class="upload-img">
+            <img src="../images/camera.png" id="photo" alt="" />
+        </div>
+        <input type="file" name="file" id="file" style="display: none;" />
+        <input type="hidden" id="fileVal">
+    </div>
+
+    <button class="submit">提交</button>
+
+    <!--弹出提示框 -->
+    <section id="hintBox">
+        <div class="rufundReasonList">
+            <p class="rufundReason line">拍错/多拍/不想要</p>
+            <p class="rufundReason line">协商一致退款</p>
+            <p class="rufundReason line">缺货</p>
+            <p class="rufundReason line">未按约定时间发货</p>
+            <p class="rufundReason">其他</p>
+            <button class="close">关闭</button>
+        </div>
+        <div class="refund-explain">
+            <p>退款说明</p>
+            <textarea name="" id="refundExplain2" cols="32" rows="10" placeholder="请输入"></textarea>
+            <button class="confirm">确定</button>
+        </div>
+    </section>
+
+    <div class="lock"></div>
+    <script>
+        $(function() {
+            function chooseImage(fileid, imgid, fileValId) {
+                var fileObj = document.getElementById(fileid);
+                if (typeof(fileObj) == "undefined" || fileObj.files.length == 0) {
+                    console.log('file ' + fileid + ' not exists');
+                    return;
+                }
+                var file = fileObj.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(e) {
+                    var imgResult = e.target.result;
+                    var imgObj = document.getElementById(imgid);
+                    if (typeof(imgObj) != "undefined") {
+                        // imgObj.setAttribute("src", imgResult);
+                        const img = `<img src='${imgResult}'/>`;
+                        if ($('.upload-img').children().length < 7) {
+                            $('#photo').before(img);
+                        }
+                    }
+                    var fileValObj = document.getElementById(fileValId);
+                    if (typeof(fileValObj) != "undefined") {
+                        fileValObj.setAttribute("value", imgResult);
+                    }
+                };
+            };
+            $('#file').on('change', function() {
+                chooseImage('file', 'photo', 'fileVal');
+            });
+        });
+        $('#photo').click(function() {
+            $('#file').click();
+        })
+
+
+        $('.select').click(function() {
+            var bodyH = $('body').height(); //body的高度  
+            var windowH = $(window).height(); //浏览器的高度        
+            if (bodyH < windowH) {           
+                bodyH = windowH;     
+            }  
+            var sW = $('body').width();  
+            $('.lock').css({                    //遮罩层的样式          
+                height: bodyH,
+                        //遮罩层的高是body内容的高
+                        width: sW,
+                          //遮罩层的宽是body内容的宽
+                        display: "block"   //显示遮罩层
+                            
+            });        
+            $('#hintBox').css('display', 'block'); //提示框
+            $('.refund-explain').hide();
+            $('.rufundReasonList').show();
+        })
+        $('#refundExplain').click(function() {
+            var bodyH = $('body').height(); //body的高度  
+            var windowH = $(window).height(); //浏览器的高度        
+            if (bodyH < windowH) {           
+                bodyH = windowH;     
+            }  
+            var sW = $('body').width();  
+            $('.lock').css({                    //遮罩层的样式          
+                height: bodyH,
+                        //遮罩层的高是body内容的高
+                        width: sW,
+                          //遮罩层的宽是body内容的宽
+                        display: "block"   //显示遮罩层
+                            
+            });        
+            $('#hintBox').css('display', 'block'); //提示框
+            $('.rufundReasonList').hide();
+            $('.refund-explain').show();
+        })
+
+        $('.rufundReason').click(function() {
+            $('#refundVal').text($(this).text());
+            $('#hintBox,.lock').hide();
+        })
+        $('.confirm').click(function() {
+            $('#refundExplain').val($('#refundExplain2').val());
+            $('#hintBox,.lock').hide();
+        })
+        $(".close").click(function() {
+            $('#hintBox,.lock').hide();
+        })
+    </script>
+</body>
+
+</html>

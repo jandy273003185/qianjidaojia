@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.v2.biz.merchant.reported.mapper.BizMerchantReportedMapper">
+
+
+	<select id="getMerchantReportedList" parameterType="com.qifenqian.bms.v2.biz.merchant.reported.bean.TdMerchantReportInfoAO" resultType="com.qifenqian.bms.v2.biz.merchant.reported.bean.TdMerchantReportInfoVO">
+		SELECT
+		t1.id,
+		t1.merchant_code,
+		t1.patch_no,
+		t1.channel_no,
+		t1.report_status,
+		t1.report_time,
+		t1.status,
+		t1.result_msg,
+		t1.out_merchant_code,
+		t1.detail_status,
+		t1.channel_mark,
+		f.CUST_NAME,
+		f.short_name,
+		f.cust_id,
+		--f.merchant_email,
+		t.email,
+		t.mobile
+		-- d.remark
+
+		FROM
+		td_merchant_report t1
+		-- LEFT JOIN td_merchant_detail_info d ON d.MERCHANT_CODE = t1.merchant_code
+		LEFT JOIN td_cust_info f ON f.MERCHANT_CODE = t1.merchant_code
+		LEFT JOIN td_login_user_info t ON f.cust_id = t.cust_id
+		<where>
+			1=1
+			<if test="merchantCode != null and merchantCode != '' ">
+				and t1.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+				and t1.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+				and t1.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null and custName != '' ">
+				and  f.cust_name = #{custName,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null and email != '' ">
+				and  t.email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null and mobile != '' ">
+				and  t.mobile = #{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null and status != '' ">
+				and t1.status = #{status,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+				and t1.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+			<if test="reportTimeStart != null and '' != reportTimeStart">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')>= #{reportTimeStart}
+	            ]]>
+			</if>
+			<if test="reportTimeEnd !=null and '' !=reportTimeEnd">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')<= #{reportTimeEnd}
+	            ]]>
+			</if>
+		</where>
+		ORDER BY t1.report_time DESC
+	</select>
+
+	<select id="suiXingMerchantDetailList" parameterType="com.qifenqian.bms.v2.biz.merchant.reported.bean.TdMerchantReportInfoAO" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoSuixingPay">
+		select
+			t.patch_no,
+			t.merchant_code,
+			t.cust_name,
+			t.mobile_no,
+			t.sui_xing_merchant_type,
+			t.mec_type_flag,
+			t.cpr_reg_nm_cn,
+			t.regist_code,
+			t.merchant_province,
+			t.merchant_city,
+			t.merchant_area,
+			t.cpr_reg_addr,
+			t.industry_code,
+			t.representative_name,
+			t.representative_cert_type,
+			t.representative_cert_no,
+			t.act_nm,
+			t.act_type,
+			t.certify_no,
+			t.bank_card_no,
+			t.sui_xin_bank,
+			t.bank_province,
+			t.bank_city,
+			t.interbank_name,
+			t.rate,
+			t.task_code,
+			t.lbnk_no,
+			t.parent_mno,
+			t.independent_model,
+			t.mer_url,
+			t.file_path,
+			t.out_merchant_code,
+			t.sign_qrcode,
+			t.wx_apply_no,
+			t.iden_status,
+			t.wx_child_no,
+			t.zfb_child_no,
+			t.create_time,
+			t.modify_time,
+			t.flag_status,
+			t.result_msg,
+			t.door_photo_path,
+			t.shop_interior_path,
+			t.business_photo_path,
+			t.legal_cert_attribute1_path,
+			t.legal_cert_attribute2_path,
+			t.letter_of_auth_path,
+			t.open_account_path,
+			t.bank_card_photo_path,
+			t.settle_cert_attribute1_path,
+			t.settle_cert_attribute2_path,
+			t.shop_check_stand_path
+		FROM
+			td_merchant_detail_info_suixing_pay t
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+				and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+				and t.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order  by t.create_time desc
+			LIMIT 1
+	</select>
+
+
+	<select id="selectSuiXingPayMerchantDetailInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		SELECT
+		t.*,
+		f.cust_name,
+		f.cust_id,
+		r.channel_no,
+		r.report_status,
+		DATE_FORMAT(t.modify_time,'%Y-%m-%d %H:%i:%s') modify_time,
+		DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i:%s') reportTime
+		FROM
+		td_merchant_detail_info_suixing_pay t
+		LEFT JOIN td_cust_info f ON t.merchant_code = f.merchant_code
+		LEFT JOIN td_merchant_report r on r.patch_no = t.patch_no
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+				and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+				and t.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+				and r.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+				and r.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.create_time DESC
+
+	</select>
+
+
+</mapper>

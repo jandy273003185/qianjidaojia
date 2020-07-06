@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.auding.mapper.audingMapper">
+  <resultMap type="com.qifenqian.bms.basemanager.merchant.auding.bean.AgencyAuding" id="getAgencyAudingListMap">
+    <result property="merchantCode" column="MERCHANT_CODE"/>
+    <result property="custId" column="CUST_ID"/>
+    <result property="custName" column="CUST_NAME"/>
+    <result property="mobile" column="MOBILE"/>
+    <result property="custType" column="CUST_TYPE"/>
+    <result property="bankacctName" column="bankCardName"/>
+    <result property="compmainAcct" column="bankCardNo"/>
+    <result property="email" column="EMAIL"/>
+    <result property="columnValue" column="columnValue"/>
+    <result property="createTime" column="CREATE_TIME"/>
+    <result property="agencyState" column="merchantState"/>
+    <result property="auditState" column="auditState"/>
+    <result property="authId" column="AUTH_ID"/>
+    <result property="state" column="STATE"/>
+    <result property="agentRate" column="agent_rate"/>
+    <result property="countNum" column="count_num"/>
+    <result property="agentName" column="AGENT_NAME"/>
+  </resultMap>
+
+<select id="getAgencyAudingList"  resultMap="getAgencyAudingListMap" parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.MerchantVo">
+	SELECT
+	IFNULL(hc.num, 0) count_num,
+	t.STATE,
+    t.CUST_ID,
+	t.`MERCHANT_CODE`,
+	t.`CUST_NAME`,
+	h.CERTIFICATE_STATE auditState,
+	a.MOBILE,
+	(
+		CASE t.CUST_TYPE
+		WHEN '0' THEN
+			'个人'
+		WHEN '1' THEN
+			'企业'
+		WHEN '2' THEN
+			'个体户'
+        ELSE
+			''
+		END
+	) custType,
+	a.`EMAIL`,
+	t.CREATE_TIME,
+	t.AGENT_NAME,
+	a.`STATE` merchantState,
+	t.AUTH_ID,
+		concat(
+		'H5:',
+		IFNULL(p5.column_value, '无'),
+		'/',
+		'app:',
+		IFNULL(p6.column_value, '无'),
+		'/',
+		'扫码:',
+		IFNULL(p7.column_value, '无'),
+		'/',
+		'PC:',
+		IFNULL(p8.column_value, '无'),
+		'/',
+		'原生H5:',
+		IFNULL(p9.column_value, '无')
+	) agent_rate, 
+	    p1.column_value bankCardName,
+		p2.column_value bankCardNo,
+		p3.column_value bankName,
+	IFNULL((SELECT t.user_name from sys_user t where t.self_phone = p4.column_value or  t.user_id= p4.column_value),'无') columnValue
+	FROM
+	td_cust_info t
+	LEFT JOIN td_login_user_info a ON t.CUST_ID = a.CUST_ID  AND  a.STATE in ('04','00','01')
+	LEFT JOIN (
+	SELECT
+		t1.CUST_ID,
+		count(t1.CUST_ID) num
+	FROM
+		act_workflow_merchantaudit_history ac
+	LEFT JOIN td_cust_info t1 ON ac.merchantId = t1.CUST_ID
+	WHERE
+		t1.CUST_ID = ac.merchantId
+	GROUP BY
+		t1.CUST_ID
+) hc ON hc.CUST_ID = t.cust_id
+	INNER JOIN bms_protocol_content b ON t.CUST_ID = b.cust_id
+	LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName'
+    LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+	LEFT JOIN bms_protocol_column p3 ON b.id = p3.protocol_id and p3.column_code = 'bankName'
+	LEFT  JOIN bms_protocol_column p4 ON b.id = p4.protocol_id and p4.column_code = 'custManager'
+	LEFT JOIN bms_protocol_column p5 ON b.id = p5.protocol_id
+AND p5.column_code = 'h5.gateway.pay_rate'
+AND p5.`status` = 'VALID'
+LEFT JOIN bms_protocol_column p6 ON b.id = p6.protocol_id
+AND p6.column_code = 'mobile.plugin.pay_rate'
+AND p6.`status` = 'VALID'
+LEFT JOIN bms_protocol_column p7 ON b.id = p7.protocol_id
+AND p7.column_code = 'onecode.coll.pay_rate'
+AND p7.`status` = 'VALID'
+LEFT JOIN bms_protocol_column p8 ON b.id = p8.protocol_id
+AND p8.column_code = 'pc.gateway.pay_rate'
+AND p8.`status` = 'VALID'
+LEFT JOIN bms_protocol_column p9 ON b.id = p9.protocol_id
+AND p9.column_code = 'h5_t.gateway.pay_rate'
+AND p9.`status` = 'VALID'
+LEFT JOIN td_certificate_auth h ON t.AUTH_ID = h.AUTH_ID
+
+
+
+	
+	<where>
+		         t.MERCHANT_FLAG='3' 
+			 <if test="startCreateTime != null and '' != startCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME   ,'%Y-%m-%d')>= #{startCreateTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if> 
+			<if test="custName != null and custName != '' ">
+			 	AND t.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+			</if>
+			
+			<if test="merchantCode != null and merchantCode != '' ">
+			 	AND t.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+			 </if>
+			  <if test="auditState != null and auditState != '' ">
+			 	AND t.STATE = #{auditState} 
+			 </if>
+			 
+			  <if test="custManagerName != null and custManagerName != '' ">
+			 	AND s.user_name = #{custManagerName} 
+			 </if>
+			  <if test="mobile != null and mobile != '' ">
+			 	AND a.MOBILE = #{mobile} 
+			 </if>
+		</where>
+   ORDER BY t.CREATE_TIME    DESC	  
+</select>
+
+<select id="getSingleAgencyAuding" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.MerchantVo"  parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.MerchantVo">
+    SELECT 
+        p1.column_value bankCardName,
+		p2.column_value bankCardNo,
+		p3.column_value bankName,
+        U.MOBILE,
+       C.CUST_TYPE,
+ 
+			C.*,
+			(
+		CASE C.CERTIFY_TYPE
+		WHEN '00' THEN
+			'大陆居民身份证'
+		WHEN '01' THEN
+			'香港居民身份证'
+		WHEN '02' THEN
+			'澳门居民身份证'
+      WHEN '03' THEN '台湾居民身份证'
+    ELSE
+			''
+		END
+	) certifyType,
+        U.EMAIL
+		FROM td_cust_info C 
+		LEFT JOIN td_login_user_info U 
+        ON C.CUST_ID=U.CUST_ID AND C.MERCHANT_FLAG='3' 
+        LEFT JOIN bms_protocol_content b ON C.CUST_ID = b.cust_id  and b.`status`=#{auditState,jdbcType=VARCHAR}
+        LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName'
+        LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+	    LEFT JOIN bms_protocol_column p3 ON b.id = p3.protocol_id and p3.column_code = 'bankName'
+		WHERE c.CUST_ID =#{custId,jdbcType=VARCHAR} 
+
+
+</select>
+
+<update id="updatebmsprotocolContent" parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolContent">
+      UPDATE  bms_protocol_content
+		<set>
+			
+			<if test="status != null and status!='' ">
+				 status= #{status},
+			</if>
+			<if test="updateUser != null and updateUser!='' ">
+				update_user = #{updateUser},
+			</if>
+			<if test="updateDatetime != null and updateDatetime!=''">
+				update_datetime = #{updateDatetime},
+			</if>
+			<if test="validDate != null and validDate !=''">
+				valid_date = #{validDate},
+			</if>
+			<if test="disableDate != null and disableDate != ''">
+				disable_date = #{disableDate},
+			</if>
+		</set>
+		WHERE cust_id = #{custId}
+   
+</update>
+
+<select id="agentExportMerchantInfo" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.agencyExport" parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.MerchantVo">
+	SELECT
+	t.MERCHANT_CODE,
+	t.`CUST_NAME`,
+	a.MOBILE,
+	p1.column_value bankCardName,
+	p2.column_value bankCardNo,
+	a.`EMAIL` Email,
+	s.user_name userName,
+	t.CREATE_TIME createTime,
+	(
+		CASE t.STATE
+		WHEN '00' THEN
+			'正常'
+		WHEN '04' THEN
+			'审核不通过'
+		WHEN '01' THEN
+			'待审核'
+	  ELSE
+			''
+	END)agencyState 
+
+FROM td_cust_info t
+LEFT JOIN td_login_user_info a ON t.CUST_ID = a.CUST_ID
+INNER JOIN bms_protocol_content b ON t.CUST_ID = b.cust_id
+LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName' 
+LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+JOIN td_certificate_auth h ON t.AUTH_ID = h.AUTH_ID 
+LEFT JOIN bms_protocol_column c ON c.protocol_id = b.id
+AND c.column_code = 'custManager'
+LEFT JOIN sys_user s ON c.column_value = s.user_id
+
+   <where>
+	t.MERCHANT_FLAG='3' AND a.STATE in ('04','00','01')
+	<if test="startCreateTime != null and '' != startCreateTime">  
+	    <![CDATA[  
+	       AND DATE_FORMAT(t.CREATE_TIME   ,'%Y-%m-%d')>= #{startCreateTime}  
+	      ]]>
+	</if>
+	<if test="endCreateTime!= null and '' !=endCreateTime">  
+	      <![CDATA[  
+	       AND DATE_FORMAT(t.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	     ]]>
+	</if>
+	<if test="custName != null and custName != '' ">
+		AND t.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+	</if>
+
+	<if test="merchantCode != null and merchantCode != '' ">
+		AND t.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode},'%')
+	</if>
+	<if test="auditState != null and auditState != '' ">
+		AND t.STATE = #{auditState}
+	</if>
+
+	<if test="custManagerName != null and custManagerName != '' ">
+		AND s.user_name = #{custManagerName}
+	</if>
+	<if test="mobile != null and mobile != '' ">
+		AND a.MOBILE = #{mobile}
+	</if>
+</where>
+   ORDER BY t.CREATE_TIME    DESC	   		
+	</select>
+<select id="getbmsProtocolColumnList" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolColumn" parameterType="String">
+	   
+SELECT
+	c.*
+FROM
+	td_cust_info t
+
+INNER JOIN bms_protocol_content b ON t.CUST_ID = b.cust_id
+AND b.`status` = 'AUDIT'
+JOIN (
+	SELECT
+		IFNULL(s.user_name, t.column_value) column_value,
+		t.column_code,
+		t.column_desc,
+		t.id,
+		t. STATUS,
+		t.protocol_id
+	FROM
+		bms_protocol_column t
+	LEFT JOIN sys_user s ON t.column_value = s.user_id
+) c ON c.protocol_id = b.id
+AND c. STATUS = 'VALID'
+WHERE
+	 
+ t.CUST_ID = #{custId} AND c.column_code LIKE '%.pay_rate%'
+
+	
+</select>
+
+<select id="getCheckbmsProtocolColumnList" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolColumn" parameterType="String">
+	   
+SELECT
+	c.*
+FROM
+	td_cust_info t
+
+INNER JOIN bms_protocol_content b ON t.CUST_ID = b.cust_id
+AND b.`status` = 'VALID'
+
+JOIN (
+	SELECT
+		IFNULL(s.user_name, t.column_value) column_value,
+		t.column_code,
+		t.column_desc,
+		t.id,
+		t. STATUS,
+		t.protocol_id
+	FROM
+		bms_protocol_column t
+	LEFT JOIN sys_user s ON t.column_value = s.user_id AND t.column_code IN ('custManager','serviceProvider')
+) c ON c.protocol_id = b.id
+AND c. STATUS = 'VALID'
+WHERE
+	 t.MERCHANT_FLAG='3'
+AND t.CUST_ID = #{custId}
+ORDER BY  column_code LIKE '%.pay_rate%' DESC 
+
+</select>
+
+<update id="updatebmsProtocolColumn" parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolColumn">
+      
+UPDATE 
+
+   bms_protocol_column b
+
+	 <set>  
+		<if test=" status!= null and  status!= ''">  
+			b.status= #{status},  
+		</if>
+		<if test="columnValue != null and columnValue!=''">
+			b.column_value = #{columnValue},
+		</if>
+	 </set>  
+	WHERE
+	
+     b.id=#{id}
+
+</update>	
+	
+<insert id="addbmsProtocolColumn" parameterType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolColumn">
+  INSERT INTO bms_protocol_column(
+		id,
+		protocol_id,
+		column_code,
+		column_value,
+		status,
+		column_desc,
+		inst_datetime,
+		inst_user
+		
+		)values(
+		#{id},
+		#{protocolId},
+		#{columnCode},
+		#{columnValue},
+		#{status},
+		#{columnDesc},
+		#{instDatetime},
+		#{instUser}
+		)
+
+</insert>
+
+<resultMap type="com.qifenqian.bms.basemanager.merchant.auding.bean.TdCustScanCopy" id="getAgencyPicturesMap">
+   <result property="certifyType" column="CERTIFY_TYPE"/>
+   <result property="custId" column="CUST_ID"/>
+   <result property="scanCopyPath" column="SCAN_COPY_PATH"/>
+</resultMap>	
+<select id="getAgencyAudingPictures" resultMap="getAgencyPicturesMap"  parameterType="String">
+         
+SELECT
+    t.CUST_ID,
+	t.CERTIFY_TYPE,
+	t.SCAN_COPY_PATH
+FROM
+	td_cust_scan_copy t
+	
+	<where>
+	t.CERTIFY_TYPE in('00','02')
+	<if test="null!=custId and custId!=''">AND t.CUST_ID =#{custId}</if>
+	
+	</where>
+
+</select>	
+<select id="getbmsProtocolContentList" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolContent"  parameterType="String">
+     
+SELECT
+ b.id,
+ b.cust_id,
+ b.protocol_content
+FROM
+	td_cust_info t
+LEFT JOIN td_login_user_info a ON t.CUST_ID = a.CUST_ID
+INNER JOIN bms_protocol_content b ON t.CUST_ID = b.cust_id
+AND b.`status` = 'AUDIT'
+
+<where>
+  a.STATE = '04'
+<if test="null!=custId and custId!=''">AND b.CUST_ID =#{custId}</if>
+
+</where>
+
+</select>	
+
+<update id="updatetdCertificateAuth" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    update    td_certificate_auth
+    <set >
+     
+      <if test="certificateState != null" >
+        CERTIFICATE_STATE = #{certificateState,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyUser != null" >
+        CERTIFY_USER = #{certifyUser,jdbcType=VARCHAR},
+      </if>
+       
+      <if test="authResultDesc != null" >
+        AUTH_RESULT_DESC = #{authResultDesc,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="modifyId != null and modifyId!=''" >
+        MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test=" modifyTime!= null and modifyTime!=''" >
+        MODIFY_TIME = #{modifyTime},
+      </if>
+        
+    </set>
+    where  CUST_ID= #{custId,jdbcType=INTEGER} and AUTH_ID=#{authId}
+  </update>
+
+<select id="findPath" resultType="string" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan">
+		SELECT 
+			S.SCAN_COPY_PATH 
+		FROM 
+			TD_CUST_SCAN_COPY S 
+		WHERE  
+		S.CUST_ID = #{custId,jdbcType = VARCHAR} 
+		AND S.CERTIFY_TYPE = #{certifyType, jdbcType = VARCHAR}
+	
+	</select>
+
+<resultMap type="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" id="getAgencyCheckHistoryMap">
+   <result property="custName"       column="CUST_NAME"/>
+   <result property="roleId"         column="ROLE_ID"/>
+   <result property="addTime"        column="submit_time"/>
+   <result property="updateTime"     column="audit_time"/>
+   <result property="authResultDesc" column="message"/>
+ </resultMap>
+ 
+<select id="getAgencyCheckHistory" resultMap="getAgencyCheckHistoryMap" parameterType="String">
+    SELECT
+    t.`CUST_NAME`,
+	DATE_FORMAT(w.submit_time, '%Y-%m-%d %H:%i:%s') AS submit_time,
+	DATE_FORMAT(w.audit_time,  '%Y-%m-%d %H:%i:%s') AS audit_time,
+	w.message,
+	(
+		CASE t.CUST_TYPE
+		WHEN '0' THEN
+			'个人'
+		WHEN '1' THEN
+			'企业'
+		ELSE
+			''
+		END
+	) ROLE_ID
+FROM
+	td_cust_info t
+ JOIN td_login_user_info a ON t.CUST_ID = a.CUST_ID
+ JOIN act_workflow_merchantaudit_history w ON w.merchantId = t.CUST_ID
+<where>
+  <if test="custId!=null and custId!=''">w.merchantId =#{custId}</if>
+
+</where>
+</select>
+
+
+<select id="getbmsPbmsProtocolContent" resultType="com.qifenqian.bms.basemanager.merchant.auding.bean.bmsProtocolContent" parameterType="String">
+	   
+          SELECT
+			ID,
+			PROTOCOL_NAME,
+			TEMPLATE_ID,
+			PROTOCOL_CONTENT,
+			STATUS,
+			MEMO,
+			INST_USER,
+			CUST_ID,
+			INST_DATETIME
+		FROM
+			BMS_PROTOCOL_CONTENT
+		WHERE
+			CUST_ID = #{custId,jdbcType=VARCHAR} and STATUS = 'AUDIT'
+
+
+	
+</select>
+
+</mapper>

@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="js/commen.js"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+</head>
+<style type="text/css">
+    .layui-m-layer0 .layui-m-layerchild {
+        width: 68%;
+    }
+</style>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="title center">充值</div>
+            <a href="rechargeRecord.html" class="icon_r txt">充值记录</a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="RechargeCon pd10">
+            <!--充值金额-->
+            <div class="RechargeItem mb10">
+                <div class="hd">
+                    选择充值金额
+                </div>
+                <div class="bd">
+                    <ul class="moneylist li25 clear"></ul>
+                </div>
+            </div>
+            <!--充值方式-->
+            <div class="RechargeItem mb10">
+                <div class="hd">
+                    充值方式
+                </div>
+                <div class="bd">
+                    <ul class="waylist">
+                        <li class="active" data-type="0">
+                            <i class="icon icon-weixin"></i>
+                            <span class="recom">微信支付</span>
+                            <span class="tips">亿万用户的选择，更快更安全</span>
+                        </li>
+                        <li data-type="1" style="display: none;">
+                            <i class="icon icon-zfb"></i>
+                            <span>支付宝</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mb10">
+                <a href="javascript:;" class="btn_100" id="btnRechrage">确认充值</a>
+            </div>
+        </div>
+    </div>
+    <!--充值列表模板-->
+    <script id="rechargeListTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <li {{? index===0 }} class="active" {{?}} data-id={{=value.Id}}>
+            <a href="javascript:;"><span class="sum">{{=value.ActualBalance}}元</span><span class="price">售价{{=value.RechargeAmount}}</span></a>
+        </li>
+        {{~}}
+    </script>
+    <!--充值列表模板  end-->
+</body>
+<script>
+    var userId = sc.utils.getCookieValue("UserId");
+    var token = sc.utils.getCookieValue("Token");
+    var rechargeId;
+    var wxopenid = '';
+    var code = "";
+    var payType; //支付方式，微信为0，支付宝为1
+    $(function () {
+        code = sc.utils.getQueryString("code"); //微信id
+        rechargeId = sc.utils.getQueryString("rechargeId"); //支付选择的充值套餐Id
+        if (code && !wxopenid) {
+            //alert("opid:" + wxopenid);
+            payWeixin();
+        }
+        getRechargeList();
+        $('.waylist').on('click', 'li', function () {
+            payType = parseInt($(this).attr('data-type'));
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+        if (rechargeId) {
+            $('.moneylist li a').each(function () {
+                var that = $(this);
+                var data_id = that.parent('li').attr('data-id');
+                if (rechargeId === parseInt(data_id)) {
+                    that.parent('li').addClass('active');
+                    that.parent('li').siblings('li').removeClass('active');
+                }
+            });
+        }
+    })
+
+    function getRechargeList() {
+        var url = 'api/Recharge/RechargeList';
+        var callback = function (data) {
+            console.log(data);
+            if (data.code === 0) {
+                var interText = doT.template($("#rechargeListTemp").text());
+                $(".moneylist").html(interText(data.data));
+                rechargeId = $('.moneylist li.active').attr('data-id');
+                console.log("rechargeId:" + rechargeId);
+                $('.moneylist').on('click', 'li a', function () {
+                    var that = $(this);
+                    rechargeId = that.parent('li').attr('data-id');
+                    that.parent('li').addClass('active');
+                    that.parent('li').siblings('li').removeClass('active');
+                });
+                $('#btnRechrage').click(function () {
+                    payWeixin();
+
+                    //				layer.open({
+                    //					content: '<div class="pop-success"><div class="pop-hd">充值成功</div><div class="imgbg"><img src="images/icons/pop_czok.png"/></div><p class="tips">充值成功，实际到账</p><span class="btn btn_yes">确定</span></div>'
+                    //				});
+                    //				$('.btn_yes').click(function() {
+                    //					layer.closeAll() //关闭所有层
+                    //				})
+                })
+            }
+            if (data.code === 1) {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //1秒后自动关闭
+                });
+            }
+            if (data.code === 2) {
+                layer.open({
+                    content: '亲，您已掉线，请重新登录',
+                    skin: 'msg',
+                    time: 2 //1秒后自动关闭
+                });
+                setTimeout(function () {
+                    location.href = '/login.html';
+                }, 000);
+            }
+            if (data.code === 99) {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //1秒后自动关闭
+                });
+            }
+        }
+        sc.post(url, {
+            'UserId': userId,
+            'Token': token,
+            'Page': 1,
+            'pageSize': 20
+        }, callback);
+    }
+    function payWeixin() {
+        var url = 'api/Recharge/AddRecharge';
+        var newUrl = window.location.href + (window.location.href.indexOf('?') > -1 ? "&" : "?") + "rechargeId=" + rechargeId;
+        var callback = function (data) {
+            if (data.code === 2) {
+                layer.open({
+                    content: '登录超时，请重新登录!',
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+                window.location.href = "/login.html?returnUrl=" + sc.utils.getCurrentPathname();
+            }
+            else if (data.code === 201) {
+                window.location.href = data.data;
+                //alert(data.data);
+            }
+            else if (data.code === 0) {
+                wxopenid = data.data.openid;
+                //alert("openid:" + wxopenid);
+                callpay(data.data.JsParam);
+            } else {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+                window.location.href === '/rechargeRecord.html';
+            }
+        }
+        sc.post(url, {
+            'UserId': userId,
+            'Token': token,
+            'RechargeId': rechargeId,
+            'WxOpenid': wxopenid,
+            'WxCode': code,
+            'NewUrl': newUrl
+        }, callback);
+
+    }
+
+    function onBridgeReady(param) {
+        var parameter = JSON.parse(param);
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest'
+            , parameter
+            , function (res) {
+                if (res.err_msg === 'get_brand_wcpay_request:ok') {
+                    layer.open({
+                        content: '支付成功',
+                        skin: 'msg',
+                        time: 1 //1秒后自动关闭
+                    });
+                    window.location.href = '/rechargeRecord.html';
+                }
+                else {
+                    layer.open({
+                        content: '支付失败',
+                        skin: 'msg',
+                        time: 3 //2秒后自动关闭
+                    });
+                    //window.location.href = "/member/order.html";
+                }
+            }
+        );
+    }
+    function callpay(param) {
+        if (typeof WeixinJSBridge === 'undefined') {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady(param);
+        }
+    }
+</script>
+
+</html>

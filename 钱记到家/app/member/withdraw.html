@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>提现</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .card_menu .weui-cell:last-child:before {
+            display: block !important;
+        }
+
+        .waylist li span {
+            display: block;
+        }
+
+        .waylist li {
+            line-height: .22rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">提现</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="eaditCardInfo">
+				<div class="card_menu weui-cells bb__weui-cells">
+					<div class="weui-cell" data-bankid="">
+						<div class="weui-cell__hd">
+							<div class="cardIcons"><img src="../images/icons/dfbank.png" alt=""></div>
+						</div>
+						<div class="weui-cell__bd">
+							<p class="txt name"></p>
+							<p class="txt bankno"></p>
+						</div>
+						<div class="weui-cell__ft"><span class="icon-arrow icon-arrowRight"></span></div>
+					</div>
+				</div>
+				<div class="withdraw_main">
+					<p class="ww_title">提现金额</p>
+					<div class="ww_price_input clear">
+						<span class="price_fh">￥</span>
+						<div class="input">
+							<input type="number" value="" class="weui-input" id="ww_price" />
+						</div>
+					</div>
+					<p class="ww_ky_price"></p>
+				</div>
+			</div>
+            <p class="ml10" style="color:red;text-align:center">
+                每周一提现销售佣金平台将在1-3个工作日内为您提现转账
+            </p>
+			
+			<p class="tips ml10 mr10" style="display:none;"></p>
+			<div class="ftbtn pt30 pb30">
+				<a href="javascript:;" class="btn" id="submitBtn">提交申请</a>
+			</div>
+		</div>
+
+		<!--选择提现进账的类型-->
+		<div class="defaultPage fixed__defaultPage bg_f6f6f6">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:;" class="btn_back" onclick="closetbtn()"></a>
+					<div class="title center">提现</div>
+				</div>
+			</div>
+			<div class="main">
+				<div class="selectTypeBox">
+					<h3 class="TypeTitle">请选择提现方式</h3>
+					<ul class="waylist dd_waylist">
+
+					</ul>
+
+				</div>
+			</div>
+		</div>
+		<!--选择提现进账的类型  end-->
+	</body>
+	<script type="text/javascript">
+		WithDrawPage();
+	</script>
+
+</html>

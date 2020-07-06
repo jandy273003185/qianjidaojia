@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>推广订单</title>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/resetFontSize.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <link href="../css/groupoffineorder.css?1" rel="stylesheet" />
+</head>
+<body>
+    <div class="banner">
+        <input id="tel" type="text" placeholder="输入手机号搜索">
+    </div>
+    <div class="timer">
+        <div class="active" data-day="">全部</div>
+        <div data-day="0">今日</div>
+        <div data-day="1">昨日</div>
+        <div data-day="7">近7日</div>
+    </div>
+    <div id="GroupOffineOrder"></div>
+    <script id="GroupOffineOrderTemp" type="text/html">
+        {{# for(var i = 0; i< d.length; i++){ }}
+        <div class="order">
+            <div class="order-up">
+                <div class="w100">订单：{{d[i].orderNo}}</div>
+                    <div class="w55">
+                        <div>下单：<span>{{d[i].createTime}}</span></div>
+                        <div>完成：<span></span>{{d[i].ShouhuoTime}}</div>
+                        
+                    </div>
+                    <div class="w45">
+                        <div>电话：<span>{{d[i].tel}}</span></div>
+                        <div>昵称：<span>{{d[i].nickname}}</span></div>
+                    </div>
+            </div>
+            {{# for(var j = 0; j< d[i].OrderItems.length; j++){ }}
+            <div class="order-down">
+                <div class="w1">
+                    <img src="{{d[i].OrderItems[j].productImg}}" alt="" class="prolink" data-productid="{{d[i].OrderItems[j].productId}}">
+                </div>
+                <div class="order-down-right">
+                    <div>{{d[i].OrderItems[j].productName}}</div>
+                    <div>
+                        <div><span>商城价：</span><span>￥{{d[i].OrderItems[j].salePrice}}</span></div>
+                    </div>
+                    <div>
+                        <div><span>状态：</span><span>{{d[i].OrderItems[j].statusName}}</span></div>
+                        <div><span>数量：</span><span>{{d[i].OrderItems[j].Qty}}</span></div>
+                    </div>
+                    <div class="mt15">
+                        <div><span>计佣金额：</span><span class="colF74146">￥{{d[i].OrderItems[j].Total}}</span></div>
+                        <div><span>佣金比例：</span><span class="colF74146">{{d[i].OrderItems[j].CommissionRate}}%</span></div>
+                    </div>
+                    <div class="zuan">预计可赚：￥{{d[i].OrderItems[j].CommissionTotal}}</div>
+
+                </div>
+            </div>
+            {{# } }}
+        </div>
+        {{# } }}
+    </script>
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var pageIndex = 1;
+        var pageSize = 10;
+        var isEnd = false;
+        var day = getUrlParam("day");
+        $(function () {
+            GroupUserLevel();
+            dropDownEvent(getGroupUserInfo(""));
+            $(".timer").children().click(function () {
+                isEnd = false;
+                $("#tel").val("");
+                $("#GroupOffineOrder").html("");
+                $(this).addClass("active" + level).siblings().removeClass("active" + level);
+                day = $(this).data("day");
+                pageIndex = 1;
+                dropDownEvent(getGroupUserInfo(""));
+            });
+            if (day == "0")
+                $(".timer div").eq(1).addClass("active" + level).siblings().removeClass("active" + level);
+            if (day == "1")
+                $(".timer div").eq(2).addClass("active" + level).siblings().removeClass("active" + level);
+            if (day == "7")
+                $(".timer div").eq(3).addClass("active" + level).siblings().removeClass("active" + level);
+        });
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e && e.keyCode == 13) { // enter 键
+                isEnd = false;
+                $("#GroupOffineOrder").html("");
+                day = $(this).data("day");
+                pageIndex = 1;
+                $(".timer div").eq(0).addClass("active" + level).siblings().removeClass("active" + level);
+                getGroupUserInfo($("#tel").val());
+            }
+        };
+        $(document).on('click', '.prolink', function () {
+            var proId = $(this).data("productid");
+            window.location.href = "/details.html?id=" + proId;
+        });
+        var level = 0;
+        function GroupUserLevel() {
+            var url = 'api/User/GroupUserLevel';
+            var callback = function (data) {
+                if (data.code === 0) {
+                    if (data.data > 0) {
+                        level = data.data;
+                        $(".banner").addClass("banner" + level);
+                        $(".active").addClass("active" + level);
+                        if (day == "0")
+                            $(".timer div").eq(1).addClass("active" + level).siblings().removeClass("active" + level);
+                        else if (day == "1")
+                            $(".timer div").eq(2).addClass("active" + level).siblings().removeClass("active" + level);
+                        else if (day == "7")
+                            $(".timer div").eq(3).addClass("active" + level).siblings().removeClass("active" + level);
+                        else
+                            $(".timer div").eq(0).addClass("active" + level).siblings().removeClass("active" + level);
+                    }
+                }
+            }
+            sc.post(url, {
+                "UserId": userId,
+                "Token": token
+            }, callback);
+        }
+        function getGroupUserInfo(tel) {
+            if (!isEnd) {
+                var url = 'api/User/getGroupOffineOrderInfo';
+                var callback = function (data) {
+                    if (data.code == 0) {
+                        if (data.data != "") {
+                            var gettpl = document.getElementById('GroupOffineOrderTemp').innerHTML;
+                            laytpl(gettpl).render(data.data, function (html) {
+                                //得到的模板渲染到html
+                                $('#GroupOffineOrder').append(html);
+                            });
+                        } else {
+                            isEnd = true;
+                            if (pageIndex==1)
+                                $('#GroupOffineOrder').append("<div class='nodata'>暂无数据</div>");
+                        }
+                    } else if (data.code == 99) {
+                        layer.open({
+                            content: '服务器开了点小差，请重新刷新!',
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                    } else if (data.code == -1) {
+                        layer.open({
+                            content: '登录超时，请重新登录!',
+                            skin: 'msg',
+                            time: 1 //1秒后自动关闭
+                        });
+                        setTimeout(function () {
+                            location.href = "/register.html";
+                        }, 1000);
+                    }
+                }
+                var error = function (data) {
+
+                }
+                sc.post(url, {
+                    "PageIndex": pageIndex,
+                    "PageSize": pageSize,
+                    "Day": day,
+                    "UserId": userId,
+                    "Token": token,
+                    "Tel": tel
+                }, callback, error);
+            }
+        }
+
+        function dropDownEvent(Fn) {
+            $(window).scroll(function () {
+                var scrollTop = parseFloat($(this).scrollTop()),
+                    scrollHeight = $(document).height(),
+                    windowHeight = parseFloat($(this).height()),
+                    totalHeight = scrollTop + windowHeight;
+                if (scrollTop + windowHeight >= scrollHeight - 0.7) {
+                    pageIndex++;
+                    getGroupUserInfo("");
+                }
+            });
+        }
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    </script>
+</body>
+</html>

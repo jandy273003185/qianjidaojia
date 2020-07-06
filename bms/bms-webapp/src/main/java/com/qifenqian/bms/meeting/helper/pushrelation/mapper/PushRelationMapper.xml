@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.meeting.helper.pushrelation.mapper.PushRelationMapper">
+
+	<!-- 根据编号查询单个 -->
+	<select id="selectSingleById" parameterType="java.lang.String" resultType="com.qifenqian.bms.meeting.helper.pushrelation.bean.PushRelation">
+		SELECT PR.*
+		  FROM TD_PUSH_RELATION PR
+		WHERE PR.CUST_ID = #{custId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectAllRelation" parameterType="com.qifenqian.bms.meeting.helper.pushrelation.bean.PushRelation" resultType="com.qifenqian.bms.meeting.helper.pushrelation.bean.PushRelation">
+		SELECT R.* FROM 
+		TD_PUSH_RELATION R ORDER BY RAND()
+	</select>
+	
+</mapper>

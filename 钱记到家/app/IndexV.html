@@ -1,0 +1,679 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link href="/NewVersion/HomeV3/css/base.css" rel="stylesheet" />
+    <link href="/NewVersion/HomeV3/css/index.css?010" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(function () {
+            var h_url = window.location.href;
+            var h_arr1 = h_url.split(/[?&]/);
+            var toLink = function (data) {
+
+                if (data.code == 1) {
+                    window.location.href = data.data;
+                }
+            }
+
+            if (h_arr1.length > 1) {
+                sc.post('api/Help/ToLink', {
+                    "code": h_arr1[1]
+                }, toLink);
+            }
+        });
+    </script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+    <script src="js/sc.core.js?v=1" type="text/javascript" charset="utf-8"></script>
+    <script src="script/wxlogin.js?5"></script>
+    <script type="text/javascript" src="js/commen.js?2"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/resetFontSize.js?4" type="text/javascript"></script>
+    <script src="script/sku.js?v=1" type="text/javascript" charset="utf-8"></script>
+    <script src="script/addCart.js?V=0.2" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+    <div class="header-search">
+        <div class="location">
+            <span class="location-icon icon"></span>
+            <span id="cityname">定位中</span>
+        </div>
+        <div class="search-input">
+            <div class="search-main">
+                <div id="gotoSearchProduct" class="search-txt"><img src="/NewVersion/images/search@2x.png">  搜索商品、品类</div>
+            </div>
+            <div class="search-btn"></div>
+        </div>
+        <div class="search-news">
+            <span class="news-icon icon"></span>
+        </div>
+    </div>
+    <div class="swiper-container-carousel carousel">
+        <div class="swiper-wrapper carousel-content" id="bannerImg">
+            <!--<div class="swiper-slide carousel-item">
+                <a href=""
+                   style="background-image:url(https://mall.qianjidaojia.com//upload/admin/2019-11-07/2019110721104177830s02291.jpg);">
+                </a>
+            </div>
+            <div class="swiper-slide carousel-item">
+                <a href=""
+                   style="background-image:url(https://mall.qianjidaojia.com//upload/admin/2019-11-07/2019110722204546316s09816.png);">
+                </a>
+            </div>-->
+        </div>
+        <div class="swiper-pagination"></div>
+        <!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
+    </div>
+    <!--轮播结束-->
+    <div class="content">
+
+        <!-- 快捷通道 -->
+        <div class="quick-listt zindex99">
+            <img class="f" src="/NewVersion/HomeV3/images/f1.png" />
+            <img class="f" src="/NewVersion/HomeV3/images/f2.png" />
+            <img class="f" src="/NewVersion/HomeV3/images/f3.png" />
+            <img class="f" src="/NewVersion/HomeV3/images/f4.png" />
+        </div>
+        <div class="quick-list zindex99" style="display:none;">
+            <a href="/ProductList.html?id=2&typeid=1">
+                <img src="/NewVersion/HomeV3/images/yearico0.png" alt="">
+                优质水果
+            </a>
+            <a href="/ProductList.html?id=3&typeid=1">
+                <img src="/NewVersion/HomeV3/images/yearico1.png" alt="">
+                精选食材
+            </a>
+            <a href="/newyear.html">
+                <img src="/NewVersion/HomeV3/images/yearico2.png" alt="">
+                年货
+            </a>
+            <a href="https://mp.weixin.qq.com/s/10E3wTid0yauXC3-Is60gQ">
+                <img src="/NewVersion/HomeV3/images/yearico3.png" alt="">
+                品牌介绍
+            </a>
+            <a href="https://mp.weixin.qq.com/s/s4kwxSLMCy8lTMEfGnGPoQ" class="zhaomutuanzhang">
+                <img src="/NewVersion/HomeV3/images/yearico4.png" alt="">
+                招募团长
+            </a>
+        </div>
+        <!-- 快捷通道结束 -->
+        <!-- 专区 -->
+        <div class="prefecture clearfix zindex99" style="margin-top:.17rem">
+            <a href="/coupon/VoucherCenter.html" class="new-user">
+                <img src="/NewVersion/HomeV3/images/2020022403.png" />
+            </a>
+            <a href="https://mp.weixin.qq.com/s/10E3wTid0yauXC3-Is60gQ" class="star">
+                <img src="/NewVersion/HomeV3/images/2020022401.png" />
+            </a>
+            <a href="https://www.qianjidaojia.com/pneumonia/yiqingdingyue.html" class="business zhaomutuanzhang">
+                <img src="/NewVersion/HomeV3/images/20200310.png" />
+            </a>
+        </div>
+        <!-- 专区结束 -->
+        <!-- 滚动消息 -->
+        <div class="swiper-container-news roll-news">
+            <div class="swiper-wrapper roll-news-list" id="noticelist">
+            </div>
+        </div>
+        <!-- 滚动消息结束 -->
+        <a href="/details.html?id=96">
+            <img src="/NewVersion/images/fykz2.png" style="width:100%;margin:0.08rem auto" />
+        </a>
+
+
+        <!-- 为您推荐 -->
+        <div class="news-title type-title"></div>
+        <div class="commom-list sectionBd" id="RecommendDiv">
+
+        </div>
+        <!-- 为您推荐结束 -->
+        <!-- 爆款直降 -->
+        <div class="stit" >
+            <img src="/NewVersion/HomeV3/images/rx.png" />
+           
+        </div>
+        <div class="commom-list sectionBd" id="ExplosiveProlist">
+        </div>
+
+        <!-- 爆款直降结束 -->
+        <!-- 当季新品 -->
+        <div class="stit">
+        <img src="/NewVersion/HomeV3/images/zx.png" />
+        
+        </div>
+         <div class="commom-list sectionBd" id="NewproductList">
+
+         </div>
+        <!-- 当季新品结束 -->
+
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+    <!-- 加入购物车的弹出sku选择-->
+    <div class="tocart">
+        <div class="shade sku__shade">
+            <div class="shadebg"></div>
+            <div class="shade_content">
+                <div class="shade-item specifications_shade">
+                    <span class="btn-close"></span>
+                    <div class="productInfo">
+                        <div class="m-pro clear">
+                            <div class="hd fl">
+                                <div class="img">
+                                    <img src="">
+                                </div>
+                            </div>
+                            <div class="bd">
+                                <h4 class="name"></h4>
+                                <p class="desc">
+                                    <span>库存：<span id="stock"></span>件</span>
+                                </p>
+                                <p class="price">
+                                    <span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_bd">
+                        <div id="skuBoxContent"></div>
+                        <div class="skuBox buyNum_skuBox clear">
+                            <h2 class="skuTitle fl">购买数量</h2>
+                            <div class="flexItem fr">
+                                <div class="selnum">
+                                    <span class="less btn-num icon-minus"></span>
+                                    <div class="textWrap">
+                                        <input type="text" id="pro_num" readonly="readonly">
+                                    </div>
+                                    <span class="more btn-num icon-add"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shade_ft">
+                        <a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="addCart">确定</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹窗广告-->
+    <div class="ad_bg"></div>
+    <div class="ad_dv">
+        <div class="ad_dv_dv">
+            <a href="https://www.qianjidaojia.com/details.html?id=99">
+                <img src="/images/ad/pro3.png" class="ad_pro" />
+            </a>
+            <a href="/coupon/VoucherCenter.html">
+                <img src="/images/ad/coupon3.png" class="ad_coupon" />
+            </a>
+        </div>
+        <img src="/images/ad/ad_close.png" class="ad_close" />
+    </div>
+
+    <!--弹出新人优惠券-->
+    <div class="ad_ubg"></div>
+    <div class="ad_udv">
+        <div class="ad_udv_dv">
+            <a href="/coupon/VoucherCenter.html">
+                <img src="/NewVersion/HomeV3/images/uCoupon.png" class="ad_pro" />
+            </a>
+
+        </div>
+        <img src="/images/ad/ad_close.png" class="ad_uclose" />
+    </div>
+    <!--团长图标-->
+    <div class="icons icons_home" id="tuancenter"></div>
+    <!--弹出sku选择 end-->
+    <script id="bannerTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="swiper-slide carousel-item">
+            <a href="{{=value.Url}}">
+                <img src="{{=value.Pic}}" style="width:100%" />
+            </a>
+        </div>
+        {{~}}
+    </script>
+
+    <!--系统消息模板-->
+    <script id="SystemNews" type="text/x-dot-template">
+        {{~it.data:value:index}}
+        <p class="swiper-slide" data-id="{{=value.id}}"> {{=value.title}}</p>
+        {{~}}
+        {{ if(!it.data.length){ }}
+        <p>
+            暂无数据
+        </p>
+        {{ } }}
+    </script>
+    <!--系统消息模板  end-->
+    <!--爆款直降模板-->
+    <script id="ExplosiveProlistTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="item">
+            <img class="top" src="/NewVersion/HomeV3/images/top{{=value.seq}}.png" />
+            <img src="{{=value.ProductImg}}" data-id="{{=value.Id}}" />
+            <div class="name" data-id="{{=value.Id}}"><img src="/NewVersion/HomeV3/images/jx.png" />{{=value.Name}}</div>
+            {{ if(value.Synopsis) { }}
+            <div class="desc">{{=value.Synopsis}}</div>
+            {{ }else{ }}
+            <div class="desc">暂无产品简介</div>
+            {{ } }}
+            <div class="other clearfix m-pro" data-id="{{=value.Id}}">
+                <span class="count">￥<span class="scp">{{=value.MarketPrice}}</span></span>
+                <span class="discount">活动价：￥<span class="hdp">{{=value.Price}}</span></span>
+                <span class="buy buybtn"></span>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <!--爆款直降模板 end-->
+    <!-- 当季新品模板-->
+    <script id="NewproductListTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="item">
+            <img src="{{=value.ProductImg}}" data-id="{{=value.Id}}" />
+            <div class="name" data-id="{{=value.Id}}"><img src="/NewVersion/HomeV3/images/yx.png" />{{=value.Name}}</div>
+            {{ if(value.Synopsis) { }}
+            <div class="desc">{{=value.Synopsis}}</div>
+            {{ }else{ }}
+            <div class="desc">暂无产品简介</div>
+            {{ } }}
+            <div class="other clearfix m-pro" data-id="{{=value.Id}}">
+                <span class="count">￥<span class="scp">{{=value.MarketPrice}}</span></span>
+                <span class="discount">活动价：￥<span class="hdp">{{=value.Price}}</span></span>
+                <span class="buy buybtn"></span>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <!-- 当季新品模板  end-->
+    <!-- 为你推荐模板-->
+    <script id="RecommendTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="commom-item {{=(index%2==0?"fl":"fr" ) }}">
+            <img src="{{=value.ProductImg}}" data-id="{{=value.Id}}" />
+            <p class="head">{{=value.Name}}</p>
+            {{ if(value.Synopsis) { }}
+            <p class="title">{{=value.Synopsis}}</p>
+            {{ }else{ }}
+            <p class="title">暂无产品简介</p>
+            {{ } }}
+            <div class="other m-pro" data-id="{{=value.Id}}">
+                <div class="price">
+                    <span>￥</span><span>{{=value.Price}}</span>
+                </div>
+                <div class="mprice">
+                    <span>￥</span><span>{{=value.MarketPrice}}</span>
+                </div>
+                <div class="buy buybtn"></div>
+            </div>
+            <div class="grouptuan" style="display:none;">
+                <div class="rate">佣金比例：<span class="levl1 hide">{{=value.CommissionRate}}</span><span class="levl2 hide">{{=value.SecondCommissionRate}}</span>%</div> 
+                <div class="zuan">预计可赚：￥<span class="levl1 hide">{{=value.CommissionPrice}}</span><span class="levl2 hide">{{=value.SecondCommissionPrice}}</span></div>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <!-- 为你推荐模板  end-->
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var id = "";
+        var isEnd = false;
+        $(function () {
+            $("#index-footer").load("footerV.html");
+            getBanner(1);
+            getNews();
+            goodsList('', '', '', '', 1, '', 'j', 1, 1, 100); //爆款直降,搜推荐
+            goodsList('', '', '', 1, '', '', 's', 0, 1, 100); //当季新品
+            goodsList('', '', 1, '', '', '', 'q', 0, 1, 100);//推荐
+
+            $(".ad_close").click(function () {
+                $(".ad_bg,.ad_dv").hide();
+            });
+           
+          
+            $('.search-input input').click(function () {
+                location.href = '/searchProduct.html'
+            });
+            if (sc.auth.isLogin()) {
+                userId = sc.utils.getCookieValue("UserId");
+                token = sc.utils.getCookieValue("Token");
+                //获取用户信息
+                $('.search-news .news-icon').click(function () {
+                    location.href = '/Message.html';
+                });
+                noReadNewNum();
+
+                var url1 = 'api/User/loadNewUserCoupon';
+                var callback1 = function (data) {
+                    if (data.code == 3) {
+                        $(".ad_ubg,.ad_udv").show();
+                        $(".ad_udv_dv").click(function () {
+                            $(".ad_ubg,.ad_udv").hide();
+                            window.location.href = '/coupon/VoucherCenter.html';
+                        });
+                        $(".ad_uclose").click(function () {
+                            $(".ad_ubg,.ad_udv").hide();
+                        });
+                    }
+                }
+                var error = function (data) {
+
+                }
+                sc.post(url1, {
+                    "UserId": userId,
+                    "Token": token
+                }, callback1, error);
+            }
+            var pageIndex = 1;
+            //window.onscroll = function () {
+            //    if (getScrollTop() + getClientHeight() === getScrollHeight()) {
+            //        if (isEnd === false) {
+            //            var isScroll = true;
+            //            pageIndex++;
+            //            // goodsList('', '', 1, '', '', '', 'q', 0, pageIndex, 8);//推荐
+            //            //goodsList('', '', 1, '', '', '', 'q', 0, pageIndex, 6);//推荐
+            //        } else {
+            //            isEnd = true;
+            //            layer.open({
+            //                content: '已经到底啦~',
+            //                skin: 'msg',
+            //                time: 2 //2秒后自动关闭
+            //            });
+            //        }
+            //    }
+            //    //var pageY = window.pageYOffset;
+            //}
+            //设置广告弹窗
+            var adcnt = sc.utils.getCookieValue("adcnt");
+            if (sc.utils.isNullOrEmpty(adcnt))
+                adcnt = 0;
+            var __adcnt = parseInt(adcnt) + 1;
+            if (__adcnt < 2) {
+                $(".ad_bg,.ad_dv").show();
+                var d = new Date();
+                var expireDate = new Date(d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate() + " 23:59:59");
+                sc.utils.setCookieValue("adcnt", __adcnt, expireDate);
+            }
+        });
+       
+        function goodsList(Pid, hot, recommend, newProduct, explosive, searchkey, sortname, sortorder, pageIndex, pageSize) {
+            var url = 'api/Goods/GoodsList';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data.length > 0) {                                                  
+                        if (explosive) {
+                            var arrText = doT.template($("#RecommendTemp").text()); //爆款直降
+                            $("#ExplosiveProlist").html(arrText(data.data));
+                            if (isTuanZhang)
+                                $(".grouptuan").show();
+                            $("#ExplosiveProlist .commom-item img").click(function () {
+                                var proId = $(this).attr("data-id");
+                                if (proId) {
+                                    window.location.href = "/details.html?id=" + proId;
+                                }
+                            });
+                        } else if (newProduct) {
+                            //当季新品
+                            var arrText2 = doT.template($("#RecommendTemp").text()); //当季新品
+                            $("#NewproductList").html(arrText2(data.data));
+                            if (isTuanZhang)
+                                $(".grouptuan").show();
+                            $("#NewproductList .commom-item img").click(function () {
+                                var proId = $(this).attr("data-id");
+                                if (proId) {
+                                    window.location.href = "/details.html?id=" + proId;
+                                }
+                            });
+
+                        } else if (recommend) {
+                            var arrText1 = doT.template($("#RecommendTemp").text());
+                            $("#RecommendDiv").append(arrText1(data.data));
+                            if (isTuanZhang)
+                                $(".grouptuan").show();
+                            $("#RecommendDiv .commom-item img").click(function () {
+                                var proId = $(this).attr("data-id");
+                                if (proId) {
+                                    window.location.href = "/details.html?id=" + proId;
+                                }
+                            });
+                        }
+                        GroupUserLevel();      
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "cid": Pid,
+                "page": pageIndex,
+                "pageSize": pageSize,
+                "hot": hot,
+                "recommend": recommend,
+                "newProduct": newProduct,
+                "explosive": explosive,
+                "searchkey": searchkey,
+                "sortname": sortname, //j为按价格，s为时间排序
+                "sortorder": sortorder, //0为倒叙，1为升序
+                "UserId": userId,
+                "Token": token
+            }, callback, error);
+        }
+        function getBanner(type) {
+            var url = "/api/Banner/BannerList";
+            var calback = function (data) {
+                if (data.code == 0) {
+                    if (type === 1) {
+                        //首页轮播banner
+                        var interText = doT.template($("#bannerTemp").text());
+                        $("#bannerImg").html(interText(data.data));
+                        // 轮播图
+                        var swiper = new Swiper('.swiper-container-carousel', {
+                            autoplay: {
+                                delay: 2500,
+                                disableOnInteraction: false,
+                            },
+                            pagination: {
+                                el: '.swiper-pagination',
+                                clickable: true,
+                            },
+                        });
+                    }
+                    if (type === 3) {
+                        //首页产品广告banner
+                        var interText2 = doT.template($("#proBannerTemp").text());
+                        $(".proBanner").html(interText2(data.data));
+                    }
+                }
+            }
+            sc.post(url, {
+                "type": type
+            }, calback);
+        }
+
+        function getNews() {
+            var url = "/api/News/NoticeList";
+            var calback = function (data) {
+                if (data.code == 0) {
+                    var interText = doT.template($("#SystemNews").text());
+                    $("#noticelist").html(interText(data));
+                    // 消息滚动
+                    var swiper = new Swiper('.swiper-container-news', {
+                        direction: 'vertical',
+                        loop: true,
+                        autoplay: {
+                            delay: 2500,
+                            disableOnInteraction: false,
+                        },
+                    });
+                    $("#noticelist p").click(function () {
+                        var Id = $(this).attr("data-id");
+                        window.location.href = "/newsDetail.html?id=" + Id;
+                    });
+                }
+            }
+            sc.post(url, {
+                "pagesize": 20,
+                "page": 1,
+                "type": 0
+            }, calback)
+        }
+        function noReadNewNum() {
+            var url = 'api/News/NewsCount';
+            var callback = function (data) {
+                if (data.code === 0) {
+                    if (data.count > 0) {
+                        $('.search-news .news-icon').addClass("active");
+                    }
+                }
+            }
+            sc.post(url, {
+                "UserId": userId,
+                "Token": token
+            }, callback);
+        }
+        var isTuanZhang = false;
+        var level = 0;
+        var isSGroup = false;//是否查找过团长
+        function GroupUserLevel() {
+            if (isSGroup == false) {
+                isSGroup = true;
+                var url = 'api/User/GroupUserLevel';
+                var callback = function (data) {
+                    if (data.code === 0) {
+                        if (data.data > 0) {
+                            level = data.data;
+                            if (level == 1) {
+                                $(".levl2").remove();
+                                $(".levl1").show();
+                            }
+                            else if (level == 2) {
+                                $(".levl1").remove();
+                                $(".levl2").show();
+                            }
+                            $(".icons_home").addClass("icons_home" + level);
+                            $(".icons_home").show();
+                            isTuanZhang = true;
+                            $(".grouptuan").show();
+                        }
+                    }
+                }
+                sc.post(url, {
+                    "UserId": userId,
+                    "Token": token
+                }, callback);
+            } else {
+                if (level == 1) {
+                    $(".levl2").remove();
+                    $(".levl1").show();
+                }
+                else if (level == 2) {
+                    $(".levl1").remove();
+                    $(".levl2").show();
+                }
+            }
+        }
+        function getScrollTop() {
+            var scrollTop = 0;
+            if (document.documentElement && document.documentElement.scrollTop) {
+                scrollTop = document.documentElement.scrollTop;
+            } else if (document.body) {
+                scrollTop = document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+
+        //获取当前可视范围的高度
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+            } else {
+                clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+            }
+            return clientHeight;
+        }
+
+        //获取文档完整的高度
+        function getScrollHeight() {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        }
+    </script>
+    <script>
+        (() => {
+            var flag = 0;
+            var motion = document.getElementById('tuancenter');
+            var disX, disY;    //元素左/上 ‘半径’
+            var moveX, moveY;
+            var L, T;    //可移动范围
+            var starX, starY;
+            var starXEnd, starYEnd;
+
+
+            let stime = new Date().getTime();
+            motion.addEventListener('touchstart', function (e) {
+                stime = new Date().getTime();
+
+                flag = 0;
+                e.preventDefault(); //阻止触摸按钮时页面滚动和缩放
+                //获取元素左/上边到中心（clientX,clientY）的距离
+                disX = e.touches[0].clientX - this.offsetLeft;
+                disY = e.touches[0].clientY - this.offsetTop;
+                //手指按下屏幕时的坐标
+                starX = e.touches[0].clientX;
+                starY = e.touches[0].clientY;
+            });
+            motion.addEventListener('touchmove', function (e) {
+                flag = 1;
+                L = e.touches[0].clientX - disX;
+                T = e.touches[0].clientY - disY;
+                //移动时当前位置和起始位置的差值
+                starXEnd = e.touches[0].clientX - starX;
+                starYEnd = e.touches[0].clientY - starY;
+
+                if (L < 0) {
+                    L = 0; //限制拖拽的X范围，不能拖出屏幕
+                } else if (L > document.documentElement.clientWidth - this.offsetWidth) {
+                    L = document.documentElement.clientWidth - this.offsetWidth;
+                }
+                if (T < 0) {
+                    T = 0;  //限制拖拽的Y范围，不能拖出屏幕
+                } else if (T > document.documentElement.clientHeight - this.offsetHeight) {
+                    T = document.documentElement.clientHeight - this.offsetHeight;
+                }
+
+                moveX = L + 'px';
+                moveY = T + 'px';
+                this.style.left = moveX;
+                this.style.top = moveY;
+            });
+            motion.addEventListener('touchend', function (e) {
+                var etime = new Date().getTime();
+                console.log(etime - stime);
+                if (etime - stime < 120) {
+                    e.preventDefault();
+                    window.location.href = '/member/groupcenter.html';
+                }
+
+            });
+        })()
+        $(".ad_bg,.ad_dv").hide();
+    </script>
+    <script src="/script/local.js?v=1.11" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.CommerciaBalanceMapper">
+	<select id="selectCommerciaBalanceList" resultType="com.qifenqian.bms.accounting.financequery.bean.CommerciaBalance"  parameterType="com.qifenqian.bms.accounting.financequery.bean.CommerciaBalance">
+		SELECT
+				B.ACCT_ID,
+				T.CUST_ID,
+				T.MERCHANT_CODE,
+				bpn.column_value BANK_CARD_NAME,
+				bpn1.column_value BANK_CARD_NO,
+				bpn2.column_value  BANK_NAME,
+				B.USABLE_AMT,
+				B.BALANCE,
+				B.FREEZE_AMT,
+				B.ONWAY_AMT,
+				B.ACCT_NAME,
+				C.ACCT_ID AS CACCTID,
+				T.BRANCH_BANK,
+				IFNULL((SELECT SUM(S.settle_amt) FROM bms_merchant_settle S WHERE  S.cust_id = B.cust_id  and S.status = 'INIT'),0) AS availableSettleAmt,
+				IFNULL((SELECT SUM(M.settle_amt) FROM bms_merchant_settle M WHERE  M.cust_id = B.cust_id  and M.status = 'AUDIT_PASS'),0) AS onwaySettleAmt,
+				CASE B.STATUS 
+				WHEN 'NORMAL' THEN '可用'
+				WHEN 'FREEZE' THEN '冻结'
+				WHEN 'CANCEL' THEN '注销'
+				END AS status
+			FROM  STCS.ACCT_SEVEN_BUSS B
+			INNER JOIN TD_CUST_INFO T ON B.CUST_ID = T.CUST_ID
+			LEFT JOIN  STCS.ACCT_BANK_CARD C ON  B.CUST_ID=C.CUST_ID
+			left join bms_protocol_content bpc on bpc.cust_id = b.cust_id and bpc.status='VALID'
+		    left join bms_protocol_column bpn on bpc.id = bpn.protocol_id  and bpn.column_code='bankCardName'
+		    left join bms_protocol_column bpn1 on bpc.id = bpn1.protocol_id  and bpn1.column_code='bankCardNo'
+		    left join bms_protocol_column bpn2 on bpc.id = bpn2.protocol_id  and bpn2.column_code='bankName'
+		WHERE exists(
+					select 1 from TD_CERTIFICATE_AUTH auth where auth.CUST_ID = B.CUST_ID and auth.CERTIFICATE_STATE='0'
+					)
+		 <if test="acctName!=null and acctName!='' ">   
+          AND B.ACCT_NAME  like CONCAT('%',#{acctName},'%') 
+        </if> 
+        <if test="merchantCode !=null and merchantCode !='' ">   
+          AND T.MERCHANT_CODE  like CONCAT('%',#{merchantCode},'%') 
+        </if>
+		ORDER BY B.USABLE_AMT DESC
+	</select>	
+	
+	<select id="selectCommerciaBalanceCount" resultType="com.qifenqian.bms.accounting.financequery.bean.CommerciaBalance"  parameterType="com.qifenqian.bms.accounting.financequery.bean.CommerciaBalance">
+		SELECT
+			SUM(B.USABLE_AMT) USABLE_AMT_COUNT,
+			SUM(B.BALANCE) BALANCE_COUNT,
+			SUM(B.FREEZE_AMT) FREEZE_AMT_COUNT,
+			SUM(B.ONWAY_AMT) ONWAY_AMT_COUNT,
+			SUM(IFNULL((SELECT SUM(S.SETTLE_AMT) FROM STCDB.BMS_MERCHANT_SETTLE S WHERE  S.CUST_ID = B.CUST_ID  AND S.STATUS = 'INIT'),0)) AS AVAILABLE_SETTLE_AMT_COUNT,
+			SUM(IFNULL((SELECT SUM(M.SETTLE_AMT) FROM STCDB.BMS_MERCHANT_SETTLE M WHERE  M.CUST_ID = B.CUST_ID  AND M.STATUS = 'AUDIT_PASS'),0)) AS ONWAY_SETTLE_AMT_COUNT
+		FROM  STCS.ACCT_SEVEN_BUSS B
+			INNER JOIN STCDB.TD_CUST_INFO T ON B.CUST_ID = T.CUST_ID
+			INNER JOIN TD_CERTIFICATE_AUTH A ON B.CUST_ID =A.CUST_ID
+			LEFT  JOIN  STCS.ACCT_BANK_CARD C ON  B.CUST_ID=C.CUST_ID
+			WHERE A.CERTIFICATE_STATE = '0'
+	</select>
+	
+	<select id="selectCommerciaBalance" resultType="com.qifenqian.bms.accounting.financequery.bean.CommerciaBalance"  parameterType="string">
+		SELECT
+			B.ACCT_ID,
+			C.CUST_ID,
+			C.BANK_CARD_NAME,
+			C.BANK_CARD_NO,
+			C.BANK_NAME ,
+			B.USABLE_AMT,
+			B.ACCT_NAME,
+			C.ACCT_ID AS cacctId,
+			T.BRANCH_BANK,
+			T.MERCHANT_CODE
+			FROM  STCS.ACCT_SEVEN_BUSS B
+			INNER JOIN TD_CUST_INFO T ON B.CUST_ID = T.CUST_ID 
+			LEFT JOIN  STCS.ACCT_BANK_CARD C ON  B.CUST_ID=C.CUST_ID
+			WHERE  T.MERCHANT_CODE = #{merchantCode, jdbcType=VARCHAR}
+	</select>	
+</mapper>

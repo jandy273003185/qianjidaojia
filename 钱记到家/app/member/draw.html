@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新用户专享</title>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="../js/jquery.barrager.min.js"></script>
+    <script src="/script/lottery.js"></script>
+    <link href="/css/memberbase.css" rel="stylesheet" />
+    <link href="/css/lottery.css" rel="stylesheet" />
+    <link href="../css/barrager.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #ff2b3f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading">
+        <img src="/images/loading-1.gif"/>
+    </div>
+    <div class="lottery-wrap">
+        <div class="lottery-main" id="lotteryconfigBox"></div>
+        <p class="num">你还有<span id="times">0</span>次抽奖机会</p>
+        <a href="mydraw.html" class="my-lottery">我的奖品</a>
+    </div>
+
+    <!-- 活动规则弹框 -->
+    <div class="rulebg"></div>
+    <div class="activities-des" id="activities">
+        <div class="head">活动规则</div>
+        <div class="title">
+            <span class="title-icon"></span>
+            <span class="title-des">活动说明</span>
+        </div>
+        <div class="des-main">
+            活动说明：<br />
+            <p id="activitytime"></p>
+            <p id="activityremark"></p>
+        </div>
+
+        <button class="close" id="close"></button>
+    </div>
+    <!--奖项-->
+    <script id="lotteryconfiglist" type="text/x-dot-template">
+        {{~it:value:index}}
+        {{ if(value.Prize==1) { }}
+        <div class="item top left" style="background-image:url('{{=value.ListImage}}')"></div> {{ } }}
+        {{ if(value.Prize==2) { }}
+        <div class="item top row-center" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==3) { }}
+        <div class="item top right" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==4) { }}
+        <div class="item right coll-center" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==5) { }}
+        <div class="item right bottom" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==6) { }}
+        <div class="item bottom row-center" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==7) { }}
+        <div class="item bottom left" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{ if(value.Prize==8) { }}
+        <div class="item left coll-center" style="background-image:url('{{=value.ListImage}}')"></div>{{ } }}
+        {{~}}
+        <div class="lottery-btn" id="lottery_btn"></div>
+    </script>
+    <!--弹幕-->
+    <div id="dm"></div>
+    <script>
+        lottery.Init();
+    </script>
+</body>
+</html>

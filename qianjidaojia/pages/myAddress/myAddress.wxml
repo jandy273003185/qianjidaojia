@@ -1,0 +1,17 @@
+<!--pages/myAddress/myAddress.wxml-->
+<scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+  <view class="item"  wx:for="{{listArr}}" wx:key="index" catchtap="selectAddress" data-id="{{item.id}}">
+    <view class="item-left">
+      <image src="/images/address.png"></image>
+      <view class="item-left-txt">
+        <view><text class="name">{{item.name}}</text><text class="mobile">{{item.tel}}</text></view>
+        <text class="address">{{item.addressinfo}}</text>
+      </view>
+    </view>
+    <text class="edit" data-id="{{item.id}}" catchtap="edit">编辑</text>
+  </view>
+
+</scroll-view>
+
+
+<view bindtap="add" class="add" bindtap="add">添加新地址</view>

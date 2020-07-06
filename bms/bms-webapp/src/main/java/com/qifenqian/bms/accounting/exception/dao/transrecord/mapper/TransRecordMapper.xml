@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.transrecord.mapper.TransRecordMapper">
+	<select id="selectTransRecordByMsgId" resultType="com.qifenqian.bms.accounting.exception.dao.transrecord.bean.TransRecord">
+		SELECT T.*
+		  FROM  TRANS_RECORD T   
+		 WHERE T.MSG_ID = #{msgId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectSingleByRequest" parameterType="com.qifenqian.bms.accounting.exception.dao.transrecord.bean.TransRecord" resultType="com.qifenqian.bms.accounting.exception.dao.transrecord.bean.TransRecord">
+		SELECT 
+			T.*
+		  FROM TRANS_RECORD T
+		 WHERE  T.REQ_SERIAL_ID = #{reqSerialId, jdbcType=VARCHAR}
+	</select> 	
+	
+	<update id="updateTransRecordStatus" parameterType="com.qifenqian.bms.accounting.exception.dao.transrecord.bean.TransRecord">
+		UPDATE TRANS_RECORD T 
+		SET 
+			T.STATUS = #{status,jdbcType = VARCHAR}
+		WHERE 
+			T.REQ_SERIAL_ID = #{reqSerialId,jdbcType = VARCHAR}
+	</update>
+</mapper>

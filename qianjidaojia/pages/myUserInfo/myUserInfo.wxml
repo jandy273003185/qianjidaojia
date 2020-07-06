@@ -1,0 +1,82 @@
+<!--pages/myUserInfo/myUserInfo.wxml-->
+<view class="content">
+  <view class="item">
+    <text class="title">头像</text>
+    <!-- <image  bindtap="chooseimage" class="userinfo-avatar" src="{{Avatar}}" mode="cover"></image> -->
+    <image  bindtap="chooseimage" class="userinfo-avatar" src="{{photo}}" mode="cover"></image>
+    <canvas style="display:none;" canvas-id="myCanvas"></canvas>
+  </view>
+  
+  <!-- <view class="business-license">
+  <text class="business-license-txt"><text style="color:red">*</text>{{photoType}}照片</text>
+  <view class="icardidentityCard" bindtap="chooseimage">
+    <view class="{{delImgHide}}" catchtap="delImg">
+        <image class="del-img" mode='aspectFill' src="/images/clear.png"/>
+      </view>
+    <image class="{{uploadImg}}" src="{{tempFilePaths }}" catchTap="chooseImageTap" mode="aspectFit"/>
+    <view class="{{photoTxtHide}}">上传{{photoType}}</view>
+  </view>
+</view> -->
+
+  <view class="item line" bindtap="onNickName">
+    <text class="title">昵称</text>
+    <view class="nickName">
+      <text class="name">{{NickName}}</text>
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view>
+  <view class="item line">
+    <text class="title">账户</text>
+    <view class="nickName">
+      <text class="name">{{Mobile}}</text>
+    </view>
+  </view>
+  <view class="item line" bindtap="onSex">
+    <text class="title">性别</text>
+    <view class="nickName">
+      <text class="name">{{Sex}}</text>
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view> 
+  <navigator url="/pages/bankCardList/bankCardList">
+    <view class="item distance">
+      <view class="title">绑定银行卡<image class="bankCard" src="/images/bankCard.png"></image></view>
+      <view class="nickName">
+        <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+      </view>
+    </view>
+  </navigator>
+  <view class="item distance" bindtap="onAddress">
+    <view class="title">我的收货地址<image src="/images/address.png"></image></view>
+    <view class="nickName">
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view>
+  <!-- <view class="item distance">
+    <text class="title">关于我们</text>
+    <view class="nickName">
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view>
+  <view class="item distance">
+    <text class="title">意见反馈</text>
+    <view class="nickName">
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view>
+  <view class="item distance">
+    <text class="title">常见问题</text>
+    <view class="nickName">
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view>
+  <view class="item distance">
+    <text class="title">服务协议</text>
+    <view class="nickName">
+      <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+    </view>
+  </view> -->
+  <!-- <view class="logout">
+    退出当前账号
+  </view>  -->
+</view>

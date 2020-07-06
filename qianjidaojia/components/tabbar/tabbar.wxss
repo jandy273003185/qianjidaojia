@@ -1,0 +1,51 @@
+/* components/tabbar/tabbar.wxss */
+.tabbottom{
+    width: 750rpx;
+    height: 112rpx;   
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 1rpx -2rpx 4rpx 0px rgba(102, 102, 102, 0.192);
+    z-index: 9;
+    background-color: #fff;
+}
+.IphoneX_height{
+    height: 150rpx;
+    padding-bottom: 20rpx;
+}
+.tabbottom .list{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+}
+.tabbottom .list .item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+.tabbottom .list .item .img{
+    height: 46rpx;
+    width: 46rpx;
+    display: block;
+    margin-bottom: 5rpx;
+}
+.tabbottom .list .item text{
+    font-size: 20rpx;
+    height: 24rpx;
+}
+.num{
+  position: absolute;
+  left: 485rpx;
+  background-color:#ff5c29;
+  color:#ffffff;
+  border-radius:50%;
+  min-width: 32rpx;
+  font-size:22rpx;
+  text-align:center;
+  z-index: 999;
+  bottom: 72rpx;
+}

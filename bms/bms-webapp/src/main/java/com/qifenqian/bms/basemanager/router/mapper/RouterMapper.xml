@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.router.mapper.RouterMapper">
+ <resultMap type="com.qifenqian.bms.basemanager.router.bean.Servicechannel" id="basicResultMap">
+ 	<result property="id" column="ID"/>
+	<result property="productCode" column="PRODUCT_CODE"/>
+	<result property="channel" column="CHANNEL"/>
+	<result property="channelCode" column="CHANNEL_CODE"/>
+	<result property="busiType" column="BUSI_TYPE"/>
+	<result property="busiName" column="BUSI_NAME"/>
+	<result property="busiCtrl" column="BUSI_CTRL"/>
+	<result property="weight" column="WEIGHT"/>
+ </resultMap>
+	<select id="selectRouters" resultType="com.qifenqian.bms.basemanager.router.mapper.RouterMapper" parameterType="com.qifenqian.bms.basemanager.router.bean.Servicechannel" resultMap="basicResultMap">
+		SELECT 
+		*
+		FROM td_service_channel_control
+		
+	</select>
+	
+	<insert id="addRouters" parameterType="com.qifenqian.bms.basemanager.router.bean.Servicechannel">
+		INSERT INTO td_service_channel_control(
+			ID,
+			PRODUCT_CODE,
+			CHANNEL,
+			CHANNEL_CODE,
+			BUSI_TYPE,
+			BUSI_NAME
+		) values (  
+			#{id,jdbcType=VARCHAR},
+			#{productCode,	jdbcType=VARCHAR},
+			#{channel,	jdbcType=VARCHAR},
+			#{channelCode,	jdbcType=VARCHAR},
+			#{busiType,	jdbcType=VARCHAR},
+			#{busiName,	jdbcType=VARCHAR}
+		)	
+	</insert>	
+	
+	<update id="updateRouter" parameterType="com.qifenqian.bms.basemanager.router.bean.Servicechannel">	
+		UPDATE	
+			td_service_channel_control	
+		<set>	
+		<if test="productCode != null and productCode != ''">  
+			PRODUCT_CODE = #{productCode},  
+		</if> 
+		<if test="channel != null and channel != ''">  
+			CHANNEL = #{channel},  
+		</if> 
+			<if test="channelCode != null and channelCode != ''">  
+			CHANNEL_CODE = #{channelCode},  
+		</if> 
+		<if test="busiType != null and busiType != ''">  
+			BUSI_TYPE = #{busiType},  
+		</if>	
+		<if test="busiName != null and busiName != ''">  
+			BUSI_NAME = #{busiName},  
+		</if>
+		</set>	
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteRouterById" parameterType="string"> 
+		DELETE FROM td_service_channel_control 
+		WHERE ID = #{id,jdbcType=VARCHAR} 
+	</delete>
+	
+</mapper>

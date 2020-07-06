@@ -1,0 +1,78 @@
+<!--pages/searchGoods/searchGoods.wxml-->
+<view class="searchBox">
+    <input class="input" placeholder="搜索商品" placeholder-class="placeholder"  type="text" confirm-type="search"  bindconfirm="confirm" bindinput="inputListener">
+    <myIcon class="confirm" iconClass="icon_search"></myIcon>
+    </input>
+    <view class="searchBtn" bindtap="confirm">搜索</view>
+</view>
+<!-- 热门及历史 -->
+<view wx:if="{{isShow}}" class="searchHint">
+    <!-- 热门 -->
+    <!-- <view class="hot">
+        <view class="hotTitle">热门搜索</view>
+        <view class="hotHistory flex justfs alifs flexwp">
+            <view class="history">极客丑梨</view>
+            <view class="history">极客富士</view>
+            <view class="history">蜜瓜</view>
+            <view class="history">黑美人无籽西瓜</view>
+            <view class="history">极客</view>
+            <view class="history">极客丑梨</view>
+        </view>
+    </view> -->
+    <!-- 历史 -->
+    <!-- <view class="hot marT6">
+        <view class="flex justs alifs ">
+            <view class="hotTitle ">历史搜索</view>
+            <view>
+                <myIcon class="iconE" iconClass="icon_empty"></myIcon>
+                <text class="empty">清空</text>
+            </view>
+
+        </view>
+        <view class="hotHistory flex justfs alifs flexwp">
+            <view class="history">极客丑梨</view>
+            <view class="history">极客富士</view>
+            <view class="history">蜜瓜</view>
+            <view class="history">黑美人无籽西瓜</view>
+            <view class="history">极客</view>
+            <view class="history">极客丑梨</view>
+        </view>
+    </view> -->
+
+</view>
+<!-- 搜索结果展示 -->
+<scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+  <view wx:if="{{isResult}}" class="result">
+      <view class="goods flex justfs alic" wx:for="{{listArr}}" wx:key="*this">
+          <image src="{{item.ProductImg}}" class="goodsImg"></image>
+          <view class="goodsInfo" bindtap="toDetails">
+              <view class="goodsName hid-ell">{{item.Name}}</view>
+              <view class=" flex justfs alic">
+                  <view class="specification">{{item.Synopsis}}</view>
+                  <view class="specification red">仅剩{{item.Stock}}件</view>
+              </view>
+              <view class="price flex justs alife">
+                  <view>
+                      <view class="nowPrice">￥{{item.Price}}</view>
+                      <view class="oldPrice">￥{{item.MarketPrice}}
+                          <text class="line"></text>
+                      </view>
+                  </view>
+                  <!-- 团长佣金 -->
+                  <view wx:if="{{role==1}}" class="brokerageBox flex colu justs alifs">
+                      <text class="brokerage">佣金比例:{{item.CommissionRate}}%</text>
+                      <text class="brokerage">预计可赚:￥{{item.CommissionPrice}}</text>
+                  </view>
+                  <!-- 营长佣金 -->
+                  <view wx:if="{{role==2}}" class="brokerageBox flex colu justs alifs">
+                      <text class="brokerage">佣金比例:{{item.SecondCommissionRate}}%</text>
+                      <text class="brokerage">预计可赚:￥{{item.SecondCommissionPrice}}</text>
+                  </view>
+                  <image data-proId="{{item.Id}}" data-proName="{{item.Title}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proStock="{{item.Stock}}" data-proimg="{{item.ProductImg}}" class="cart" src="../../images/index/shoppingCart.png" catchtap="addCart"></image>
+              </view>
+          </view>
+      </view>
+  </view>
+</scroll-view>
+<!-- 点击加入购物车 -->
+<addCart wx:if="{{cartToggle}}" isCart="{{isCart}}" animation="{{animation}}"  proId="{{proId}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}" nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}"></addCart>

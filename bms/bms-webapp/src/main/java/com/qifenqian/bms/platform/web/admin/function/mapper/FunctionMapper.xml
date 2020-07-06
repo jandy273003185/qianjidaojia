@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.admin.function.mapper.FunctionMapper">
+
+	<!-- condition条件 -->
+	<sql id="whereCondition">
+		1 = 1
+		<if test="functionId > 0 "> AND F.FUNCTION_ID = #{functionId, jdbcType=INTEGER} </if>
+		<if test="functionUrl != null and functionUrl != '' "> AND F.FUNCTION_URL = #{functionUrl, jdbcType=VARCHAR} </if>
+	</sql>
+
+	<!-- 根据用户编号查询菜单列表 -->
+	<select id="selectFunctionListByUserId" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT F.* 
+		  FROM SYS_FUNCTION F
+		WHERE 
+			EXISTS(
+				SELECT 1 
+				  FROM SYS_ROLE_FUNCTION RF
+				 INNER JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RF.ROLE_ID
+				 WHERE UR.USER_ID = #{userId, jdbcType=INTEGER}
+				   AND RF.FUNCTION_ID = F.FUNCTION_ID				 	
+			)
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER	
+	</select>
+
+	<!-- 根据用户编号查询菜单列表(登陆) -->
+	<select id="selectFunctionListByLogin" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT F.* 
+		  FROM SYS_FUNCTION F
+		WHERE 
+			EXISTS(
+				SELECT 1 
+				  FROM SYS_ROLE_FUNCTION RF
+				 INNER JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RF.ROLE_ID
+				 INNER JOIN SYS_ROLE R ON R.ROLE_ID = UR.ROLE_ID AND R.IS_VALID = 'Y'
+				 WHERE UR.USER_ID = #{userId, jdbcType=INTEGER}
+				   AND RF.FUNCTION_ID = F.FUNCTION_ID				 	
+			)
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER	
+	</select>
+
+	<!-- 选择某个角色查询下面的功能ID -->
+	<select id="selectFunctionListByRoleId" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT F.* 
+		  FROM SYS_FUNCTION F
+		  INNER JOIN SYS_ROLE_FUNCTION RF ON RF.FUNCTION_ID = F.FUNCTION_ID
+		WHERE RF.ROLE_ID = #{roleId, jdbcType=INTEGER}
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER	
+	</select>
+
+	<!-- 根据功能编号查询下一级的子功能列表 -->
+	<select id="selectFunctionSubListById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT SF.*
+		  FROM SYS_FUNCTION F
+		  INNER JOIN SYS_FUNCTION SF ON SF.PARENT_FUNCTION_ID = F.FUNCTION_ID
+		WHERE F.FUNCTION_ID = #{functionId, jdbcType=INTEGER}
+			<if test="userId > 0 ">
+				AND EXISTS(
+					SELECT 1
+					  FROM SYS_FUNCTION A
+					 INNER JOIN SYS_ROLE_FUNCTION RF ON RF.FUNCTION_ID = A.FUNCTION_ID
+		  			 INNER JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RF.ROLE_ID
+		  			 WHERE A.FUNCTION_ID = SF.FUNCTION_ID
+		  			   AND UR.USER_ID = #{userId, jdbcType=INTEGER}
+				)
+			</if>
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER
+	</select>
+
+	<!-- 根据功能编号查询下一级的子功能列表 -->
+	<select id="selectFunctionSubListByLogin" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT SF.*
+		  FROM SYS_FUNCTION F
+		  INNER JOIN SYS_FUNCTION SF ON SF.PARENT_FUNCTION_ID = F.FUNCTION_ID
+		WHERE F.FUNCTION_ID = #{functionId, jdbcType=INTEGER}
+			<if test="userId > 0 ">
+				AND EXISTS(
+					SELECT 1
+					  FROM SYS_FUNCTION A
+					 INNER JOIN SYS_ROLE_FUNCTION RF ON RF.FUNCTION_ID = A.FUNCTION_ID
+		  			 INNER JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RF.ROLE_ID
+		  			 INNER JOIN SYS_ROLE R ON R.ROLE_ID = UR.ROLE_ID AND R.IS_VALID = 'Y'
+		  			 WHERE A.FUNCTION_ID = SF.FUNCTION_ID
+		  			   AND UR.USER_ID = #{userId, jdbcType=INTEGER}
+				)
+			</if>
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER
+	</select>
+
+	<!-- 根据条件查询单个功能菜单 -->
+	<select id="selectFunctionSingle" parameterType="com.qifenqian.bms.platform.web.admin.function.bean.Function" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT F.*
+		  FROM SYS_FUNCTION F
+		 <where>
+		 	<include refid="whereCondition"></include>
+		 </where>
+	</select>
+
+	<!-- 根据功能编号查询上层功能菜单 -->
+	<select id="selectFunctionParentById" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT PF.*
+		  FROM SYS_FUNCTION PF
+		  INNER JOIN SYS_FUNCTION SF ON SF.PARENT_FUNCTION_ID = PF.FUNCTION_ID
+		 WHERE SF.FUNCTION_ID = #{functionId, jdbcType=INTEGER}		 
+	</select>
+
+	<!-- 查找所有菜单 -->
+	<select id="selectAllFunctions" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT 
+		  FUNCTION_ID,
+		  FUNCTION_CODE,
+		  FUNCTION_NAME,
+		  PARENT_FUNCTION_ID,
+		  FUNCTION_LEVEL,
+		  FUNCTION_URL,
+		  ROUTE_PAGE,
+		  FUNCTION_ORDER,
+		  IS_MENU,
+		  IS_VALID,
+		  ACCESS_TYPE,
+		  ICON_CLASS,
+		  MEMO, 
+		  INST_USER,
+		  INST_DATETIME,
+		  LUPD_USER,
+		  LUPD_DATETIME
+		FROM SYS_FUNCTION
+	</select>
+
+	<select id="selectFunctionsByIdAndName" resultType="com.qifenqian.bms.platform.web.admin.function.bean.Function" parameterType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		SELECT F.* ,
+		(select U.user_name from sys_user U where u.user_id = F.inst_user) instUserName,
+		(select U.user_name from sys_user U where u.user_id = F.lupd_user) lupdUserName
+		FROM
+		SYS_FUNCTION F
+		<where>
+			<if test="functionCode != null and functionCode != '' "> AND F.FUNCTION_CODE LIKE CONCAT('%',#{functionCode, jdbcType=VARCHAR},'%')  </if>
+			<if test="functionName != null and functionName != '' "> AND F.FUNCTION_NAME LIKE CONCAT('%',#{functionName, jdbcType=VARCHAR},'%')  </if>
+			<if test="functionUrl != null and functionUrl != '' "> AND F.FUNCTION_URL LIKE CONCAT('%',#{functionUrl, jdbcType=VARCHAR},'%')  </if>
+		</where>
+		ORDER BY F.FUNCTION_ID
+	</select>
+
+	<insert id="insertFunction" parameterType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		INSERT INTO SYS_FUNCTION (
+			FUNCTION_CODE,
+		  	FUNCTION_NAME,
+		  	PARENT_FUNCTION_ID,
+		  	FUNCTION_LEVEL,
+		  	FUNCTION_URL,
+		  	route_page,
+		  	FUNCTION_ORDER,
+		  	IS_MENU,
+		  	IS_VALID,
+		  	ACCESS_TYPE,
+		  	ICON_CLASS,
+		  	MEMO,
+		  	INST_USER,
+		  	INST_DATETIME
+		) VALUES (
+			#{functionCode, 	jdbcType=VARCHAR},
+		  	#{functionName, 	jdbcType=VARCHAR},
+		  	#{parentFunctionId, 		jdbcType=VARCHAR},
+		  	#{functionLevel, 		jdbcType=INTEGER},
+		  	#{functionUrl, 	jdbcType=VARCHAR},
+		  	#{routePage, 	jdbcType=VARCHAR},
+		  	#{functionOrder, 	jdbcType=INTEGER},
+		  	#{isMenu,		jdbcType=VARCHAR},
+		  	#{isValid, 	jdbcType=VARCHAR},
+		  	#{accessType, 	jdbcType=VARCHAR},
+		  	#{iconClass, 	jdbcType=VARCHAR},
+		  	#{memo, 	jdbcType=VARCHAR},
+		  	#{instUser, 	jdbcType=INTEGER},
+		  	now()
+		)
+	</insert>
+	<update id="updateFunction" parameterType="com.qifenqian.bms.platform.web.admin.function.bean.Function">
+		UPDATE SYS_FUNCTION
+		<set>
+			<if test="functionName != null">
+				FUNCTION_NAME = #{functionName,jdbcType=VARCHAR},
+			</if>
+			<if test="functionCode != null">
+				FUNCTION_CODE = #{functionCode,jdbcType=VARCHAR},
+			</if>
+			<if test="parentFunctionId != null">
+				PARENT_FUNCTION_ID = #{parentFunctionId,jdbcType=VARCHAR},
+			</if>
+			<if test="functionLevel != null">
+				FUNCTION_LEVEL = #{functionLevel,jdbcType=INTEGER},
+			</if>
+			<if test="functionUrl != null">
+				FUNCTION_URL = #{functionUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="routePage != null">
+				route_page = #{routePage,jdbcType=VARCHAR},
+			</if>
+			<if test="functionOrder > 0">
+				FUNCTION_ORDER = #{functionOrder,jdbcType=INTEGER},
+			</if>
+			<if test="isMenu != null">
+				IS_MENU = #{isMenu,jdbcType=VARCHAR},
+			</if>
+			<if test="isValid != null">
+				IS_VALID = #{isValid,jdbcType=VARCHAR},
+			</if>
+			<if test="accessType != null">
+				ACCESS_TYPE = #{accessType,jdbcType=VARCHAR},
+			</if>
+			<if test="iconClass != null">
+				ICON_CLASS = #{iconClass,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser > 0">
+				LUPD_USER = #{lupdUser,jdbcType=VARCHAR},
+			</if>
+				LUPD_DATETIME = now()
+		</set>
+		WHERE FUNCTION_ID = #{functionId,jdbcType=INTEGER}
+	</update>
+
+	<select id="functionCodeIsExists" parameterType="string" resultType="string">
+		SELECT 
+		COUNT(*) 
+		FROM 
+		SYS_FUNCTION F
+		WHERE
+		F.FUNCTION_CODE = #{functionCode,jdbcType=VARCHAR}
+	</select>
+
+	<select id="functionCodeAndIdIsExists" parameterType="com.qifenqian.bms.platform.web.admin.function.bean.Function" resultType="string" >
+		SELECT 
+		COUNT(*) 
+		FROM 
+		SYS_FUNCTION F
+		WHERE
+		F.FUNCTION_CODE = #{functionCode,jdbcType=VARCHAR}
+		AND F.FUNCTION_ID != #{functionId,jdbcType=INTEGER}
+	</select>
+
+	<resultMap id="userFunctionMap" type="com.qifenqian.bms.v2.biz.system.function.bean.vo.FunctionTreeVO">
+		<id property="functionId" column="function_Id" jdbcType="NUMERIC"/>
+		<result property="userId" column="userId" jdbcType="NUMERIC"/>
+		<result property="functionCode" column="function_code" jdbcType="VARCHAR"/>
+		<result property="functionName" column="function_name" jdbcType="VARCHAR"/>
+		<result property="parentFunctionId" column="parent_function_id" jdbcType="NUMERIC"/>
+		<result property="functionLevel" column="function_level" jdbcType="VARCHAR"/>
+		<result property="functionUrl" column="function_url" jdbcType="VARCHAR"/>
+		<result property="routePage" column="route_page" jdbcType="VARCHAR"/>
+		<result property="isMenu" column="is_menu" jdbcType="VARCHAR"/>
+		<collection property="functionTreeVOS"
+					select="findMenuTreeByUserId"
+					column="{parentFunctionId = function_Id,userId = userId}">
+		</collection>
+	</resultMap>
+
+	<select id="findMenuTreeByUserId" resultMap="userFunctionMap">
+		SELECT F.*,#{userId} userId
+		  FROM SYS_FUNCTION F
+		WHERE
+			EXISTS(
+				SELECT 1
+				  FROM SYS_ROLE_FUNCTION RF
+				 INNER JOIN SYS_USER_ROLE UR ON UR.ROLE_ID = RF.ROLE_ID
+				 INNER JOIN SYS_ROLE R ON R.ROLE_ID = UR.ROLE_ID AND R.IS_VALID = 'Y'
+				 WHERE UR.USER_ID = #{userId}
+				   AND RF.FUNCTION_ID = F.FUNCTION_ID
+
+			)
+			and function_level in (1,2)
+			AND F.IS_VALID = 'Y'
+			AND F.ACCESS_TYPE = 'Y'
+			<if test="parentFunctionId == null ">
+				AND f.parent_function_id = 0
+			</if>
+			<if test="parentFunctionId != null ">
+				AND f.parent_function_id = #{parentFunctionId}
+		</if>
+		ORDER BY F.FUNCTION_LEVEL, F.FUNCTION_ORDER
+	</select>
+
+	<resultMap id="roleFunctionTreeMap" type="com.qifenqian.bms.v2.biz.system.function.bean.vo.FunctionTreeVO">
+		<id property="functionId" column="function_Id" jdbcType="NUMERIC"/>
+		<result property="roleId" column="roleId" jdbcType="INTEGER"/>
+		<result property="functionCode" column="function_code" jdbcType="VARCHAR"/>
+		<result property="functionName" column="function_name" jdbcType="VARCHAR"/>
+		<result property="parentFunctionId" column="parent_function_id" jdbcType="NUMERIC"/>
+		<result property="functionLevel" column="function_level" jdbcType="VARCHAR"/>
+		<result property="functionUrl" column="function_url" jdbcType="VARCHAR"/>
+		<result property="routePage" column="route_page" jdbcType="VARCHAR"/>
+		<result property="isMenu" column="is_menu" jdbcType="VARCHAR"/>
+		<result property="checked" column="checked" jdbcType="INTEGER"/>
+		<collection property="functionTreeVOS"
+					select="findRoleFunctionTree"
+					column="{parentFunctionId = function_Id,roleId = roleId}">
+		</collection>
+	</resultMap>
+	<select id="findRoleFunctionTree" resultMap="roleFunctionTreeMap">
+		SELECT
+			F.*, #{roleId, jdbcType=INTEGER} AS roleId, IF(ISNULL(RF.ROLE_ID), 0, 1) AS CHECKED
+		FROM
+			SYS_FUNCTION F
+			LEFT JOIN SYS_ROLE_FUNCTION RF ON F.FUNCTION_ID = RF.FUNCTION_ID
+			<if test="roleId != null ">
+				AND RF.ROLE_ID = #{roleId, jdbcType=INTEGER}
+			</if>
+			WHERE F.FUNCTION_LEVEL > 0
+			AND F.IS_VALID = 'Y'
+			AND F.ACCESS_TYPE = 'Y'
+		<if test="parentFunctionId == null ">
+			AND F.PARENT_FUNCTION_ID = 0
+		</if>
+		<if test="parentFunctionId != null ">
+			AND F.PARENT_FUNCTION_ID = #{parentFunctionId, jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<resultMap id="functionTreeMap" type="com.qifenqian.bms.v2.biz.system.function.bean.vo.FunctionTreeVO">
+		<id property="functionId" column="function_Id" jdbcType="NUMERIC"/>
+		<result property="functionCode" column="function_code" jdbcType="VARCHAR"/>
+		<result property="functionName" column="function_name" jdbcType="VARCHAR"/>
+		<result property="parentFunctionId" column="parent_function_id" jdbcType="NUMERIC"/>
+		<result property="functionLevel" column="function_level" jdbcType="VARCHAR"/>
+		<result property="functionUrl" column="function_url" jdbcType="VARCHAR"/>
+		<result property="routePage" column="route_page" jdbcType="VARCHAR"/>
+		<result property="isMenu" column="is_menu" jdbcType="VARCHAR"/>
+		<collection property="functionTreeVOS"
+					select="findFunctionTree"
+					column="{parentFunctionId = function_Id}">
+		</collection>
+	</resultMap>
+	<select id="findFunctionTree" resultMap="functionTreeMap">
+		SELECT
+			F.*
+		FROM
+			SYS_FUNCTION F
+			WHERE F.FUNCTION_LEVEL > 0
+			AND F.IS_VALID = 'Y'
+			AND F.ACCESS_TYPE = 'Y'
+			<if test="parentFunctionId == null ">
+				AND F.PARENT_FUNCTION_ID = 0
+			</if>
+			<if test="parentFunctionId != null ">
+				AND F.PARENT_FUNCTION_ID = #{parentFunctionId, jdbcType=INTEGER}
+			</if>
+	</select>
+</mapper>

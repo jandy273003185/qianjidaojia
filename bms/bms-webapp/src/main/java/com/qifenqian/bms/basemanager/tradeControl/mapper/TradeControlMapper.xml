@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.tradeControl.mapper.TradeControlMapper">
+
+	
+	<sql id="Where_Clause">
+	
+		<if test="beginTime != null and '' != beginTime">  
+            <![CDATA[  
+              AND T.CREATE_TIME >= #{beginTime}  
+            ]]>  
+        </if>  
+  
+        <if test="endCreateTime!= null and '' !=endCreateTime">  
+            <![CDATA[  
+              AND T.CREATE_TIME <= #{endCreateTime}  
+            ]]>  
+        </if>  
+		<if test="orderId != null and orderId != '' "> AND T.ORDER_ID = #{orderId, jdbcType=VARCHAR} </if>
+		<if test="tradeType != null and tradeType != '' "> AND T.TRADE_TYPE = #{tradeType, jdbcType=VARCHAR} </if>
+		<if test="orderState != null and orderState != '' "> AND T.ORDER_STATE = #{orderState, jdbcType=VARCHAR} </if>
+	</sql>
+	
+	
+	<select id="selectAll" resultType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl"
+	parameterType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl">
+		SELECT T.* FROM TB_TRADE_CONTROL T
+		<where>
+			<if test="tradeType != null and tradeType != '' ">AND T.TRADE_TYPE = #{tradeType, jdbcType=VARCHAR}</if>
+			<if test="payerAcctType != null and payerAcctType != '' ">AND T.PAYER_ACCT_TYPE = #{payerAcctType, jdbcType=VARCHAR}</if>
+			<if test="payeeAcctType != null and payeeAcctType != '' ">AND T.PAYEE_ACCT_TYPE = #{payeeAcctType, jdbcType=VARCHAR}</if>
+		</where>
+		
+	</select>
+	
+	<select id="selectTradeControl" parameterType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl" 
+	resultType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl">
+		SELECT T.* FROM TB_TRADE_CONTROL T
+		WHERE TRADE_TYPE = #{tradeType, jdbcType=VARCHAR} AND 
+			  PAYER_ACCT_TYPE = #{payerAcctType, 		jdbcType=VARCHAR} AND
+			  PAYEE_ACCT_TYPE = #{payeeAcctType, 		jdbcType=VARCHAR}
+		
+	</select>
+	
+	<insert id="addTradeControl" parameterType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl">
+		
+		INSERT INTO TB_TRADE_CONTROL  (
+		TRADE_TYPE,
+		PAYER_ACCT_TYPE,
+		PAYEE_ACCT_TYPE,
+		PC_NO_CNT_PER_DAY,
+		PC_NO_AMT_PER_ONCE,
+		PC_NO_AMT_PER_DAY,
+		PC_NO_AMT_PER_MONTH,
+		PC_YES_CNT_PER_DAY,
+		PC_YES_AMT_PER_ONCE,
+		PC_YES_AMT_PER_DAY,
+		PC_YES_AMT_PER_MONTH,
+		MB_WD_CNT_PER_DAY,
+		MB_WD_AMT_PER_ONCE,
+		MB_WD_AMT_PER_DAY,
+		MB_WD_AMT_PER_MONTH,
+		IS_SHARE
+		)
+		VALUES
+			(
+		#{tradeType, 			jdbcType=VARCHAR},
+		#{payerAcctType, 		jdbcType=VARCHAR},
+		#{payeeAcctType, 		jdbcType=VARCHAR},
+		#{pcNoCntPerDay, 		jdbcType=INTEGER},
+		#{pcNoAmtPerOnce, 		jdbcType=DECIMAL},
+		#{pcNoAmtPerDay, 		jdbcType=DECIMAL},
+		#{pcNoAmtPerMonth, 		jdbcType=DECIMAL},
+		#{pcYesCntPerDay, 		jdbcType=INTEGER},
+		#{pcYesAmtPerOnce, 		jdbcType=DECIMAL},
+		#{pcYesAmtPerDay, 		jdbcType=DECIMAL},
+		#{pcYesAmtPerMonth, 	jdbcType=DECIMAL},
+		#{mbWdCntPerDay, 		jdbcType=INTEGER},
+		#{mbWdAmtPerOnce, 		jdbcType=DECIMAL},
+		#{mbWdAmtPerDay, 		jdbcType=DECIMAL},
+		#{mbWdAmtPerMonth, 		jdbcType=DECIMAL},
+		#{isShare, 				jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="editTradeControl" parameterType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl">
+		UPDATE 
+			   TB_TRADE_CONTROL T
+		   SET 
+		   	   T.PC_NO_CNT_PER_DAY = #{pcNoCntPerDay, 		jdbcType=INTEGER},
+		   	   T.PC_NO_AMT_PER_ONCE = #{pcNoAmtPerOnce, 		jdbcType=DECIMAL},
+		   	   T.PC_NO_AMT_PER_DAY = #{pcNoAmtPerDay, 		jdbcType=DECIMAL},
+		   	   T.PC_NO_AMT_PER_MONTH = #{pcNoAmtPerMonth, 		jdbcType=DECIMAL},
+		   	   T.PC_YES_CNT_PER_DAY = #{pcYesCntPerDay, 		jdbcType=INTEGER},
+		   	   T.PC_YES_AMT_PER_ONCE = #{pcYesAmtPerOnce, 		jdbcType=DECIMAL},
+		   	   T.PC_YES_AMT_PER_DAY = #{pcYesAmtPerDay, 		jdbcType=DECIMAL},
+		   	   T.PC_YES_AMT_PER_MONTH = #{pcYesAmtPerMonth, 	jdbcType=DECIMAL},
+		   	   T.MB_WD_CNT_PER_DAY = #{mbWdCntPerDay, 		jdbcType=INTEGER},
+		   	   T.MB_WD_AMT_PER_ONCE = #{mbWdAmtPerOnce, 		jdbcType=DECIMAL},
+		   	   T.MB_WD_AMT_PER_DAY = #{mbWdAmtPerDay, 		jdbcType=DECIMAL},
+		   	   T.MB_WD_AMT_PER_MONTH = #{mbWdAmtPerMonth, 		jdbcType=DECIMAL},
+		   	   T.IS_SHARE = #{isShare, 				jdbcType=VARCHAR}
+		 WHERE TRADE_TYPE = #{tradeType, jdbcType=VARCHAR} AND 
+			   PAYER_ACCT_TYPE = #{payerAcctType, 		jdbcType=VARCHAR} AND
+			   PAYEE_ACCT_TYPE = #{payeeAcctType, 		jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteTradeControl" parameterType="com.qifenqian.bms.basemanager.tradeControl.bean.TradeControl">
+		DELETE FROM TB_TRADE_CONTROL
+		WHERE TRADE_TYPE = #{tradeType, jdbcType=VARCHAR} AND 
+			   PAYER_ACCT_TYPE = #{payerAcctType, 		jdbcType=VARCHAR} AND
+			   PAYEE_ACCT_TYPE = #{payeeAcctType, 		jdbcType=VARCHAR}
+	</delete>
+</mapper>

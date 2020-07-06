@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/iscroll.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/navbarscroll.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/limit.js" type="text/javascript" charset="utf-8"></script>
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">限量秒杀</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="limitCon pd10">
+				<div class="banner b-radius mb10">
+					<a href="javascript:;"><img src="images/banner/miao.jpg" /></a>
+				</div>
+				<!--秒杀时间-->
+				<div class="timeItem mb10" id="Scroller">
+					<div class="wrap">
+						<ul class="clear" id="timelist"></ul>
+					</div>	
+				</div>
+				<!--倒计时  正在秒杀时显示-->
+				<div class="Countdown mb10" style="display: none;">
+					<span>距离秒杀结束</span>
+					<span class="num hh">00</span>
+					<span>:</span>
+					<span class="num mm">00</span>
+					<span>:</span>
+					<span class="num ss">00</span>
+					<span>:</span>
+					<span class="num uu">00</span>
+				</div>
+				<!--产品-->
+				<div class="ProItem">					
+					<ul class="prolist2" id="prolist2_Div">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script id="prolist2_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.length; i++){ }} 
+			<li>
+				<a href="/details_limit.html?id={{d[i].Id}}" class="m-pro">
+					<div class="hd">
+						<div class="img">
+							<img src="{{d[i].ProductImg}}" />
+						</div>
+					</div>
+					<div class="bd">
+						<h4 class="name">{{d[i].Name}}
+							<span class="limit endTime" data-endtime="{{d[i].FlashSaleEndTime}}">00:00:00</span>
+						</h4>
+						<p class="desc">{{d[i].Synopsis}}</p>
+						<p class="price"><span>￥{{d[i].TimePrice}}</span><span class="counterPrice">￥{{d[i].Price}}</span></p>
+						<p class="Tags"><span>仅剩{{d[i].Stock}}份</span></p>
+						<span class="btn buynow">立即抢购</span>						
+						<span class="btn remindbtn" style="display: none;">提醒我</span>
+					</div>
+				</a>
+			</li>
+		{{# } }} 
+	</script>
+	<script type="text/javascript" src="js/top.js"></script>
+	<script>
+		$(function() {	
+			FlashSaleTimeList();			
+		})
+	</script>
+
+</html>

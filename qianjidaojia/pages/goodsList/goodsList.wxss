@@ -1,0 +1,90 @@
+/* pages/goodsList.wxss */
+
+page {
+    background-color: #f3f0f3;
+    padding: 0 20rpx;
+}
+
+.orderList {
+    background-color: #fff;
+    width: 100%;
+    margin-top: 40rpx;
+    padding: 0 20rpx;
+}
+
+.orderList .title {
+    width: 100%;
+    height: 60rpx;
+}
+
+.orderList .title .shopName {
+    height: 48rpx;
+    font-weight: 500;
+    color: rgba(3, 158, 1, 1);
+    line-height: 48rpx;
+}
+
+.orderList .title .goodsNum {
+    height: 36rpx;
+    font-size: 24rpx;
+    font-weight: 500;
+    color: rgba(153, 153, 153, 1);
+    line-height: 36rpx;
+}
+
+.orderList .goodsList {
+    width: 100%;
+    padding: 32rpx 0 32rpx 0;
+}
+
+.item {
+    width: 100%;
+    height: 144rpx;
+    margin-bottom: 40rpx; 
+}
+.item:last-child{
+    margin-bottom: 0;
+}
+
+.item .goodsImg .img {
+    height: 144rpx;
+    width: 144rpx;
+    display: block;
+    margin-right: 20rpx;
+    background-color: yellowgreen;
+}
+
+.item .goodsImg .goodsName {
+    width: 300rpx;
+    height: 40rpx;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: rgba(51, 51, 51, 1);
+    line-height: 40rpx;
+}
+
+.item .nowPrice {
+    height: 40rpx;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: rgba(51, 51, 51, 1);
+    line-height: 40rpx;
+}
+
+.item .oldPrice {
+    height: 36rpx;
+    font-size: 24rpx;
+    font-weight: 500;
+    color: rgba(153, 153, 153, 1);
+    line-height: 36rpx;
+    position: relative;
+}
+.item .oldPrice .line{
+    width: 100%;
+    height: 3rpx;
+    position: absolute;
+    top:50%;
+    left: 2rpx;
+    transform: translateY(-50%);
+    background-color: rgba(153, 153, 153, 1);
+}

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.ActWorkflowMerchantAuditMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="merchantId" property="merchantid" jdbcType="VARCHAR" />
+    <result column="proc_inst_id" property="procInstId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="auditer" property="auditer" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, merchantId, proc_inst_id, status, message, auditer, audit_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from act_workflow_merchantaudit
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectListByMerchantId" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+  	SELECT 
+  	<include refid="Base_Column_List" />
+  	FROM ACT_WORKFLOW_MERCHANTAUDIT T
+  	WHERE T.MERCHANTID = #{merchantId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from act_workflow_merchantaudit
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    insert into act_workflow_merchantaudit ( merchantId, proc_inst_id, 
+      status, message, auditer, 
+      audit_time)
+    values ( #{merchantid,jdbcType=VARCHAR}, #{procInstId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR}, #{auditer,jdbcType=VARCHAR}, 
+      DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    insert into act_workflow_merchantaudit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="merchantid != null" >
+        merchantId,
+      </if>
+      <if test="procInstId != null" >
+        proc_inst_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="message != null" >
+        message,
+      </if>
+      <if test="auditer != null" >
+        auditer,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="merchantid != null" >
+        #{merchantid,jdbcType=VARCHAR},
+      </if>
+      <if test="procInstId != null" >
+        #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="auditer != null" >
+        #{auditer,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExample" parameterType="map" >
+    update act_workflow_merchantaudit
+    set id = #{record.id,jdbcType=INTEGER},
+      merchantId = #{record.merchantid,jdbcType=VARCHAR},
+      proc_inst_id = #{record.procInstId,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR},
+      message = #{record.message,jdbcType=VARCHAR},
+      auditer = #{record.auditer,jdbcType=VARCHAR},
+      audit_time = #{record.auditTime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    update act_workflow_merchantaudit
+    <set >
+      <if test="merchantid != null" >
+        merchantId = #{merchantid,jdbcType=VARCHAR},
+      </if>
+      <if test="procInstId != null" >
+        proc_inst_id = #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="auditer != null" >
+        auditer = #{auditer,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.basemanager.merchant.bean.ActWorkflowMerchantAudit" >
+    update act_workflow_merchantaudit
+    set 
+      proc_inst_id = #{procInstId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR},
+      auditer = #{auditer,jdbcType=VARCHAR},
+      audit_time = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+    where merchantId = #{merchantid,jdbcType=VARCHAR}
+  </update>
+</mapper>

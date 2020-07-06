@@ -1,0 +1,159 @@
+<!--pages/shop/shop.wxml-->
+
+
+<view>
+    <view class="search-wrap {{viewHide}}">
+        <view class="search-inner">
+            <myicon class="iconsearch" iconClass="iconsearch" catchtap="search"></myicon>
+            <input type="text" name="search" placeholder-style="color:#fff" placeholder="搜索店内9999件商品" value="{{searchKeyword}}"  bindconfirm="search" bindinput="inputListener"/>
+        </view>
+        <view class="focus" bindtap="clickAttention">{{focus}}</view>
+    </view>
+    <view class="main">
+       <view class="shopHeight {{viewHide}}">
+          <view class="info">
+              <view class="photo">
+                  <image src="{{shopInfo.Logo}}" />
+              </view>
+              <view class="name">
+                  <view>{{shopInfo.ShopNick}}</view>
+                  <!-- <p>达达专送-60分钟 基础运费￥8.5元</p> -->
+              </view>
+              <!-- <view class="vip">尊享VIP
+                  <image src="https://mall.qianjidaojia.com//upload/admin/2020-03-12/2020031217582484774s07410.jpg" />
+              </view> -->
+          </view>
+          <!-- <scroll-view class="coupons" scroll-x="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll">
+              <view class="coupon">10元
+                  <text>领取</text>
+              </view>
+              <view class="coupon">1元
+                  <text>领取</text>
+              </view>
+              <view class="coupon">10元
+                  <text>领取</text>
+              </view>
+              <view class="coupon">1元
+                  <text>领取</text>
+              </view>
+              <view class="coupon">1元
+                  <text>领取</text>
+              </view>
+          </scroll-view>
+
+          <view class="gift">
+              <view class="seeDiscount">31种优惠
+                  <myicon class="iconmore" iconClass="iconmore"></myicon>
+              </view>
+              <view class="item">
+                  <text class="tag">返礼</text>
+                  <text> 部分商品下单返酸奶25减5优惠券</text>
+              </view>
+          </view> -->
+        </view>
+        <view class="tit clearfix {{scrollTop>170 ? 'topnavFixed' : ''}}">
+          <view class="classify-view">
+            <view wx:if="{{scrollTop>170 ? 'searchHide' : ''}}" class="classify-search">
+              <myicon class="iconsearch" iconClass="iconsearch" catchtap="search"></myicon>
+              <input type="text" name="search" placeholder-style="" placeholder="搜索店内9999件商品" value="{{searchKeyword}}"  bindconfirm="search" bindinput="inputListener"/>
+            </view>
+            <view class="classify-title">
+              <navigator hover-class="none">首页</navigator>
+              <text wx:if="{{item.name == '全部商品'}}" class="{{topActiveIdx==index?'active':''}}" wx:for="{{topNav}}" wx:key="index" data-idx="{{index}}" bindtap="changeTopNav">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="goods clearfix">
+            <!-- 左边nav侧边导航 -->
+            <view  class="left {{scrollTop>170 ?'leftnavFixed': ''}}">
+                <text bindtap="changeSideNav" data-idx="{{index}}" data-productType="{{item.Id}}" class="{{acitveSideIdx==index?'active':''}}" wx:for="{{sideNav}}" wx:key="index">{{item.ClassName}}</text>
+            </view>
+            <!-- 右边商品列表 -->
+            <view class="rightBox {{scrollTop>170 ?'rightBox2':''}}">
+                <view class="noGoods" wx:if="{{goods.length==0}}">暂无商品</view>
+                <view class="right" wx:for="{{goods}}" wx:key="index">
+                    <view class="item" >
+                      <navigator url="/pages/goodsDetails/goodsDetails?Id={{item.ProId}}" open-type="navigate">
+                        <view class="img">
+                            <image src="{{item.ImgUrl}}" />
+                        </view>
+                      </navigator>
+                        <view class="detail">
+                            <view class="itemName">{{item.Name}}</view>
+                            <view class="num ">月售{{item.SalesVolume+ item.SaleStock}} 好评99%</view>
+                            <view class="discount flex justfs alic">
+                                <!-- <text>减2元运费</text>
+                                <text>减2元运费</text> -->
+                            </view>
+                            <view class="price  flex justs alifs">
+                                <view class="nowPrice flex justfs alic">¥{{item.Price}}
+                                    <text class="normal">¥{{item.MarketPrice}}</text>
+                                </view>
+                                <myicon class="iconadd" iconClass="iconadd" data-shopId="{{item.ShopId}}" data-proId="{{item.ProId}}" data-proName="{{item.Name}}" data-proOldP="{{item.MarketPrice}}" data-proPrice="{{item.Price}}" data-proStock="{{item.SaleStock}}" data-proimg="{{item.ImgUrl}}" catchtap="addCart"></myicon>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+        </view>
+    </view>
+    <view class="fixed {{isActive?'active':''}}">
+        <view class="buy" bindtap="showCarList">
+            <myicon class="iconcar" iconClass="iconcar"></myicon>
+            <text class="num">{{allnum}}</text>
+        </view>
+        <view class="cart">
+            <view class="sec-all">
+              <view class="check-all" bindtap="tapallallprices" >
+                <view><icon  class="select" type="{{allselected ? 'success':'circle'}}"/></view>
+                <text>全选(已选{{allnum}}件)</text>
+              </view>
+              <view class="clear-goods" bindtap="delAll"> <myicon class="icondel" iconClass="icondel"></myicon>清空购物车</view>
+            </view>
+            <!-- <view class="tips">
+                <view class="tag">打包 3件11.8元</view>
+                <text>再买两件，可享受打包价格3件11.8元</text>
+                <navigator hover-class="none" url="">去凑单
+                    <myicon iconClass="iconmore"></myicon>
+                </navigator>
+            </view> -->
+            <view class="item" wx:for="{{carList}}" wx:key="index" wx:for-index="idx">
+                <view class="inp-box">
+                    <icon type="{{item.selected ? 'success':'circle'}}" bindtap="goodsselected" data-index="{{idx}}" />
+                </view>
+                <image src="{{item.proImg}}" />
+                <view class="desc">
+                    <view class="cartName">{{item.proName}}</view>
+                    <!-- <view class="tag">
+                        <text class="hot">直降</text>
+                        <text class="hot">直降</text>
+                    </view> -->
+                    <view wx:if="{{item.SpecText}}">规格：{{item.SpecText}}</view>
+                    <view class="price cartPrice">¥{{item.Price}}
+                        <text class="normal cartOld">¥{{item.MarketPrice}} </text>
+                    </view>
+                </view>
+                <view class="charge flex justs alic">
+                    <myicon class="iconcut" iconClass="iconcut" data-id="{{item.Id}}" data-index="{{idx}}" bindtap="minusCount"></myicon>
+                    <view class="num">{{item.Number}}</view>
+                    <myicon class="iconadd" iconClass="iconadd" data-ProductId="{{item.ProId}}"  data-index="{{idx}}" bindtap="addCount"></myicon>
+                </view>
+            </view>
+        </view>
+        <view class="all">
+            <view class="price">¥{{allprices}}
+                <!-- <text>已减0.4元</text> -->
+            </view>
+            <view bindtap="settlement" class="account">去结算</view>
+        </view>
+
+    </view>
+    <view bindtap="showCarList" class="bg  {{isActive?'active':''}}"></view>
+    <!-- 弹窗提示组件 -->
+
+</view>
+<myToast toastNum="{{toastNum}}" isToast="{{isToast}}" toastText="{{toastText}}"></myToast>
+
+<!-- 点击加入购物车 -->
+<addCart id="cart" isCart="{{isCart}}" animation="{{animation}}"  proId="{{proId}}" goodsName="{{goodsName}}" stockNum="{{stockNum}}" nowPrice="{{nowPrice}}" oldPrice="{{oldPrice}}" goodsImg="{{goodsImg}}" bind:callSomeFun="carList"></addCart>

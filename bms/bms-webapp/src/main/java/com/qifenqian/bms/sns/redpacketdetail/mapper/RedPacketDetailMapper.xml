@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.sns.redpacketdetail.mapper.RedPacketDetailMapper">
+
+	<select id="selectRedPacketDetailByRedEnvId" parameterType="com.qifenqian.bms.sns.redpacketdetail.bean.RedPacketDetail" resultType="com.qifenqian.bms.sns.redpacketdetail.bean.RedPacketDetail">
+		SELECT
+			T.RED_ENV_ID,
+			U.MOBILE AS CUST_ID,
+			T.CUST_NAME,
+			DATE_FORMAT(T.PICK_TIME,'%Y-%m-%d %H:%i:%s') AS PICK_TIME,
+			T.PICK_AMT,
+			T.GREETING,
+			CASE T.IS_LUCKY
+				WHEN '1' THEN '是'
+				ELSE '否' END IS_LUCKY,
+			CASE  T.IN_ORDER_STATE
+				  WHEN '00' THEN '成功'
+				  WHEN '01' THEN '待支付'
+				  WHEN '02' THEN '提交处理'
+				  WHEN '03' THEN '处理失败'
+				  WHEN '04' THEN '金额超上限'
+				  WHEN '99' THEN '取消'
+				  WHEN '90' THEN '未明' 
+				  ELSE T.IN_ORDER_STATE END IN_ORDER_STATE,
+			T.IN_ORDER_ID,
+			DATE_FORMAT(T.IN_SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') IN_SUBMIT_TIME,
+			T.IN_ACCOUNT_FAIL_INFO,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS CREATE_TIME,
+			DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS MODIFY_TIME
+		FROM
+			SNS_TD_PICK_REDENV_DETAIL T LEFT JOIN TD_LOGIN_USER_INFO U
+			ON T.CUST_ID = U.CUST_ID
+		WHERE T.RED_ENV_ID = #{redEnvId,jdbcType = VARCHAR}
+		<if test="custId!=null and custId!='' ">
+			AND U.MOBILE = #{custId,jdbcType = VARCHAR}
+		</if>
+		<if test="inOrderId!=null and inOrderId!=''">
+			AND T.IN_ORDER_ID = #{inOrderId,jdbcType = VARCHAR}
+		</if>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+	
+	<select id="selectRedPacketDetailList" parameterType="com.qifenqian.bms.sns.redpacketdetail.bean.RedPacketDetail" resultType="com.qifenqian.bms.sns.redpacketdetail.bean.RedPacketDetail">
+		SELECT
+			T.RED_ENV_ID,
+			U.MOBILE AS CUST_ID,
+			T.CUST_NAME,
+			DATE_FORMAT(T.PICK_TIME,'%Y-%m-%d %H:%i:%s') AS PICK_TIME,
+			T.PICK_AMT,
+			T.GREETING,
+			CASE T.IS_LUCKY
+				WHEN '1' THEN '是'
+				ELSE '否' END IS_LUCKY,
+						CASE  T.IN_ORDER_STATE
+				  WHEN '00' THEN '成功'
+				  WHEN '01' THEN '待支付'
+				  WHEN '02' THEN '提交处理'
+				  WHEN '03' THEN '处理失败'
+				  WHEN '04' THEN '金额超上限'
+				  WHEN '99' THEN '取消'
+				  WHEN '90' THEN '未明' 
+				  ELSE T.IN_ORDER_STATE END IN_ORDER_STATE,
+			T.IN_ORDER_ID,
+			DATE_FORMAT(T.IN_SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') IN_SUBMIT_TIME,
+			T.IN_ACCOUNT_FAIL_INFO,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS CREATE_TIME,
+			DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS MODIFY_TIME
+		FROM
+			SNS_TD_PICK_REDENV_DETAIL T LEFT JOIN TD_LOGIN_USER_INFO U
+			ON T.CUST_ID = U.CUST_ID
+		<where>
+			<if test="redEnvId!=null and redEnvId!='' ">
+				AND T.RED_ENV_ID = #{redEnvId,jdbcType = VARCHAR}
+			</if>
+			<if test="custId!=null and custId!='' ">
+				AND U.MOBILE = #{custId,jdbcType = VARCHAR}
+			</if>
+			<if test="inOrderId!=null and inOrderId!=''">
+				AND T.IN_ORDER_ID = #{inOrderId,jdbcType = VARCHAR}
+			</if>
+			<if test="pickBeginTime!=null and pickBeginTime!='' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.PICK_TIME ,'%Y-%m-%d') >= #{pickBeginTime}
+	 			]]>
+			</if>
+			<if test="pickEndTime!=null and pickEndTime!='' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.PICK_TIME ,'%Y-%m-%d') <= #{pickEndTime}
+	 			]]>
+			</if>
+		</where> 
+		ORDER BY T.PICK_TIME DESC
+		
+	</select>
+	<update id="updateRedPacketDetail" parameterType="com.qifenqian.bms.sns.redpacketdetail.bean.RedPacketDetail">
+		UPDATE 
+			SNS_TD_PICK_REDENV_DETAIL T
+		<set>
+			<if test="inOrderState!=null and inOrderState!='' ">
+				T.IN_ORDER_STATE = #{inOrderState,jdbcType = VARCHAR},
+			</if>
+				T.MODIFY_TIME = NOW()
+		</set>
+		WHERE T.IN_ORDER_ID = #{inOrderId,jdbcType = VARCHAR}
+	</update>
+</mapper>

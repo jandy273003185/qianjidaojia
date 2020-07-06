@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.userLoginRelate.mapper.TdFinanceInfoMapper">
+
+	<resultMap id="BaseResultMap" type="com.qifenqian.bms.basemanager.merchant.bean.TdFinanceInfo">
+	  <id column="finance_id" jdbcType="VARCHAR" property="financeId" />
+	  <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+	  <result column="finance_mobile" jdbcType="VARCHAR" property="financeMobile" />
+	  <result column="finance_name" jdbcType="VARCHAR" property="financeName" />
+	  <result column="refund_auth" jdbcType="CHAR" property="refundAuth" />
+	  <result column="query_auth" jdbcType="CHAR" property="queryAuth" />
+	  <result column="create_id" jdbcType="VARCHAR" property="createId" />
+	  <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	  <result column="modify_id" jdbcType="VARCHAR" property="modifyId" />
+	  <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+	  <result column="status" jdbcType="CHAR" property="status" />
+	  <result column="login_pw" jdbcType="VARCHAR" property="loginPw" />
+	  <result column="refund_pw" jdbcType="VARCHAR" property="refundPw" />
+	  <result column="login_salt" jdbcType="VARCHAR" property="loginSalt" />
+	  <result column="refund_salt" jdbcType="VARCHAR" property="refundSalt" />
+	</resultMap>
+	
+	  
+	<sql id="Base_Column_List">
+	  finance_id, cust_id, finance_mobile, finance_name, refund_auth, query_auth, create_id, 
+	  create_time, modify_id, modify_time, status, login_pw, refund_pw, login_salt, refund_salt
+	</sql>
+
+	<select id="selectByFinanceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 	select
+		<include refid="Base_Column_List" />
+ 	from  td_finance_info
+  	where finance_id = #{financeId,jdbcType=VARCHAR}
+	</select>
+	
+
+
+	
+</mapper>

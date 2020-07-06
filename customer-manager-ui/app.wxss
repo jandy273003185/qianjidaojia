@@ -1,0 +1,14 @@
+page {
+    font-family: 'PingFangSC-Thin';
+    font-size: 32rpx;
+}
+
+
+/* 添加星号 */
+
+.asterisk::before {
+    content: '*';
+    display: inline-block;
+    color: #bb3500;
+    margin-right: 4rpx;
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绑定银行卡</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/bindBank.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <ul class="bankList">
+
+        <li class="item jianse touch-item">
+            <div style="display: flex;">
+                <div><img class="bankCard-img" src="../images/bank/jianshe.png" alt=""></div>
+                <div class="content">
+                    <div>中国建设银行</div>
+                    <div class="cardInfo"><span class="cardType">储蓄卡</span><span class="cardNo">77777777777777777777</span></div>
+                </div>
+                <div class="del">删除</div>
+            </div>
+        </li>
+        <li class="item zhongguo touch-item">
+            <div style="display: flex;">
+                <div><img class="bankCard-img" src="../images/bank/zhongguo.png" alt=""></div>
+                <div class="content">
+                    <div>中国银行</div>
+                    <div class="cardInfo"><span class="cardType">储蓄卡</span><span class="cardNo">88888888888888888888</span></div>
+                </div>
+                <div class="del">删除</div>
+            </div>
+        </li>
+        <li class="item nongye touch-item">
+            <div style="display: flex;">
+                <div><img class="bankCard-img" src="../images/bank/nongye.png" alt=""></div>
+                <div class="content">
+                    <div>中国农业银行</div>
+                    <div class="cardInfo"><span class="cardType">储蓄卡</span><span class="cardNo">99999999999999999999</span></div>
+                </div>
+                <div class="del">删除</div>
+            </div>
+        </li>
+        <li class="item guangda touch-item">
+            <div style="display: flex;">
+                <div><img class="bankCard-img" src="../images/bank/guangda.png" alt=""></div>
+                <div class="content">
+                    <div>中国光大银行</div>
+                    <div class="cardInfo"><span class="cardType">储蓄卡</span><span class="cardNo">99999999999999999999</span></div>
+                </div>
+                <div class="del">删除</div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="addBankCard">添加银行卡<span class="add">+</span></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var oUl = document.querySelector('ul');
+            var aLi = document.querySelectorAll('li');
+            var aDiv = document.querySelectorAll('.content');
+            var aDel = document.querySelectorAll('.del');
+            var n = 0;
+            for (var i = 0; i < aLi.length; i++) {
+                console.log(i);
+                aLi[i].index = i;
+                //滑动开始
+                aLi[i].addEventListener('touchstart', function(ev) {
+                        // ev.preventDefault();
+                        var oldX = ev.targetTouches[0].pageX;
+                        $(this).siblings().children().css('transform', 'translateX(0)');
+
+                        function fnMove(ev) {
+                            // ev.preventDefault();
+                            var newX = ev.targetTouches[0].pageX - oldX;
+                            if (newX > -70 && newX < 0) {
+                                aLi[this.index].lastElementChild.style.transform = 'translateX(' + newX + 'px)';
+                            }
+                        }
+
+                        function fnEnd(ev) {
+                            aLi[this.index].removeEventListener('touchmove', fnMove, false);
+                            aLi[this.index].removeEventListener('touchend', fnEnd, false);
+                            // ev.preventDefault();
+                            var changeX = ev.changedTouches[0].pageX;
+                            if (oldX - changeX > 0) {
+                                aLi[this.index].lastElementChild.style.transition = '0.5s all ease';
+                                aLi[this.index].lastElementChild.style.transform = 'translateX(-2.08rem)';
+                            } else {
+                                aLi[this.index].lastElementChild.style.transform = 'translateX(0)';
+                            }
+                        }
+                        aLi[this.index].addEventListener('touchmove', fnMove, false);
+                        aLi[this.index].addEventListener('touchend', fnEnd, false);
+                    }, false)
+                    //删除按钮
+                aDel[i].index = i;
+                aDel[i].addEventListener('touchstart', function() {
+                    this.innerHTML = '';
+                    this.style.width = '0';
+                    this.style.transition = '0.5s all ease';
+                    aLi[this.index].style.width = '0';
+                    aLi[this.index].style.transition = '0.5s all ease';
+                    aDiv[this.index].style.width = '0';
+                    aDiv[this.index].style.transition = '0.5s all ease';
+                    aDiv[this.index].innerHTML = '';
+                    this.addEventListener('transitionend', function() {
+                        oUl.removeChild(aLi[this.index]);
+                    }, false)
+                }, false)
+            }
+        }, false)
+    </script>
+</body>
+
+</html>

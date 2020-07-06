@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.myworkspace.applicationForm.mapper.ApplicationFormMapper">
+
+	<select id="getApplicationForm" parameterType="com.qifenqian.bms.myworkspace.applicationForm.bean.ApplicationFormBean" 
+			resultType="com.qifenqian.bms.myworkspace.applicationForm.bean.ApplicationFormBean">
+			
+			SELECT * FROM
+			(
+				SELECT
+					P.ID_,
+					P.PROC_INST_ID_,
+					P.BUSINESS_KEY_,
+					P.PROC_DEF_ID_,
+					P.DURATION_,
+					(SELECT S.NICK_NAME FROM SYS_USER S WHERE S.USER_ID = P.START_USER_ID_) START_USER_ID_,
+					P.START_ACT_ID_,
+					P.END_ACT_ID_,
+					P.SUPER_PROCESS_INSTANCE_ID_,
+					P.DELETE_REASON_,
+					P.TENANT_ID_,
+					P.START_TIME_,
+					P.END_TIME_,
+					P.NAME_,
+					T.ASSIGNEE_ auditName ,T.NAME_ taskName,U.REAL_NAME realName,A.NAME_ proName,'未结束' isOver,V.URL URL
+				FROM 
+					ACT_HI_PROCINST  P
+				inner join ACT_RU_TASK T on P.PROC_INST_ID_ = T.PROC_INST_ID_	
+				inner join ACT_RE_PROCDEF A  on P.PROC_DEF_ID_ = A.ID_
+				left join sys_user U on T.ASSIGNEE_ = U.USER_ID
+				inner join act_re_procdef C on P.PROC_DEF_ID_ = C.ID_
+				inner join act_view_url V on C.KEY_ = V.application_name 
+				WHERE
+					P.START_USER_ID_ = #{userId,jdbcType=VARCHAR}
+		
+				UNION all
+				SELECT
+					P.* ,'无' auditName ,'无' taskName,'无' realName,A.NAME_ proName,'已结束' isOver, V.URL URL
+				FROM 
+					ACT_HI_PROCINST  P
+				inner join ACT_RE_PROCDEF A  on P.PROC_DEF_ID_ = A.ID_
+				inner join act_re_procdef C on P.PROC_DEF_ID_ = C.ID_
+				inner join act_view_url V on C.KEY_ = V.application_name 
+					WHERE
+						P.START_USER_ID_ =  #{userId,jdbcType=VARCHAR}
+					AND
+						P.END_TIME_ IS NOT NULL
+) T1
+				
+				<where>
+					<if test="id != null and '' != id">  
+			            <![CDATA[  
+			              AND T1.ID_ = #{id} 
+			            ]]>  
+	        		</if>  
+					<if test="startUserId != null and '' != startUserId">  
+			            <![CDATA[  
+			              AND T1.START_USER_ID_ = #{startUserId} 
+			            ]]>  
+	        		</if>  
+					<if test="applyBeginTime != null and '' != applyBeginTime">  
+			            <![CDATA[  
+			              AND DATE_FORMAT(T1.START_TIME_ ,'%Y-%m-%d') >= #{applyBeginTime}  
+			            ]]>  
+	        		</if>  
+			        <if test="applyEndTime != null and '' !=applyEndTime">  
+			            <![CDATA[  
+			              AND DATE_FORMAT(T1.START_TIME_ ,'%Y-%m-%d') <= #{applyEndTime}  
+			            ]]>  
+			        </if>  
+				</where>
+				ORDER BY T1.START_TIME_ DESC
+				
+	</select>
+	
+	<select id="selectActHiProcinstById" parameterType="string" resultType="com.qifenqian.bms.myworkspace.applicationForm.bean.ActHiProcinst">
+		SELECT * 
+		FROM
+			act_hi_procinst A
+		WHERE
+			A.ID_ = #{id,jdbcType=VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.fee.mapper.FeeMapper">
+
+	<!-- 查询手续费列表 -->
+	<select id="selectFees" resultType="com.qifenqian.bms.basemanager.fee.bean.Fee" parameterType="com.qifenqian.bms.basemanager.fee.bean.Fee">
+		SELECT U.* 
+	    FROM TB_FEE_CODE U 
+	    <where>
+	    	<if test="feeCode != null and feeCode != ''">U.FEE_CODE LIKE CONCAT('%',#{feeCode,jdbcType=VARCHAR},'%')</if>
+	    	<if test="feeName != null and feeName != ''">AND U.FEE_NAME LIKE CONCAT('%',#{feeName,jdbcType=VARCHAR},'%')</if>
+	    </where>
+		ORDER BY U.FEE_CODE
+	</select>
+	
+	<select id="validateFeeCode" resultType="com.qifenqian.bms.basemanager.fee.bean.Fee" parameterType="string">
+		SELECT U.* 
+	    FROM TB_FEE_CODE U 
+	    where 1=1 and
+	    U.FEE_CODE=#{feeCode,jdbcType=VARCHAR}
+	    <!-- <where>
+	    	<if test="feeCode != null and feeCode != ''">U.FEE_CODE LIKE CONCAT('%',#{feeCode,jdbcType=VARCHAR},'%')</if>
+	    </where> -->
+	</select>
+	
+	<insert id="insertFee" parameterType="com.qifenqian.bms.basemanager.fee.bean.Fee">
+			INSERT INTO TB_FEE_CODE (
+			FEE_CODE,
+		  	FEE_NAME,
+		  	FEE_CODE_DESC
+			) VALUES (
+			#{feeCode, 		jdbcType=VARCHAR},
+		  	#{feeName, 			jdbcType=VARCHAR},
+		  	#{feeCodeDesc, 		jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 更新城市信息 -->
+	<update id="updateFee" parameterType="com.qifenqian.bms.basemanager.fee.bean.Fee">
+		update TB_FEE_CODE
+		<set>
+			<if test="feeName != null">
+				FEE_NAME = #{feeName,jdbcType=VARCHAR},
+			</if>
+			<if test="feeCodeDesc != null">
+				FEE_CODE_DESC = #{feeCodeDesc,jdbcType=VARCHAR},
+			</if>
+			
+		</set>
+			where FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteFee" parameterType="string">
+		DELETE FROM TB_FEE_CODE
+		WHERE FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.ChangeBalanceMapper">
+	<select id="changeBalanceList" resultType="com.qifenqian.bms.accounting.financequery.bean.ChangeBalance"  parameterType="com.qifenqian.bms.accounting.financequery.bean.ChangeBalance">
+		SELECT f.SUBJECT_NAME,s.LAST_AMOUNT,s.AMOUNT_D,s.AMOUNT_C,s.FINAL_AMOUNT,s.WORK_DATE
+		FROM  accting_subject_summary s 
+		INNER JOIN accting_subject_info f ON s.SUBJECT_ID=f.ID
+		 WHERE 1=1 		
+        <if test=" workDate!=null and ''!= workDate">
+			and s.WORK_DATE  = #{workDate,jdbcType=VARCHAR}
+		</if>         
+	</select>
+	
+	<select id="changeBalanceSum" resultType="com.qifenqian.bms.accounting.financequery.bean.ChangeBalance"  parameterType="com.qifenqian.bms.accounting.financequery.bean.ChangeBalance">
+		SELECT SUM(s.LAST_AMOUNT) as LAST_AMOUNT ,SUM(s.AMOUNT_D) as AMOUNT_D,
+		SUM(s.AMOUNT_C) as AMOUNT_C,SUM(s.FINAL_AMOUNT) as FINAL_AMOUNT,s.WORK_DATE
+		FROM  accting_subject_summary s 
+		 WHERE 1=1 		
+        <if test=" workDate!=null and ''!= workDate">
+			and s.WORK_DATE  = #{workDate,jdbcType=VARCHAR}
+		</if>         
+	</select>		
+</mapper>

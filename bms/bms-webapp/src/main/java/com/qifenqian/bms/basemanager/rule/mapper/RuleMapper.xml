@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.rule.mapper.RuleMapper">
+ <select id="selectRules" resultType="com.qifenqian.bms.basemanager.rule.bean.Rule" parameterType="com.qifenqian.bms.basemanager.rule.bean.Rule">
+		SELECT 
+			F.FEE_CODE,
+			F.FEE_TYPE,
+			F.FEE_NAME,
+			F.RULE_DESC,
+			F.RULE_VALUES,
+			F.STATUS,
+			F.MEMO,
+		    (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =F.INST_USER) INST_USER,
+			F.INST_TIME,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =F.LUPD_USER) LUPD_USER,
+			F.LUPD_TIME 
+		FROM 
+		TB_FEE_RULE F
+	    <where>
+	    	<if test="feeCode != null and feeCode != ''">AND F.FEE_CODE LIKE CONCAT('%',#{feeCode,jdbcType=VARCHAR},'%')</if>
+	    	<if test="feeName != null and feeName != ''">AND F.FEE_NAME LIKE CONCAT('%',#{feeName,jdbcType=VARCHAR},'%')</if>
+	    	<if test="feeType != null and feeType != ''">AND F.FEE_TYPE LIKE CONCAT('%',#{feeType,jdbcType=VARCHAR},'%')</if>
+	    	<if test="status != null and status != ''">AND F.STATUS = #{status,jdbcType=VARCHAR}</if>
+	    </where>
+		ORDER BY F.FEE_CODE
+	</select>
+	
+	<select id="selectRuleByFeeCode" resultType="com.qifenqian.bms.basemanager.rule.bean.Rule" parameterType="string">
+		SELECT F.* 
+	    FROM TB_FEE_RULE F
+	    WHERE
+	    	F.FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</select>
+	<select id="selectRules02" resultType="com.qifenqian.bms.basemanager.rule.bean.Rule" parameterType="com.qifenqian.bms.basemanager.rule.bean.Rule">
+		SELECT F.* 
+	    FROM TB_FEE_RULE F
+	    where 1=1
+	    and F.STATUS='VALID'
+		ORDER BY F.FEE_CODE
+	</select>
+	
+	<insert id="insertRule" parameterType="com.qifenqian.bms.basemanager.rule.bean.Rule">
+	INSERT INTO TB_FEE_RULE (
+		FEE_CODE,
+		FEE_NAME,
+		FEE_TYPE,
+		RULE_DESC,
+		RULE_VALUES,
+		STATUS,
+		MEMO,
+		INST_USER,
+		INST_TIME
+		)
+		VALUES
+			(
+		#{feeCode, 		jdbcType=VARCHAR},
+		#{feeName, jdbcType=INTEGER},
+		#{feeType, 		jdbcType=VARCHAR},
+		#{ruleDesc, jdbcType=INTEGER},
+		#{ruleValues, 		jdbcType=VARCHAR},
+		'VALID',
+		#{memo, 		jdbcType=VARCHAR},
+		#{instUser, 		jdbcType=VARCHAR},
+		now()
+		)
+	</insert>
+	
+	<!-- 更新城市信息 -->
+	<update id="updateRule" parameterType="com.qifenqian.bms.basemanager.rule.bean.Rule">
+		update TB_FEE_RULE
+		<set>
+			<if test="feeName != null">
+				FEE_NAME = #{feeName,jdbcType=VARCHAR},
+			</if>
+			<if test="feeType != null">
+				FEE_TYPE = #{feeType,jdbcType=VARCHAR},
+			</if>
+			<if test="ruleDesc != null">
+				RULE_DESC = #{ruleDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="ruleValues != null">
+				RULE_VALUES = #{ruleValues,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser != null">
+				LUPD_USER = #{lupdUser,jdbcType=VARCHAR},
+			</if>
+				LUPD_TIME =now()
+		</set>
+			where FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deleteRule" parameterType="string">
+		UPDATE TB_FEE_RULE F SET F.STATUS='DISABLE'
+		WHERE F.FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectRuleMaxId" resultType="string">
+	SELECT MAX(F.FEE_CODE) FROM TB_FEE_RULE F
+	</select>
+	
+	<insert id="saveFee" parameterType="com.qifenqian.bms.basemanager.rule.bean.Rule">
+		INSERT INTO TD_CUST_FEE_RULE (
+			MAPPING_ID,
+			CUST_ID,
+			FEE_CODE,
+			OPER_TYPE,
+			STATUS,
+			MEMO,
+			INST_USER,
+			INST_TIME
+			)VALUES(
+			#{mappingId, 	jdbcType=VARCHAR},
+			#{custId, 		jdbcType=VARCHAR},
+			#{feeCode, 		jdbcType=VARCHAR},
+			#{operType, 	jdbcType=VARCHAR},
+			#{status, 		jdbcType=VARCHAR},
+			#{memo, 		jdbcType=VARCHAR},
+			#{instUser, 	jdbcType=VARCHAR},
+			now()
+			)
+	</insert>
+	<delete id="deleteCustFeeRule" parameterType="string">
+		DELETE FROM TD_CUST_FEE_RULE
+		WHERE CUST_ID = #{custId ,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="updateCustFeeRule" parameterType="string">
+		UPDATE TD_CUST_FEE_RULE
+		SET
+			FEE_CODE = #{feeCode, 		jdbcType=VARCHAR}
+		WHERE
+			CUST_ID = #{custId ,jdbcType=VARCHAR}
+	</update>
+</mapper>

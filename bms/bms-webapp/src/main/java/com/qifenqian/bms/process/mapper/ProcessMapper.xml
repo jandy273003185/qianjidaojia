@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	
+<mapper namespace="com.qifenqian.bms.process.mapper.ProcessMapper">
+
+	<insert id="insertApplication" parameterType="com.qifenqian.bms.process.bean.ProcessManagement">
+		INSERT INTO `stcdb`.`bms_process_management`(
+			process_id,
+			title_name,
+			dept_id,
+			user_id,
+			process_time,
+			emergency_degree,
+			cust_id,
+			partner_cust_id,
+			shop_id,
+			model,
+			demand_num,
+			receive_time,
+			remittance,
+			remark,
+			mail,
+			consignee,
+			delivery_address,
+			contact,
+			attachment
+		)
+		VALUES(
+			#{processId,jdbcType = VARCHAR},
+			#{titleName,jdbcType = VARCHAR},
+			#{deptId,jdbcType = VARCHAR},
+			#{userId,jdbcType = VARCHAR},
+			now(),
+			#{emergencyDegree,jdbcType = VARCHAR},
+			#{custId,jdbcType = VARCHAR},
+			#{partnerCustId,jdbcType = VARCHAR},
+			#{shopId,jdbcType = VARCHAR},
+			#{model,jdbcType = VARCHAR},
+			#{demandNum,jdbcType = VARCHAR},
+			#{receiveTime,jdbcType = VARCHAR},
+			#{remittance,jdbcType = VARCHAR},
+			#{remark,jdbcType = VARCHAR},
+			#{mail,jdbcType = VARCHAR},
+			#{consignee,jdbcType = VARCHAR},
+			#{deliveryAddress,jdbcType = VARCHAR},
+			#{contact,jdbcType = VARCHAR},
+			#{attachment,jdbcType = VARCHAR}
+		
+		)
+	</insert>
+	
+	<insert id="insertAudit" parameterType="com.qifenqian.bms.process.bean.ProcessAudit">
+		INSERT INTO `stcdb`.`bms_process_audit`(
+			process_audit_id,
+			process_id,
+			first_audit_id,
+			first_audit_time,
+			first_audit_record,
+			second_audit_id,
+			second_audit_time,
+			second_audit_record,
+			current_node
+		)
+		VALUES(
+			#{processAuditId,jdbcType = VARCHAR},
+			#{processId,jdbcType = VARCHAR},
+			#{firstAuditId,jdbcType = VARCHAR},
+			#{firstAuditTime,jdbcType = VARCHAR},
+			#{firstAuditRecord,jdbcType = VARCHAR},
+			#{secondAuditId,jdbcType = VARCHAR},
+			#{secondAuditTime,jdbcType = VARCHAR},
+			#{secondAuditRecord,jdbcType = VARCHAR},
+			#{currentNode,jdbcType = VARCHAR}
+		)
+	</insert>
+
+	<select id="getMyInitiateList" parameterType="com.qifenqian.bms.process.bean.ProcessAudit"  resultType="com.qifenqian.bms.process.bean.ProcessAudit">
+		SELECT 
+			t.process_id,
+			t.title_name,
+			t.dept_id,
+			t.user_id,
+			t.process_time,
+			t.emergency_degree,
+			t.cust_id,
+			t.partner_cust_id,
+			t.shop_id,
+			t.model,
+			t.demand_num,
+			t.receive_time,
+			t.remittance,
+			t.remark,
+			t.mail,
+			t.consignee,
+			t.delivery_address,
+			t.contact,
+			t.attachment,
+			a.process_audit_id,
+			a.first_audit_id,
+			a.first_audit_time,
+			a.first_audit_record,
+			a.second_audit_id,
+			a.second_audit_time,
+			a.second_audit_record,
+			a.current_node,
+			u.user_name
+		FROM 
+			bms_process_management t
+		LEFT JOIN bms_process_audit a
+		ON t.process_id = a.process_id
+		LEFT JOIN sys_user u
+		ON t.user_id = u.user_id
+		<where>
+			1=1
+			<if test="processId != null and processId != '' ">
+			and t.process_id = #{processId,jdbcType = VARCHAR} 
+			</if>
+			<if test="userId != null and userId != '' ">
+			and t.user_id = #{userId,jdbcType = VARCHAR} 
+			</if>
+			<if test="deptId != null and deptId != '' ">
+			and t.dept_id = #{deptId,jdbcType = VARCHAR} 
+			</if>
+			<if test="firstAuditId != null and firstAuditId != '' ">
+			and a.first_audit_id = #{firstAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="secondAuditId != null and secondAuditId != '' ">
+			and a.second_audit_id = #{secondAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="titleName != null and titleName != '' ">
+			and t.title_name = #{titleName,jdbcType = VARCHAR}
+			</if>
+			<if test="currentNode != null and currentNode != '' ">
+			and a.current_node = #{currentNode,jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.process_time DESC
+
+	</select>
+	
+	<select id="selectApplyDetail" parameterType="com.qifenqian.bms.process.bean.ProcessAudit"  resultType="com.qifenqian.bms.process.bean.ProcessAudit">
+		SELECT 
+			t.process_id,
+			t.title_name,
+			t.dept_id,
+			t.user_id,
+			t.process_time,
+			t.emergency_degree,
+			t.cust_id,
+			t.partner_cust_id,
+			t.shop_id,
+			t.model,
+			t.demand_num,
+			t.receive_time,
+			t.remittance,
+			t.remark,
+			t.mail,
+			t.consignee,
+			t.delivery_address,
+			t.contact,
+			t.attachment,
+			a.process_audit_id,
+			a.first_audit_id,
+			a.first_audit_time,
+			a.first_audit_record,
+			a.second_audit_id,
+			a.second_audit_time,
+			a.second_audit_record,
+			a.current_node,
+			u.user_name,
+			d.dept_name
+		FROM 
+			bms_process_management t
+		LEFT JOIN bms_process_audit a
+		ON t.process_id = a.process_id
+		LEFT JOIN sys_user u
+		ON t.user_id = u.user_id
+		LEFT JOIN sys_dept d
+		ON t.dept_id = d.dept_id
+		<where>
+			1=1
+			<if test="processId != null and processId != '' ">
+			and t.process_id = #{processId,jdbcType = VARCHAR} 
+			</if>
+			<if test="firstAuditId != null and firstAuditId != '' ">
+			and a.first_audit_id = #{firstAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="secondAuditId != null and secondAuditId != '' ">
+			and a.second_audit_id = #{secondAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="titleName != null and titleName != '' ">
+			and t.title_name = #{titleName,jdbcType = VARCHAR}
+			</if>
+			<if test="currentNode != null and currentNode != '' ">
+			and a.current_node = #{currentNode,jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.process_time DESC
+		LIMIT 1
+
+	</select>
+	
+	<update id="updateProcessAudit"  parameterType="com.qifenqian.bms.process.bean.ProcessAudit" >
+    	 UPDATE `stcdb`.`bms_process_audit`
+			SET 
+			<if test="firstAuditId != null and firstAuditId !='' ">
+		 	`first_audit_id` = #{firstAuditId,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="firstAuditTime != null and firstAuditTime !='' ">
+		 	`first_audit_time` = #{firstAuditTime,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="firstAuditRecord != null and firstAuditRecord !='' ">
+		 	`first_audit_record` = #{firstAuditRecord,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="secondAuditId != null and secondAuditId !='' ">
+		 	`second_audit_id` = #{secondAuditId,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="secondAuditTime != null and secondAuditTime !='' ">
+		 	`second_audit_time` = #{secondAuditTime,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="secondAuditRecord != null and secondAuditRecord !='' ">
+		 	`second_audit_record` = #{secondAuditRecord,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="currentNode != null and currentNode !='' ">
+		 	`current_node` = #{currentNode,jdbcType = VARCHAR}
+		 	</if>
+		 <where>
+			<if test="processId != null and processId != '' ">
+			process_id = #{processId,jdbcType = VARCHAR} 
+			</if>
+		</where>
+    </update>
+	
+	<select id="getMyFinishList" parameterType="com.qifenqian.bms.process.bean.ProcessAudit"  resultType="com.qifenqian.bms.process.bean.ProcessAudit">
+		SELECT 
+			t.process_id,
+			t.title_name,
+			t.dept_id,
+			t.user_id,
+			t.process_time,
+			t.emergency_degree,
+			t.cust_id,
+			t.partner_cust_id,
+			t.shop_id,
+			t.model,
+			t.demand_num,
+			t.receive_time,
+			t.remittance,
+			t.remark,
+			t.mail,
+			t.consignee,
+			t.delivery_address,
+			t.contact,
+			t.attachment,
+			a.process_audit_id,
+			a.first_audit_id,
+			a.first_audit_time,
+			a.first_audit_record,
+			a.second_audit_id,
+			a.second_audit_time,
+			a.second_audit_record,
+			a.current_node,
+			u.user_name
+		FROM 
+			bms_process_management t
+		LEFT JOIN bms_process_audit a
+		ON t.process_id = a.process_id
+		LEFT JOIN sys_user u
+		ON t.user_id = u.user_id
+		<where>
+			1=1
+			<if test="processId != null and processId != '' ">
+			and t.process_id = #{processId,jdbcType = VARCHAR} 
+			</if>
+			<if test="userId != null and userId != '' ">
+			and t.user_id = #{userId,jdbcType = VARCHAR} 
+			</if>
+			<if test="deptId != null and deptId != '' ">
+			and t.dept_id = #{deptId,jdbcType = VARCHAR} 
+			</if>
+			<if test="firstAuditId != null and firstAuditId != '' ">
+			and a.first_audit_id = #{firstAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="secondAuditId != null and secondAuditId != '' ">
+			and a.second_audit_id = #{secondAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="titleName != null and titleName != '' ">
+			and t.title_name = #{titleName,jdbcType = VARCHAR}
+			</if>
+			<if test="currentNode != null and currentNode != '' ">
+			and a.current_node != #{currentNode,jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.process_time DESC
+
+	</select>
+	
+	
+	<select id="getUnMyInitiateList" parameterType="com.qifenqian.bms.process.bean.ProcessAudit"  resultType="com.qifenqian.bms.process.bean.ProcessAudit">
+		SELECT 
+			t.process_id,
+			t.title_name,
+			t.dept_id,
+			t.user_id,
+			t.process_time,
+			t.emergency_degree,
+			t.cust_id,
+			t.partner_cust_id,
+			t.shop_id,
+			t.model,
+			t.demand_num,
+			t.receive_time,
+			t.remittance,
+			t.remark,
+			t.mail,
+			t.consignee,
+			t.delivery_address,
+			t.contact,
+			t.attachment,
+			a.process_audit_id,
+			a.first_audit_id,
+			a.first_audit_time,
+			a.first_audit_record,
+			a.second_audit_id,
+			a.second_audit_time,
+			a.second_audit_record,
+			a.current_node,
+			u.user_name
+		FROM 
+			bms_process_management t
+		LEFT JOIN bms_process_audit a
+		ON t.process_id = a.process_id
+		LEFT JOIN sys_user u
+		ON t.user_id = u.user_id
+		<where>
+			a.current_node != '0'
+			and a.current_node != '1'
+			and a.current_node != '4'
+			<if test="processId != null and processId != '' ">
+			and t.process_id = #{processId,jdbcType = VARCHAR} 
+			</if>
+			<if test="deptId != null and deptId != '' ">
+			and t.dept_id = #{deptId,jdbcType = VARCHAR} 
+			</if>
+			<if test="userId != null and userId != '' ">
+				and t.user_id = #{userId,jdbcType = VARCHAR}
+			</if>
+			<if test="firstAuditId != null and firstAuditId != '' ">
+			and a.first_audit_id = #{firstAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="secondAuditId != null and secondAuditId != '' ">
+			and a.second_audit_id = #{secondAuditId,jdbcType = VARCHAR} 
+			</if>
+			<if test="titleName != null and titleName != '' ">
+			and t.title_name = #{titleName,jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.process_time DESC
+
+	</select>
+	
+</mapper>

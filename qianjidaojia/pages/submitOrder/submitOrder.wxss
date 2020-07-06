@@ -1,0 +1,194 @@
+/* pages/submitOrder/submitOrder.wxss */
+page{
+  background-color: #F3EFF5;
+}
+.bg{
+  width: 710rpx;
+  height: 154rpx;
+  margin: 40rpx 20rpx 30rpx 20rpx;
+}
+.address{
+  display: flex;
+  position: absolute;
+  height: 134rpx;
+  top: 40rpx;
+  left: 40rpx;
+  padding: 10rpx 0;
+}
+.arrow{
+  width: 18rpx;
+  height: 26rpx;
+}
+.address-left{
+  height: 134rpx;
+  line-height: 67rpx;
+  width: 620rpx;
+}
+.address-right{
+  width: 50rpx;
+  text-align: right;
+  line-height: 134rpx;
+}
+.address-txt{
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+  color: #000000;
+  font-size: 32rpx;
+  font-family:SourceHanSansSC-Medium,SourceHanSansSC;
+}
+.name{
+  font-size: 28rpx;
+  color: #999999;
+}
+.mobile{
+  margin-left: 32rpx;
+}
+
+.goodsList{
+  height: 680rpx;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  margin: 20rpx;
+  border-radius: 8rpx;
+}
+.item{
+  display: flex;
+  justify-content: space-between;
+  margin: 0 20rpx;
+  line-height: 100rpx;
+  align-items: center;
+  color: #666666;
+  font-size:28rpx;
+}
+.goods-head{
+  line-height: 80rpx;
+}
+.item-img{
+  height: 184rpx;
+  border: 1px solid #eeeeee;
+  display: flex;
+  margin: 0 20rpx;
+  justify-content: space-between;
+}
+.goods-title{
+  color: #039E01;
+  font-size: 32rpx;
+}
+.goods-click{
+  color: #999999;
+  font-size: 24rpx;
+}
+.goods-img{
+  display: flex;
+  width: 480rpx;
+  height: 184rpx;
+  padding: 20rpx;
+}
+.goods-img image{
+  width: 144rpx;
+  height: 144rpx;
+  margin-right: 16rpx;
+}
+.goods-img-url{
+  width: 120rpx;
+  /* text-align: center; */
+  line-height: 184rpx;
+}
+.goods-img-url>text{
+  margin-right: 10rpx;
+  color: #666666;
+  font-size: 24rpx;
+}
+.arrow2{
+  width: 14rpx;
+  height: 20rpx;
+}
+.line{
+  border-bottom: 1rpx solid #eeeeee;
+}
+input{
+  width: 300rpx;
+  text-align: right;
+}
+.arrow3{
+  width: 14rpx;
+  height: 22rpx;
+  margin-left: 16rpx;
+}
+
+.total{
+  display: flex;
+  background-color: #ffffff;
+  margin: 30rpx 20rpx;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  justify-content: space-between;
+  color: #666666;
+  font-size: 28rpx;
+}
+.symbol{
+  color: #FF7387;
+  font-size:30rpx;
+  margin-left: 20rpx;
+}
+.total-price{
+  color: #FF7387;
+  font-size:36rpx;
+}
+.total-price2{
+  color: #FF7387;
+  font-size:36rpx;
+  width: 200rpx;
+  display: inline-block
+}
+.order{
+  height: 120rpx;
+  background-color: #ffffff;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  line-height: 120rpx;
+  padding: 0 20rpx; 
+  font-size: 32rpx;
+  color: #666666;
+}
+.go-order{
+  display: inline-block;
+  background:linear-gradient(135deg,rgba(255,115,135,1) 0%,rgba(254,50,123,1) 100%);
+  box-shadow:0rpx 4rpx 12rpx 0rpx rgba(2,156,1,0.24);
+  border-radius:40rpx;
+  color: #ffffff;
+  width: 258rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  margin-left: 110rpx;
+}
+
+/*模态框*/
+.modal{position:fixed; top:0; right:0; bottom:0; left:0; z-index:1000;}
+.modal-cancel{position:absolute; z-index:2000; top:0; right:0; bottom: 0; left:0; background:rgba(0,0,0,0.3);}
+.bottom-dialog-body{width:100%; position:absolute; z-index:3000; bottom:0; left:0;background:#dfdede;}
+/*动画前初始位置*/
+.bottom-positon{-webkit-transform:translateY(100%);transform:translateY(100%);}
+ 
+/* 底部弹出框 */
+.bottom-positon{
+  text-align: center;
+}
+.Mselect{
+  margin-bottom: 20rpx;
+}
+.Mselect view{
+  padding: 26rpx 0;
+  background: #fff;
+}
+.Mselect view:not(:last-of-type){
+  border-bottom: 1px solid #dfdede;
+}
+.Mcancel{
+  background: #fff;
+  padding: 26rpx 0;
+}

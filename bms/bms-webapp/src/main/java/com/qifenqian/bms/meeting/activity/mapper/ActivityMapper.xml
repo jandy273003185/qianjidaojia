@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.meeting.activity.mapper.ActivityMapper">
+
+	<select id="selectActivityList" parameterType="com.qifenqian.bms.meeting.activity.bean.ActivityBean" resultType="com.qifenqian.bms.meeting.activity.bean.ActivityBean">
+			SELECT 
+			  T.ACTIVITY_ID,
+			  T.ACTIVITY_TYPE,
+			  T.ACTIVITY_NO,
+			  T.ACTIVITY_CODE,
+			  T.ACTIVITY_NAME,
+			  T.ACTIVITY_PLACE,
+			  T.START_DATE,
+			  T.END_DATE,
+			  T.PERMIT_TYPE,
+			  T.PERMIT_VALUE,
+			  T.MEMO,
+			  T.STATUS,
+			  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.INST_USER) INST_USER_NAME,
+			  T.INST_DATETIME,
+			  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.LUPD_USER) LUPD_USER_NAME,
+			  T.LUPD_DATETIME
+			FROM BASE_ACTIVITY T
+			<where>
+				<if test="activityNo!= '' and activityNo!=null ">
+				 AND T.ACTIVITY_NO like CONCAT('%',#{activityNo},'%')
+				</if>
+				<if test="activityName!= '' and activityName!=null ">
+				 AND T.ACTIVITY_NAME = #{activityName,jdbcType = VARCHAR}
+				</if>
+			</where>
+			  ORDER BY T.INST_DATETIME DESC
+	</select>
+	
+	
+	<select id="selectActivityById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.meeting.activity.bean.ActivityBean">
+		   SELECT T.*
+			 FROM BASE_ACTIVITY T
+			 WHERE T.ACTIVITY_ID = #{activityId,jdbcType = INTEGER}
+	</select>
+	
+	<insert id="insertActivitySingle" parameterType="com.qifenqian.bms.meeting.activity.bean.ActivityBean">
+		INSERT INTO BASE_ACTIVITY(
+			ACTIVITY_NO,
+		    ACTIVITY_CODE,
+		    ACTIVITY_NAME,
+		    ACTIVITY_PLACE,
+		    START_DATE,
+		    END_DATE,
+		    PERMIT_TYPE,
+		    PERMIT_VALUE,
+			MEMO,
+			STATUS,
+			INST_USER
+		)VALUES(
+			 #{activityNo,			jdbcType=VARCHAR},
+  			 #{activityCode,		jdbcType=VARCHAR},
+  			 #{activityName,		jdbcType=VARCHAR},
+  			 #{activityPlace,		jdbcType=VARCHAR},
+  			 #{startDate,			jdbcType=VARCHAR},
+  			 #{endDate,				jdbcType=VARCHAR},
+  			 #{permitType,			jdbcType=VARCHAR},
+  			 #{permitValue,			jdbcType=VARCHAR},
+			 #{memo,				jdbcType=VARCHAR},
+		     #{status,				jdbcType=VARCHAR},
+			 #{instUser,			jdbcType=INTEGER}
+		)
+	</insert>
+
+	<update id="updateActivityById" parameterType="com.qifenqian.bms.meeting.activity.bean.ActivityBean">
+		UPDATE BASE_ACTIVITY T
+		<set>
+		    <if test="activityNo!= null  and activityNo!= '' ">
+				T.ACTIVITY_NO = #{activityNo, jdbcType=VARCHAR},
+			</if>
+		     <if test="activityCode!= null  and activityCode!= '' ">
+				T.ACTIVITY_CODE = #{activityCode, jdbcType=VARCHAR},
+			</if>
+		    <if test="activityName!= null  and activityName!= '' ">
+				T.ACTIVITY_NAME = #{activityName, jdbcType=VARCHAR},
+			</if>
+		     <if test="activityPlace!= null  and activityPlace!= '' ">
+				T.ACTIVITY_PLACE = #{activityPlace, jdbcType=VARCHAR},
+			</if>
+		     <if test="startDate!= null  and startDate!= '' ">
+				T.START_DATE = #{startDate, jdbcType=VARCHAR},
+			</if>
+		    <if test="endDate!= null  and endDate!= '' ">
+				T.END_DATE = #{endDate, jdbcType=VARCHAR},
+			</if>
+		   <if test="permitType!= null  and permitType!= '' ">
+				T.PERMIT_TYPE = #{permitType, jdbcType=VARCHAR},
+			</if>
+			<if test="permitValue!= null  and permitValue!= '' ">
+				T.PERMIT_VALUE = #{permitValue, jdbcType=VARCHAR},
+			</if>
+			<if test="memo!= null  and memo!= '' ">
+				T.MEMO = #{memo, jdbcType=VARCHAR},
+			</if>
+			<if test="status!= null  and status!= '' ">
+				T.STATUS = #{status, jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser > 0 ">
+				T.LUPD_USER = #{lupdUser, jdbcType=INTEGER},
+			</if>
+		</set>
+		WHERE T.ACTIVITY_ID = #{activityId, jdbcType=INTEGER}
+	</update>
+</mapper>

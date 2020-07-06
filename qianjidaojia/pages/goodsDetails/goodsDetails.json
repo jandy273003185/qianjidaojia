@@ -1,0 +1,9 @@
+{
+
+  "usingComponents": {
+      "myIcon":"../../components/myIcon/myIcon",
+      "myToast":"../../components/myToast/myToast",
+      "addCart":"../../components/addCart/addCart"
+  },
+  "navigationBarTitleText":"商品详情"
+}

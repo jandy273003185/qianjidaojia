@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.myworkspace.overAudit.mapper.OverAuditMapper">
+
+	<select id="getOverAudit" parameterType="com.qifenqian.bms.myworkspace.overAudit.bean.OverAuditBean" resultType="com.qifenqian.bms.myworkspace.overAudit.bean.OverAuditBean">
+		select A.* ,B.BUSINESS_KEY_ businessKey,  C.NAME_ proName , T.REAL_NAME realName ,U.URL
+		from act_hi_taskinst A 
+		left join act_hi_procinst B on A.PROC_INST_ID_ = B.ID_
+		left join act_re_procdef C on B.PROC_DEF_ID_ = C.ID_
+		left join sys_user T on B.START_USER_ID_ = T.USER_ID
+		left join act_hi_identitylink l on A.ID_ = l.TASK_ID_
+		LEFT JOIN	act_view_url U ON C.KEY_ = U.application_name
+		<where>
+			    (A.ASSIGNEE_ = #{userId,jdbcType=VARCHAR} or l.GROUP_ID_ in (select r.role_id from sys_user_role r where r.user_id = #{userId,jdbcType=VARCHAR}))
+				AND A.END_TIME_ IS NOT NULL
+				<if test="id != null and '' != id">  
+		            <![CDATA[  
+		              AND A.ID_ = #{id} 
+		            ]]>  
+        		</if>  
+				<if test="startUserId != null and '' != startUserId">  
+		            <![CDATA[  
+		              AND t.REAL_NAME = #{startUserId} 
+		            ]]>  
+        		</if>  
+				<if test="auditBeginTime != null and '' != auditBeginTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(A.END_TIME_ ,'%Y-%m-%d') >= #{auditBeginTime}  
+		            ]]>  
+        		</if>  
+		        <if test="auditEndTime != null and '' != auditEndTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(A.END_TIME_ ,'%Y-%m-%d') <= #{auditEndTime}  
+		            ]]>  
+		        </if>  
+		</where>
+		ORDER BY 
+					A.START_TIME_ DESC
+	</select>
+</mapper>

@@ -1,0 +1,102 @@
+/* pages/evaluation/evaluation.wxss */
+
+page{
+  background-color: #FDFAFE;
+}
+
+.evaluation-title{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20rpx;
+  padding: 30rpx;
+  background:#ffffff;
+  font-size: 34rpx;
+  color: #3e3e3e;
+  border-radius: 10rpx;
+}
+.evaluation-title>text{
+  width: 40rpx;
+  border: 1rpx solid #e1e1e1;
+  margin: 16rpx;
+}
+
+.evaluation-content{
+  margin: 20rpx;
+  background:#ffffff;
+  border-radius: 10rpx;
+}
+.evaluation-up{
+  display: flex;
+  padding: 20rpx;
+}
+.goods-img{
+  width: 140rpx;
+  height: 140rpx;
+  margin-right: 30rpx;
+}
+image{
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;
+}
+.star{
+  width: 80rpx;
+  height: 80rpx;
+  margin: 0 30rpx;
+}
+.star2{
+  width: 80rpx;
+  height: 84rpx;
+  margin: 0 30rpx;
+}
+.item-mid{
+  display: flex;
+  border: 2rpx solid #e1e1e1;
+  border-radius: 8rpx;  
+  height: 170rpx;
+  padding: 20rpx;
+  margin:0 20rpx;
+  width: 88%;
+}
+.num{
+  color: #909090;
+  text-align: right;
+  padding: 0 24rpx 20rpx 0;
+}
+.evaluation-down{
+  display: flex;
+  flex-wrap: wrap;
+}
+.photo-view{
+  display: flex;
+  padding-bottom: 20rpx;
+}
+.photo>image{
+  width: 152rpx;
+  height: 152rpx;
+  margin: 20rpx 0 0rpx 20rpx;
+}
+.del{
+   margin: -68rpx 0 0 20rpx;
+   width: 152rpx;
+   text-align: center;
+   background: #7f7f7f;
+   color: #ffffff;
+   border-bottom-left-radius: 10rpx;
+   border-bottom-right-radius: 10rpx;
+   position: absolute;
+   opacity: 0.9;
+   line-height: 60rpx;
+   font-size: 30rpx;
+}
+.issue{
+  display: flex;
+  background: #2db961;
+  color: #ffffff;
+  padding: 20rpx;
+  border-radius: 100rpx;
+  margin: 30rpx;
+  justify-content: center;
+  margin-top: 100rpx;
+}

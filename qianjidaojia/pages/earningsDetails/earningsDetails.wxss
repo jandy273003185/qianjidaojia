@@ -1,0 +1,31 @@
+/* pages/earningsDetails/earningsDetails.wxss */
+page {
+    background-color: #fdfafe;
+}
+.item{
+  background: #ffffff;
+  height: 114rpx;
+  margin: 24rpx 24rpx 0 24rpx;
+  padding: 10rpx 30rpx 10rpx 20rpx;
+  line-height: 57rpx;
+  font-size:28rpx;
+}
+.money{
+  display: flex;
+  justify-content: space-between;
+  font-family:PingFangSC-Medium,PingFang SC;
+  font-weight:550;
+  color: #333333;
+}
+.money>text:first-child{
+  overflow: hidden;
+  width: 500rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.money>text:last-child{
+  color: #FF7387;
+}
+.time{
+  color: #999999;
+}

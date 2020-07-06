@@ -1,0 +1,206 @@
+﻿body {
+    background-color: rgba(248,249,250,1);
+    padding: 0;
+    margin: 0;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+}
+.contain .lab{
+    background:#fff;
+   height:.46rem;
+   
+
+}
+    .contain .lab div {
+        font-size: .16rem;
+        font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+        font-weight: 400;
+        color: #333333;
+        line-height: .24rem;
+        width: 33.33%;
+        text-align: center;
+        float: left;
+        line-height: .46rem;
+    }
+    .contain .lab .active {
+        color: #45DBAE;
+        border-bottom: 2px solid #45DBAE;
+        border-radius: 2px;
+    }
+.contain .search {
+    margin-top: 15px;
+    height: .88rem;
+    background: #fff;
+    padding-top: .3rem;
+}
+.contain .search .searchkey {
+    background-image: url(../images/coupon/s.png);
+    background-size: 100% 100%;
+    width: 3.29rem;
+    height: .48rem;
+    margin: 0 auto;
+   
+}
+    .contain .search .searchkey input {
+        border: none;
+        height: .4rem;
+        width: 2.5rem;
+        margin-top: 0.03rem;    
+        margin-left: .1rem;
+        color: #666666;
+        font-weight: 400;
+        font-size: .14rem;
+        font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+        background-color: transparent;
+        float: left;
+    }
+    .contain .search .searchkey .btnsearch {
+        font-size: .16rem;
+        font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+        font-weight: 400;
+        color: #fff;
+        line-height: .48rem;
+        float: left;
+        margin-left:.16rem;
+    }
+        .contain ul {
+            width: 100%;
+            list-style-type: none;
+            padding: 0;
+            margin: .02rem auto;
+        }
+
+    .contain ul li {
+        margin: .13rem .12rem 0;
+        font-size: .12rem;
+        float: left;
+        width: 3.52rem;
+        height: .99rem;
+    }    
+        .contain ul li .one {
+            font-size: .12rem;
+            font-family: PingFangSC-Regular,PingFang SC;
+            font-weight: 400;
+            color: #FFFFFF;
+            line-height: .17rem;
+            text-align: center;
+            width: 1.22rem;
+            height: .98rem;
+            float: left;
+        }
+        .contain ul li .one .money {
+            font-size: .43rem;
+            font-weight: 500;
+            line-height: .59rem;
+            margin-top: .08rem;
+        }
+            .contain ul li .one .money span {
+                font-size: .17rem;
+                font-weight: 500;
+                line-height: .24rem;
+            }
+
+        .contain ul li .two {
+            font-size: .12rem;
+            font-family: PingFangSC-Regular,PingFang SC;
+            font-weight: 400;
+            color: #FFFFFF;
+            line-height: .17rem;
+            text-align: left;
+            width: 1.9rem;
+            height: .98rem;
+            padding-left: .18rem;
+            float: left;
+        }
+
+            .contain ul li .two .name {
+                font-size: .14rem;
+                color: #333333;
+                line-height: .2rem;
+                padding-top: .06rem;
+            }
+
+            .contain ul li .two .desc {
+                color: #999999;
+                padding-top: .04rem;
+            }
+            .contain ul li .two .time {
+                color: #999999;
+                padding-top: .21rem;
+            }
+            .contain ul li .two .time2 {
+                color: #333333;
+                padding-top: .11rem;
+                
+            }
+                .contain ul li .two .time2 span {
+                    font-size: .18rem;
+                    letter-spacing: .02rem;
+                }
+
+.contain .nopic {
+    background-image: url(../images/coupon/no.png);
+    background-size: 100% 100%;
+    width: 1.18rem;
+    height: .72em;
+    margin: 0 auto;
+    margin-top: .82rem;
+  
+}
+    .contain .nopic div {
+        font-size: .11rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        color: #999999;
+        line-height: .16rem;
+        padding-top: .83rem;
+        text-align: center;
+    }
+    .none {
+        display: none;
+    }
+.both {
+    clear: both;
+    height: .8rem;
+}
+.contain ul li.l0 {
+    background-image: url(../images/coupon/l0.png);
+    background-size: 100% 100%;
+}
+
+        .contain ul li.l1 {
+            background-image: url(../images/coupon/l1.png);
+            background-size: 100% 100%;
+        }
+
+        .contain ul li.l2 {
+            background-image: url(../images/coupon/l2.png);
+            background-size: 100% 100%;
+        }
+        .contain ul li.s0 {
+            background-image: url(../images/coupon/s0.png);
+            background-size: 100% 100%;
+        }
+
+        .contain ul li.s1 {
+            background-image: url(../images/coupon/s1.png);
+            background-size: 100% 100%;
+        }
+
+        .contain ul li.s2 {
+            background-image: url(../images/coupon/s2.png);
+            background-size: 100% 100%;
+        }
+        .contain ul li.x0 {
+            background-image: url(../images/coupon/x0.png);
+            background-size: 100% 100%;
+        }
+
+        .contain ul li.x1 {
+            background-image: url(../images/coupon/x1.png);
+            background-size: 100% 100%;
+        }
+
+        .contain ul li.x2 {
+            background-image: url(../images/coupon/x2.png);
+            background-size: 100% 100%;
+        }

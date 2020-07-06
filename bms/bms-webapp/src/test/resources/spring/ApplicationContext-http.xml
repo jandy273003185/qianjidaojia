@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/oxm   http://www.springframework.org/schema/oxm/spring-oxm-3.1.xsd
+       ">
+
+	<!-- <bean id="httpInvokerProxy" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="overloadEnabled" value="true" />
+		<property name="serviceUrl" value="http://10.0.0.74:1234/remoting/service" />
+		<property name="serviceInterface" value="com.qifenqian.invoke.common.service.InterfaceService" />
+		</bean>
+		
+		
+		<bean id="httpInvokerRequestExecutor" class="org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor">  
+		<property name="connectTimeout" value="2000"/>  
+		<property name="readTimeout" value="5000"/>  
+		</bean>  
+		
+		<bean id="balanceHttpClient" class="com.qifenqian.invoke.common.builder.InvokeHttpClientBuilder" />-->
+
+	<bean id="httpInvokerProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl" value="http://127.0.0.1:5001/sevenpay/unionpay/refund" />
+		<property name="serviceInterface" value="com.stc.gateway.unionpay.AsynResponseListener" />
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.remoting.httpinvoker.HttpComponentsHttpInvokerRequestExecutor"></bean>
+		</property>
+	</bean>
+
+</beans>

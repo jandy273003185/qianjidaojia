@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.CategoryCodeInfoMapper">
+
+	<select id="getCategoryCodeInfoList" parameterType="string" 
+		resultType="com.qifenqian.bms.basemanager.merchant.bean.CategoryCodeInfo">
+		SELECT
+			*
+		FROM
+			category_code_info t
+		WHERE
+			t.categoryTypeId = #{categoryTypeId,jdbcType=VARCHAR}
+	</select>
+	<select id="getHelipayCategoryCodeInfoList" parameterType="string" 
+		resultType="com.qifenqian.bms.basemanager.merchant.bean.CategoryCodeInfo">
+		SELECT
+			*
+		FROM
+			category_code_info_helipay t
+		WHERE
+			t.categoryTypeId = #{categoryTypeId,jdbcType=VARCHAR}
+	</select>
+	<select id="getCategoryCodeInfoListById" parameterType="string"
+		resultType="com.qifenqian.bms.basemanager.merchant.bean.CategoryCodeInfo">
+		SELECT
+			i.*
+		FROM
+			category_code_info i
+		WHERE
+			i.categoryTypeId = (
+				SELECT
+					c.categoryTypeId
+				FROM
+					category_code_info c
+				WHERE
+					c.categoryId = #{categoryId,jdbcType=VARCHAR}
+			)
+	</select>
+</mapper>

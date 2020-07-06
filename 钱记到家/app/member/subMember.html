@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>会员中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">会员中心</div>
+			</div>
+		</div>
+		<div class="mian">
+			<div class="subMemberTop">
+				<div class="bg"></div>
+				<div class="conBox">
+					<div class="tx_info">
+						<div class="tx">
+							<img src="../images/tx/default.png" id="Avatar" alt="">
+						</div>
+						<div class="info">
+							<p class="integral">当前积分：<span id="Score"></span></p>
+						</div>
+					</div>
+					<div class="gradeIntegral">
+						<ul class="list li_25">
+							<li class="grade_1">
+								<div class="up">
+									<div class="icons"></div>
+								</div>
+								<p><span class="num">800</span>积分</p>
+							</li>
+							<li class="grade_2">
+								<div class="up">
+									<div class="icons"></div>
+								</div>
+								<p><span class="num">1600</span>积分</p>
+							</li>
+							<li class="grade_3">
+								<div class="up">
+									<div class="icons"></div>
+								</div>
+								<p><span class="num">2800</span>积分</p>
+							</li>
+							<li class="grade_4">
+								<div class="up">
+									<div class="icons"></div>
+								</div>
+								<p><span class="num">6000</span>积分</p>
+							</li>
+						</ul>
+						<p class="msg"></p>
+					</div>
+				</div>
+			</div>
+		    <div class="gradeRule">
+		    	<div class="gradeRule_section">
+					<dov class="section__bd">
+						<div class="con">
+							<h2 class="title">会员等级介绍</h2>
+							<p>积分成长体系是为了给处于不同成长阶段的用户提供更贴心，更强大的服务，以满足不同成长阶段用户的需求而出现积分和用户等级对应表如下</p>
+						</div>
+					</dov>
+				</div>
+				<div class="gradeRule_section">
+					<dov class="section__bd">
+						<ul class="dd_gradeList">
+							<li>
+								<span class="gradeNum">L1</span>
+								<div class="txtBox">
+									<p class="number">0-800分</p>
+								</div>
+							</li>
+							<li>
+								<span class="gradeNum">L2</span>
+								<div class="txtBox">
+									<p class="number">801-1600分</p>
+								</div>
+							</li>
+							<li>
+								<span class="gradeNum">L3</span>
+								<div class="txtBox">
+									<p class="number">1601-2800分</p>
+								</div>
+							</li>
+							<li>
+								<span class="gradeNum">L4</span>
+								<div class="txtBox">
+									<p class="number">2800-6000分</p>
+								</div>
+							</li>
+						</ul>
+					</dov>
+				</div>
+		    </div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			GetMemberInfo(function(data){
+				if(data.data.Avatar) {
+					$('#Avatar').attr('src', data.data.Avatar);
+				}
+				$('#Score').text(data.data.Score);
+				var integral=$('#Score').text(data.data.Score);				
+				var index=parseInt(data.data.Level)-1;
+				var nextlevel=2;
+				var number1=1600;				
+				for(var i=0;i<4;i++){					
+					if(i==index){
+						$('.gradeIntegral ul li').eq(i).addClass('active');						
+					}
+				}
+				$('.gradeIntegral ul li').each(function(){
+					if($(this).is('.active')){
+						number1=$(this).next().find('.num').text();
+						nextlevel=parseInt(data.data.Level)+1;
+					}
+				})
+				var number2=parseInt(number1-data.data.Score);
+				$('.gradeIntegral .msg').text('差'+number2+'分到LV'+nextlevel+'，新特权即将开启');
+			})
+		})
+	</script>
+</html>

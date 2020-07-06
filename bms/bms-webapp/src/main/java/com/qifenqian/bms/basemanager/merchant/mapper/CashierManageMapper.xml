@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.CashierManageMapper">
+	<!-- 收银员管理 -->
+	<select id="getCashierList" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo" resultType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">
+		SELECT
+			T.*, A.cust_name merchantName,
+			B.cust_name createName,
+			C.cust_name modifyName,
+			D.shop_name shopName
+		FROM
+			td_merchant_cashier_ref T
+		LEFT JOIN td_cust_info A ON T.MERCHANT_CUST_ID = A.cust_id
+		LEFT JOIN td_cust_info B ON T.create_id = B.cust_id
+		LEFT JOIN td_cust_info c ON T.modify_id = C.cust_id
+		LEFT JOIN td_shop D ON t.SHOP_ID = D.SHOP_ID
+		LEFT JOIN td_login_user_info E ON E.cust_id = T.MERCHANT_CUST_ID
+		WHERE
+			1 = 1
+-- 		AND E.state IN ('00', '01', '05', '06')
+		<if test="cashierMobile !=null and cashierMobile !=''">
+			AND T.cashier_mobile=#{cashierMobile,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCustId !=null and merchantCustId != ''">
+			AND T.MERCHANT_CUST_ID = #{merchantCustId,jdbcType=VARCHAR}
+		</if>
+		<if test="refundAuth !=null and refundAuth != ''">
+			AND T.refund_auth = #{refundAuth,jdbcType=VARCHAR}
+		</if>
+		<if test="shopId !=null and shopId != ''">
+			AND T.SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		</if>
+		<if test="status !=null and status != ''">
+			AND T.status = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="onlyId !=null and onlyId != ''">
+			AND T.only_id != #{onlyId,jdbcType=VARCHAR}
+		</if>
+		order by T.create_time desc
+	</select>
+	<select id="getMyCashierList" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo" resultType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">
+			SELECT
+				T.*, 
+				A.cust_name merchantName,
+				B.cust_name createName,
+				C.cust_name modifyName,
+				D.shop_name shopName
+			FROM
+				td_merchant_cashier_ref T
+			LEFT JOIN td_shop D ON T.MERCHANT_CUST_ID =D.MCH_ID
+			LEFT JOIN td_cust_info A ON T.MERCHANT_CUST_ID = A.cust_id
+			left join
+			td_cust_info B
+		on  
+			T.create_id = B.cust_id
+		left join
+			td_cust_info c
+		on  
+			T.modify_id = C.cust_id
+			WHERE
+				1 = 1
+			AND (
+				EXISTS (
+					SELECT
+						1
+					FROM
+						(
+							SELECT
+								temp.cust_id
+							FROM
+								stcdb.bms_protocol_content temp
+							WHERE
+								temp.id IN (
+									SELECT
+										bms.protocol_id
+									FROM
+										stcdb.bms_protocol_column bms
+									WHERE
+										(bms.column_value = #{userName,jdbcType=VARCHAR}
+										or
+										bms.column_value = #{userId,jdbcType=VARCHAR})
+									AND bms.column_code = 'custManager'
+								)
+						) TT
+					WHERE
+						TT.cust_id = T.MERCHANT_CUST_ID
+				)
+				OR EXISTS (
+					SELECT
+						*
+					FROM
+						td_cust_info cust
+					WHERE
+						cust.cust_id = T.MERCHANT_CUST_ID
+					AND cust.create_id = #{userId,jdbcType=VARCHAR}
+				)
+			)
+		<if test="cashierMobile !=null and cashierMobile !=''">
+			AND T.cashier_mobile=#{cashierMobile,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCustId !=null and merchantCustId != ''">
+			AND T.MERCHANT_CUST_ID = #{merchantCustId,jdbcType=VARCHAR}
+		</if>
+		<if test="refundAuth !=null and refundAuth != ''">
+			AND T.refund_auth = #{refundAuth,jdbcType=VARCHAR}
+		</if>
+		<if test="status !=null and status != ''">
+			AND T.status = #{status,jdbcType=VARCHAR}
+		</if>
+		order by T.create_time desc
+	</select>
+	
+	<insert id="addCashier" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">
+		insert into
+		td_merchant_cashier_ref(
+			ONLY_ID,
+			MERCHANT_CUST_ID,
+			SHOP_ID,
+			CASHIER_CUST_ID,
+			CASHIER_MOBILE,
+			CASHIER_NAME,
+			REFUND_AUTH,
+			QUERY_AUTH,
+			STATUS,
+			LOGIN_PW,
+			REFUND_PW,
+			LOGIN_SALT,
+			REFUND_SALT,
+			WEB_REFUND_AUTH,
+			MACHINE_REFUND_AUTH,
+			APP_REFUND_AUTH,
+			OFFICIAL_REFUND_AUTH,
+			MINI_REFUND_AUTH,
+			EXTERNAL_ID
+			)
+		VALUES(
+			#{onlyId, 					jdbcType=VARCHAR},
+			#{merchantCustId, 			jdbcType=VARCHAR},
+			#{shopId,                   jdbcType=VARCHAR},
+			#{cashierCustId, 			jdbcType=VARCHAR},
+			#{cashierMobile, 			jdbcType=VARCHAR},
+			#{cashierName, 				jdbcType=VARCHAR},
+			#{refundAuth, 				jdbcType=VARCHAR},
+			#{queryAuth,                jdbcType=VARCHAR},
+			#{status},
+			#{loginPw},
+			#{refundPw},
+			#{loginSalt},
+			#{refundSalt},
+			#{webRefundAuth, 					jdbcType=VARCHAR},
+			#{machineRefundAuth, 			jdbcType=VARCHAR},
+			#{appRefundAuth,                   jdbcType=VARCHAR},
+			#{officialRefundAuth, 			jdbcType=VARCHAR},
+			#{miniRefundAuth, 			jdbcType=VARCHAR},
+			#{externalId, 				jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	
+	
+	<delete id="deleteCashier" parameterType="String">
+		delete from
+			td_merchant_cashier_ref
+		where
+			only_id = #{onlyId,jdbcType=VARCHAR}
+	</delete>
+	
+	
+	<select id="getCustInfoByMobile" parameterType="String" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		select
+			T.*
+		from
+			td_login_user_info T
+		where
+		    t.ROLE_ID = 'per'
+			and t.mobile=#{mobile,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCashier" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">
+		update 
+			td_merchant_cashier_ref T
+		<set>
+			<if test="cashierMobile !=null and cashierMobile !=''">
+				T.cashier_mobile=#{cashierMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="refundAuth !=null and refundAuth != ''">
+				T.REFUND_AUTH = #{refundAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="queryAuth !=null and queryAuth != ''">
+				T.QUERY_AUTH = #{queryAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="cashierName !=null and cashierName != ''">
+				T.cashier_name = #{cashierName,jdbcType=VARCHAR},
+			</if>
+			<if test="cashierCustId !=null and cashierCustId != ''">
+			    T.CASHIER_CUST_ID = #{cashierCustId,jdbcType=VARCHAR}
+			</if>
+			<if test="status !=null and status != ''">
+			    T.status = #{status,jdbcType=VARCHAR}
+			</if>
+			<!-- 新增字段 -->
+			<if test="webRefundAuth !=null and webRefundAuth !=''">
+				T.WEB_REFUND_AUTH=#{webRefundAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="machineRefundAuth !=null and machineRefundAuth != ''">
+				T.MACHINE_REFUND_AUTH = #{machineRefundAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="appRefundAuth !=null and appRefundAuth != ''">
+				T.APP_REFUND_AUTH = #{appRefundAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="officialRefundAuth !=null and officialRefundAuth != ''">
+				T.OFFICIAL_REFUND_AUTH = #{officialRefundAuth,jdbcType=VARCHAR},
+			</if>
+			<if test="miniRefundAuth !=null and miniRefundAuth != ''">
+				T.MINI_REFUND_AUTH = #{miniRefundAuth,jdbcType=VARCHAR}
+			</if>
+			<if test="externalId !=null and externalId != ''">
+				T.EXTERNAL_ID = #{externalId,jdbcType=VARCHAR}
+			</if>
+		</set> 
+		where
+		    T.only_id = #{onlyId,jdbcType=VARCHAR}
+	</update>
+	
+		<select id="getMyCashierRef" parameterType="String" resultType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">	
+			select * from td_merchant_cashier_ref tmc where tmc.ONLY_ID  =  #{onlyId,jdbcType=VARCHAR}
+	   </select>
+	<!-- 除某条记录外的数据 -->
+	<select id="getCashierListExcept" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo" resultType="com.qifenqian.bms.basemanager.merchant.bean.CashierInfo">
+		select 
+			T.*
+		from
+			td_merchant_cashier_ref T
+		where
+		T.ONLY_ID != #{onlyId,jdbcType=VARCHAR}
+		<if test="cashierMobile !=null and cashierMobile !=''">
+			AND T.cashier_mobile=#{cashierMobile,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCustId !=null and merchantCustId != ''">
+			AND T.MERCHANT_CUST_ID = #{merchantCustId,jdbcType=VARCHAR}
+		</if>
+		<if test="cashierCustId !=null and cashierCustId != ''">
+			AND T.CASHIER_CUST_ID = #{cashierCustId,jdbcType=VARCHAR}
+		</if>
+		order by T.create_time desc
+	</select>
+	
+	<select id="selectStore" resultType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage" >
+		SELECT
+		  shop_id,
+		  shop_name,
+		  shop_no
+		
+		FROM
+		  td_shop t
+		LEFT JOIN
+		  td_cust_info c
+		ON
+		 t.MCH_ID = c.CUST_ID
+		WHERE
+		 c.CUST_ID =#{custId,jdbcType=VARCHAR}
+	
+	</select>
+
+
+	<insert id="addShopStaffRef" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdShopStaffRef">
+		insert into
+		td_shop_staff_ref(
+			ID,
+			SHOP_ID,
+			CASHIER_ID,
+			SHOPMANAGER_ID,
+			FINANCE_ID,
+			CUST_ID,
+			STATUS,
+			CREATE_ID,
+			CREATE_TIME,
+			MODIFY_ID,
+			MODIFY_TIME
+			)
+		VALUES(
+			#{id, 					jdbcType=VARCHAR},
+			#{shopId, 					jdbcType=VARCHAR},
+			#{cashierId, 			jdbcType=VARCHAR},
+			#{shopmanagerId,                   jdbcType=VARCHAR},
+			#{financeId, 			jdbcType=VARCHAR},
+			#{custId, 			jdbcType=VARCHAR},
+			#{status, 				jdbcType=VARCHAR},
+			#{createId, 				jdbcType=VARCHAR},
+			NOW(),
+			#{modifyId, 		jdbcType=VARCHAR},
+			#{modifyTime, 		jdbcType=DATE}
+		)
+	</insert>
+	
+</mapper>

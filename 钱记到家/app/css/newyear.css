@@ -1,0 +1,155 @@
+body {
+    background-color: #972123;
+    padding: 0;
+    margin: 0;
+}
+.contain {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+.bannerdv{
+    height:4.05rem;
+}
+.banner {
+    width: 100%;
+}
+.coupondv {
+    height: 1.55rem;
+    margin-top: .03rem;
+}
+.couponimg {
+    width: 3.38rem;
+}
+.contenttitledv {
+    height: .5rem;
+    margin-top: .14rem;
+}
+.contenttitle {
+    text-align: center;
+    width: 2.86rem;
+    vertical-align: text-top;
+}
+#list {
+    margin-top: .02rem;
+}
+.content-bg {
+    background: url(/images/newyear/content-bg2.png) no-repeat;
+    background-size: 100% 100%;
+    align-items: center;
+    color: #fff;
+    height: 1.25rem;
+    margin: 0 auto;
+    width: 3.46rem;
+    margin-top: .04rem;
+}
+
+.content-left {
+    width: 1rem;
+    height: 1rem;
+    float: left;
+    margin: .08rem 0 .07rem .12rem;
+}
+
+.content-left img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.content-right {
+    width: 2.1rem;
+    height: 1.25rem;
+    margin-left: 0.15rem;
+    float: left;
+    text-align: left;
+}
+
+.goods-title {
+    margin-top: .09rem;
+    height: 27px;
+    font-size: .18rem;
+    font-family: SourceHanSansSC-Bold, SourceHanSansSC;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.goods-content {
+    font-size: .12rem;
+    font-family: SourceHanSansSC-Regular,SourceHanSansSC;
+    font-weight: 400;
+    color: rgba(255,255,255,1);
+    line-height: .18rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.price {
+    display: flex;
+    justify-content: space-between;
+    line-height: 34px;
+    align-items: center;
+    margin-top: .12rem;
+}
+
+.price div {
+    display: flex;
+}
+
+.price-txt {
+    font-size: .14rem;
+    font-family: SourceHanSansSC-Medium, SourceHanSansSC;
+    font-weight: 500;
+    color: rgba(255,255,255,1);
+}
+
+.price-num {
+    display: flex;
+    /* align-items: center; */
+    align-items: baseline;
+}
+
+
+/* .price-num:first-child { */
+
+.money-symbol {
+    font-size: .14rem;
+    font-family: AvenirNext-BoldItalic,AvenirNext;
+    font-weight: normal;
+    color: rgba(255,255,255,1);
+}
+
+.price-num:last-child {
+    font-size: .2rem;
+    font-family: AvenirNext-DemiBoldItalic, AvenirNext;
+    font-style: oblique;
+    font-weight: normal;
+    color: rgba(255,255,255,1);
+}
+
+.buy {
+    width: .95rem;
+    height: .34rem;
+    margin-right: .12rem;
+}
+
+.buy img {
+    width: 100%;
+    height: 100%;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.68rem;
+    margin: .2rem auto;
+}
+
+.footer img {
+    width: 100%;
+    height: 100%;
+}

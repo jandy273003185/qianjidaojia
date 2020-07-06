@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.product.mapper.MerchantProductMapper">
+
+
+	<!-- 查询商户产品列表 -->
+	<select id="selectMerchantProductList" parameterType="com.qifenqian.bms.merchant.product.bean.MerchantProduct" resultType="com.qifenqian.bms.merchant.product.bean.MerchantProduct" >
+		SELECT
+			tc.CUST_NAME merchant_name,
+			mm.*
+		FROM
+			td_cust_info tc,
+			(
+				SELECT
+					tp.product_name,
+					tp.product_code,
+					u.real_name,
+					tmp.*
+				FROM
+					td_product_info tp inner join 
+					td_merchant_product_info tmp on tp.product_id = tmp.product_id
+					left join sys_user u on tmp.audit_id = u.user_id
+					
+			) mm			
+		<where>
+			tc.MERCHANT_CODE = mm.merchant_code
+			<if test="merchantName != null and merchantName != '' "> AND tc.CUST_NAME LIKE CONCAT('%',#{merchantName, jdbcType=VARCHAR},'%')</if>
+			<if test="productName != null and productName != '' "> AND mm.product_name LIKE CONCAT('%',#{productName, jdbcType=VARCHAR},'%')</if>
+			<if test="productStatus != null and productStatus != '' "> AND mm.product_status =#{productStatus, jdbcType=VARCHAR}</if>
+		</where>
+		ORDER BY mm.CREATE_TIME DESC
+	</select>
+
+	<!-- 写入单个商户产品信息 -->
+	<insert id="insertMerchantProductSingle" parameterType="com.qifenqian.bms.merchant.product.bean.MerchantProduct">
+		INSERT INTO td_merchant_product_info (
+			merchant_code,
+			product_id,
+			product_rate,
+			recharge_rate,
+			product_status,
+			aisle,
+			id
+		) VALUES (
+			#{merchantCode, 	jdbcType=VARCHAR},
+			#{productId, 	    jdbcType=VARCHAR},
+		  	#{productRate, 		jdbcType=VARCHAR},
+		  	#{rechargeRate, 	jdbcType=VARCHAR},
+		  	#{productStatus, 	jdbcType=VARCHAR},
+		  	#{aisle, 			jdbcType=INTEGER},
+		  	#{id, 			    jdbcType=INTEGER}
+		)
+	</insert>
+	
+	
+	
+	
+	<!-- 根据商户编号和产品编号查询 -->
+	<select id="selectMerchantProductByCode" parameterType="com.qifenqian.bms.merchant.product.bean.MerchantProduct" resultType="com.qifenqian.bms.merchant.product.bean.MerchantProduct">
+		SELECT *
+		FROM td_merchant_product_info
+		<where>			
+			<if test="merchantCode != null and merchantCode != '' "> AND merchant_code = #{merchantCode, jdbcType=INTEGER}</if>
+			<if test="productId != null and productId != '' "> AND product_id = #{productId, jdbcType=INTEGER}</if>
+		</where>
+
+	</select>
+	
+	
+	<!-- 修改商户产品信息 -->
+	<update id="updateMerchantProduct" parameterType="com.qifenqian.bms.merchant.product.bean.MerchantProduct">
+		UPDATE 
+			   td_merchant_product_info  
+	   <set>		   
+			<if test="productRate != null">
+				product_rate = #{productRate, 	jdbcType=VARCHAR},
+			</if>
+			<if test="rechargeRate != null">
+				recharge_rate = #{rechargeRate, 	jdbcType=VARCHAR},
+			</if>
+			<if test="productStatus != null">
+				product_status = #{productStatus, 	jdbcType=VARCHAR},
+			</if>			
+			<if test="aisle != null">
+				aisle = #{aisle, 		jdbcType=VARCHAR},
+			</if>
+			<if test="auditId != null and auditId !=''">
+				audit_id = #{auditId, 		jdbcType=VARCHAR},
+			</if>
+				modify_time = NOW()						
+	   </set>
+		 WHERE merchant_code = #{merchantCode, 	jdbcType=VARCHAR}
+		 AND product_id = #{productId, 	jdbcType=VARCHAR}
+	</update>
+		
+	
+	
+	<!-- 删除商户产品信息 -->
+	 <delete id="deleteMerchantProduct" parameterType="com.qifenqian.bms.merchant.product.bean.MerchantProduct" >
+    	DELETE FROM td_merchant_product_info
+    	WHERE merchant_code = #{merchantCode,jdbcType=VARCHAR}
+    	AND product_id = #{productId,jdbcType=VARCHAR}
+  	</delete>
+  	
+  	
+  	
+  	<!-- 查询产品信息-->
+	<select id="selectProduct"  resultType="com.qifenqian.bms.merchant.product.bean.Product">
+		SELECT *
+		FROM td_product_info
+	</select>
+	
+	<!-- 根据id查询产品 -->
+	<select id="selectProductById" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.product.bean.Product">
+		SELECT *
+		FROM td_product_info
+		WHERE product_id = #{productId, jdbcType=INTEGER}
+	</select>   
+	  
+	
+</mapper>

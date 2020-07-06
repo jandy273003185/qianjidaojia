@@ -1,0 +1,198 @@
+body {
+    background-color: #FDFAFE;
+    padding: 0;
+    margin: 0;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+}
+
+.banner {
+    background: url('../images/groupuser/my_bg1.png') no-repeat center;
+    background-size: 3.75rem 1.45rem;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    color: #fff;
+    height: 1.45rem;
+}
+
+.person {
+    width: 5.85rem;
+    display: flex;
+    padding-top: .43rem;
+    padding-left: .12rem;
+    height: .6rem;
+}
+
+    .person img {
+        width: .6rem;
+        height: .6rem;
+        border-radius: 50%;
+        margin-right: 0.14rem;
+    }
+
+    .person .avatarname {
+        font-size: 0.17rem;
+        color: #fff;
+        line-height: 0.28rem;
+    }
+        .person .avatarname .remark {
+            color: #fff;
+            font-size: .14rem;
+            font-family: PingFangSC-Regular,PingFang SC;
+            font-weight: 400;
+            line-height: .20rem;
+        }
+
+.new-guidelines {
+    display: flex;
+    width: .16rem;
+    margin-right: .15rem;
+    height: .16rem;
+    padding-top: .43rem;
+}
+
+.new-guidelines a {
+    font-size: 0.16rem;
+    color:#fff;
+    text-decoration:none;
+}
+
+    .new-guidelines img,
+    .withdraw > div > img {
+        width: .16rem;
+        height: .16rem;
+        padding-top: 0.015rem;
+    }
+
+.withdraw {
+    /*display: flex;
+    justify-content: space-between;*/
+    border-radius: 0.04rem;
+    margin: -0.20rem 0.12rem 0.15rem 0.12rem;
+    width: 3.28rem;
+    height: 1.37rem;
+    background-color: #fff;
+    align-items: center;
+    padding: 0 0.12rem;
+    font-size: 0.16rem;
+    box-shadow: 0 0 0.04rem 0.03rem rgba(202, 202, 202, 0.24);
+    line-height: 1.17rem;
+}
+
+    .withdraw .kaikuang {
+        color: #F74045;
+        font-size: .16rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        line-height: .22rem;
+        padding-top: .12rem;
+    }
+
+    .withdraw .shoyi {
+        font-size: .14rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        color: #565656;
+        line-height: .2rem;
+        margin-top: .1rem;
+    }
+        .withdraw .shoyi .dvlay{
+            width:1.63rem;
+            float:left;
+        }
+            .withdraw .shoyi .dvlay .jia {
+                width: 100%;
+                float: left;
+                line-height: .25rem;
+            }
+            .withdraw .shoyi .dvlay .jia .tit {
+                float: left;
+            }
+                .withdraw .shoyi .dvlay .jia .num1 {
+                    float: right;
+                    margin-right: .14rem;
+                    color: #F74045;
+                    font-size: .18rem;
+                    font-weight: 400;
+                }
+                .withdraw .shoyi .dvlay .jia .num2 {
+                    float: right;
+                    color: #F74045;
+                    font-size: .18rem;
+                    font-weight: 400;
+                    margin-right: .14rem;
+                }
+                .withdraw .shoyi .dvlay .jia .num1 span,.withdraw .shoyi .dvlay .jia .num2 span {
+                    font-size: .14rem;
+                }
+                    .withdraw .shoyi .line {
+                        margin-top: .1rem;
+                        width: 1px;
+                        height: 0.35rem;
+                        background: #E00202;
+                        border-radius: 1px;
+                        float: left;
+                    }
+
+.withdraw2 {
+    width: 3.51rem;
+    height: 1.44rem;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px 0px rgba(202,202,202,0.25);
+    border-radius: 3px;
+    margin-left: .12rem;
+    margin-top: .22rem;
+}
+    .withdraw2 .kaikuang2 {
+        height: .22rem;
+        font-size: .16rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        color: #F74045;
+        line-height: .22rem;
+        padding-top: .12rem;
+        padding-left: .12rem;
+    }
+    .withdraw2 .jia {
+        width: 100%;
+        float: left;
+        padding-left: .12rem;
+        padding-top: .09rem;
+    }
+    .withdraw2 .tit {
+        height: 20px;
+        font-size: .14rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        color: #565656;
+        line-height: .2rem;
+        float:left;
+    }
+    .withdraw2 .num {
+        font-size: .18rem;
+        font-family: PingFangSC-Regular,PingFang SC;
+        font-weight: 400;
+        color: #F74045;
+        line-height: .25rem;
+        float: right;
+        margin-right: .24rem;
+    }
+        .withdraw2 .num span{
+            font-size:.14rem;
+        }
+        .groupremark {
+            width: 100%;
+            height: .3rem;
+            font-size: .16rem;
+        }
+    .footer {
+        display: block;
+        text-align: center;
+        margin-top: .5rem;
+        color: #BFBFBF;
+        font-size: 0.16rem;
+        width: 100%;
+    }
+.ml14 {
+    margin-left: 0.14rem;
+}

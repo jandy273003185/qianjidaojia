@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.StoreManageMapper">
+
+	<select id="getStoreList" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage" 
+			resultType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		SELECT 
+			t.SHOP_ID,
+			c.MERCHANT_CODE,
+			t.MCH_ID,
+			c.CUST_NAME,
+			t.SHOP_NO,
+			t.SHOP_NAME,
+			t.ADDR,
+			t.`STATUS`,
+			t.CONTACT,
+			t.CREATE_TIME
+		FROM
+			td_shop t
+		LEFT JOIN 
+			td_cust_info c
+		ON 
+			t.MCH_ID = c.CUST_ID
+		WHERE 1=1
+		<if test="shopId !=null and shopId !='' ">
+			AND	t.SHOP_ID=#{shopId,jdbcType=VARCHAR}
+		</if>
+		<if test="mchId !=null and mchId !='' ">
+			AND	t.MCH_ID=#{mchId,jdbcType=VARCHAR}
+		</if>	
+		<if test="merchantCode !=null and merchantCode !='' ">
+			AND	c.MERCHANT_CODE=#{merchantCode,jdbcType=VARCHAR}
+		</if>	
+		<if test="shopNo !=null and shopNo !='' ">
+			AND	t.SHOP_NO=#{shopNo,jdbcType=VARCHAR}
+		</if>
+		<if test="shopName !=null and shopName !='' ">
+			AND	t.SHOP_NAME LIKE CONCAT('%',#{shopName},'%')
+		</if>
+		<if test="addr !=null and addr !='' ">
+			AND	t.ADDR=#{addr,jdbcType=VARCHAR}
+		</if>
+		<if test="custName !=null and custName !='' ">
+			AND	c.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+		</if>
+		ORDER BY t.CREATE_TIME DESC
+	
+	</select>
+
+	<select id="exists" resultType="int" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		SELECT COUNT(*)
+		FROM TD_CUST_INFO 
+		WHERE CUST_ID = #{merchantCode,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="insert" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		INSERT INTO TD_SHOP(
+			SHOP_ID,
+			SHOP_NO,
+			MCH_ID,
+			SHOP_NAME,
+			ADDR,
+			CONTACT,
+			STATUS,
+			CREATE_ID,
+			CREATE_TIME,
+			MODIFY_ID,
+			MODIFY_TIME
+		)VALUES(
+			#{shopId,			jdbcType=VARCHAR},
+			#{shopNo,			jdbcType=VARCHAR},
+			#{mchId,		    jdbcType=VARCHAR},
+			#{shopName,	        jdbcType=VARCHAR},
+			#{addr,				jdbcType=VARCHAR},
+			#{contact,	        jdbcType=VARCHAR},
+			#{status,		    jdbcType=VARCHAR},
+			#{createId,			jdbcType=VARCHAR},
+			now(),
+			#{createId,			jdbcType=VARCHAR},
+			now()
+	)
+	</insert>
+	
+	
+	<update id="update" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		UPDATE TD_SHOP
+		<set>
+			<if test="shopNo != null">
+				SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+			</if>
+			<if test="shopName != null">
+				SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+			</if>
+			<if test="addr != null">
+				ADDR = #{addr,jdbcType=VARCHAR},
+			</if>
+			<if test="contact != null">
+				CONTACT = #{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="modifyId != null and modifyId !='' ">
+				MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = now()
+		</set>
+		WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<delete id="delete" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		DELETE FROM TD_SHOP
+		WHERE SHOP_ID = #{shopId,jdbcType=VARCHAR}
+	</delete>
+	
+	
+	<select id="repeats" resultType="int" parameterType="com.qifenqian.bms.basemanager.merchant.bean.StoreManage">
+		SELECT COUNT(1)
+		from td_shop t
+		WHERE MCH_ID = #{mchId,jdbcType=VARCHAR}	
+		AND  SHOP_NO = #{shopNo,jdbcType=VARCHAR}	
+	</select>
+
+</mapper>

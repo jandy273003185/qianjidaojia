@@ -1,0 +1,11 @@
+{
+    "navigationBarTitleText": "商家小店",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTextStyle": "black",
+    "onReachBottomDistance":200,
+  "usingComponents": {
+    "myicon":"../../components/myIcon/myIcon",
+    "myToast":"../../components/myToast/myToast",
+    "addCart": "../../components/addCart/addCart"
+  }
+}

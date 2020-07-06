@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.adjust.dao.AccountingSingleAdjustDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetail" >
+    <id column="op_id" property="opId" jdbcType="VARCHAR" />
+    <id column="entry_id" property="entryId" jdbcType="VARCHAR" />
+    <result column="acct_no" property="acctNo" jdbcType="VARCHAR" />
+    <result column="acct_name" property="acctName" jdbcType="VARCHAR" />
+    <result column="acct_type" property="acctType" jdbcType="VARCHAR" />
+    <result column="curcde" property="curcde" jdbcType="VARCHAR" />
+    <result column="amt" property="amt" jdbcType="DECIMAL" />
+    <result column="usable_amt" property="usableAmt" jdbcType="DECIMAL" />
+    <result column="onway_amt" property="onwayAmt" jdbcType="DECIMAL" />
+    <result column="is_adjust_JGKJ" property="isAdjustJGKJ" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    op_id, entry_id, acct_no, acct_name, acct_type, curcde, amt, usable_amt, onway_amt, 
+    is_adjust_JGKJ
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_single_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetailKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_single_adjust_detail
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetailKey" >
+    delete from bms_td_accounting_single_adjust_detail
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetailExample" >
+    delete from bms_td_accounting_single_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetail" >
+    insert into bms_td_accounting_single_adjust_detail (op_id, entry_id, acct_no, 
+      acct_name, acct_type, curcde, 
+      amt, usable_amt, onway_amt, 
+      is_adjust_JGKJ)
+    values (#{opId,jdbcType=VARCHAR}, #{entryId,jdbcType=VARCHAR}, #{acctNo,jdbcType=VARCHAR}, 
+      #{acctName,jdbcType=VARCHAR}, #{acctType,jdbcType=VARCHAR}, #{curcde,jdbcType=VARCHAR}, 
+      #{amt,jdbcType=DECIMAL}, #{usableAmt,jdbcType=DECIMAL}, #{onwayAmt,jdbcType=DECIMAL}, 
+      #{isAdjustJGKJ,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetail" >
+    insert into bms_td_accounting_single_adjust_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        op_id,
+      </if>
+      <if test="entryId != null" >
+        entry_id,
+      </if>
+      <if test="acctNo != null" >
+        acct_no,
+      </if>
+      <if test="acctName != null" >
+        acct_name,
+      </if>
+      <if test="acctType != null" >
+        acct_type,
+      </if>
+      <if test="curcde != null" >
+        curcde,
+      </if>
+      <if test="amt != null" >
+        amt,
+      </if>
+      <if test="usableAmt != null" >
+        usable_amt,
+      </if>
+      <if test="onwayAmt != null" >
+        onway_amt,
+      </if>
+      <if test="isAdjustJGKJ != null" >
+        is_adjust_JGKJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        #{opId,jdbcType=VARCHAR},
+      </if>
+      <if test="entryId != null" >
+        #{entryId,jdbcType=VARCHAR},
+      </if>
+      <if test="acctNo != null" >
+        #{acctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="acctName != null" >
+        #{acctName,jdbcType=VARCHAR},
+      </if>
+      <if test="acctType != null" >
+        #{acctType,jdbcType=VARCHAR},
+      </if>
+      <if test="curcde != null" >
+        #{curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="usableAmt != null" >
+        #{usableAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="onwayAmt != null" >
+        #{onwayAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="isAdjustJGKJ != null" >
+        #{isAdjustJGKJ,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetailExample" resultType="java.lang.Integer" >
+    select count(*) from bms_td_accounting_single_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update bms_td_accounting_single_adjust_detail
+    <set >
+      <if test="record.opId != null" >
+        op_id = #{record.opId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.entryId != null" >
+        entry_id = #{record.entryId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctNo != null" >
+        acct_no = #{record.acctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctName != null" >
+        acct_name = #{record.acctName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctType != null" >
+        acct_type = #{record.acctType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.curcde != null" >
+        curcde = #{record.curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amt != null" >
+        amt = #{record.amt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.usableAmt != null" >
+        usable_amt = #{record.usableAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.onwayAmt != null" >
+        onway_amt = #{record.onwayAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isAdjustJGKJ != null" >
+        is_adjust_JGKJ = #{record.isAdjustJGKJ,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update bms_td_accounting_single_adjust_detail
+    set op_id = #{record.opId,jdbcType=VARCHAR},
+      entry_id = #{record.entryId,jdbcType=VARCHAR},
+      acct_no = #{record.acctNo,jdbcType=VARCHAR},
+      acct_name = #{record.acctName,jdbcType=VARCHAR},
+      acct_type = #{record.acctType,jdbcType=VARCHAR},
+      curcde = #{record.curcde,jdbcType=VARCHAR},
+      amt = #{record.amt,jdbcType=DECIMAL},
+      usable_amt = #{record.usableAmt,jdbcType=DECIMAL},
+      onway_amt = #{record.onwayAmt,jdbcType=DECIMAL},
+      is_adjust_JGKJ = #{record.isAdjustJGKJ,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetail" >
+    update bms_td_accounting_single_adjust_detail
+    <set >
+      <if test="acctNo != null" >
+        acct_no = #{acctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="acctName != null" >
+        acct_name = #{acctName,jdbcType=VARCHAR},
+      </if>
+      <if test="acctType != null" >
+        acct_type = #{acctType,jdbcType=VARCHAR},
+      </if>
+      <if test="curcde != null" >
+        curcde = #{curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        amt = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="usableAmt != null" >
+        usable_amt = #{usableAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="onwayAmt != null" >
+        onway_amt = #{onwayAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="isAdjustJGKJ != null" >
+        is_adjust_JGKJ = #{isAdjustJGKJ,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingSingleAdjustDetail" >
+    update bms_td_accounting_single_adjust_detail
+    set acct_no = #{acctNo,jdbcType=VARCHAR},
+      acct_name = #{acctName,jdbcType=VARCHAR},
+      acct_type = #{acctType,jdbcType=VARCHAR},
+      curcde = #{curcde,jdbcType=VARCHAR},
+      amt = #{amt,jdbcType=DECIMAL},
+      usable_amt = #{usableAmt,jdbcType=DECIMAL},
+      onway_amt = #{onwayAmt,jdbcType=DECIMAL},
+      is_adjust_JGKJ = #{isAdjustJGKJ,jdbcType=VARCHAR}
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

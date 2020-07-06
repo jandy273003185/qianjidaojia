@@ -1,0 +1,29 @@
+<!--pages/withdrawDeposit/withdrawDeposit.wxml-->
+<view class="content">
+  <navigator url="/pages/bankCardList/bankCardList?pageName=withdrawDeposit" wx:for="{{listArr}}" wx:key="*this" wx:if="{{index==0}}">
+    <view class="content-up">
+      <view class="content-up-up">
+        <view>
+          <image class="bankCard" src="/images/bankCard.png"></image>
+          <text class="bankName">{{item.BankName}}</text>
+        </view>
+        <image class="arrow" src="/images/arrow.png"></image>
+      </view>
+      <view class="bankCardNo">{{BankCardNoArr[index]}}</view>
+    </view>
+  </navigator> 
+  <view wx:if="{{listArr.length==0}}">
+    <navigator url="/pages/bankCardList/bankCardList?pageName=withdrawDeposit" class="goBindBank"><text>去绑定提现银行卡</text><image class="arrow" src="/images/arrow.png"></image></navigator>
+  </view>
+   
+  <view class="content-middle">
+    <view>提现金额</view>
+    <view>¥ <input type="number" value="{{Amount}}" bindinput="inputMoney"/></view>
+  </view>
+  <view class="content-down">零钱余额¥{{Wallet}}</view>
+</view>
+
+<view class="description">每周一提现销售佣金平台将在1~3个工作日内为您提现转账</view>
+<view class="withdrawDeposit" bindtap="withdrawDeposit">提现</view>
+
+<wxs module="numberUtil" src="../../utils/util.wxs"></wxs>

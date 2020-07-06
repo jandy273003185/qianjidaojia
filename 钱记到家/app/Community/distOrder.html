@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>推广订单</title>
+    <link href="Css/base.css" rel="stylesheet" />
+    <link href="Css/CommunityOrder.css" rel="stylesheet" />
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/sc.core.js"></script>
+    <script src="/script/wxlogin.js"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/WxShare.js?0" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>
+    <div class="banner">
+        <input type="text" placeholder="输入手机号搜索">
+    </div>
+    <div class="timer">
+        <div class="active">全部</div>
+        <div>今日</div>
+        <div>昨日</div>
+        <div>近7日</div>
+    </div>
+
+    <div id="list">
+
+    </div>
+    <script>
+        $(function() {
+            $(".timer").children().click(function () {
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+        })
+        window.onload = function() {
+            for (let i = 0; i < 2; i++) {
+                const str = `<div class="order">
+                    <div class="order-up">
+                        <div>
+                            <p>订单号：</p>
+                            <p>3456900083244</p>
+                        </div>
+                        <div>
+                            <p>下单：<span>2020-01-02 12.00</span></p>
+                            <p>完成：<span></span>2020-01-02 12:30</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="order-down">
+                        <div>
+                            <!-- <img src="../images/new.png" alt=""> -->
+                        </div>
+                        <div class="order-down-right">
+                            <p>阿帕茶+典名粥套餐</p>
+                            <p>商城价：309</p>
+                            <div>
+                                <div><span>状态：</span><span>已完成</span></div>
+                                <div><span>数量：</span><span>777</span></div>
+                            </div>
+                            <p>计拥金额：<span>888877</span></p>
+                        </div>
+                    </div>
+                </div>`;
+                document.getElementById("list").innerHTML += str;
+            }
+        }
+    </script>
+</body>
+
+</html>

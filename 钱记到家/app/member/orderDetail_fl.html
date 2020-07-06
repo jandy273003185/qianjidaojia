@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>礼包详情</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/sum.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/orderDetail_fl.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .layui-m-layer0 .layui-m-layerchild {
+            width: 70%;
+        }
+
+        .layui-m-layercont {
+            padding: .18rem .2rem;
+        }
+
+        .layui-m-layerbtn {
+            height: .4rem;
+            line-height: .4rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">礼包详情</div>
+			</div>
+		</div>
+		<div class="main">
+			<div id="orderDetail_Div"></div>
+			<div class="transactionState"></div>
+			<div class="persionMeg">
+				<div class="zuobiao_icon">
+					<img src="/images/icons/dd_addr.png" alt="" />
+				</div>
+				<div class="persionMeg_text">
+					<p>
+						<span class="name"></span>
+						<span class="phoneNum"></span>
+					</p>
+					<p class="xxdizhi"></p>
+				</div>
+			</div>
+			<div class="goodsContent">
+				<div class="item clear">
+					<div class="goodsImg">
+						<img src="" alt="" />
+					</div>
+					<div class="goods_text">
+						<div class="goodstit clear">
+							<p class="text-line2 tit"></p>
+							<div class="flexItem fr">x<span class="num">1</span></div>
+						</div>
+						<p class="goodsMesg"></p>
+						<p class="goodsPrice"></p>
+					</div>
+				</div>
+			</div>
+			<div class="goodsPrice_content">
+				<div class="price_mesg1">
+					<div class="bor" style="border-bottom: none;">
+						<div class="flexItem fl">共1件商品</div>
+						<span>配送费用</span>
+						<span class="float-r">￥0.00</span>
+					</div>
+				</div>
+			</div>
+			<div class="orderContent">
+				<p class="text1">订单编号：<span class="orderNumber"></span></p>
+				<p class="text1">领取时间：<span class="lingTime"></span></p>
+				<p class="text2">发货时间：<span class="faTime"></span></p>
+				<!--<p class="text3">确认收货时间：<span class="queTime"></span></p>-->
+			</div>
+
+			<div class="successfoot">
+				<div class="footerBtn" data-No="">
+					<!--待领取-->
+					<a class="btn0 wuliubtn dailing" style="display:none;" href="javascript:void(0)">查看物流</a>
+					<!--待发货-->
+					<a class="btn0 remindbtn active daifa" style="display:none;" href="javascript:;" onclick="RemindBtn(this)">提醒发货</a>
+					<!--<a class="btn0 wuliubtn daifa" style="display:none;" href="javascript:void(0)">查看物流</a>-->
+					<!--已发货-->
+					<a class="btn0 wuliubtn yifa" style="display:none;" href="javascript:void(0)">查看物流</a>
+					<a class="btn0 Receiptbtn active yifa" style="display:none;" href="javascript:;" onclick="ReceiptBtn(this)">确认收货</a>
+					<!--已收货-->
+					<a class="btn0 DelOrderbtn yishou" style="display:none;" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+					<a class="btn0 wuliubtn yishou" style="display:none;" href="javascript:void(0)">查看物流</a>
+				</div>
+			</div>
+
+		</div>
+	</body>
+
+</html>

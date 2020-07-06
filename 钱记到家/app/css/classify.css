@@ -1,0 +1,180 @@
+/*分类*/
+
+.classifyContent {
+	height: calc( 100% - 1.41rem);
+	height: -webkit-calc( 100% - 1.41rem);
+	height: -moz-calc( 100% - 1.41rem);
+	height: -ms-calc( 100% - 1.41rem);
+	height: -o-calc( 100% - 1.41rem);
+	overflow: hidden;
+}
+
+.classifyTabContent {
+	height: 100%;
+	border-top: 1px solid #E8E8E8;
+	box-sizing: border-box;
+}
+
+.classifyNavList {
+	height: 100%;
+	width: .9rem;
+	text-align: center;
+	background-color: #f6f6f6;
+	float: left;
+	color: #505050;
+	font-size: .14rem;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+.classifyNavList .list li {
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.classifyNavList .list li a {
+	display: block;
+	line-height: .4rem;
+	height: .4rem;
+	color: #505050;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	position: relative;
+}
+
+.classifyNavList .list li.active a {
+	background-color: #fff;
+	color: #ff5c29;
+}
+
+.classifyNavList .list li.active a:after {
+	position: absolute;
+	content: "";
+	width: 3px;
+	height: 100%;
+	background-color: #ff5c29;
+	top: 0;
+	left: 0;
+}
+
+.classifyTabShow {
+	margin-left: .9rem;
+	padding: 0 .1rem;
+	height: 100%;
+	overflow-y: auto;
+}
+
+.classifyTabShow .typeTitle {
+	line-height: .4rem;
+	height: .4rem;
+	color: #999999;
+}
+.prolist2 li{
+	margin-bottom: .1rem;
+}
+.prolist2 .m-pro .hd {
+	float: left;
+	width: .75rem;
+	height: .75rem;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.m-pro .img {
+	position: relative;
+	width: 100%;
+	padding-bottom: 100%;
+	overflow: hidden;
+}
+
+.m-pro .img img {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+.prolist2 .m-pro {
+	overflow: hidden;
+	display: block;
+}
+.prolist2 .m-pro .bd {
+	padding: 0;
+	margin-left: .85rem;
+	line-height: .3rem;
+	position: relative;
+	line-height: 1.6;
+	padding-top:.05rem;
+}
+
+.m-pro .bd .name {
+	color: #505050;
+	font-size: .14rem;
+}
+
+.m-pro .bd .name,
+.m-pro .bd .desc,
+.m-pro .bd .Tags {
+	overflow: hidden;
+	white-space: nowrap;
+	-ms-text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+}
+.m-pro .bd .desc, .m-pro .bd .Tags {
+    color: #999;
+    font-size: .12rem;
+}
+.m-pro .bd .price {
+    color: #ff4e17;
+    font-size: .16rem;
+}
+.m-pro .bd .counterPrice {
+    text-decoration: line-through;
+    color: #999;
+}
+.prolist2 .m-pro .bd .counterPrice {
+    font-size: .13rem;
+    color: #999;
+    margin-left: .15rem;
+}
+
+
+.m-pro .bd .desc, .m-pro .bd .Tags {
+    color: #999;
+    font-size: .12rem;
+}
+.m-pro .bd .Tags {
+    padding-right: .3rem;
+}
+.m-pro .bd .rebate {
+    color: #ff4e17;
+    margin-right: .1rem;
+}
+.m-pro .bd .buybtn {
+    display: block;
+    height: .3rem;
+    width: .3rem;
+    position: absolute;
+    right: .1rem;
+    bottom: .08rem;
+    background: url(../images/icons/cart.png) center center no-repeat;
+    background-size: .24rem;
+    right: 0;
+    bottom: 0;
+}
+/*2019-1-16*/
+.classifylist{ margin-right: -.1rem;}
+.classifylist li{ float: left;margin-bottom: .1rem; text-align: center;}
+.classifylist li .box{margin-right: .1rem;}
+.classifylist li .img{ height: .6rem; width:.6rem; line-height: .6rem; margin: 0 auto;}
+.classifylist li .img img{ max-height: 100%; display: inline-block; vertical-align: middle;}
+.classifylist li .name{
+	font-size: .13rem;
+	margin-top: .05rem; 
+	color: #505050;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

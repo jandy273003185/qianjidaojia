@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.sns.redpacket.mapper.RedEnvelopeInfoMapper">
+
+<select id="selectList"  parameterType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo" resultType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">  
+		SELECT
+			  T.RED_ENV_ID,
+			  T.RED_ENV_TITLE,
+			  T.RED_ENV_AMT,
+			  T.RED_ENV_COUNT,
+			  CASE T.RED_ENV_TYPE
+				  WHEN '0' THEN '随机金额'
+				  WHEN '1' THEN '固定金额' 
+				  ELSE T.RED_ENV_TYPE END RED_ENV_TYPE,
+			  T.RAN_SEED,
+			  T.VALID_SECONDS,
+			  CASE T.ORDER_STATE
+				  WHEN '00' THEN '成功'
+				  WHEN '01' THEN '待支付'
+				  WHEN '02' THEN '提交处理'
+				  WHEN '03' THEN '处理失败'
+				  WHEN '99' THEN '取消'
+				  WHEN '90' THEN '未明' 
+				  ELSE T.ORDER_STATE END ORDER_STATE,
+			  T.ORDER_ID,
+			  T.PICK_COUNT,
+			  T.EXPIRED_LEFT_AMT,
+			  DATE_FORMAT(T.EXPIRED_BAL_SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') AS EXPIRED_BAL_SUBMIT_TIME,
+			  T.EXPIRED_BAL_PROC_ORDER_ID,
+			  CASE T.EXPIRED_STATUS
+			  	  WHEN '0' THEN '未过期'
+				  WHEN '1' THEN '已过期' 
+				  ELSE T.EXPIRED_STATUS END EXPIRED_STATUS,
+			  CASE T.EXPIRED_BAL_PROC_STATUS
+			      WHEN '00' THEN '处理成功'
+				  WHEN '01' THEN '待处理' 
+				  WHEN '02' THEN '处理失败' 
+				  ELSE T.EXPIRED_BAL_PROC_STATUS END EXPIRED_BAL_PROC_STATUS,
+			  U.MOBILE AS CREATE_ID,
+			  DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS CREATE_TIME,
+			  T.MODIFY_ID,
+			  DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS MODIFY_TIME
+		FROM
+			SNS_TD_RED_ENVELOPE_INFO T LEFT JOIN TD_LOGIN_USER_INFO U
+			ON T.CREATE_ID = U.CUST_ID
+		<where>
+			<if test="redEnvId!=null and redEnvId!='' ">
+				AND T.RED_ENV_ID = #{redEnvId,jdbcType = VARCHAR}
+			</if>
+			<if test="orderId!=null and orderId!='' ">
+				AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+			</if>
+			<if test="expiredBalProcOrderId!=null and expiredBalProcOrderId!='' ">
+				AND T.EXPIRED_BAL_PROC_ORDER_ID = #{expiredBalProcOrderId,jdbcType = VARCHAR}
+			</if>
+			<if test="expiredStatus!=null and expiredStatus!='' ">
+				AND T.EXPIRED_STATUS = #{expiredStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="expiredBalProcStatus!=null and expiredBalProcStatus!='' ">
+				AND T.EXPIRED_BAL_PROC_STATUS = #{expiredBalProcStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="createId!=null and createId!='' ">
+				AND U.MOBILE = #{createId,jdbcType = VARCHAR}
+			</if>
+			<if test="redEnvType!=null and redEnvType!='' ">
+				AND T.RED_ENV_TYPE = #{redEnvType,jdbcType = VARCHAR}
+			</if>
+			<if test="orderState!=null and orderState!='' ">
+				AND T.ORDER_STATE = #{orderState,jdbcType = VARCHAR}
+			</if>
+			<if test="createBeginTime!=null and createBeginTime!='' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{createBeginTime}
+	 			]]>
+			</if>
+			<if test="createEndTime!=null and createEndTime!='' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{createEndTime}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+    
+	<select id="selectExpriedRedPacket"  resultType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">  
+		SELECT
+			T.RED_ENV_ID,
+			T.RED_ENV_AMT,
+			T.RED_ENV_COUNT,
+			T.RED_ENV_AMT,
+			T.EXPIRED_LEFT_AMT,
+			T.EXPIRED_STATUS,
+			T.EXPIRED_BAL_PROC_STATUS,
+			T.ORDER_ID,
+			T.CREATE_TIME
+		FROM
+			SNS_TD_RED_ENVELOPE_INFO T
+		WHERE
+			T.ORDER_STATE = '00'
+		 AND T.EXPIRED_STATUS = '1'
+		 AND T.EXPIRED_BAL_PROC_STATUS='01'
+		 AND T.EXPIRED_LEFT_AMT > 0 LIMIT 100 FOR UPDATE
+	</select>
+	
+	<update id="updateRedEnvelopeInfo" parameterType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">
+		UPDATE 
+			SNS_TD_RED_ENVELOPE_INFO T
+		<set>
+			<if test="expiredBalProcStatus!=null and expiredBalProcStatus!=''">
+				T.EXPIRED_BAL_PROC_STATUS = #{expiredBalProcStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="orderState!=null and orderState!=''">
+				T.ORDER_STATE = #{orderState,jdbcType = VARCHAR},
+			</if>
+				T.MODIFY_TIME = NOW()
+		</set>
+		WHERE T.RED_ENV_ID = #{redEnvId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateRedEnvelopeInfoState" parameterType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">
+		UPDATE SNS_TD_RED_ENVELOPE_INFO T
+		SET 
+			T.EXPIRED_BAL_PROC_STATUS = '02',
+			T.MODIFY_TIME = NOW()  
+			WHERE T.RED_ENV_ID IN
+		  <foreach collection="list" item="item" index="index" open="(" separator="," close=")" >  
+		 	 #{item.redEnvId}	
+   		 </foreach>  				
+	</update>
+	
+	<select id="selectRedEnvelopeInfoRefund" resultType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">
+		SELECT
+			E.RED_ENV_ID
+		FROM
+			TD_REFUND_BILL T,
+			SNS_TD_RED_ENVELOPE_INFO E
+		WHERE
+			T.ORDER_ID = E.EXPIRED_BAL_PROC_ORDER_ID
+		AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectRedEnvelopeInfo" resultType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">
+		SELECT
+			E.RED_ENV_ID
+		FROM
+			TD_TRADE_BILL_MAIN T,
+			SNS_TD_RED_ENVELOPE_INFO E
+		WHERE
+			T.ORDER_ID = E.ORDER_ID
+		AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateRedEnvelopeInfoByRefund" parameterType="com.qifenqian.bms.sns.redpacket.bean.RedEnvelopeInfo">
+		UPDATE 
+			SNS_TD_RED_ENVELOPE_INFO T
+		<set>
+			<if test="expiredBalProcOrderId!=null and expiredBalProcOrderId!='' ">
+				T.EXPIRED_BAL_PROC_ORDER_ID = #{expiredBalProcOrderId,jdbcType = VARCHAR},
+			</if>
+				T.EXPIRED_BAL_SUBMIT_TIME = NOW(),
+				T.MODIFY_TIME = NOW()
+		</set>
+		WHERE T.RED_ENV_ID = #{redEnvId,jdbcType = VARCHAR}
+	</update>
+</mapper>

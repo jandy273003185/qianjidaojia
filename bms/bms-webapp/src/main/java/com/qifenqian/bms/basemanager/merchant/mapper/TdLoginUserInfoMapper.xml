@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.TdLoginUserInfoMapper">
+
+	
+	<insert id="saveLoginUserInfo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		INSERT INTO TD_LOGIN_USER_INFO(
+			CUST_ID,
+			ROLE_ID,
+			LOGIN_PWD,
+			MOBILE,
+			EMAIL,
+			STATE,
+		
+			ONLINE_STATE,
+			LAST_LOGIN_TIME,
+			ATTACH_STR,
+			CREATE_ID,
+			CREATE_TIME, 
+			MODIFY_ID,
+			MODIFY_TIME
+		) VALUES(
+			#{custId, 		jdbcType=VARCHAR},
+			#{roleId, 		jdbcType=VARCHAR},
+			#{loginPwd, 		jdbcType=VARCHAR},
+			#{mobile, 		jdbcType=VARCHAR},
+			#{email, 		jdbcType=VARCHAR},
+			#{state, 		jdbcType=VARCHAR},
+		
+			#{onlineState, 		jdbcType=VARCHAR},
+			#{lastLoginTime, 		jdbcType=DATE},
+			#{attachStr, 		jdbcType=VARCHAR},
+			#{createId, 		jdbcType=VARCHAR},
+			now(),
+			#{modifyId, 		jdbcType=VARCHAR},
+			#{modifyTime, 		jdbcType=DATE}
+		)
+		
+	</insert>
+
+	<update id="updatePwd"  parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		UPDATE td_login_user_info
+		<set>
+			<if test="loginPwd != null">
+				LOGIN_PWD = #{loginPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="attachStr != null">
+				ATTACH_STR = #{attachStr,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				STATE = #{state,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectByEmail" parameterType="string" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		SELECT * FROM
+			TD_LOGIN_USER_INFO t
+		left join 
+			td_cust_info a
+		on t.cust_id = a.cust_id
+		<where>
+			<if test="email != null and email !='' ">
+			 t.EMAIL = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null and custId !='' ">
+			 AND t.CUST_ID != #{custId,jdbcType=VARCHAR}
+			</if>
+			<if test="roleId != null and roleId != ''">
+				and t.role_id = #{roleId,jdbcType = VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectByCardId" parameterType="string" resultType="java.lang.Integer">
+		select 
+			count(*) 
+		from 
+			td_cust_info t
+		left join 
+		    TD_LOGIN_USER_INFO a
+		on t.cust_id  = a.cust_id 
+		where 
+			1=1
+			<if test="cardId != null and cardId != ''">
+				and t.CERTIFY_NO = #{cardId,jdbcType = VARCHAR}
+			</if>
+			<if test="roleId != null and roleId != ''">
+				and a.role_id = #{roleId,jdbcType = VARCHAR}
+			</if>
+		
+	</select>
+	
+	<select id="selectByLicense" parameterType="string" resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		select * from TD_CUST_INFO T
+		left join 
+		    TD_LOGIN_USER_INFO a
+		on t.cust_id  = a.cust_id 
+		<where>
+		    1=1
+			<if test="license != null and license !='' ">
+			and T.BUSINESS_LICENSE=#{license,jdbcType=VARCHAR}
+			</if>
+			<if test="roleId != null and roleId != ''">
+				and a.role_id = #{roleId,jdbcType = VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectLoginUserInfo" parameterType="string" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		SELECT * FROM
+		TD_LOGIN_USER_INFO
+		<where>
+			<if test="custId != null and custId !='' ">
+			 CUST_ID = #{custId,jdbcType=VARCHAR}
+			 </if>
+		</where>
+	</select>
+	
+	
+	<select id="selectByPhone" parameterType="string" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		SELECT * FROM
+		TD_LOGIN_USER_INFO T
+		WHERE 
+			T.MOBILE = #{mobile,jdbcType=VARCHAR}
+		and T.role_id = #{roleId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByPhoneEnter" parameterType="string" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		SELECT * FROM
+		TD_LOGIN_USER_INFO T
+		WHERE
+			T.MOBILE = #{mobile,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateEmail" parameterType="string">
+		UPDATE TD_LOGIN_USER_INFO
+		SET
+			EMAIL = #{email, jdbcType=VARCHAR}
+		WHERE
+			CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateLoginUserInfo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdLoginUserInfo">
+		UPDATE
+			TD_LOGIN_USER_INFO
+		<set>
+			<if test="null != loginPwd and loginPwd != ''">
+				LOGIN_PWD = #{loginPwd,jdbcType=VARCHAR},
+			</if>
+			<if test="null != mobile and mobile != ''">
+				MOBILE = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="null != email and email != ''">
+				EMAIL = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="null != state and state != ''">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="null != onlineState and onlineState != ''">
+				ONLINE_STATE = #{onlineState,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			CUST_ID = #{custId,jdbcType=VARCHAR}
+		</where>
+	</update>
+</mapper>

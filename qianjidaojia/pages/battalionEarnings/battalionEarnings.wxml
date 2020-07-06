@@ -1,0 +1,68 @@
+<!--pages/battalionEarnings/battalionEarnings.wxml-->
+<view class="status">
+    <text class="{{item.id==idx?active:''}}" wx:for="{{statusArr}}" wx:key="index" data-index="{{index}}" bindtap='onStatus'>{{item.name}}
+  </text>
+</view>
+<view>
+    <image wx:if="{{role==2}}" src="images/bg2.png"></image>
+    <image wx:if="{{role==1}}" src="images/bg1.png"></image>
+    <view class="up">
+        <view class="up-left">
+            <view>
+                <text style="symbol">¥</text>
+                <text class="num">{{commissionPriceTotal}}</text>
+            </view>
+            <text class="up-txt">累计收益</text>
+        </view>
+        <view class="up-right">
+            <view>
+                <text style="symbol">¥</text>
+                <text class="num">{{commissionDelayPriceTotal}}</text>
+            </view>
+            <text class="up-txt">待结算佣金</text>
+        </view>
+    </view>
+</view>
+<view class="down">
+    <view class="down-left {{vline}}">
+        <view>
+            <text class="num2 {{fontc}}">{{offineuserTodayTotal}}</text>
+        </view>
+        <text class="down-txt">新增客户(人)</text>
+    </view>
+    <view class="down-right">
+        <view>
+            <text class="num2 {{fontc}}">{{offineorderTodayTotal}}</text>
+        </view>
+        <text class="down-txt">新增订单(笔)</text>
+    </view>
+</view>
+<view class="down" wx:if="{{role==1}}">
+    <view class="down-left {{vline}}">
+        <view>
+            <text class="num2 {{fontc}}">{{offineuserUserTotal}}</text>
+        </view>
+        <text class="down-txt">营长总人数(人)</text>
+    </view>
+    <view class="down-right">
+        <view>
+            <text class="num2 {{fontc}}">{{offinecommissionPriceTotal}}</text>
+        </view>
+        <text class="down-txt">团长收益(元)</text>
+    </view>
+</view>
+<view class="down">
+    <view class="down-left {{vline}}">
+        <view>
+            <text class="num2 {{fontc}}">{{balanceTotal}}</text>
+        </view>
+        <text class="down-txt">累计提现(人)</text>
+    </view>
+    <view class="down-right">
+        <view>
+          <navigator url="/pages/earningsDetails/earningsDetails">
+            <text class="num2 detail {{fontc}} {{bortc}}">查看收益明细</text>
+          </navigator>
+        </view>
+    </view>
+</view>

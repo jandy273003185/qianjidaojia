@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.merchantwithdraw.mapper.MerchantWithdrawMapper">
+	<select id="selectMerchantWithdrawList" parameterType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdraw" resultType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdraw">
+		SELECT
+		T.WITHDRAW_SN,
+		T.BANK_ACCT_NO_INTERNAL,
+		M.MERCHANT_CODE,
+		T.CUST_ID,
+		T.CUST_NAME,
+		T.WITHDRAW_ACCT_TYPE,
+		T.BANK_TYPE,
+		T.BANK_CODE,
+		T.BANK_NAME,
+		T.BANK_ACCT_NAME,
+		T.CURR_CODE,
+		T.WITHDRAW_AMT,
+		T.WITHDRAW_TYPE,
+		T.WITHDRAW_STATE,
+		T.FEE,
+		T.FEE_CUST_ID,
+		T.FEE_STATE,
+		T.CORE_SN,
+		T.CORE_RETURN_CODE,
+		T.CORE_RETURN_MSG,
+		DATE_FORMAT(T.SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') AS submitTime,
+		T.RESULT_RETURN_TIME,
+		T.CREATE_ID,
+		DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS createTime,
+		T.MODIFY_ID,
+		DATE_FORMAT(T.AUDIT_TIME,'%Y-%m-%d %H:%i:%s') AS auditTime,
+		DATE_FORMAT(T.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') AS modifyTime,
+		T.AUDIT_STATE,
+		DATE_FORMAT(T.VERIFICATION_DATE,'%Y-%m-%d %H:%i:%s') AS verificationDate,
+		T.VERIFICATION_STATE,
+		T.VERIFICATION_USER
+		FROM
+		TD_BUSS_WITHDRAW_BILL T,TD_CUST_INFO M
+		WHERE T.CUST_ID = M.CUST_ID
+		<if test="beginTime !=null and beginTime !='' ">
+				<![CDATA[  
+	               AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{beginTime,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="endTime !=null and endTime !='' ">
+				<![CDATA[  
+	         	   AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endTime,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="merchantCode !=null and merchantCode !='' ">
+				<![CDATA[  
+	         	   AND M.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode,jdbcType=VARCHAR},'%') 
+	            ]]>
+		</if>
+		<if test="verificationState !=null and verificationState !='' ">
+				<![CDATA[  
+	         	   AND T.VERIFICATION_STATE = #{verificationState,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="withdrawSn !=null and withdrawSn !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_SN = #{withdrawSn,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="auditState !=null and auditState !='' ">
+				<![CDATA[  
+	         	   AND T.AUDIT_STATE = #{auditState,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="withdrawState != null and '' != withdrawState">
+			AND T.WITHDRAW_STATE = #{withdrawState,jdbcType=VARCHAR}
+		</if>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+
+	<select id="selectWithdrawExcelByMerchant" parameterType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdraw" resultType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdrawExcel">
+		SELECT
+		T.WITHDRAW_SN,
+		M.MERCHANT_CODE,
+		T.CUST_ID,
+		T.CUST_NAME,
+		T.BANK_ACCT_NAME,
+		T.BANK_CODE,
+		T.BANK_NAME,
+		T.WITHDRAW_AMT,
+		T.FEE,
+		DATE_FORMAT(
+		T.CREATE_TIME,
+		'%Y-%m-%d %H:%i:%s'
+		) AS createTime,
+		CASE T.AUDIT_STATE
+		WHEN '01' THEN
+		'待审核'
+		WHEN '02' THEN
+		'审核通过'
+		WHEN '04' THEN
+		'审核不通过'
+		END AS auditState,
+		CASE
+		WHEN T.WITHDRAW_STATE IN ('00') THEN
+		'提现成功'
+		WHEN T.WITHDRAW_STATE IN ('01') THEN
+		'待提现'
+		WHEN T.WITHDRAW_STATE IN ('02') THEN
+		'核心处理中'
+		WHEN T.WITHDRAW_STATE IN ('03') THEN
+		'核心处理失败'
+		WHEN T.WITHDRAW_STATE IN ('04') THEN
+		'核心处理成功'
+		WHEN T.WITHDRAW_STATE IN ('05') THEN
+		'银行处理中'
+		WHEN T.WITHDRAW_STATE IN ('99') THEN
+		'取消'
+		END AS withdrawState,
+		CASE T.VERIFICATION_STATE
+		WHEN '01' THEN
+		'未核销'
+		WHEN '02' THEN
+		'已核销'
+		END AS verificationState,
+		T.VERIFICATION_USER,
+		T.MODIFY_ID,
+		DATE_FORMAT(
+		T.AUDIT_TIME,
+		'%Y-%m-%d %H:%i:%s'
+		) AS auditTime,
+		DATE_FORMAT(
+		T.VERIFICATION_DATE,
+		'%Y-%m-%d %H:%i:%s'
+		) AS verificationDate
+		FROM
+		TD_BUSS_WITHDRAW_BILL T,TD_CUST_INFO M
+		WHERE T.CUST_ID = M.CUST_ID
+		<if test="beginTime !=null and beginTime !='' ">
+				<![CDATA[  
+	              AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{beginTime,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="endTime !=null and endTime !='' ">
+				<![CDATA[  
+	         	   AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endTime,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="merchantCode !=null and merchantCode !='' ">
+				<![CDATA[  
+	         	   AND M.MERCHANT_CODE LIKE CONCAT('%',#{merchantCode,jdbcType=VARCHAR},'%') 
+	            ]]>
+		</if>
+		<if test="verificationState !=null and verificationState !='' ">
+				<![CDATA[  
+	         	   AND T.VERIFICATION_STATE = #{verificationState,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="withdrawSn !=null and withdrawSn !='' ">
+				<![CDATA[  
+	         	   AND T.WITHDRAW_SN = #{withdrawSn,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="auditState !=null and auditState !='' ">
+				<![CDATA[  
+	         	   AND T.AUDIT_STATE = #{auditState,jdbcType=VARCHAR} 
+	            ]]>
+		</if>
+		<if test="withdrawState != null and '' != withdrawState">
+			AND T.WITHDRAW_STATE = #{withdrawState,jdbcType=VARCHAR}
+		</if>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+
+	<update id="merchantWithdrawAudit" parameterType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdraw">
+		UPDATE TD_BUSS_WITHDRAW_BILL T
+		<set>
+			<if test="coreReturnCode != null and coreReturnCode !=''">
+				T.CORE_RETURN_CODE = #{coreReturnCode,jdbcType=VARCHAR},
+			</if>
+			<if test="coreReturnMsg != null and coreReturnMsg !=''">
+				T.CORE_RETURN_MSG = #{coreReturnMsg,jdbcType=VARCHAR},
+			</if>
+			<if test="coreSn != null and coreSn !=''">
+				T.CORE_SN = #{coreSn,jdbcType=VARCHAR},
+			</if>
+			<if test="withdrawState != null and withdrawState !=''">
+				T.WITHDRAW_STATE = #{withdrawState,jdbcType=VARCHAR},
+			</if>
+			<if test="auditState != null and auditState !=''">
+				T.AUDIT_STATE = #{auditState,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId !=''">
+				T.MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			T.AUDIT_TIME = NOW(),
+			T.MODIFY_TIME = NOW()
+		</set>
+		WHERE
+		T.WITHDRAW_SN = #{withdrawSn , jdbcType=VARCHAR}
+	</update>
+
+	<update id="merchantWithdrawVerification" parameterType="com.qifenqian.bms.basemanager.merchantwithdraw.bean.MerchantWithdraw">
+		UPDATE
+		TD_BUSS_WITHDRAW_BILL T
+		SET
+		T.VERIFICATION_STATE = '02',
+		T.VERIFICATION_USER = #{verificationUser,jdbcType=VARCHAR},
+		T.WITHDRAW_STATE= '00',
+		T.VERIFICATION_DATE = NOW(),
+		T.MODIFY_TIME = NOW()
+		WHERE
+		T.WITHDRAW_SN = #{withdrawSn,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateMerchantWithdraw" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE TD_BUSS_WITHDRAW_BILL T
+			<set>
+				T.VERIFICATION_STATE = '02',
+				T.VERIFICATION_DATE = NOW()
+			</set>
+			where T.WITHDRAW_SN = ${item}
+		</foreach>
+	</update>
+
+	<select id="getAcctIdByCustId" parameterType="string" resultType="string">
+		SELECT
+		ACCT_ID
+		FROM
+		STCS.ACCT_SEVEN_BUSS
+		WHERE
+		CUST_ID = #{custId,jdbcType = VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,29 @@
+<!--pages/evaluation/evaluation.wxml-->
+<view class="evaluation-title"><text></text>请为我们打分<text></text></view>
+
+<view class="evaluation-content">
+  <view class="evaluation-up">
+    <view class="goods-img"><image src="{{ProductImg}}"></image></view>
+    <view class="star" bindtap="star" data-starval="1"><image src="{{star1}}"></image></view>
+    <view class="star2" bindtap="star" data-starval="2"><image src="{{star2}}"></image></view>
+    <view class="star" bindtap="star" data-starval="3"><image src="{{star3}}"></image></view>
+  </view>
+  <textarea class="item-mid" bindinput="inputDescription" maxlength="300" placeholder="请您对这次购买给予评价" placeholder-style="font-size:28rpx;color:#909090"></textarea>
+  <view class="num">{{num}}/300</view>
+  <view class="evaluation-down">
+    <view class="photo-view" wx:for='{{array}}' wx:key='index'>
+      <view class="photo" wx:if="{{index>0}}">
+        <image src="{{array[index].PicUrl}}"></image>
+        <view class='del' bindtap='delInput' data-idx='{{index}}'>删除</view>
+        <canvas style="display:none;" canvas-id="myCanvas"></canvas>
+      </view>
+    </view>
+    <view class="photo-view">
+      <view class="photo">
+        <image bindtap="chooseimage" src="images/photo.png"></image>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="issue" bindtap="issue">发布</view>

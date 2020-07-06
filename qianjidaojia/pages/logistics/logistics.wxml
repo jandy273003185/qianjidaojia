@@ -1,0 +1,33 @@
+<!--pages/logistics/logistics.wxml-->
+<view class="goods">
+  <view class="goods-title"><text>{{ShopName}}</text><text class="status">{{StatusName}}</text></view>
+  <view class="goods-content">
+    <view class="goods-left">
+      <view class="goods-img"><image src="{{ProductImg}}"></image></view>
+      <view class="goods-mid">
+        <view class="goods-name">{{ProductName}}</view>
+        <view class="goods-price">¥{{UnitPrice}}</view>
+      </view>
+    </view>
+    <text class="goods-num">x{{ProductCount}}</text>
+  </view>
+  <view class="goods-down">{{companyName}}：{{kuaidiNo}}</view>
+</view>
+
+<view class="logistics">
+    <view class='item' wx:for="{{logisticsList}}" wx:key="*this">
+        <view class="item-left">
+          <view wx:if="{{index==0}}" class="put-away">收</view>
+          <view wx:if="{{index==0}}" class="dashed"></view>
+          <view wx:if="{{index==0}}" class="selected-img"><image src="images/selected.png"></image></view>
+          <view wx:if="{{index!=0}}" class="cirle"></view>
+          <view wx:if="{{index!=logisticsList.length-1}}" class="solid"></view>
+        </view>
+        <view class="item-right">
+          <view wx:if="{{index==0}}">[收货地址]</view>
+          <view wx:if="{{index==0}}" class="address">{{Address}}</view>
+          <view class="{{index==0 ?'time':'time2'}}">{{item.time}}</view>
+          <view class="{{index == 0 ?'address':'address2'}}">{{item.context}}</view>
+        </view>
+    </view>
+</view>

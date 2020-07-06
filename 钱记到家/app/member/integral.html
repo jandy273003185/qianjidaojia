@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>积分</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="/js/jquery-weui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">会员中心</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="integralBox">
+				<p class="integral">我的积分：<span id="Score"></span></p>
+				<p class="grade">当前等级V<span id="level"></span></p>
+			</div>
+			<div  id="scoreListBox">
+				<div class="integralCon">
+					<div class="section__hd weui-cell bbTitle__section__hd">
+						<div class="weui-cell__bd">
+							<p class="title">积分明细</p>
+						</div>
+					</div>
+					<ul class="integralList"></ul>
+				</div>
+			</div>
+		</div>
+		<!--我的积分列表模板-->
+		<script id="scoreListTemp" type="text/x-dot-template">	
+			{{~it:value:index}}
+			<li>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<p class="title">{{=value.Remark}}</p>
+						<p class="time">{{=sc.utils.dateFormat(new Date(value.AddTime),'yyyy-MM-dd hh:mm:ss')}}</p>
+					</div>
+					<div class="weui-cell__ft">
+						<p class="num">{{=value.Change.split(".")[0]}}</p>
+					</div>
+				</div>
+			</li>
+			{{~}}
+		</script>	
+	    <!--我的积分列表模板  end-->
+		<script type="text/javascript">
+			var userId = sc.utils.getCookieValue("UserId");
+            var token = sc.utils.getCookieValue("Token");
+            var pageIndex = 1;
+            var pageSize = 20;
+            var nums = 0;
+            var loading = false;
+			$(function(){
+				GetMemberInfo(function(data){
+					console.log(data);
+					$('#Score').text(data.data.Score);
+					$('#level').text(data.data.Level);
+					
+				});  //获取个人信息
+				getScoreList();
+				$(document.body).infinite().on("infinite", function() {
+					if(pageIndex > pages) {
+						return;
+					}
+					if(loading) {
+						return;
+					} else {
+						loading = true;
+						getScoreList();
+					}
+			
+				});
+			});
+			function getScoreList(){
+				var url = 'api/User/ScoreList';
+				var callback = function(data){
+					console.log(data);
+					if(data.code == 0){
+						if(data.data.length){
+							var interText = doT.template($("#scoreListTemp").text());
+                            $(".integralList")[0].innerHTML += interText(data.data);
+				            pageIndex++;
+							loading = false;
+							nums = data.count;
+							//判断页数
+							if(parseInt(nums) % pageSize === 0) {
+								pages = parseInt(nums) / pageSize
+							} else {
+								pages = Math.floor((parseInt(nums) / pageSize) + 1);
+							}
+							if(pageIndex!=2){
+							    if(pages == pageIndex - 1) {
+									$('.integralList').append("<p class='center' style='font-size:.14rem;padding:.2rem 0;'>我也是有底线的</p>");
+								}
+							}
+							
+						}
+						else{
+							$('.integralList').append('<div class="emptybox" style="padding-bottom: .4rem;"><div class="iconimg" style="padding:.3rem 0;"><p class="tips">暂无数据 </p></div>');
+							
+						}                       
+					}
+				}
+				sc.post(url,{
+					"UserId" : userId,
+					"Token" : token,
+					"Page" : pageIndex,
+					"PageSize" : pageSize
+				},callback);
+			}
+		</script>
+	</body>
+</html>

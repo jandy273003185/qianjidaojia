@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.unionPay.tradeylresult.mapper.TradeYlResultMapper">
+	<select id="selectTransYlResut" parameterType="com.qifenqian.bms.unionPay.tradeylresult.bean.TradeYlResut" resultType="com.qifenqian.bms.unionPay.tradeylresult.bean.TradeYlResut">
+			SELECT
+				Y.TRANS_ID,
+				Y.TRANS_SN,
+				Y.YL_TN,
+				CASE Y.TRANS_TYPE
+			WHEN 'CHARGE' THEN
+				'充值'
+			WHEN 'PAYMENT' THEN
+				'支付'
+			WHEN 'REVOCATION' THEN
+				'消费撤销'
+			WHEN 'REFUND' THEN
+				'退款'
+			END AS transType,
+			 Y.TRACE_TIME,
+			 Y.CUST_ID,
+			 Y.TRANS_AMT,
+			 Y.TRANS_SUBMIT_TIME,
+			 Y.YL_RESP_TIME_TB,
+			 Y.YL_RESP_TIME_YB,
+			 Y.YL_RESP_CODE_YB,
+			 Y.YL_RESP_MSG_YB,
+			 Y.TRACE_NO,
+			 Y.ACC_NO,
+			 Y.QUERY_ID
+			FROM
+				TD_TRANS_YL Y
+			WHERE
+				1 = 1
+			<if test="transType != null and transType != '' ">
+			AND Y.TRANS_TYPE = #{transType,jdbcType = VARCHAR}
+			</if>
+			<if test="transId != null and transId != '' "> 
+			AND Y.TRANS_ID =#{transId, jdbcType=VARCHAR}
+			</if>
+			<if test="ylTn != null and ylTn != '' "> 
+			AND Y.YL_TN =#{ylTn, jdbcType=VARCHAR}
+			</if>
+			<if test="transSn != null and transSn != '' "> 
+			AND Y.TRANS_SN =#{transSn, jdbcType=VARCHAR}
+			</if>
+		ORDER BY Y.TRANS_SUBMIT_TIME DESC
+	</select>
+	
+	<update id="updateTransYlResut" parameterType="com.qifenqian.bms.unionPay.tradeylresult.bean.TradeYlResut">
+		UPDATE TD_TRANS_YL S
+		<set>
+			<if test="ylRespCodeYb != null">
+				S.YL_RESP_CODE_YB = #{ylRespCodeYb,jdbcType=VARCHAR},
+			</if>
+			<if test="ylRespMsgYb != null">
+				S.YL_RESP_MSG_YB = #{ylRespMsgYb,jdbcType=VARCHAR},
+			</if>
+			<if test="queryId != null">
+				S.QUERY_ID = #{queryId,jdbcType=VARCHAR},
+			</if>
+			<if test="traceNo != null">
+				S.TRACE_NO = #{traceNo,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE S.TRANS_ID = #{transId,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectTransYlResutByTransId" parameterType="string" resultType="com.qifenqian.bms.unionPay.tradeylresult.bean.TradeYlResut">
+		SELECT
+			Y.TRANS_ID,
+			Y.TRANS_SN,
+			Y.YL_TN,
+			Y.TRACE_TIME,
+			Y.CUST_ID,
+			Y.TRANS_AMT,
+			Y.TRANS_SUBMIT_TIME,
+			Y.YL_RESP_TIME_TB,
+			Y.YL_RESP_TIME_YB,
+			Y.YL_RESP_CODE_YB,
+			Y.YL_RESP_MSG_YB,
+			Y.TRACE_NO,
+			Y.ACC_NO,
+			Y.QUERY_ID
+		FROM
+			TD_TRANS_YL Y
+		WHERE
+			Y.TRANS_ID = #{transId,jdbcType = VARCHAR}
+	</select>
+</mapper>

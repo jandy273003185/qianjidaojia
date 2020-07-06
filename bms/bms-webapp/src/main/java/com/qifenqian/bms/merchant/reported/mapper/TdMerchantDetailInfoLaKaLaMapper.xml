@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantDetailInfoLaKaLaMapper">
+
+    <insert id="insert" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoLaKaLa">
+       insert into td_merchant_detail_info_lakala (
+        patch_no, merchant_code, cust_name,
+        channel_type, biz_type, biz_name,
+        mer_license_no, lincese_expire, province_code,
+        city_code, county_code, address,
+        biz_content, cr_licence_name, cr_licence_no,
+        id_card_expire, contact_mobile, openning_bank_no,
+        openning_bank_name, clearing_bank_no, account_no,
+        account_name, account_kind, id_card,
+        settle_period, mcc_code, debit_rate, wechat_type,
+        wechat_rate, term_num, ret_url,
+        id_card_front, id_card_behind, bank_card,
+        business_licence, personal_photo, merchant_photo,
+        others, create_time, modify_time
+        )
+      values (
+        #{patchNo,jdbcType=VARCHAR}, #{merchantCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR},
+        #{channelType,jdbcType=VARCHAR}, #{bizType,jdbcType=VARCHAR}, #{bizName,jdbcType=VARCHAR},
+        #{merLicenseNo,jdbcType=VARCHAR}, #{linceseExpire,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR},
+        #{cityCode,jdbcType=VARCHAR}, #{countyCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+        #{bizContent,jdbcType=VARCHAR}, #{crLicenceName,jdbcType=VARCHAR}, #{crLicenceNo,jdbcType=VARCHAR},
+        #{idCardExpire,jdbcType=VARCHAR}, #{contactMobile,jdbcType=VARCHAR}, #{openningBankNo,jdbcType=VARCHAR},
+        #{openningBankName,jdbcType=VARCHAR}, #{clearingBankNo,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR},
+        #{accountName,jdbcType=VARCHAR}, #{accountKind,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR},
+        #{settlePeriod,jdbcType=VARCHAR}, #{mccCode,jdbcType=VARCHAR}, #{debitRate,jdbcType=VARCHAR}, #{wechatType,jdbcType=VARCHAR},
+        #{wechatRate,jdbcType=VARCHAR}, #{termNum,jdbcType=VARCHAR}, #{retUrl,jdbcType=VARCHAR},
+        #{idCardFront,jdbcType=VARCHAR}, #{idCardBehind,jdbcType=VARCHAR}, #{bankCard,jdbcType=VARCHAR},
+        #{businessLicence,jdbcType=VARCHAR}, #{personalPhoto,jdbcType=VARCHAR}, #{merchantPhoto,jdbcType=VARCHAR},
+        #{others,jdbcType=VARCHAR}, NOW(), NOW()
+        )
+</insert>
+
+
+    <update id="updateDynamic" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoLaKaLa">
+        update td_merchant_detail_info_lakala
+        <set>
+            <if test="merchantCode != null and merchantCode !=''">
+                merchant_code = #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null and custName !=''">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null and channelType !=''">
+                channel_type = #{channelType,jdbcType=VARCHAR},
+            </if>
+            <if test="bizType != null and bizType !=''">
+                biz_type = #{bizType,jdbcType=VARCHAR},
+            </if>
+            <if test="bizName != null and bizName !=''">
+                biz_name = #{bizName,jdbcType=VARCHAR},
+            </if>
+            <if test="merLicenseNo != null and merLicenseNo !=''">
+                mer_license_no = #{merLicenseNo,jdbcType=VARCHAR},
+            </if>
+            <if test="linceseExpire != null and linceseExpire !=''">
+                lincese_expire = #{linceseExpire,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceCode != null and provinceCode !=''">
+                province_code = #{provinceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="cityCode != null and cityCode !=''">
+                city_code = #{cityCode,jdbcType=VARCHAR},
+            </if>
+            <if test="countyCode != null and countyCode !=''">
+                county_code = #{countyCode,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null and address !=''">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="bizContent != null and bizContent !=''">
+                biz_content = #{bizContent,jdbcType=VARCHAR},
+            </if>
+            <if test="crLicenceName != null and crLicenceName !=''">
+                cr_licence_name = #{crLicenceName,jdbcType=VARCHAR},
+            </if>
+            <if test="crLicenceNo != null and crLicenceNo !=''">
+                cr_licence_no = #{crLicenceNo,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardExpire != null and idCardExpire !=''">
+                id_card_expire = #{idCardExpire,jdbcType=VARCHAR},
+            </if>
+            <if test="contactMobile != null and contactMobile !=''">
+                contact_mobile = #{contactMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="openningBankNo != null and openningBankNo !=''">
+                openning_bank_no = #{openningBankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="openningBankName != null and openningBankName !=''">
+                openning_bank_name = #{openningBankName,jdbcType=VARCHAR},
+            </if>
+            <if test="clearingBankNo != null and clearingBankNo !=''">
+                clearing_bank_no = #{clearingBankNo,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNo != null and accountNo !=''">
+                account_no = #{accountNo,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null and accountName !=''">
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountKind != null and accountKind !=''">
+                account_kind = #{accountKind,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null and idCard !=''">
+                id_card = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="settlePeriod != null and settlePeriod !=''">
+                settle_period = #{settlePeriod,jdbcType=VARCHAR},
+            </if>
+            <if test="mccCode != null and mccCode !=''">
+                mcc_code = #{mccCode,jdbcType=VARCHAR},
+            </if>
+            <if test="debitRate != null and debitRate !=''">
+                debit_rate = #{debitRate,jdbcType=VARCHAR},
+            </if>
+            <if test="wechatType != null and wechatType !=''">
+                wechat_type = #{wechatType,jdbcType=VARCHAR},
+            </if>
+            <if test="wechatRate != null and wechatRate !=''">
+                wechat_rate = #{wechatRate,jdbcType=VARCHAR},
+            </if>
+            <if test="termNum != null and termNum !=''">
+                term_num = #{termNum,jdbcType=VARCHAR},
+            </if>
+            <if test="retUrl != null and retUrl !=''">
+                ret_url = #{retUrl,jdbcType=VARCHAR},
+            </if>
+
+            <if test="idCardFront !=null and idCardFront !=''">
+                id_card_front = #{idCardFront,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardBehind !=null and idCardBehind !=''">
+                id_card_behind = #{idCardBehind,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCard !=null and bankCard !=''">
+                bank_card = #{bankCard,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicence !=null and businessLicence !=''">
+                business_licence = #{businessLicence,jdbcType=VARCHAR},
+            </if>
+            <if test="personalPhoto !=null and personalPhoto !=''">
+                personal_photo = #{personalPhoto,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantPhoto !=null and merchantPhoto !=''">
+                merchant_photo = #{merchantPhoto,jdbcType=VARCHAR},
+            </if>
+            <if test="others !=null and others !=''">
+                others = #{others,jdbcType=VARCHAR},
+            </if>
+            modify_time = NOW()
+
+        </set>
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPatchNo" parameterType="java.lang.String"
+            resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoLaKaLa">
+        select
+        patch_no, merchant_code, cust_name,
+        channel_type, biz_type, biz_name,
+        mer_license_no, lincese_expire, province_code,
+        city_code, county_code, address,
+        biz_content, cr_licence_name, cr_licence_no,
+        id_card_expire, contact_mobile, openning_bank_no,
+        openning_bank_name, clearing_bank_no, account_no,
+        account_name, account_kind, id_card,
+        settle_period, mcc_code, debit_rate, wechat_type,
+        wechat_rate, term_num, ret_url,
+        id_card_front, id_card_behind, bank_card,
+        business_licence, personal_photo, merchant_photo,
+        others, create_time, modify_time
+        from  td_merchant_detail_info_lakala
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectLakalaBankAreaInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdLakalaBankAreaInfo"
+            resultType="com.qifenqian.bms.merchant.reported.bean.TdLakalaBankAreaInfo">
+        select district_id, district_name, district_parent from td_lakala_bank_area_info
+        <where>
+            <if test="districtName != null and districtName !=''">
+                district_name = #{districtName, jdbcType=VARCHAR}
+            </if>
+            <if test="districtParent != null and districtParent !=''">
+                and district_parent = #{districtParent, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLakalaMccInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdLakalaMccInfo"
+            resultType="com.qifenqian.bms.merchant.reported.bean.TdLakalaMccInfo">
+        select mcc_id, mcc_name from td_lakala_mcc_info
+        <where>
+            <if test="mccId != null and mccId !=''">
+                mcc_id = #{mccId, jdbcType=VARCHAR}
+            </if>
+            <if test="mccName != null and mccName !=''">
+                and mcc_name = #{mccName, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

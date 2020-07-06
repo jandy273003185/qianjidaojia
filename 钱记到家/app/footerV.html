@@ -1,0 +1,83 @@
+﻿<link href="/NewVersion/css/footer.css" rel="stylesheet" />
+<div class="navigator" id="navigatorfooter">
+    <a href="/indexV.html" class="home-icon"><div>&nbsp;</div>首页</a>
+    <a href="/productlist.html" class="type-icon"><div>&nbsp;</div>全部商品</a>
+    <a href="/discover.html" class="discover-icon"><div>&nbsp;</div>发现</a>
+    <a href="/cart.html" class="shop-icon"><div>&nbsp;</div>购物车</a>
+    <a href="/member/member.html" class="user-icon"><div>&nbsp;</div>我的</a>
+</div>
+<!--<ul id="footerul">
+    <li>
+        <a href="/indexV.html">
+            <span class="nav-home" data-ng-class="nav-home-on"></span>
+            <h5 class="" style="font-size: .13rem;">首页</h5>
+        </a>
+    </li>
+    <li>
+        <a href="/classify.html">
+            <span class="nav-fenlei" data-ng-class="nav-fenlei-on"></span>
+            <h5 class="" style="font-size: .13rem;">分类</h5>
+        </a>
+    </li>
+    <li>
+        <a href="/discover.html">
+            <span class="nav-fine" data-ng-class="nav-fine-on"></span>
+            <h5 class="" style="font-size: .13rem;">发现</h5>
+        </a>
+    </li>
+    <li>
+        <a href="/cart.html" id="mycart">
+            <span class="nav-shop" data-ng-class="nav-shop-on"></span>
+            <h5 class="" style="font-size: .13rem;">购物车</h5>
+        </a>
+    </li>
+    <li>
+        <a href="/member/member.html" id="My">
+            <span class="nav-mine" data-ng-class="nav-mine-on"></span>
+            <h5 class="" style="font-size: .13rem;">我的</h5>
+        </a>
+    </li>
+</ul>-->
+<script>
+    $(function () {
+        //		导航添加选中样式
+        var Url = window.location.pathname.substring(0);
+        //$("#footerul li").each(function () {
+        //    var item = $(this);
+        //    var item_url = item.find('a').attr('href').toLowerCase();
+        //    if (item_url == Url.toLowerCase()) {
+        //        var nClass = item.find("span").attr("data-ng-class");
+        //        item.find("span").addClass(nClass);
+        //        item.find("h5").addClass("on");
+        //    }
+        //})
+        $("#navigatorfooter a").each(function () {
+            var _this = $(this);
+            var item_url = _this.attr("href").toLowerCase();
+            if (item_url == Url.toLowerCase()) {
+                _this.addClass("on");
+            }
+        });
+        var isLogin = sc.auth.isLogin();
+        $('#My').click(function () {
+            if (!isLogin) {
+                $(this).attr("href", "/login.html");
+            }
+        })
+        $('#mycart').click(function () {
+            if (!isLogin) {
+                $(this).attr("href", "/login.html");
+            }
+        })
+    });
+</script>
+
+    <script>
+        var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a08eca66eebd8d6066efc4ee396bb83e";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+</script>

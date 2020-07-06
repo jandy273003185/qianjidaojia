@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantDetailInfoAlipayMapper">
+
+    <resultMap id="BaseResultMap" type="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoAlipay">
+        <id column="patch_no" jdbcType="VARCHAR" property="patchNo"/>
+        <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode"/>
+        <result column="cust_name" jdbcType="VARCHAR" property="custName"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName"/>
+        <result column="contact_mobile" jdbcType="VARCHAR" property="contactMobile"/>
+        <result column="contact_email" jdbcType="VARCHAR" property="contactEmail"/>
+        <result column="mcc_code" jdbcType="VARCHAR" property="mccCode"/>
+        <result column="qualification_path" jdbcType="VARCHAR" property="qualificationPath"/>
+        <result column="business_license" jdbcType="VARCHAR" property="businessLicense"/>
+        <result column="business_photo_path" jdbcType="VARCHAR" property="businessPhotoPath"/>
+        <result column="business_auth_photo_path" jdbcType="VARCHAR" property="businessAuthPhotoPath"/>
+        <result column="long_term" jdbcType="VARCHAR" property="longTerm"/>
+        <result column="business_term" jdbcType="VARCHAR" property="businessTerm"/>
+        <result column="shop_interior_path" jdbcType="VARCHAR" property="shopInteriorPath"/>
+        <result column="door_photo_path" jdbcType="VARCHAR" property="doorPhotoPath"/>
+        <result column="result_msg" jdbcType="VARCHAR" property="resultMsg"/>
+        <result column="report_status" jdbcType="VARCHAR" property="reportStatus"/>
+        <result column="zfb_batch_no" jdbcType="VARCHAR" property="zfbBatchNo"/>
+        <result column="zfb_batch_status" jdbcType="VARCHAR" property="zfbBatchStatus"/>
+        <result column="zfb_user_id" jdbcType="VARCHAR" property="zfbUserId"/>
+        <result column="zfb_auth_app_id" jdbcType="VARCHAR" property="zfbAuthAppId"/>
+        <result column="zfb_app_auth_token" jdbcType="VARCHAR" property="zfbAppAuthToken"/>
+        <result column="zfb_app_refresh_token" jdbcType="VARCHAR" property="zfbAppRefreshToken"/>
+        <result column="zfb_expires_in" jdbcType="VARCHAR" property="zfbExpiresIn"/>
+        <result column="zfb_re_expires_in" jdbcType="VARCHAR" property="zfbReExpiresIn"/>
+        <result column="zfb_confirm_url" jdbcType="VARCHAR" property="zfbConfirmUrl"/>
+        <result column="merchant_pid" jdbcType="VARCHAR" property="merchantPid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="flag_status" jdbcType="VARCHAR" property="flagStatus"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+  patch_no, merchant_code, cust_name, account, contact_name, contact_mobile,
+  contact_email, mcc_code, qualification_path, business_license, business_photo_path,
+  business_auth_photo_path, long_term, business_term, shop_interior_path, door_photo_path,
+  result_msg, report_status, zfb_batch_no, zfb_batch_status, zfb_user_id, zfb_auth_app_id,
+  zfb_app_auth_token, zfb_app_refresh_token, zfb_expires_in, zfb_re_expires_in, zfb_confirm_url,
+  merchant_pid, create_time, modify_time, flag_status
+</sql>
+
+
+    <delete id="delete" parameterType="java.lang.String">
+  delete from td_merchant_detail_info_alipay
+  where patch_no = #{patchNo,jdbcType=VARCHAR}
+</delete>
+
+
+    <insert id="insert" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoAlipay">
+      insert into td_merchant_detail_info_alipay (patch_no, merchant_code, cust_name,
+        account, contact_name,
+        contact_mobile, contact_email, mcc_code,
+        qualification_path, business_license, business_photo_path,
+        business_auth_photo_path, long_term, business_term,
+        shop_interior_path, door_photo_path, result_msg,
+        report_status, zfb_batch_no, zfb_batch_status,
+        zfb_user_id, zfb_auth_app_id, zfb_app_auth_token,
+        zfb_app_refresh_token, zfb_expires_in, zfb_re_expires_in,
+        zfb_confirm_url, merchant_pid, create_time,
+        modify_time, flag_status)
+      values (#{patchNo,jdbcType=VARCHAR}, #{merchantCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR},
+        #{account,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR},
+        #{contactMobile,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, #{mccCode,jdbcType=VARCHAR},
+        #{qualificationPath,jdbcType=VARCHAR}, #{businessLicense,jdbcType=VARCHAR}, #{businessPhotoPath,jdbcType=VARCHAR},
+        #{businessAuthPhotoPath,jdbcType=VARCHAR}, #{longTerm,jdbcType=VARCHAR}, #{businessTerm,jdbcType=VARCHAR},
+        #{shopInteriorPath,jdbcType=VARCHAR}, #{doorPhotoPath,jdbcType=VARCHAR}, #{resultMsg,jdbcType=VARCHAR},
+        #{reportStatus,jdbcType=VARCHAR}, #{zfbBatchNo,jdbcType=VARCHAR}, #{zfbBatchStatus,jdbcType=VARCHAR},
+        #{zfbUserId,jdbcType=VARCHAR}, #{zfbAuthAppId,jdbcType=VARCHAR}, #{zfbAppAuthToken,jdbcType=VARCHAR},
+        #{zfbAppRefreshToken,jdbcType=VARCHAR}, #{zfbExpiresIn,jdbcType=VARCHAR}, #{zfbReExpiresIn,jdbcType=VARCHAR},
+        #{zfbConfirmUrl,jdbcType=VARCHAR}, #{merchantPid,jdbcType=VARCHAR}, NOW(),
+        #{modifyTime,jdbcType=TIMESTAMP}, #{flagStatus,jdbcType=VARCHAR})
+</insert>
+
+
+    <insert id="insertDynamic" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoAlipay">
+        insert into td_merchant_detail_info_alipay
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patchNo != null">
+                patch_no,
+            </if>
+            <if test="merchantCode != null">
+                merchant_code,
+            </if>
+            <if test="custName != null">
+                cust_name,
+            </if>
+            <if test="account != null">
+                account,
+            </if>
+            <if test="contactName != null">
+                contact_name,
+            </if>
+            <if test="contactMobile != null">
+                contact_mobile,
+            </if>
+            <if test="contactEmail != null">
+                contact_email,
+            </if>
+            <if test="mccCode != null">
+                mcc_code,
+            </if>
+            <if test="qualificationPath != null">
+                qualification_path,
+            </if>
+            <if test="businessLicense != null">
+                business_license,
+            </if>
+            <if test="businessPhotoPath != null">
+                business_photo_path,
+            </if>
+            <if test="businessAuthPhotoPath != null">
+                business_auth_photo_path,
+            </if>
+            <if test="longTerm != null">
+                long_term,
+            </if>
+            <if test="businessTerm != null">
+                business_term,
+            </if>
+            <if test="shopInteriorPath != null">
+                shop_interior_path,
+            </if>
+            <if test="doorPhotoPath != null">
+                door_photo_path,
+            </if>
+            <if test="resultMsg != null">
+                result_msg,
+            </if>
+            <if test="reportStatus != null">
+                report_status,
+            </if>
+            <if test="zfbBatchNo != null">
+                zfb_batch_no,
+            </if>
+            <if test="zfbBatchStatus != null">
+                zfb_batch_status,
+            </if>
+            <if test="zfbUserId != null">
+                zfb_user_id,
+            </if>
+            <if test="zfbAuthAppId != null">
+                zfb_auth_app_id,
+            </if>
+            <if test="zfbAppAuthToken != null">
+                zfb_app_auth_token,
+            </if>
+            <if test="zfbAppRefreshToken != null">
+                zfb_app_refresh_token,
+            </if>
+            <if test="zfbExpiresIn != null">
+                zfb_expires_in,
+            </if>
+            <if test="zfbReExpiresIn != null">
+                zfb_re_expires_in,
+            </if>
+            <if test="zfbConfirmUrl != null">
+                zfb_confirm_url,
+            </if>
+            <if test="merchantPid != null">
+                merchant_pid,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="modifyTime != null">
+                modify_time,
+            </if>
+            <if test="flagStatus != null">
+                flag_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patchNo != null">
+                #{patchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantCode != null">
+                #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null">
+                #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactMobile != null">
+                #{contactMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail != null">
+                #{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="mccCode != null">
+                #{mccCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qualificationPath != null">
+                #{qualificationPath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicense != null">
+                #{businessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="businessPhotoPath != null">
+                #{businessPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAuthPhotoPath != null">
+                #{businessAuthPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="longTerm != null">
+                #{longTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="businessTerm != null">
+                #{businessTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="shopInteriorPath != null">
+                #{shopInteriorPath,jdbcType=VARCHAR},
+            </if>
+            <if test="doorPhotoPath != null">
+                #{doorPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="resultMsg != null">
+                #{resultMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="reportStatus != null">
+                #{reportStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbBatchNo != null">
+                #{zfbBatchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbBatchStatus != null">
+                #{zfbBatchStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbUserId != null">
+                #{zfbUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAuthAppId != null">
+                #{zfbAuthAppId,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAppAuthToken != null">
+                #{zfbAppAuthToken,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAppRefreshToken != null">
+                #{zfbAppRefreshToken,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbExpiresIn != null">
+                #{zfbExpiresIn,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbReExpiresIn != null">
+                #{zfbReExpiresIn,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbConfirmUrl != null">
+                #{zfbConfirmUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantPid != null">
+                #{merchantPid,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flagStatus != null">
+                #{flagStatus,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateDynamic" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoAlipay">
+        update td_merchant_detail_info_alipay
+        <set>
+            <if test="merchantCode != null">
+                merchant_code = #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                contact_name = #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactMobile != null">
+                contact_mobile = #{contactMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail != null">
+                contact_email = #{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="mccCode != null">
+                mcc_code = #{mccCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qualificationPath != null">
+                qualification_path = #{qualificationPath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicense != null">
+                business_license = #{businessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="businessPhotoPath != null">
+                business_photo_path = #{businessPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAuthPhotoPath != null">
+                business_auth_photo_path = #{businessAuthPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="longTerm != null">
+                long_term = #{longTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="businessTerm != null">
+                business_term = #{businessTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="shopInteriorPath != null">
+                shop_interior_path = #{shopInteriorPath,jdbcType=VARCHAR},
+            </if>
+            <if test="doorPhotoPath != null">
+                door_photo_path = #{doorPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="resultMsg != null">
+                result_msg = #{resultMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="reportStatus != null">
+                report_status = #{reportStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbBatchNo != null">
+                zfb_batch_no = #{zfbBatchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbBatchStatus != null">
+                zfb_batch_status = #{zfbBatchStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbUserId != null">
+                zfb_user_id = #{zfbUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAuthAppId != null">
+                zfb_auth_app_id = #{zfbAuthAppId,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAppAuthToken != null">
+                zfb_app_auth_token = #{zfbAppAuthToken,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAppRefreshToken != null">
+                zfb_app_refresh_token = #{zfbAppRefreshToken,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbExpiresIn != null">
+                zfb_expires_in = #{zfbExpiresIn,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbReExpiresIn != null">
+                zfb_re_expires_in = #{zfbReExpiresIn,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbConfirmUrl != null">
+                zfb_confirm_url = #{zfbConfirmUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantPid != null">
+                merchant_pid = #{merchantPid,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flagStatus != null">
+                flag_status = #{flagStatus,jdbcType=VARCHAR},
+            </if>
+            modify_time = NOW()
+        </set>
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPatchNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from td_merchant_detail_info_alipay
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </select>
+
+
+    <sql id="findPageWithWhere">
+        <where>1=1
+            <if test="patchNo != null and patchNo != ''">
+                and patch_no = #{patchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="merchantCode != null and merchantCode != ''">
+                and merchant_code = #{merchantCode,jdbcType=VARCHAR}
+            </if>
+            <if test="custName != null and custName != ''">
+                and cust_name = #{custName,jdbcType=VARCHAR}
+            </if>
+            <if test="account != null and account != ''">
+                and account = #{account,jdbcType=VARCHAR}
+            </if>
+            <if test="contactName != null and contactName != ''">
+                and contact_name = #{contactName,jdbcType=VARCHAR}
+            </if>
+            <if test="contactMobile != null and contactMobile != ''">
+                and contact_mobile = #{contactMobile,jdbcType=VARCHAR}
+            </if>
+            <if test="contactEmail != null and contactEmail != ''">
+                and contact_email = #{contactEmail,jdbcType=VARCHAR}
+            </if>
+            <if test="mccCode != null and mccCode != ''">
+                and mcc_code = #{mccCode,jdbcType=VARCHAR}
+            </if>
+            <if test="qualificationPath != null and qualificationPath != ''">
+                and qualification_path = #{qualificationPath,jdbcType=VARCHAR}
+            </if>
+            <if test="businessLicense != null and businessLicense != ''">
+                and business_license = #{businessLicense,jdbcType=VARCHAR}
+            </if>
+            <if test="businessPhotoPath != null and businessPhotoPath != ''">
+                and business_photo_path = #{businessPhotoPath,jdbcType=VARCHAR}
+            </if>
+            <if test="businessAuthPhotoPath != null and businessAuthPhotoPath != ''">
+                and business_auth_photo_path = #{businessAuthPhotoPath,jdbcType=VARCHAR}
+            </if>
+            <if test="longTerm != null and longTerm != ''">
+                and long_term = #{longTerm,jdbcType=VARCHAR}
+            </if>
+            <if test="businessTerm != null and businessTerm != ''">
+                and business_term = #{businessTerm,jdbcType=VARCHAR}
+            </if>
+            <if test="shopInteriorPath != null and shopInteriorPath != ''">
+                and shop_interior_path = #{shopInteriorPath,jdbcType=VARCHAR}
+            </if>
+            <if test="doorPhotoPath != null and doorPhotoPath != ''">
+                and door_photo_path = #{doorPhotoPath,jdbcType=VARCHAR}
+            </if>
+            <if test="resultMsg != null and resultMsg != ''">
+                and result_msg = #{resultMsg,jdbcType=VARCHAR}
+            </if>
+            <if test="reportStatus != null and reportStatus != ''">
+                and report_status = #{reportStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbBatchNo != null and zfbBatchNo != ''">
+                and zfb_batch_no = #{zfbBatchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbBatchStatus != null and zfbBatchStatus != ''">
+                and zfb_batch_status = #{zfbBatchStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbUserId != null and zfbUserId != ''">
+                and zfb_user_id = #{zfbUserId,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbAuthAppId != null and zfbAuthAppId != ''">
+                and zfb_auth_app_id = #{zfbAuthAppId,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbAppAuthToken != null and zfbAppAuthToken != ''">
+                and zfb_app_auth_token = #{zfbAppAuthToken,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbAppRefreshToken != null and zfbAppRefreshToken != ''">
+                and zfb_app_refresh_token = #{zfbAppRefreshToken,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbExpiresIn != null and zfbExpiresIn != ''">
+                and zfb_expires_in = #{zfbExpiresIn,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbReExpiresIn != null and zfbReExpiresIn != ''">
+                and zfb_re_expires_in = #{zfbReExpiresIn,jdbcType=VARCHAR}
+            </if>
+            <if test="zfbConfirmUrl != null and zfbConfirmUrl != ''">
+                and zfb_confirm_url = #{zfbConfirmUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="merchantPid != null and merchantPid != ''">
+                and merchant_pid = #{merchantPid,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifyTime != null">
+                and modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="flagStatus != null and flagStatus != ''">
+                and flag_status = #{flagStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

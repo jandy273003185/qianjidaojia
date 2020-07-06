@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.paymentmanager.topay.mapper.PaymentQueryMapper">
+  
+<select id="getPaymetList"  resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+	 SELECT
+	t.BAT_NO,
+	t.PAER_ACCT_NO,
+	t.SUM_AMT,
+	t.SUCC_AMT,
+	t.SUM_COUNT,
+	t.SUCC_COUNT,
+	t.FAIL_AMT,
+	t.FAIL_COUNT,
+	t.BAT_STATUS,
+	t.CREATE_ID,
+    s.user_name,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d') AS createTime
+FROM
+	td_agent_payment_bat_info t
+ LEFT JOIN sys_user s ON t.CREATE_ID = s.user_id
+
+	<where>
+		       
+			 <if test=" createTime!= null and '' !=createTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME   ,'%Y-%m-%d')>= #{createTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if> 
+			<if test="batNo != null and batNo != '' ">
+			 	 AND t.BAT_NO = #{batNo} 
+			</if>
+			
+			<if test="paerAcctNo != null and paerAcctNo != '' ">
+			    AND	t.PAER_ACCT_NO=#{paerAcctNo}
+			 </if>
+			  <if test="batStatus != null and batStatus != '' ">
+			    AND	t.BAT_STATUS = #{batStatus} 
+			 </if>
+		</where>
+   ORDER BY t.CREATE_TIME    DESC	  
+</select>
+
+<select id="getPaymetbatNoList" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail" parameterType="String">
+
+SELECT
+	t.BAT_NO,
+	t.ROW_NO,
+	t.REC_ACCOUNT_NAME,
+	t.REC_ACCOUNT_NO,
+	t.REC_BANK_CNAPS,
+	t.REC_BANK_CODE,
+	t.TRANS_AMT,
+	t.STATUS,
+	t.PROC_MEMO,
+	t.CREATE_ID,
+    s.user_name AS createId,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d') AS createTime
+FROM
+	td_agent_payment_bat_detail_info t
+ LEFT JOIN sys_user s ON t.CREATE_ID = s.user_id	   
+
+WHERE
+	 
+ t.BAT_NO = #{batNo}
+
+	
+</select>
+
+<select id="exportPaymentList"  resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatInfo">
+    SELECT
+	t.BAT_NO,
+	t.PAER_ACCT_NO,
+	t.SUM_AMT,
+	t.SUCC_AMT,
+	t.SUM_COUNT,
+	t.SUCC_COUNT,
+	t.FAIL_AMT,
+	t.FAIL_COUNT,
+	(
+		CASE t.BAT_STATUS
+		WHEN '00' THEN
+			'银行处理完成'
+		WHEN '01' THEN
+			'未提交'
+		WHEN '02' THEN
+			'已提交'
+		WHEN '03' THEN
+			'银行处理中'
+	  ELSE
+			''
+	END)batStatus,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d') AS createTime
+FROM
+	td_agent_payment_bat_info t
+ LEFT JOIN sys_user s ON t.CREATE_ID = s.user_id
+
+	<where>
+		       
+			 <if test=" createTime!= null and '' !=createTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME   ,'%Y-%m-%d')>= #{createTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if> 
+			<if test="batNo != null and batNo != '' ">
+			 	 AND t.BAT_NO = #{batNo} 
+			</if>
+			
+			<if test="paerAcctNo != null and paerAcctNo != '' ">
+			    AND	t.PAER_ACCT_NO=#{paerAcctNo}
+			 </if>
+			  <if test="batStatus != null and batStatus != '' ">
+			    AND	t.BAT_STATUS = #{batStatus} 
+			 </if>
+		</where>
+   ORDER BY t.CREATE_TIME    DESC	  
+</select>
+
+
+<select id="exportPaymentInfoList" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail">
+
+SELECT
+	t.BAT_NO,
+	t.ROW_NO,
+	t.REC_ACCOUNT_NAME,
+	t.REC_ACCOUNT_NO,
+	t.REC_BANK_CNAPS,
+	t.REC_BANK_CODE,
+	t.TRANS_AMT,
+	(
+		CASE t.STATUS
+		WHEN '00' THEN
+			'银行处理完成'
+		WHEN '01' THEN
+			'未提交'
+		WHEN '02' THEN
+			'已提交'
+		WHEN '03' THEN
+			'银行处理中'
+	  ELSE
+			''
+	END)status,
+	t.PROC_MEMO,
+	
+    s.user_name AS createId,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d') AS createTime
+FROM
+	td_agent_payment_bat_detail_info t
+ LEFT JOIN sys_user s ON t.CREATE_ID = s.user_id	   
+
+WHERE
+	 
+ t.BAT_NO = #{batNo}
+
+	
+</select>
+
+
+<select id="selectPaymetbatNoList" resultType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail" parameterType="com.qifenqian.bms.paymentmanager.bean.TdPaymentBatDetail">
+
+SELECT
+	t.BAT_NO,
+	t.ROW_NO,
+	t.REC_ACCOUNT_NAME,
+	t.REC_ACCOUNT_NO,
+	t.REC_BANK_CNAPS,
+	t.REC_BANK_CODE,
+	t.TRANS_AMT,
+	t.STATUS,
+	t.PROC_MEMO,
+	t.CREATE_ID,
+    s.user_name AS createId,
+	DATE_FORMAT(t.CREATE_TIME, '%Y-%m-%d') AS createTime
+FROM
+	td_agent_payment_bat_detail_info t
+ LEFT JOIN sys_user s ON t.CREATE_ID = s.user_id	   
+
+<where>
+              
+              t.BAT_NO = #{batNo}
+		       
+			 <if test=" createTime!= null and '' !=createTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME   ,'%Y-%m-%d')>= #{createTime}  
+	            ]]>  
+	        </if>  
+	        <if test="endCreateTime!= null and '' !=endCreateTime">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(t.CREATE_TIME  ,'%Y-%m-%d')<= #{endCreateTime}  
+	            ]]>  
+	        </if> 
+			<if test="batNo != null and batNo != '' ">
+			 	 AND t.BAT_NO = #{batNo} 
+			</if>
+			
+			<if test="recAccountName != null and recAccountName != '' ">
+			    AND	t.REC_ACCOUNT_NAME LIKE CONCAT('%',#{recAccountName},'%')
+			 </if>
+			 
+			  <if test="status != null and status != '' ">
+			    AND	t.STATUS = #{status} 
+			 </if>
+		</where>
+
+</select>
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>商品详情</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/goodsDetails.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body class="goodsDetails">
+    <div style="width: 350px;height: 200px;">这是轮播图</div>
+    <img class="share" src="../images/share.png" />
+
+    <div class="goods-content">
+        <div class="goods">
+            <div class="goods-left">
+                <p class="goodsName">A级-发的顺丰的辅导书辅导书舒服的</p>
+                <p class="goodsDescription">果肉阿斯, 顿撒范德, 萨个个体</p>
+                <p><span class="symbol">¥</span><span class="nowPrice">19.90</span><span class="originalPrice">¥23.90</span></p>
+            </div>
+            <div class="goods-right">
+                <span class="coupon">领券</span><img class="red-arrow" src="../images/red-arrow.png" alt="">
+            </div>
+        </div>
+        <div class="goods-bottom">
+            <span>快递:免运费</span>
+            <span>已售188份</span>
+        </div>
+    </div>
+
+    <div class="commission">
+        <span>可赚佣金</span><span>佣金比例: 10%</span><span>预计可赚: ¥9.80</span>
+    </div>
+
+    <div class="delivery">
+        <span>发货时间</span><span>18:00前下单预计今日发货,18:00以后下单次日8:00发货</span>
+    </div>
+
+    <div class="evaluate">
+        <div class="evaluate-num">用户评价 (21)</div>
+        <div class="evaluate-user">
+            <div class="userinfo">
+                <div class="user-head"><img src="" alt=""></div>
+                <div class="user-right">
+                    <p class="mobile">137****0084</p>
+                    <p class="star-list"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></p>
+                </div>
+            </div>
+            <div class="time">2020.05.18</div>
+        </div>
+        <p class="evaluate-description">价,撒打算的撒打算大撒打算的啊大大神啊 撒的撒发生的发生发呆复古风格风格的复古风的撒的撒发生的发生发呆复古风格风格的复古风的撒的撒发生的发生发呆复古风格风格的复古风的</p>
+        <div class="evaluate-img-list">
+            <div class="evaluate-img"><img src="" alt=""></div>
+            <div class="evaluate-img"><img src="" alt=""></div>
+        </div>
+
+        <div class="all-evaluate">查看全部评价</div>
+    </div>
+
+    <div class="bottomBar">
+        <img src="../images/shoppingCart2.png" alt="">
+        <img src="../images/share2.png" alt="">
+        <button class="addShoppingCart">加入购物车</button>
+        <button class="buy">立即购买</button>
+    </div>
+
+    <!--弹出提示框 -->
+    <section id="hintBox">
+        <div class="hintBox-content">
+            <div class="share-alert">
+                <div class="share-alert-top">
+                    <div class="copyUrl"><img src="../images/copyUrl.png" alt=""></div>
+                    <div class="sharePoster"><img src="../images/sharePoster.png" alt=""></div>
+                </div>
+                <button class="share-alert-cancel">取消</button>
+            </div>
+
+            <div class="coupon-alert">
+                <p class="coupon-head">领券</p>
+                <div class="coupon-item">
+                    <div class="coupon-item-left">
+                        <p class="coupon-title">店铺优惠券</p>
+                        <div class="coupon-item-left-bottom">
+                            <div class="coupon-price">
+                                <span>¥</span><span>3</span>
+                            </div>
+                            <div class="coupon-use">
+                                <p>满49使用</p>
+                                <p>有效期至 2020.06.06 23:59</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coupon-item-right">
+                        立即领取
+                    </div>
+                </div>
+                <div class="coupon-item">
+                    <div class="coupon-item-left">
+                        <p class="coupon-title">店铺优惠券</p>
+                        <div class="coupon-item-left-bottom">
+                            <div class="coupon-price">
+                                <span>¥</span><span>3</span>
+                            </div>
+                            <div class="coupon-use">
+                                <p>满49使用</p>
+                                <p>有效期至 2020.06.06 23:59</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coupon-item-right">
+                        立即领取
+                    </div>
+                </div>
+            </div>
+
+            <div class="shoppingCart-alert">
+                <div class="shoppingCart-goods">
+                    <div class="shoppingCart-goods-img"><img src="" alt=""></div>
+                    <div class="shoppingCart-goods-content">
+                        <p class="shoppingCart-goodsName">A级-发的顺丰的辅导书辅导书舒服的发的顺丰的辅导书辅导书舒服的</p>
+                        <p class="shoppingCart-specification">规格: 500g</p>
+                        <p><span class="shoppingCart-symbol">¥</span><span class="shoppingCart-price">19.90</span></p>
+                    </div>
+                </div>
+                <div class="shoppingCart-num">
+                    <span class="shoppingCart-num-title">购买数量</span>
+                    <div><img class="reduce" src="../images/reduce.png" alt=""><span class="shoppingCart-num-val">1</span><img class="add" src="../images/add2.png" alt=""></div>
+                </div>
+                <button class="shoppingCart-alert-confirm">确定</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="lock"></div>
+    <script>
+        $(function() {
+            const nowPrice = $('.nowPrice').text();
+            if (nowPrice.indexOf('.') > -1) {
+                const nowPrice2 = nowPrice.substr(0, nowPrice.indexOf('.'));
+                const nowPrice3 = nowPrice.substr(nowPrice.indexOf('.'), nowPrice.length);
+                $('.nowPrice,.shoppingCart-price').text(nowPrice2);
+                $('.nowPrice,.shoppingCart-price').after(`<span class='symbol'>${nowPrice3}</span>`)
+            }
+        })
+
+        function alertFun() {
+            var bodyH = $('body').height(); //body的高度  
+            var windowH = $(window).height(); //浏览器的高度        
+            if (bodyH < windowH) {           
+                bodyH = windowH;     
+            }  
+            var sW = $('body').width();  
+            $('.lock').css({                    //遮罩层的样式          
+                height: bodyH,
+                        //遮罩层的高是body内容的高
+                        width: sW,
+                          //遮罩层的宽是body内容的宽
+                        display: "block"   //显示遮罩层
+                            
+            });        
+            $('#hintBox').css('display', 'block'); //提示框
+        }
+
+        $(".share-alert-cancel,.lock,.shoppingCart-alert-confirm").click(function() {
+            $('#hintBox,.lock').hide();
+        })
+
+        $('.share').click(function() {
+            alertFun();
+            $('.coupon-alert').hide();
+            $('.shoppingCart-alert').hide();
+            $('.share-alert').show();
+        })
+        $('.coupon').click(function() {
+            alertFun();
+            $('.share-alert').hide();
+            $('.shoppingCart-alert').hide();
+            $('.coupon-alert').show();
+        })
+        $('.addShoppingCart').click(function() {
+            alertFun();
+            $('.share-alert').hide();
+            $('.coupon-alert').hide();
+            $('.shoppingCart-alert').show();
+
+        })
+    </script>
+</body>
+
+</html>

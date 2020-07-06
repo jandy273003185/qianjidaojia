@@ -1,0 +1,33 @@
+<!--pages/bankCardList/bankCardList.wxml-->
+<view class="bank">
+  <view bindtap="selectBank" data-id="{{item.Id}}" data-bankname="{{item.BankName}}" data-bankno="{{BankCardNoArr[index]}}" data-IsBankAUT="{{item.IsBankAUT}}" class="item touch-item {{item.isTouchMove ? 'touch-move-active' : ''}} {{item.BankName=='中国银行'?'zhongguo':''}} {{item.BankName=='中国建设银行'?'jianshe':''}} {{item.BankName=='中国工商银行'?'gongshang':''}} {{item.BankName=='中国邮政储蓄银行'?'youzheng':''}} {{item.BankName=='中国农业银行'?'nongye':''}} {{item.BankName=='浦发银行'?'pufa':''}} {{item.BankName=='交通银行'?'jiaotong':''}} {{item.BankName=='招商银行'?'zhaoshang':''}} {{item.BankName=='华夏银行'?'huaxia':''}} {{item.BankName=='平安银行'?'pingan':''}} {{item.BankName=='中信银行'?'zhongxing':''}} {{item.BankName=='兴业银行'?'xingye':''}} {{item.BankName=='民生银行'?'minsheng':''}} {{item.BankName=='光大银行'?'guangda':''}} {{item.BankName=='广发银行'?'guangfa':''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{listArr}}" wx:key="*this">
+    <view class="content">
+      <block wx:if="{{item.BankName=='中国银行'}}"><image src="/images/bank/{{item.BankName=='中国银行'?'zhongguo':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='中国建设银行'}}"><image src="/images/bank/{{item.BankName=='中国建设银行'?'jianshe':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='中国工商银行'}}"><image src="/images/bank/{{item.BankName=='中国工商银行'?'gongshang':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='中国邮政储蓄银行'}}"><image src="/images/bank/{{item.BankName=='中国邮政储蓄银行'?'youzheng':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='中国农业银行'}}"><image src="/images/bank/{{item.BankName=='中国农业银行'?'nongye':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='浦发银行'}}"><image src="/images/bank/{{item.BankName=='浦发银行'?'pufa':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='交通银行'}}"><image src="/images/bank/{{item.BankName=='交通银行'?'jiaotong':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='招商银行'}}"><image src="/images/bank/{{item.BankName=='招商银行'?'zhaoshang':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='华夏银行'}}"><image src="/images/bank/{{item.BankName=='华夏银行'?'huaxia':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='平安银行'}}"><image src="/images/bank/{{item.BankName=='平安银行'?'pingan':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='中信银行'}}"><image src="/images/bank/{{item.BankName=='中信银行'?'zhongxing':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='兴业银行'}}"><image src="/images/bank/{{item.BankName=='兴业银行'?'xingye':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='民生银行'}}"><image src="/images/bank/{{item.BankName=='民生银行'?'minsheng':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='光大银行'}}"><image src="/images/bank/{{item.BankName=='光大银行'?'guangda':''}}.png"></image></block>
+      <block wx:if="{{item.BankName=='广发银行'}}"><image src="/images/bank/{{item.BankName=='广发银行'?'guangfa':''}}.png"></image></block>
+    </view>
+    <view>
+      <view>{{item.BankName}}</view>
+      <view class="cardInfo"><text class="cardType">储蓄卡</text><text class="cardNo">{{BankCardNoArr[index]}}</text></view>
+    </view>
+    <view class="del" catchtap="del" data-id="{{item.Id}}" data-index="{{index}}">删除</view>
+  </view>
+</view>
+
+<navigator url="/pages/addBankCard/addBankCard">
+  <view class="addBankCard" bindtap="addBankCard">添加银行卡<text class="add">+</text></view>
+</navigator>
+
+

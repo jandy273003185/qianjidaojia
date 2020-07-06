@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>提交订单</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/submitOrder.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <image class="bg" src="../images/address_bg.png"></image>
+    <div class="address">
+        <div class="address-up">
+            <span>收货地址</span>
+            <image class="arrow" src="../images/arrow-right.png"></image>
+        </div>
+        <div class="address-down">
+            <p class="addressDetails">广东省 深圳市 南山区 粤海街道 登录路</p>
+            <p><span class="name">彭骄阳</span><span class="mobile">15350099474</span></p>
+        </div>
+
+    </div>
+
+    <div class="goodsList">
+        <div class="item goods-head"><span class="goods-title">商品列表</span><span class="goods-click">点击下方获取商品清单</span></div>
+        <div class="item-img">
+            <div class="goods-img">
+                <img src="../images/fruits.png" /><img src="../images/fruits.png" /><img src="../images/fruits.png" />
+            </div>
+            <div class="goods-img-url">
+                <span>共3件</span>
+                <image class="arrow2" src="../images/arrow-right.png"></image>
+            </div>
+        </div>
+        <div class="item item-remark line"><span class="item-title">商家留言</span><input placeholder="填写内容并与卖家确认"></input>
+        </div>
+        <div class="item "><span class="item-title">商品总价</span><span>¥ 88</span></div>
+        <div class="item "><span class="item-title">运费</span><span>¥ 12</span></div>
+        <div class="item "><span class="item-title">小计</span><span class="subtotal">¥ 90</span></div>
+        <div class="item" bindtap="showModal">
+            <div class="item-title">优惠券</div>
+            <div class="coupon" onclick="showScreen()">
+                <span>不使用</span>
+                <image class="arrow" src="../images/arrow-right.png"></image>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="down">
+        <div><span class="total">待支付:</span><span class="totalAmount">¥ 1231.90</span></div>
+        <div class="goOrder">去下单</div>
+    </div>
+
+
+    <!--弹出提示框 -->
+    <section id="hintBox">
+        <p class="selectCoupon">选择优惠券</p>
+        <div class="coupon-content">
+            <div class="coupon-item">
+                <p class="couponDetails">满30减16元券(活动商品独享)</p>
+                <div class="coupon-item-right">
+                    <span class="couponAmount">- ¥ 16</span>
+                    <img class="select" src="../images/selected.png" alt="">
+                </div>
+            </div>
+            <div class="coupon-item">
+                <p class="couponDetails">满30减16元券(活动商品独享)</p>
+                <div class="coupon-item-right">
+                    <span class="couponAmount">- ¥ 16</span>
+                    <img class="select" src="../images/selected.png" alt="">
+                </div>
+            </div>
+
+            <div class="coupon-item">
+                <p class="couponDetails">不使用</p>
+                <div class="coupon-item-right">
+                    <img class="select" src="../images/selected.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <button class="finish">完成</button>
+    </section>
+
+    <div class="lock"></div>
+    <script>
+        //显示遮罩层
+        function showScreen() {     
+            var bodyH = $('body').height(); //body的高度  
+            var windowH = $(window).height(); //浏览器的高度        
+            if (bodyH < windowH) {           
+                bodyH = windowH;     
+            }  
+            var sW = $('body').width();  
+            $('.lock').css({                    //遮罩层的样式          
+                height: bodyH,
+                        //遮罩层的高是body内容的高
+                        width: sW,
+                          //遮罩层的宽是body内容的宽
+                        display: "block"   //显示遮罩层
+                            
+            });        
+            $('#hintBox').css('display', 'block'); //提示框
+        }
+
+        $(".finish").click(function() {
+            $('#hintBox,.lock').hide();
+        })
+    </script>
+</body>
+
+</html>

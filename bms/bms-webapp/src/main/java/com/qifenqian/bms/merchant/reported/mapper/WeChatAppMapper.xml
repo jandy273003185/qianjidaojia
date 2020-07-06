@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.WeChatAppMapper">
+
+	<select id="getProvinceName" resultType="com.qifenqian.bms.merchant.reported.bean.WeChatAppAreaInfo">
+	select DISTINCT
+		province_name
+	from 
+		wx_area_info
+	</select>
+	
+	<select id="selectWxAreaInfo" resultType="com.qifenqian.bms.merchant.reported.bean.WeChatAppAreaInfo" parameterType="java.lang.String">
+		select t.* from 
+			wx_area_info t
+			where t.city_name 
+			like "%"#{areaName, jdbcType=VARCHAR}"%"
+			and t.area_name is null
+	</select>
+	
+	<select id="getTbSpCity" resultType="com.qifenqian.bms.merchant.reported.bean.City" parameterType="java.lang.String">
+		select t.*
+		from tb_sp_city t
+		where t.city_id = #{cityId, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询商户银行账号信息表 -->
+	<select id="getMerchantBankInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantBankInfo" parameterType="java.lang.String">
+		select 
+		t.* 
+		from td_merchant_bank_info t
+		where t.cust_id = #{custId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selTdMerchantDetailInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo"  resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		SELECT
+			*
+		FROM
+			td_merchant_report t1
+		WHERE
+			t1.`merchant_code` = #{merchantCode,jdbcType = VARCHAR} and t1.channel_no = #{channelNo,jdbcType = VARCHAR}
+	</select>
+	
+	
+	
+	<update id="updateTdMerchantReport"  parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" >
+    	 UPDATE `stcdb`.`td_merchant_report`
+			SET 
+			<if test="reportStatus != null and reportStatus !='' ">
+		 	`report_status` = #{reportStatus,jdbcType = VARCHAR}
+		 	</if>
+		 	<if test="detailStatus != null and detailStatus !='' ">
+		 	`detail_status` = #{detailStatus,jdbcType = VARCHAR}
+		 	</if>
+		 WHERE `merchant_code` = #{merchantCode,jdbcType = VARCHAR} and channel_no = #{channelNo,jdbcType = VARCHAR} and patch_no = #{patchNo,jdbcType = VARCHAR}
+    </update>
+    
+    <insert id="insertTdMerchantDetailInfoWechat" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+    	INSERT INTO td_merchant_detail_info_wechat
+    	(
+			patch_no,
+			merchant_code,
+			cust_name,
+			store_name,
+			industry_code,
+			contact_phone,
+			merchant_province,
+			merchant_city,
+			merchant_area,
+			cpr_reg_addr,
+			door_photo_path,
+			shop_interior_path,
+			representative_name,
+			mobile_no,
+			email,
+			representative_cert_no,
+			identity_eff_date,
+			identity_val_date,
+			legal_cert_attribute1_path,
+			legal_cert_attribute2_path,
+			account_nm,
+			account_no,
+			bank_province,
+			bank_city,
+			bank,
+			interBankName,
+			rate,
+			out_merchant_code,
+			short_name,
+			merchant_property,
+			business_scene,
+			business_license,
+			business_effective_term,
+			business_term,
+			business_photo_path,
+			qualification_path,
+			mp_appid,
+			mp_app_screen_shots_path,
+			miniprogram_appid,
+			miniprogram_appid_path,
+			app_appid,
+			app_download_url,
+			app_appid_path,
+			web_url,
+			web_appid,
+			web_url_path,
+			rate_id,
+			report_status,
+			result_msg,
+			remark,
+			create_time,
+			modify_time
+    	) VALUES (
+    		#{patchNo, jdbcType=VARCHAR},
+    		#{merchantCode, jdbcType=VARCHAR},
+    		#{custName, jdbcType=VARCHAR},
+    		#{storeName, jdbcType=VARCHAR},
+    		#{industryCode, jdbcType=VARCHAR},
+    		#{contactPhone, jdbcType=VARCHAR},
+    		#{merchantProvince, jdbcType=VARCHAR},
+    		#{merchantCity, jdbcType=VARCHAR},
+    		#{merchantArea, jdbcType=VARCHAR},
+    		#{cprRegAddr, jdbcType=VARCHAR},
+    		#{doorPhotoPath, jdbcType=VARCHAR},
+    		#{shopInteriorPath, jdbcType=VARCHAR},
+    		#{representativeName, jdbcType=VARCHAR},
+    		#{mobileNo, jdbcType=VARCHAR},
+    		#{email, jdbcType=VARCHAR},
+    		#{representativeCertNo, jdbcType=VARCHAR},
+    		#{identityEffDate, jdbcType=VARCHAR},
+    		#{identityValDate, jdbcType=VARCHAR},
+    		#{legalCertAttribute1Path, jdbcType=VARCHAR},
+    		#{legalCertAttribute2Path, jdbcType=VARCHAR},
+    		#{accountNm, jdbcType=VARCHAR},
+    		#{accountNo, jdbcType=VARCHAR},
+    		#{bankProvince, jdbcType=VARCHAR},
+    		#{bankCity, jdbcType=VARCHAR},
+    		#{bank, jdbcType=VARCHAR},
+    		#{interBankName, jdbcType=VARCHAR},
+    		#{rate, jdbcType=VARCHAR},
+    		#{outMerchantCode, jdbcType=VARCHAR},
+    		#{shortName, jdbcType=VARCHAR},
+    		#{merchantProperty, jdbcType=VARCHAR},
+    		#{businessScene, jdbcType=VARCHAR},
+    		#{businessLicense, jdbcType=VARCHAR},
+    		#{businessEffectiveTerm, jdbcType=VARCHAR},
+    		#{businessTerm, jdbcType=VARCHAR},
+    		#{businessPhotoPath, jdbcType=VARCHAR},
+    		#{qualificationPath, jdbcType=VARCHAR},
+    		#{mpAppid, jdbcType=VARCHAR},
+    		#{mpAppScreenShotsPath, jdbcType=VARCHAR},
+    		#{miniprogramAppid, jdbcType=VARCHAR},
+    		#{miniprogramAppidPath, jdbcType=VARCHAR},
+    		#{appAppid, jdbcType=VARCHAR},
+    		#{appDownloadUrl, jdbcType=VARCHAR},
+    		#{appAppidPath, jdbcType=VARCHAR},
+    		#{webUrl, jdbcType=VARCHAR},
+    		#{webAppid, jdbcType=VARCHAR},
+    		#{webUrlPath, jdbcType=VARCHAR},
+    		#{rateId, jdbcType=VARCHAR},
+    		#{reportStatus, jdbcType=VARCHAR},
+    		#{resultMsg, jdbcType=VARCHAR},
+    		#{remark, jdbcType=VARCHAR},
+    		now(),
+    		now()
+    		
+    	)
+    </insert>
+    
+    <select id="selTdMerchantReport" parameterType="com.qifenqian.bms.merchant.reported.bean.CrInComeBean" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" >
+		SELECT
+			t1.*,t2.report_status as detailStatus
+		FROM
+			td_merchant_report t1
+		INNER JOIN td_merchant_detail_info_wechat t2 ON t1.patch_no = t2.patch_no
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			AND t1.merchant_code = #{merchantCode,jdbcType = VARCHAR} 
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			AND t1.channel_no = #{channelNo,jdbcType = VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			AND t1.patch_no = #{patchNo,jdbcType = VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+			AND t2.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectTdMerchantDetailInfoWeChat" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+		SELECT t.* FROM td_merchant_detail_info_wechat t
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			 and t.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.create_time DESC
+	</select>
+    
+    <update id="updateTdMerchantDetailInfoWechat" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+    	UPDATE td_merchant_detail_info_wechat
+    	<set>
+    		<if test="reportStatus != null and reportStatus !='' ">
+		 		report_status = #{reportStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="outMerchantCode != null and outMerchantCode !='' ">
+		 		out_merchant_code = #{outMerchantCode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="resultMsg != null and resultMsg !='' ">
+		 		result_msg = #{resultMsg,jdbcType = VARCHAR},
+		 	</if>
+    		<if test="applymentId != null and applymentId !='' ">
+		 		applyment_id = #{applymentId,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="signUrl != null and signUrl !='' ">
+		 		sign_url = #{signUrl,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="signQrcode != null and signQrcode !='' ">
+		 		sign_qrcode = #{signQrcode,jdbcType = VARCHAR},
+		 	</if>
+		 	modify_time = now()
+    	</set>
+    	WHERE
+			patch_no = #{patchNo,jdbcType = VARCHAR}
+    </update>
+    
+    <update id="updateTdMerchantDetailInfo"  parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" >
+    	 UPDATE `stcdb`.`td_merchant_detail_info`
+		 SET 
+		 	<if test="reportStatus != null and reportStatus !='' ">
+		 	`report_status` = #{reportStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="fileStatus != null and fileStatus !='' ">
+		 	`file_status` = #{fileStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="outMerchantCode != null and outMerchantCode !='' ">
+		 	`out_merchant_code` = #{outMerchantCode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="remark != null and remark !='' ">
+		 	`remark` = #{remark,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="bestMerchantType != null and bestMerchantType !='' ">
+		 	`bestMerchantType` = #{bestMerchantType,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="loginNo != null and loginNo !='' ">
+		 	`loginNo` = #{loginNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="bestpayMctNo != null and bestpayMctNo !='' ">
+		 	`bestpayMctNo` = #{bestpayMctNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="resultMsg != null and resultMsg !='' ">
+		 	`result_msg` = #{resultMsg,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="applymentId != null and applymentId !='' ">
+		 	`applyment_id` = #{applymentId,jdbcType = VARCHAR},
+		 	</if>
+		 	
+		 	<if test="bankCode != null and bankCode !='' ">
+		 	`bank_code` = #{bankCode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="branchBankName != null and branchBankName !='' ">
+		 	`branch_bank_name` = #{branchBankName,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="accountNumber != null and accountNumber !='' ">
+		 	`account_number` = #{accountNumber,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="mobileNo != null and mobileNo !='' ">
+		 	`mobile_no` = #{mobileNo,jdbcType = VARCHAR},
+		 	</if>
+			 `modify_time` = now()
+		 WHERE
+			`patch_no` = #{patchNo,jdbcType = VARCHAR}
+    </update>
+</mapper>

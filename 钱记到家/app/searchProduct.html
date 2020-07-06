@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>搜索</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/details.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/sku.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/addCart.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .dd_tabList li.active a {
+            color: #ff4e17;
+        }
+
+        .search_head .search {
+            margin-left: .45rem;
+            margin-right: .1rem;
+        }
+
+        .search {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-flex;
+            display: -ms-flex;
+            display: -o-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -moz-align-items: center;
+            -ms-align-items: center;
+            -o-align-items: center;
+            align-items: center;
+            background: none;
+        }
+
+            .search .inner {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                flex: 1;
+                -moz-flex: 1;
+                -ms-flex: 1;
+                -o-flex: 1;
+                overflow: hidden;
+                background: #ffffff;
+                position: relative;
+            }
+
+            .search .del {
+                width: .3rem;
+                height: .3rem;
+                position: absolute;
+                top: 0;
+                z-index: 3;
+                right: .08rem;
+                background: url('/images/icons/delete2.png') center no-repeat;
+                background-size: .16rem .16rem;
+                display: none;
+            }
+
+            .search .btnSeach {
+                width: 0.42rem;
+                text-align: center;
+                line-height: 0.3rem;
+                height: 0.3rem;
+                font-size: 0.15rem;
+                margin-left: 0.05rem;
+            }
+
+            .search .input_txt {
+                padding-right: .15rem !important;
+            }
+
+        .ac .search .btnSeach {
+            color: #fff;
+        }
+
+        .inputSearch__defaultPage,
+        .noInputSearch__defaultPage {
+            background-color: #fff;
+            top: .45rem;
+            position: fixed;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            max-width: 750px;
+            z-index: 20;
+        }
+
+        .task {
+            z-index: 8;
+        }
+
+        .filterBox {
+            display: none;
+        }
+
+        .dd_tabList {
+            position: fixed;
+            left: 0;
+            right: 0;
+            max-width: 750px;
+            margin: 0 auto;
+            z-index: 10;
+            background-color: #fff;
+            top: .45rem;
+        }
+
+            .dd_tabList li a:after {
+                display: none;
+            }
+
+        #zonghe__filter {
+            text-align: right;
+        }
+
+        .dd_tabList li a {
+            padding: 0;
+        }
+
+        .icon-arrow {
+        }
+        .hide{display:none;}
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head search_head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="search">
+					<div class="inner">
+						<span class="ico_search"></span>
+						<input type="search" placeholder="请输入关键字搜素" class="input_txt" autofocus="autofocus" id="searchInput">
+						<span class="del"></span>
+					</div>
+					<span class="btnSeach" id="search" style="display: none;">搜索</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="main">
+			<div class="tabListBox" style="height: .42rem;display:none;">
+				<ul class="dd_tabList productList__tabList li_25">
+					<li id="zonghe__filter">
+						<a href="javascript:;" class="outside">
+							<span class="title firstTit">综合排序</span>
+							<span class="icon-arrow icon-arrowDown"></span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" class="outside">
+							<span class="title">销量</span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" class="outside">
+							<span class="title">评价</span>
+
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" class="outside">
+							<span class="title">上新</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="tabShowBox">
+				<div class="sectionProlist">
+					<div class="productListBox sectionBd">
+						<ul class="prolist li50 clear" id="allProduct"></ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!--最近搜索（未输入的时候）弹窗-->
+		<!--<div class="defaultPage fixed__defaultPage noInputSearch__defaultPage" style="display: block;">
+			<div class="main">
+				<div class="historySearch">
+					<div class="historySearch__hd">
+						<h3 class="title">最近搜索</h3>
+						<span class="del"></span>
+					</div>
+					<div class="historySearch__bd">
+						<ul class="wen__tabList searchList">
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+							<li>
+								男短袖
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		<!--最近搜索（未输入的时候）弹窗  end-->
+		<!--综合筛选弹窗-->
+		<div class="task"></div>
+		<div class="filterBox" style="">
+			<div class="filter__bd">
+				<ul class="filterList">
+					<li class="active zonghe">
+						<p class="title">综合排序</p>
+					</li>
+					<li>
+						<p class="title">价格升序</p>
+					</li>
+					<li>
+						<p class="title">价格降序</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--综合筛选弹窗  end-->
+		
+		<!-- 加入购物车的弹出sku选择-->
+		<div class="shade sku__shade">
+			<div class="shadebg"></div>
+			<div class="shade_content">
+				<div class="shade-item specifications_shade">
+					<span class="btn-close"></span>
+					<div class="productInfo">
+						<div class="m-pro clear">
+							<div class="hd fl">
+								<div class="img">
+									<img src="">
+								</div>
+							</div>
+							<div class="bd">
+								<h4 class="name"></h4>
+								<p class="desc"><span>库存：<span id="stock"></span>件</span>
+								</p>
+								<p class="price"><span>￥<span id="new_price"></span></span><span class="counterPrice">￥<span id="old_price"></span></span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="shade_bd">
+						<div id="skuBoxContent"></div>
+						<div class="skuBox buyNum_skuBox clear">
+							<h2 class="skuTitle fl">购买数量</h2>
+							<div class="flexItem fr">
+								<div class="selnum">
+									<span class="less btn-num icon-minus"></span>
+									<div class="textWrap">
+										<input type="text" id="pro_num" readonly="readonly">
+									</div>
+									<span class="more btn-num icon-add"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="shade_ft">
+						<a href="javascript:;" class="btn_100 btn-sure btn-qybuy" id="addCart">确定</a>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出sku选择 end-->
+		<script type="text/javascript">
+			var searchkey = ""; //筛选关键字
+			var hot = null; //是否热卖
+			var sortname = null; //筛选排序
+			var sortorder = null; //排序顺序
+			var page = 1; //当前页数
+			var isEnd = false; //滚动事件是否继续加载
+			var isok;
+			$(function() {
+				GoodsList();
+                
+				$('.search .del').show();
+				$('#search').show();
+				//更多的导航显示
+				$('.head .moreMenu').click(function() {
+					$('.moreMenuTask').toggle();
+				});
+				//筛选
+				$('.productList__tabList li').click(function() {
+					$(this).addClass('active').siblings('li').removeClass('active');
+					//点击综合排序
+					if($(this).attr('id') == 'zonghe__filter') {
+						$(this).toggleClass("isShow");
+						if($(this).hasClass("isShow")) {
+							$('.task,.filterBox').show();
+						} else {
+							$('.task,.filterBox').hide();
+						}
+					}
+					//点击销量
+					if($(this).find("span").text() === "销量") {
+						hot = null; //是否热卖
+						sortname = "x"; //筛选排序
+						sortorder = 0; //排序顺序
+						page = 1;
+						$(".firstTit").text("综合排序")
+						$(".zonghe").addClass("active").siblings("li").removeClass("active");
+						$('.task,.filterBox').hide();
+						$("#zonghe__filter").removeClass("isShow")
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+					//点击评价
+					if($(this).find("span").text() === "评价") {
+						hot = null; //是否热卖
+						sortname = "p"; //筛选排序
+						sortorder = 0; //排序顺序
+						page = 1;
+						$(".firstTit").text("综合排序")
+						$(".zonghe").addClass("active").siblings("li").removeClass("active");
+						$('.task,.filterBox').hide();
+						$("#zonghe__filter").removeClass("isShow")
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+					//点击上新
+					if($(this).find("span").text() === "上新") {
+						hot = null; //是否热卖
+						sortname = "s"; //筛选排序
+						sortorder = 0; //排序顺序
+						page = 1;
+						$(".firstTit").text("综合排序")
+						$(".zonghe").addClass("active").siblings("li").removeClass("active");
+						$('.task,.filterBox').hide();
+						$("#zonghe__filter").removeClass("isShow")
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+				});
+				$('.filterList li').click(function() {
+					$(this).addClass('active').siblings('li').removeClass('active');
+					$('.task,.filterBox').hide();
+					$("#zonghe__filter").removeClass("isShow");
+					$("#zonghe__filter .firstTit").text($(this).text());
+					if($(this).children("p").text() === "综合排序") {
+						//						searchkey = ""; //筛选关键字
+						hot = null; //是否热卖
+						sortname = null; //筛选排序
+						sortorder = 0; //排序顺序
+						page = 1;
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+					if($(this).children("p").text() === "价格升序") {
+						//						searchkey = ""; //筛选关键字
+						hot = null; //是否热卖
+						sortname = "j"; //筛选排序
+						sortorder = 1; //排序顺序
+						page = 1;
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+					if($(this).children("p").text() === "价格降序") {
+						//						searchkey = ""; //筛选关键字
+						hot = null; //是否热卖
+						sortname = "j"; //筛选排序
+						sortorder = 0; //排序顺序
+						page = 1;
+						$("#allProduct").html("");
+						GoodsList(searchkey, hot, sortname, sortorder);
+					}
+				});
+
+				//弹窗
+				var screenHeight = $(window).height();
+				var headHeight = $('.head').height();
+				$('.noInputSearch__defaultPage,.inputSearch__defaultPage').css({
+					'height': screenHeight - headHeight + 'px'
+				});
+
+				//搜索框获得焦点
+				$('.search input').focus(function() {
+					$('.search .del').show();
+					$('#search').show();
+				});
+				//删除搜索框
+				$('.search .del').click(function() {
+					$(this).siblings('input').val("");
+				});
+
+				//点击搜素的时候
+				$('#search').click(function() {
+					page = 1;
+					$('.search .del').hide();
+					searchkey = $.trim($('.search input').val());
+					$(this).hide();
+					var top = $(this).offset().top;
+					$('body, html').animate({scrollTop: top}, 0);
+					$('.noInputSearch__defaultPage').hide();
+					GoodsList(searchkey);
+				});
+				$('#searchInput').bind('search',function() {
+					page = 1;
+					//$('.search .del').hide();
+					searchkey = $.trim($('.search input').val());
+					$('#search').hide();
+					var top = $(this).offset().top;
+					$('body, html').animate({scrollTop: top}, 0);
+					$('.noInputSearch__defaultPage').hide();
+					GoodsList(searchkey);
+				});
+				//历史搜索
+				$('.searchList li').click(function() {
+					searchkey = $.trim($(this).text());
+					$('.search input').val(searchkey); //给搜索输入框赋值
+
+					//同时关闭历史搜索弹窗
+					$('.noInputSearch__defaultPage').hide();
+                });
+                var isTuanZhang = false;
+                var level = 0;
+                var isSGroup = false;//是否查找过团长
+                function GroupUserLevel() {
+                    if (isSGroup == false) {
+                        isSGroup = true;
+                        var url = 'api/User/GroupUserLevel';
+                        var callback = function (data) {
+                            if (data.code === 0) {
+                                if (data.data > 0) {
+                                    level = data.data;
+                                    if (level == 1) {
+                                        $(".levl2").remove();
+                                        $(".levl1").show();
+                                    }
+                                    else if (level == 2) {
+                                        $(".levl1").remove();
+                                        $(".levl2").show();
+                                    }
+                                    $(".icons_home").show();
+                                    isTuanZhang = true;
+                                    $(".grouptuan").show();
+                                }
+                            }
+                        }
+                        sc.post(url, {
+                            "UserId": sc.utils.getCookieValue("UserId"),
+                            "Token": sc.utils.getCookieValue("Token")
+                        }, callback);
+                    } else {
+                        if (level == 1) {
+                            $(".levl2").remove();
+                            $(".levl1").show();
+                        }
+                        else if (level == 2) {
+                            $(".levl1").remove();
+                            $(".levl2").show();
+                        }
+                    }
+                }
+				//分页 上拉加载更多
+				//获取滚动条当前的位置 
+				function getScrollTop() {
+					var scrollTop = 0;
+					if(document.documentElement && document.documentElement.scrollTop) {
+						scrollTop = document.documentElement.scrollTop;
+					} else if(document.body) {
+						scrollTop = document.body.scrollTop;
+					}
+					return scrollTop;
+				}
+
+				//获取当前可视范围的高度 
+				function getClientHeight() {
+					var clientHeight = 0;
+					if(document.body.clientHeight && document.documentElement.clientHeight) {
+						clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+					} else {
+						clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+					}
+					return clientHeight;
+				}
+
+				//获取文档完整的高度 
+				function getScrollHeight() {
+					return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+				}
+				//滚动事件
+				window.onscroll = function() {
+					
+					if(getScrollTop() + getClientHeight() === getScrollHeight()) {
+						if(isEnd === false) {
+							var isScroll = true;
+							page++;
+							GoodsList(searchkey, hot, sortname, sortorder, isScroll);
+						} else {
+//							layer.open({
+//								content: '已加载完',
+//								skin: 'msg',
+//								time: 2 //2秒后自动关闭
+//							});
+						}
+					}
+				}
+
+				//获取产品列表
+				function GoodsList(searchkey, hot, sortname, sortorder, isScroll) {
+					$.ajax({
+						type: "post",
+						url: sc.serverUrl + "/api/Goods/GoodsList",
+						data: {
+							page: page,
+							pageSize: 8,
+							searchkey: searchkey,
+							hot: hot,
+							sortname: sortname,
+							sortorder: sortorder
+						},
+						success: function(data) {
+							console.log(data);
+							isok = data.data.isOk;
+							//渲染产品列表模板
+							var proList = document.getElementById('proList').innerHTML;
+							laytpl(proList).render(data, function(html) {
+								//得到的模板渲染到html
+								if(isScroll === true) {
+									$("#allProduct").append(html);
+
+								} else {
+									page = 1;
+									document.getElementById('allProduct').innerHTML = html;
+                                }
+                                GroupUserLevel();
+                                if (isTuanZhang)
+                                    $(".grouptuan").show();
+							});
+							if(data.data.length === 0) {
+								//搜索不到的时候
+								if(data.count == 0){
+									var emptystr = "";
+									emptystr += '<div class="emptybox">';
+									emptystr += '<div class="iconimg"><img src="/images/icons/empty2.png"/></div>';
+									emptystr += '<p class="tips">暂无数据 </p>';
+									emptystr += '</div>';
+									$('#allProduct').html(emptystr);
+								}else{
+									isEnd = true;
+									layer.open({
+										content: '已加载完',
+										skin: 'msg',
+										time: 2 //2秒后自动关闭
+									});
+								}
+							} else {
+								isEnd = false;
+							}
+						}
+					});
+				}
+
+			})
+		</script>
+		<script type="text/html" id="proList">
+			{{# for(var i = 0; i< d.data.length; i++){ }} <li>
+				<a href="./details.html?id={{d.data[i].Id}}" class="m-pro" data-id="{{d.data[i].Id}}">
+					<div class="hd">
+						{{# if(d.data[i].IsHot){ }}
+						<div class="mark hot"><span>热卖</span></div>
+						{{# } }}
+						<div class="img"><img src={{d.data[i].ProductImg}}></div>
+					</div>
+                    <div class="bd">
+                        <h4 class="name">{{d.data[i].Name}}</h4>
+                        <p class="desc">
+                            {{# if(d.data[i].Synopsis){ }}
+                            {{d.data[i].Synopsis}}
+                            {{#  } else { }}
+                            暂无产品介绍
+                            {{# } }}
+                        </p>
+                        <p class="price">￥<span class="num">{{d.data[i].Price}}</span></p>
+                        <p class="Tags">
+                            <!--{{# if(d.data[i].DiscountNum && d.data[i].DiscountNum<10){ }}
+        <span class="rebate">{{d.data[i].DiscountNum}}折</span>
+        {{# } }}-->
+                            ￥<span class="counterPrice">{{d.data[i].MarketPrice}}</span>
+                        </p>
+                        <span class="buybtn"></span>
+                        <div class="grouptuan" style="display:none;">
+                            <div class="rate">佣金比例：<span class="levl1 hide">{{=d.data[i].CommissionRate}}</span><span class="levl2 hide">{{=d.data[i].SecondCommissionRate}}</span>%</div>
+                            <div class="zuan">预计可赚：￥<span class="levl1 hide">{{=d.data[i].CommissionPrice}}</span><span class="levl2 hide">{{=d.data[i].SecondCommissionPrice}}</span></div>
+                        </div>
+                    </div>
+				</a>
+				</li>
+				{{# } }}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<meta charset="UTF-8">
+		<title>我的订单</title>
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
+		<link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+		<link rel="stylesheet" type="text/css" href="/css/details.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+		<script type="text/javascript" src="/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+		<script src="/js/resetFontSize.js" type="text/javascript"></script>
+		<script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/script/order.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.zhezhao{
+				position: fixed;
+				top:0;
+				left:0;
+				width:100%;
+				height:100%;
+				z-index: 11;
+				background:#000000;
+				/*opacity: 0.5;*/
+				display:none;
+			}
+			.codeDiv{
+				width:90%;
+				max-width:640px;
+				margin:0 auto;
+				margin-top:40%;
+				background:#fff;
+				
+			}
+			.img canvas{
+				max-width: 100%;
+			    border: 0;
+			    display: block;
+			    margin: 0 auto;
+			}
+			.orderitem .item-prolist .proitem .descbox .btn{
+				margin-left: .05rem;
+			}
+		</style>
+	</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/member.html" class="btn_back"></a>
+				<div class="title center">售后服务</div>
+			</div>
+		</div>
+		<div class="main">					
+			<div class="Orderlist pd10" id="Orderlist">
+				<div id="Orderlist_Div"></div>				
+			</div>
+		</div>
+		<script id="Orderlist_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.length; i++){ }} 						
+			<div class="orderitem" data-Id="{{d[i].OrderId}}" data-No="{{d[i].OrderNumber}}">
+				<div class="item-hd">
+					<a href="/member/storeIndex.html?shopId={{d[i].ShopId}}" class="ordertype fl">{{d[i].ShopName}}</a>
+					<span class="orderstatus fr">{{d[i].StatusName}}</span>
+				</div>
+				<div class="item-prolist">
+					{{# for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+					<div class="proitem" data-Id="{{d[i].orderDetails[j].Id}}" data-pid="{{d[i].orderDetails[j].ProductId}}">
+						<div class="img fl">
+							<img src="{{d[i].orderDetails[j].ProductImg}}">
+						</div>
+						<div class="descbox">
+							<div class="titleBox flex">
+								<div class="flex1 flexItem"><p class="title ellipsis">{{d[i].orderDetails[j].ProductName}} </p></div>
+								<div class="flexItem">x<span class="num">{{d[i].orderDetails[j].ProductCount}}</span></div>
+							</div>
+							<p class="price">
+								<span>￥{{d[i].orderDetails[j].UnitPrice}}</span>
+								{{# if(d[i].orderDetails[j].OrderStatusId !=d[i].StatusId){ }}
+									{{#  if(d[i].orderDetails[j].OrderStatusId==5){ }}
+										<a class="CanelRefundbtn btn fr" href="javascript:;">取消退货</a>								
+									{{#  } else if(d[i].orderDetails[j].OrderStatusId==16){ }}
+										<a class="CanelRefundbtn btn fr" href="javascript:;">取消退款</a>
+									{{#  } else if(d[i].orderDetails[j].OrderStatusId==7||d[i].orderDetails[j].OrderStatusId==9||d[i].orderDetails[j].OrderStatusId==11){ }}
+									<a class="btn afterbtn fr" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}&refundId={{d[i].orderDetails[j].RefundId}}">退货详情</a>
+									{{#  } else if(d[i].orderDetails[j].OrderStatusId==17||d[i].orderDetails[j].OrderStatusId==18){ }}
+									<a class="btn afterbtn fr" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}&refundId={{d[i].orderDetails[j].RefundId}}">退款详情</a>	
+									{{#  } }}
+									<a class="c_green fz12 fr" href="javascript:;">{{d[i].orderDetails[j].OrderStatusName}}</a>
+								{{#  } }} 
+							</p>
+							
+						</div>
+					</div>										
+					{{# } }} 
+				</div>
+				<div class="item-ft">
+					<div class="ft-count" style="display: none;">
+						<div class="flex flexAlignCenter">							
+							{{# var num = 0; for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+								{{#  
+								  (function(j){
+								  	num += parseInt(d[i].orderDetails[j].ProductCount);
+								    return num;
+								  })(j);
+								}}									
+							{{# } }}
+							<div class="flexItem">共{{num}}件商品</div>
+							<div class="flexItem flex1 text_r">
+								<p class="txt ellipsis">合计：<span class="price"><span class="fh" style="font-size: .13rem;">￥</span>{{d[i].TotalPrice}}</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="ft-btns text_r" style="margin-top: 0;">
+						
+						{{#  if(d[i].StatusId==0){ }}
+							<!--待付款-->
+						  	
+						{{#  } else if(d[i].StatusId==1){ }}
+							<!--待发货-->
+												
+						{{#  } else if(d[i].StatusId==2){ }}
+							<!--已发货-->
+						  <!--	<a class="btn0 wuliubtn" href="/member/logistics.html?No={{d[i].OrderNumber}}">查看物流</a>-->						  	
+						{{#  } else if(d[i].StatusId==3){ }}
+							<!--已收货-->
+							<!--<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>-->
+						  	<!--<a class="btn0 wuliubtn" href="/member/logistics.html?No={{d[i].OrderNumber}}">查看物流</a>-->							
+						{{#  } else if(d[i].StatusId==4){ }}
+							<!--已评价订单-->						  	
+						  	
+						{{#  } else if(d[i].StatusId==5||d[i].StatusId==16){ }}
+							<!--申请退货退款-->
+						  	<a class="btn0 CanelRefund" href="javascript:;" onclick="CanelRefundBtn(this)">撤销申请</a>						  	
+						 
+						{{#  } else if(d[i].StatusId==7||d[i].StatusId==17){ }}
+							<!--拒绝申请退货退款申请-->
+						  	<!--<a class="btn0 CanelRefund" href="/aftersale/aftersaleType.html?OrderNo={{d[i].OrderNumber}}">申请售后</a> --> 
+						  	<!--<a class="btn0 wuliubtn active" href="/member/logistics.html?No={{d[i].OrderNumber}}">查看物流</a>-->
+						  	<!--<a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}">售后详情</a>-->
+						{{#  } else if(d[i].StatusId==9){ }}
+							<!--退货中-->
+						  <!--	<a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}">售后详情</a>-->
+						{{#  } else if(d[i].StatusId==11){ }}
+							<!--已退货-->
+							<!--<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>-->
+						<!--	<a class="btn0 wuliubtn active" href="/member/logistics.html?No={{d[i].OrderNumber}}">查看物流</a>-->
+						  	<!--<a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}">售后详情</a>-->							
+
+					  	{{#  } else if(d[i].StatusId==15){ }}
+							<!--用户取消退货-->
+						  	<!--<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>-->
+						{{#  } else if(d[i].StatusId==18){ }}  	
+						  	<!--商家拒绝退款-->
+						  	<!--<a class="btn0 wuliubtn active" href="/aftersale/aftersaleType.html?OrderNo={{d[i].OrderNumber}}">申请售后</a>-->
+						  	
+						{{#  } }} 
+						<a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}&refundId={{d[i].RefundId}}">售后详情</a>
+					</div>  
+				</div>
+			</div>
+			
+		{{# } }} 	
+		</script>	
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			var pageNum = 0, pageSize = 9;						
+			$('#Orderlist').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+					pageNum++;
+					RefundOrderList(pageNum, pageSize, function(data) {
+						var gettpl = document.getElementById('Orderlist_Tpl').innerHTML;
+						if(data.data.length == 0 && !data.isok) {
+							me.lock();
+							me.noData();
+							me.resetload();
+							if(pageNum == 1) {
+								$(".dropload-down").remove();
+								emptytpl($("#Orderlist_Div"));		
+							}
+						} else if(data.data.length < pageSize) {
+							laytpl(gettpl).render(data.data, function(html) {
+								//得到的模板渲染到html
+								$('#Orderlist_Div').append(html);
+							});
+							$('.orderitem').each(function(){
+								var orderno=$(this).attr('data-no');
+								$(this).find('.CanelRefundbtn').click(function(event){
+									event.preventDefault();
+									event.stopPropagation()
+									CanelRefundBtnSingle($(this),orderno);
+								})
+							})
+							me.lock("down");
+							me.noData();
+							me.resetload();		
+							
+						} else {
+							if(pageNum == 1) {
+								$("#Orderlist_Div").html("");
+							}
+							laytpl(gettpl).render(data.data, function(html) {
+								//得到的模板渲染到html
+								$('#Orderlist_Div').append(html);
+							});
+							$('.orderitem').each(function(){
+								var orderno=$(this).attr('data-no');
+								$(this).find('.CanelRefundbtn').click(function(event){
+									event.preventDefault();
+									event.stopPropagation()
+									CanelRefundBtnSingle($(this),orderno);
+								})
+							})
+							me.resetload();
+						}
+					}, me)
+				}
+		
+			});
+			
+		})
+	</script>
+</html>

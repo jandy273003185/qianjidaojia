@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>领券中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/coupon.js?v=003" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="title center">领券中心</div>
+        </div>
+    </div>
+    <div class="main couponList">
+        <div id="couponList1">
+
+        </div>
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer">
+
+    </nav>
+    <!--优惠券列表模板 start-->
+    <script type="text/html" id="couponLtpl">
+        {{# for(var i = 0; i< d.data.length; i++){ }}
+        {{#  if(d.data[i].IsMyAlready===false){ }}
+        <div class="item false__item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+            {{#  } else { }}
+            <div class="item" data-id="{{d.data[i].Id}}" data-limit="{{d.data[i].Limit}}">
+                {{#  } }}
+                <div class="left">
+                    {{#  if(d.data[i].DiscountType==="2"){ }}
+                    {{
+#
+						  function rebate(){
+						  	var number = d.data[i].Denomination*10;
+						    return number;
+						  }
+                    }}
+                    <span class="priceArea left_priceArea center">{{rebate()}}<span class="fh">折</span></span>
+                    {{#  } else { }}
+                    <span class="priceArea left_priceArea center"><span class="fh">￥</span>{{d.data[i].Denomination}}</span>
+                    {{#  } }}
+                    <div class="titleBox">
+                        <p class="useNeed">
+                            <span class="title">{{d.data[i].shopName}}</span>
+                        </p>
+                        <span class="title">{{d.data[i].Name}}</span>
+                    </div>
+                    <p class="validTime">有效日期：{{d.data[i].StartTime.split(" ")[0]}}-<span class="endTime">{{d.data[i].EndTime.split(" ")[0]}}</span></p>
+                </div>
+                <div class="right">
+                    <span class="type">立即领取</span>
+                </div>
+            </div>
+            {{# } }}
+    </script>
+    <!--优惠券列表模板 end-->
+</body>
+	<script type="text/javascript">
+		var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var ActivityProductType = 0;
+        var parms = sc.utils.getQueryString("parms");
+        var couId = sc.utils.getQueryString("id");
+        if (!couId)
+            couId = 0;
+        if (!parms)
+            parms = "Info";
+		var limitNum = 0;
+		var itemIndex;
+		$(function() {
+			var pageNum = 0; //当前页
+			var pageSize = 6;
+			$('.couponList').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+                    pageNum++;
+                    
+                    CouponCenter(couId, parms,'', pageNum, pageSize, function(data) {
+						var gettpl = document.getElementById('couponLtpl').innerHTML;
+						if(data.data.length == 0 && !data.isok) {
+							me.lock();
+							me.noData();
+							me.resetload();
+							if(pageNum == 1) {
+								$(".dropload-down").remove();
+								var emptystr = "";
+								emptystr += '<div class="emptybox">';
+								emptystr += '<div class="iconimg"><img src="/images/icons/empty2.png"/></div>';
+								emptystr += '<p class="tips center c_999">暂无数据 </p>';
+								emptystr += '</div>';
+								$('#couponList1').html(emptystr);
+							}
+						} else if(data.data.length < pageSize) {
+							setTimeout(function() {
+								laytpl(gettpl).render(data, function(html) {
+									//得到的模板渲染到html
+									$('#couponList1').append(html);
+								});
+                                $("#couponList1 .item").each(function () {
+                                    $(this).click(function () {
+                                        var CouponId = $(this).attr("data-id");
+                                        ReceiveCoupon($(this),CouponId,0);
+                                    });
+                                });
+								me.resetload();
+							}, 1000);
+							me.lock("down");
+							me.noData();
+						} else {
+							if(pageNum == 1) {
+								$("#couponList1").html("");
+							}
+							setTimeout(function() {
+								laytpl(gettpl).render(data, function(html) {
+									//得到的模板渲染到html
+									$('#couponList1').append(html);
+								});
+								$("#couponList1 .item").each(function() {
+									$(this).click(function() {
+										var CouponId = $(this).attr("data-id");
+                                        ReceiveCoupon($(this), CouponId,0);
+									})
+								})
+								me.resetload();
+							}, 1000);
+						}
+					}, function(data) {
+						me.resetload();
+					})
+				}
+			})
+            $("#index-footer").load("/footerV.html");
+		})
+	</script>
+
+</html>

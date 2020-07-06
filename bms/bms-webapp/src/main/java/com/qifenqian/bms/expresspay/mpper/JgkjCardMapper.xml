@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.expresspay.mpper.JgkjCardMapper">
+
+  <select id="selectCardNo" parameterType="string" resultType="string">
+	SELECT 
+		C.jgkj_Card_No 
+	FROM 
+		ACCT_SEVEN_CUST C 
+	WHERE 
+		C.CUST_ID = #{custId, jdbcType = VARCHAR}	
+  </select>
+</mapper>

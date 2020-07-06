@@ -1,0 +1,213 @@
+@import '../common/base.scss';
+.mine {
+    // background: #fff;
+}
+
+.info {
+    display: flex;
+    padding: vw(20) vw(30);
+    height: vw(142);
+    border-bottom: 1px solid #efefef;
+    background: #fff;
+}
+
+.info .photo {
+    width: vw(90);
+    height: vw(90);
+    font-size: 30rpx;
+    color: #333;
+    border-radius: 50%;
+    margin-right: vw(10);
+}
+
+.info .text {
+    line-height: 1.5em;
+}
+
+.info .name {
+    font-size: vw(26);
+    color: #999;
+    ;
+}
+
+.menu {
+    padding: 0 vw(30);
+    margin-bottom: vw(80);
+    background: #fff;
+}
+
+.menu .item {
+    display: block;
+    height: vw(95);
+    line-height: vw(95);
+    border-bottom: 1px solid #efefef;
+    position: relative;
+}
+
+.menu .icon {
+    position: absolute;
+    top: vw(26);
+    right: vw(10);
+    z-index: 99;
+}
+
+.logout {
+    width: vw(690);
+    height: vw(78);
+    line-height: vw(78);
+    background-color: #699dd7;
+    border-radius: 4px;
+    font-size: vw(30);
+    color: #fff;
+    text-align: center;
+    margin: vw(30) auto;
+    border: none;
+}
+
+.unbind {
+    border: 1px solid #699dd7;
+    background-color: #f7f7f7;
+    color: #699dd7;
+}
+
+
+/* 业务员管理 */
+
+.sales .row {
+    height: vw(70);
+    line-height: vw(70);
+    border-bottom: 1px solid #efefef;
+    padding-left: vw(15);
+}
+
+.sales .add {
+    width: 90%;
+    height: vw(90);
+    line-height: vw(90);
+    border: 2px solid #699dd7;
+    text-align: center;
+    margin: vw(60) auto;
+    border-radius: 4px;
+}
+
+.sales .add .van-icon {
+    width: vw(60);
+    height: vw(60);
+    line-height: vw(60);
+    border: 2px solid #699dd7;
+    border-radius: 50%;
+    color: #699dd7;
+    font-size: vw(40);
+    text-align: center;
+    margin-top: vw(6);
+}
+
+.addSales {
+    width: vw(600);
+    position: fixed;
+    padding: vw(30) vw(50);
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: vw(14);
+}
+
+.addSales .tit {
+    height: vw(60);
+    line-height: vw(60);
+    text-align: center;
+    font-size: vw(30);
+}
+
+.addSales .item {
+    height: vw(80);
+    line-height: vw(80);
+    color: #000;
+}
+
+.buttons {
+    display: flex;
+    margin-top: vw(10);
+    .btn {
+        flex: 1;
+        text-align: center;
+        font-size: vw(30);
+    }
+    .save {
+        color: #1989fa;
+    }
+}
+
+.salesInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .textBox {
+        text-align: center;
+        .text {
+            border: 1px solid #699dd7;
+            color: #699dd7;
+            text-align: center;
+            border-radius: vw(5);
+            padding: vw(5) vw(20);
+        }
+        .unfreeze {
+            border-color: #ff3d49;
+            color: #ff3d49;
+        }
+    }
+}
+
+
+/* 关于 */
+
+.about .item {
+    width: 100%;
+    height: vw(70);
+    line-height: vw(70);
+    display: block;
+    border-bottom: 1px solid #efefef;
+    padding: 0 vw(30);
+    background: #fff;
+    position: relative;
+}
+
+.about .item .icon {
+    position: absolute;
+    right: vw(10);
+    top: vw(18);
+    z-index: 99;
+}
+
+.about .logo {
+    background: #f7f7f7;
+    height: vw(400);
+    text-align: center;
+    font-size: vw(24);
+    padding-top: vw(70);
+}
+
+.about .logo img {
+    width: vw(180);
+    height: vw(180);
+    display: block;
+    margin: 0 auto vw(20);
+}
+
+.copyright {
+    width: 100%;
+    height: vw(120);
+    line-height: 1.5em;
+    position: absolute;
+    z-index: 99;
+    bottom: 0;
+    text-align: center;
+    color: #666;
+}
+
+.item:last-child {
+    border: none;
+}

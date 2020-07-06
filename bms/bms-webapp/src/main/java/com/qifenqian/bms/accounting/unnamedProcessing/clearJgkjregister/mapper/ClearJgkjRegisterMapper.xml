@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.accounting.unnamedProcessing.clearJgkjregister.mapper.ClearJgkjRegisterMapper">
+
+  <select id="selectClearJgkjRegisterByList" resultType="com.qifenqian.bms.accounting.unnamedProcessing.clearJgkjregister.bean.ClearJgkjRegister"  parameterType="com.qifenqian.bms.accounting.unnamedProcessing.clearJgkjregister.bean.ClearJgkjRegister" >
+	   SELECT
+			  ID,
+			  TRANS_FLOW_ID,
+			  CUST_ID,
+			  TRANS_CODE,
+			  MOBILE,
+			  PIN,
+			  NAME,
+			  ID_TYPE,
+			  ID_CODE,
+			  BIRTHDAY,
+			  ADDR,
+			  POST,
+			  EMAIL,
+			  RESERVE,
+			  SEND_DATE,
+			  SEND_TIME,
+			  STATUS,
+			  INST_DATETIME,
+			  RTN_DATE,
+			  RTN_TIME,
+			  RTN_SEQ,
+			  RTN_CODE,
+			  RTN_INFO,
+			  RTN_CARD_NO,
+			  UPDATE_DATETIME,
+			  BAL_STATUS
+		FROM
+			CLEAR_JGKJ_REGISTER T
+		WHERE
+			1 = 1
+		AND t. STATUS = 'EXCEPTION'
+    <if test="mobile != null and mobile != '' ">
+	 AND T.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="name != null and name != '' ">
+	 AND T.NAME LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="transFlowId != null and transFlowId != '' ">
+	 AND T.TRANS_FLOW_ID LIKE CONCAT('%',#{transFlowId,jdbcType=VARCHAR},'%')
+	</if>
+	<if test="idCode != null and idCode != '' ">
+	 AND T.ID_CODE LIKE CONCAT('%',#{idCode,jdbcType=VARCHAR},'%')
+	</if>
+	ORDER BY T.INST_DATETIME DESC
+  </select>
+</mapper>

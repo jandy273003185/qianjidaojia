@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>爆款直降</title>
+  <link rel="stylesheet" href="./../css/base.css">
+  <link rel="stylesheet" href="./../css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+</head>
+
+<body>
+    <!-- 轮播图 -->
+    <div class="swiper-container-carousel carousel">
+      <div class="swiper-wrapper carousel-content">
+        <div class="swiper-slide carousel-item">
+          <a href=""
+            style="background-image:url(https://mall.qianjidaojia.com//upload/admin/2019-11-07/2019110721104177830s02291.jpg);">
+          </a>
+        </div>
+        <div class="swiper-slide carousel-item">
+          <a href=""
+            style="background-image:url(https://mall.qianjidaojia.com//upload/admin/2019-11-07/2019110722204546316s09816.png);">
+          </a>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
+    </div>
+    <!-- 商品列表 -->
+    <div class="good-list">
+        <div class="item clearfix">
+            <img src="./../images/new.png"/>
+            <div class="detail">
+                <div class="tit">【爱媛】大橙 约5斤装…</div>
+                <p>套装包装 甜度跟家 果粒饱满 清爽可口</p>
+                <div class="realprice"><span>¥</span>55.00</div>
+                <div class="price clearfix">原价：<span>45.00</span> <a href="#" class="gobuy">立即入手</a> </div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <img src="./../images/new.png"/>
+            <div class="detail">
+                <div class="tit">【爱媛】大橙 约5斤装…</div>
+                <p>套装包装 甜度跟家 果粒饱满 清爽可口</p>
+                <div class="realprice"><span>¥</span>55.00</div>
+                <div class="price clearfix">原价：<span>45.00</span> <a href="#" class="gobuy">立即入手</a> </div>
+            </div>
+        </div>
+    </div>
+  <!-- 底部导航 -->
+  <div class="navigator">
+    <a href="" class="home-icon">首页</a>
+    <a href="" class="type-icon">种类</a>
+    <a href="" class="discover-icon">发现</a>
+    <a href="" class="shop-icon">购物车</a>
+    <a href="" class="user-icon">我的</a>
+  </div>
+
+  <script>
+    // 轮播图
+    var swiper = new Swiper('.swiper-container-carousel', {
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+    });
+
+    // 消息滚动
+    var swiper = new Swiper('.swiper-container-news', {
+      direction: 'vertical',
+      loop: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      },
+    });
+  </script>
+</body>
+
+</html>

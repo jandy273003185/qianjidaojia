@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.mapper.OrderMapperMaster">
+	
+	<update id="updateOrder" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		update TD_ORDER
+		<set>
+			<if test="mchId != null and mchId != ''">
+			MCH_ID  = #{mchId,jdbcType=VARCHAR},
+			</if>
+			<if test="mchName != null and mchName != ''">
+			MCH_NAME = #{mchName,jdbcType=VARCHAR},
+			</if>
+			<if test="pgURL != null and pgURL != ''">
+			PG_URL = #{pgURL,jdbcType=VARCHAR},
+			</if>
+			<if test="bgURL != null and bgURL != ''">
+			BG_URL = #{bgURL,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null and version != ''">
+			VERSION =#{version,jdbcType=VARCHAR},
+			</if>
+			<if test="orderAmt != null and orderAmt != 0">
+			ORDER_AMT = #{orderAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="tradeAmt != null and tradeAmt != 0">
+			TRADE_AMT =#{tradeAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="couponAmt != null and couponAmt != 0">
+			COUPON_AMT = #{couponAmt,jdbcType=DECIMAL},
+			</if>
+			<if test="prodDesc != null and prodDesc != ''">
+			PROD_DESC = #{prodDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="payType != null and payType != ''">
+			PAY_TYPE = #{payType,jdbcType=VARCHAR},
+			</if>
+			<if test="orderTimeOut != null and orderTimeOut != ''">
+			ORDER_TIME_OUT = #{orderTimeOut,jdbcType=INTEGER},
+			</if>
+			<if test="extData1 != null and extData1 != ''">
+			EXT_DATA1 = #{extData1,jdbcType=VARCHAR},
+			</if>
+			<if test="extData2 != null and extData2 != ''">
+			EXT_DATA2 = #{extData2,jdbcType=VARCHAR},
+			</if>
+			<if test="orderState != null and orderState != ''">
+			ORDER_STATE = #{orderState,jdbcType=VARCHAR},
+			</if>
+			<if test="orderTimeStamp != null and orderTimeStamp != ''">
+			ORDER_TIMESTAMP = #{orderTimeStamp,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null and modifyId != ''">
+			MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="payerContact != null and payerContact != ''">
+			PAYER_CONTACT = #{payerContact,jdbcType=VARCHAR},
+			</if>
+			<if test="payerId != null and payerId != ''">
+			PAYER_ID = #{payerId,jdbcType=VARCHAR},
+			</if>
+			<if test="signType != null and signType != ''">
+			SIGN_TYPE = #{signType,jdbcType=VARCHAR},
+			</if>
+			<if test="signMsg != null and signMsg != ''">
+			SIGN_MSG = #{signMsg,jdbcType=VARCHAR},
+			</if>
+			<if test="inputCharset != null and inputCharset != ''">
+			INPUT_CHARSET = #{inputCharset,jdbcType=VARCHAR},
+			</if>
+			<if test="pageLanguage != null and pageLanguage != ''">
+			PAGE_LANGUAGE = #{pageLanguage,jdbcType=VARCHAR},
+			</if>
+			
+			<if test="notifyCount != null and notifyCount != ''">
+			NOTIFY_COUNT = #{notifyCount,jdbcType=VARCHAR} ,
+			</if>
+			<if test="notifyResult != null and notifyResult != ''">
+			NOTIFY_RESULT = #{notifyResult,jdbcType=VARCHAR} ,
+			</if>
+			<if test="coreSubmitstate != null and coreSubmitstate != ''">
+			CORE_SUBMIT_STATE =	#{coreSubmitstate,jdbcType=VARCHAR} ,
+			</if>
+			<if test="coreSn != null and coreSn != ''">
+			CORE_SN = #{coreSn,jdbcType=VARCHAR} ,
+			</if>
+			<if test="orderCoreReturnCode != null and orderCoreReturnCode != ''">
+			ORDER_CORE_RETURN_CODE = #{orderCoreReturnCode,jdbcType=VARCHAR} ,
+			</if>
+			<if test="orderCoreReturnMsg != null and orderCoreReturnMsg != ''">
+			ORDER_CORE_RETURN_MSG = #{orderCoreReturnMsg,jdbcType=VARCHAR} ,
+			</if>
+			<if test="orderCoreReturnTime != null and orderCoreReturnTime != ''">
+			ORDER_CORE_RETURN_TIME = str_to_date(#{orderCoreReturnTime,jdbcType=VARCHAR},'%Y%m%d%H%i%s'),
+			</if>
+			<if test="channel != null and channel != ''">
+			CHANNEL = #{channel,jdbcType=VARCHAR} ,
+			</if>
+			<if test="channelSub != null and channelSub != ''">
+			CHANNEL_SUB = #{channelSub,jdbcType=VARCHAR} ,
+			</if>
+			<if test="zxOrderId != null and zxOrderId != ''">
+			ZX_ORDER_ID = #{zxOrderId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="channelOrderId != null and channelOrderId != ''">
+			CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="finishTime != null and finishTime != ''  ">
+			FINISH_TIME = str_to_date(#{finishTime,jdbcType=VARCHAR},'%Y%m%d%H%i%s') ,
+			</if>
+			<if test="refundTime != null and refundTime != ''">
+			REFUND_TIME = str_to_date(#{refundTime,jdbcType=VARCHAR},'%Y%m%d%H%i%s') 
+			</if>
+		</set>
+		<where>
+			ORDER_ID =#{orderId,jdbcType=VARCHAR}
+		</where>
+	</update>
+	<update id="updateRefundRecode" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+		update
+			td_refund
+		<set>
+			<if test="merRefundId != null and merRefundId != ''">
+			MER_REFUND_ID = #{merRefundId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="orderId != null and orderId != ''">
+			ORDER_ID = #{orderId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+			MCH_ID = #{merchantCode,jdbcType=VARCHAR} ,
+			</if>
+			<if test="totalAmt != null and totalAmt != 0">
+			TOTAL_AMT = #{totalAmt,jdbcType=DECIMAL} ,
+			</if>
+			<if test="refundAmt != null and refundAmt != 0">
+			REFUND_AMT = #{refundAmt,jdbcType=DECIMAL} ,
+			</if>
+			<if test="channelTransId != null and channelTransId != ''">
+			CHANNEL_TRANS_ID = #{channelTransId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="channelRefundId != null and channelRefundId != ''">
+			CHANNEL_REFUND_ID = #{channelRefundId,jdbcType=VARCHAR} ,
+			</if>
+			<if test="refundChannel != null and refundChannel != ''">
+			REFUND_CHANNEL = #{refundChannel,jdbcType=VARCHAR} ,
+			</if>
+			<if test="errCode != null and errCode != ''">
+			ERR_CODE = #{errCode,jdbcType=VARCHAR} ,
+			</if>
+			<if test="errDesc != null and errDesc != ''">
+			ERR_DESC = #{errDesc,jdbcType=VARCHAR} ,
+			</if>
+			<if test="refundTime != null and refundTime != ''">
+			REFUND_TIME = #{refundTime,jdbcType=VARCHAR} ,
+			</if>
+			<if test="refundState != null and refundState != ''">
+			REFUND_STATE = #{refundState,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createTime != null and createTime != ''">
+			CREATE_TIME = #{createTime,jdbcType=VARCHAR} ,
+			</if>
+			<if test="createId != null and createId != ''">
+			CREATE_ID = #{createId,jdbcType=VARCHAR}  ,
+			</if>
+			<if test="coreSubmitstate != null and coreSubmitstate != ''">
+			CORE_SUBMIT_STATE = #{coreSubmitstate,jdbcType=VARCHAR}  ,
+			</if>			
+			<if test="coreSn != null and coreSn != ''">
+			CORE_SN = #{coreSn,jdbcType=VARCHAR}  ,
+			</if>
+			<if test="orderCoreReturnCode != null and orderCoreReturnCode != ''">
+			ORDER_CORE_RETURN_CODE = #{orderCoreReturnCode,jdbcType=VARCHAR}  ,
+			</if>
+			<if test="orderCoreReturnMsg != null and orderCoreReturnMsg != ''">
+			ORDER_CORE_RETURN_MSG = #{orderCoreReturnMsg,jdbcType=VARCHAR}  ,
+			</if>
+			<if test="orderCoreReturnTime != null and orderCoreReturnTime != ''">
+			ORDER_CORE_RETURN_TIME = #{orderCoreReturnTime,jdbcType=VARCHAR}
+			</if>
+		</set>
+		<where>
+			REFUND_ID = #{refundId,jdbcType=VARCHAR} 
+		</where>
+	</update>
+	
+	<update id="updateOrderInfo" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		UPDATE td_order o
+		<set>
+		  <if test="orderState != null and orderState != ''">
+	      	o.ORDER_STATE = #{orderState,jdbcType=VARCHAR},
+	      </if>
+	      <if test="notifyCount != null and notifyCount != ''">
+	      	o.NOTIFY_COUNT = #{notifyCount,jdbcType=VARCHAR},
+	      </if>
+	      <if test="notifyResult != null and notifyResult != ''">
+	      	o.NOTIFY_RESULT = #{notifyResult,jdbcType=VARCHAR},
+	      </if>
+	      <if test="extData2 != null and extData2 != ''">
+	      	o.EXT_DATA2 = #{extData2,jdbcType=VARCHAR}
+	      </if>
+	      
+		</set>
+		WHERE
+		o.`ORDER_ID` =#{orderId,jdbcType=VARCHAR};
+</update>
+</mapper>

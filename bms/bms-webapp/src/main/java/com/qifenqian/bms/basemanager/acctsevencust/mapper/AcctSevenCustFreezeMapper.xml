@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.acctsevencust.mapper.AcctSevenCustFreezeMapper">
+
+	<insert id="insert" parameterType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCustFreeze">
+		INSERT INTO ACCT_SEVEN_CUST_FREEZE(
+		ID,
+		ACCT_ID,
+		CUST_ID,
+		MSG_TYPE,
+		STATUS,
+		BRIEF,
+		INST_DATE,
+		INST_DATETIME,
+		CREATOR
+		)VALUES(
+		#{id, 			jdbcType = VARCHAR},
+		#{acctId, 		jdbcType = VARCHAR},
+		#{custId, 		jdbcType = VARCHAR},
+		#{msgType, 		jdbcType = VARCHAR},
+		#{status, 		jdbcType = VARCHAR},
+		#{brief, 		jdbcType = VARCHAR},
+		#{instDate, 	jdbcType = VARCHAR},
+		now(),
+		#{creator, 		jdbcType = VARCHAR}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCustFreeze">
+		UPDATE ACCT_SEVEN_CUST_FREEZE
+		<set>
+			<if test="rtnDatetime != null">
+				RTN_DATETIME = #{rtnDatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="rtnCode != null">
+				RTN_CODE = #{rtnCode,jdbcType=VARCHAR},
+			</if>
+			<if test="relateId != null">
+				RELATE_ID = #{relateId,jdbcType = VARCHAR},
+			</if>
+			<if test="rtnInfo != null">
+				RTN_INFO = #{rtnInfo,jdbcType = VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+		</set>
+		WHERE ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectMsgId" parameterType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCustFreeze" resultType="com.qifenqian.bms.basemanager.acctsevencust.bean.AcctSevenCustFreeze">
+		  SELECT
+				F.RELATE_ID
+			FROM
+				ACCT_SEVEN_CUST_FREEZE F
+			WHERE
+				STATUS = '00'
+		  AND F.ACCT_ID = #{acctId,jdbcType = VARCHAR}
+			AND F.MSG_TYPE = 'CUST_FULL_FREEZE'
+			AND F.RELATE_ID NOT IN (
+				SELECT
+					T.ORIGIN_MSG_ID
+				FROM
+					STCS.TRANS_RECORD_FLOW R,
+					STCS.TRANS_RECORD_FREEZE T,
+					STCS.ACCT_SEVEN_CUST_FREEZE_FLOW C
+				WHERE
+				R.MSG_ID = T.MSG_ID
+			AND	R.ID = C.TRANS_FLOW_ID
+			AND R.OPERATE = 'SEVEN_CUST_FULL_UNFREEZE'
+			AND T.ACCT_ID = #{acctId,jdbcType = VARCHAR}
+)
+	</select>
+</mapper>

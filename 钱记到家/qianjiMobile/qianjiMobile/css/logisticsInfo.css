@@ -1,0 +1,165 @@
+        body {
+            background-color: #F5F5F5;
+            padding: 0;
+            margin: 0;
+            font-family: PingFangSC-Regular, PingFang SC;
+        }
+        
+        .bg {
+            width: 100%;
+            height: 2.6rem;
+        }
+        
+        .up {
+            width: 100%;
+            height: 2.6rem;
+            position: absolute;
+            top: 0;
+            color: #ffffff;
+            padding: 0 0.3rem;
+        }
+        
+        .status {
+            line-height: 1.2rem;
+            font-size: 0.32rem;
+            font-weight: 550;
+        }
+        
+        .up-goods {
+            display: flex;
+            font-size: 0.22rem;
+            font-weight: 400;
+        }
+        
+        .goods-img {
+            width: 1.08rem;
+            min-width: 1.08rem;
+            height: 1.08rem;
+            background: #F5F5F5;
+            margin-right: 0.2rem;
+        }
+        
+        .goods-img>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .goodsName {
+            margin-top: 0.08rem;
+            width: 5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 0.02rem;
+        }
+        
+        .arrow-div {
+            display: flex;
+            align-items: center;
+        }
+        
+        .arrow {
+            width: 0.1rem;
+            height: 0.18rem;
+            margin-left: 0.5rem;
+        }
+        
+        .logistics {
+            background-color: #ffffff;
+            margin: 0.2rem;
+            padding: 0.4rem 0.2rem 0.2rem 0.2rem;
+            color: #505050;
+        }
+        
+        .item {
+            display: flex;
+        }
+        
+        .item-left {
+            width: 2rem;
+        }
+        
+        .item-middle {
+            width: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0.2rem;
+        }
+        
+        .put-away {
+            width: 0.44rem;
+            height: 0.44rem;
+            padding: 0.06rem 0;
+            border-radius: 50%;
+            background: #09B007;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .selected-img {
+            width: 0.44rem;
+            height: 0.44rem;
+        }
+        
+        .selected-img>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .dashed {
+            width: 1px;
+            height: 100%;
+            max-height: 1.1rem;
+            border-left: 1px dashed #1ec26b;
+        }
+        
+        .solid {
+            width: 1px;
+            height: 100%;
+            border-left: 1px solid #e1e1e1;
+            min-height: 0.8rem;
+        }
+        
+        .cirle {
+            width: 0.1rem;
+            height: 0.18rem;
+            border: 0.04rem solid #e1e1e1;
+            border-radius: 50%;
+            margin: 0.02rem 0.19rem;
+            background: #e1e1e1;
+        }
+        
+        .item-right {
+            padding-bottom: 0.2rem;
+            font-size: 0.24rem;
+        }
+        
+        .time {
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .date {
+            display: inline-block;
+            transform: scale(0.8);
+        }
+        
+        .time2 {
+            color: #909090;
+            margin-bottom: 0.08rem;
+        }
+        
+        .address {
+            margin-bottom: 0.63rem;
+            color: #09B007;
+        }
+        
+        .address2 {
+            color: #909090;
+            margin-bottom: 0.6rem;
+        }

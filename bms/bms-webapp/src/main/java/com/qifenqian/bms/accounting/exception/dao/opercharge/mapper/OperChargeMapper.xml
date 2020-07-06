@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.opercharge.mapper.OperChargeMapper">
+	
+	<select id="selectChargeBillBySn" resultType="com.qifenqian.bms.accounting.exception.dao.opercharge.bean.OperCharge">
+		SELECT 
+			T.*
+		FROM TD_CHARGE_BILL T
+		WHERE 
+			T.CHARGE_SN = #{chargeSn, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateChargeBillNetpayState" parameterType="com.qifenqian.bms.basemanager.recharge.bean.RechargeBean">
+		UPDATE TD_CHARGE_BILL 
+			<set>
+				<if test="chargeNetpayState!=null and chargeNetpayState!='' ">
+				    CHARGE_NETPAY_STATE = #{chargeNetpayState,jdbcType = VARCHAR},
+				</if>
+				<if test="coreSn!=null and coreSn!='' ">
+				    CORE_SN = #{coreSn,jdbcType = VARCHAR},
+				</if>
+			    CHARGE_RETURN_TIME = NOW(),
+				MODIFY_TIME = NOW()
+			</set>
+		WHERE
+		 	CHARGE_SN = #{chargeSn, jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateChargeBillTimeOut">
+		UPDATE TD_CHARGE_BILL T 
+			SET T.MODIFY_TIME=NOW(),
+			T.CHARGE_NETPAY_STATE='99' 
+		WHERE 
+			T.CHARGE_NETPAY_STATE='01' 
+		AND t.CREATE_TIME  &lt; DATE_ADD(NOW(),INTERVAL -#{timeOutMinute, jdbcType=INTEGER} MINUTE)
+	</update>
+</mapper>

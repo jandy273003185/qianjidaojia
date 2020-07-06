@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/style.css?0" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="script/pintuan.js" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        .pin-content .tx {
+            position: relative;
+        }
+
+            .pin-content .tx img {
+                width: 100%;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+                min-height: 100%;
+            }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/indexV.html" class="btn_back"></a>
+				<div class="title center">拼团</div>
+			</div>
+		</div>
+		<div class="main Tabdiv">
+			<div class="tabNav tabList">
+				<ul class="clear">
+					<li class="active" data-type="0">拼团</li>
+					<li data-type="1">我的拼团</li>
+				</ul>
+			</div>
+			<div class="tabCon pin-content">
+				<div class="pintuanTab1">
+					<div class="banner b-radius">
+						<a href="javascript:;"><img src="images/banner/pin_banner.jpg" /></a>
+					</div>
+					<div class="pindiv mt10">
+						<ul class="prolist2 pintuanListBox"></ul>
+					</div>
+				</div>
+				<div class="pintuanTab2" style="display: none;">
+					<div class="userbox b-radius clear"></div>
+					<div class="tabtypeList b-radius">
+						<ul class="li25 clear">
+							<li class="active" data-status="0"><span>全部</span></li>
+							<li data-status="1"><span>拼团中</span></li>
+							<li data-status="2"><span>已成功</span></li>
+							<li data-status="3"><span>已失效</span></li>
+						</ul>
+					</div>
+					<div class="Mypindiv">
+						<ul class="prolist2 myPinTuanListBox">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+        <!--弹窗-->
+        <div class="fcrs">
+            <div class="dvceng">
+                <img src="/images/er.png" />
+                <img class="know" src="/images/know.png"/>
+            </div>
+        </div>
+	</body>
+	<script type="text/javascript" src="js/top.js"></script>
+	<!--会员信息模板-->
+	<script id="memberInfoTemp" type="text/x-dot-template">
+		<div class="tx fl">
+			{{? it.Avatar}}
+			<img src="{{=it.Avatar}}" /> {{??}}
+			<img src="/images/tx/default.png" /> {{?}}
+		</div>
+		<p class="name text">{{=it.NickName}}</p>
+	</script>
+	<!--拼团列表模板-->
+	<script id="pintuanTemp" type="text/x-dot-template">
+		{{~it:value:index}}
+		<li>
+			<a href="pintuan_detail.html?id={{=value.Id}}" class="m-pro">
+				<div class="hd">
+					<div class="img">
+						{{? value.ProductImg}}
+						<img src="{{=value.ProductImg}}" /> {{??}}
+						<img src="images/noPic.jpg" /> {{?}}
+					</div>
+				</div>
+				<div class="bd">
+					<h4 class="name">{{=value.Title}}</h4>
+					<p class="desc"><span>已成功拼团{{=value.SuccessGroup}}</span><span>{{=value.MaxPeopleNum}}人团</span></p>
+					<p class="price"><span>￥{{=(value.GroupPic==0?value.FightingPrice:value.GroupPic)}}</span><span class="counterPrice">￥{{=(value.PunitPrice==0?value.OriginalPrice:value.PunitPrice)}}</span></p>
+					<span class="btn openbtn">去开团</span>
+				</div>
+			</a>
+		</li>
+		{{~}}
+	</script>
+	<!--拼团列表模板  end-->
+
+	<!--我的拼团模板-->
+	<script id="myPinTuanTemp" type="text/x-dot-template">
+		{{~it:value:index}}
+        <li>
+            <a href="{{? (value.GroupStatus===3||value.OrderStatus==19)}}pay.html?{{=encodeURIComponent('orderno='+value.OrderNo) }}{{??}}pintuan_info.html?groupId={{=value.GroupId}}&id={{=value.Id}}{{?}}" class="m-pro">
+                <div class="hd-title">
+                    <span class="time">{{=value.AddTime}}</span>
+                    <span class="status">{{=value.GroupStatusStr}}</span>
+                </div>
+                <div class="hd">
+                    <div class="img">
+                        {{? value.OneImage}}
+                        <img src="{{=value.OneImage}}" /> {{??}}
+                        <img src="images/noPic.jpg" /> {{?}}
+                    </div>
+                </div>
+                <div class="bd">
+                    <h4 class="name">{{=value.GroupTitle}}</h4>
+                    <p class="desc"><span>已成团{{=(value.CurrentPeople==null?0:value.CurrentPeople)}}个</span><span>{{=value.MaxPeople}}人团</span></p>
+                    <p class="price"><span>￥{{=value.buyPrice}}</span><span class="counterPrice">￥{{=value.pPrice}}</span></p>
+
+                </div>
+
+            </a>
+            {{? value.GroupStatus===3}}
+            <a href="javascript:;" class="cancelgroup" data-groupId="{{=value.Id}}">取消拼团</a>{{??}}
+             {{?}}
+
+
+           
+
+        </li>
+		{{~}}
+	</script>
+	<!--我的拼团模板  end-->
+	<script>
+		var pageIndex = 1;
+		var pageSize = 10;
+		var status = 0;
+		var type;
+        $(function () {
+            var source = sc.utils.getQueryString("source");
+            if (!sc.utils.isNullOrEmpty(source) && source == "pay") {
+                $(".fcrs").show();
+            }
+            $(".know").click(function () {
+                $(".fcrs").hide();
+            });
+
+			if(sc.utils.getQueryString("type")) {
+				type = parseInt(sc.utils.getQueryString("type")); //返回的是拼团还是我的拼团选项，1：我的拼团
+			}
+			if(type) {
+				if(type === 1) {
+					$('.myPinTuanListBox').html("");
+					$('.pintuanTab2').show();
+					$('.pintuanTab1').hide();
+					myPinTuanDropload(status);
+					$('.tabNav ul li[data-type="1"]').addClass('active').siblings().removeClass('active');
+				} else {
+					$('.pintuanListBox').html("");
+					$('.pintuanTab1').show();
+					$('.pintuanTab2').hide();
+					pintuanDropload();
+					
+				}
+			}else{
+				$('.pintuanListBox').html("");
+				$('.pintuanTab1').show();
+				$('.pintuanTab2').hide();
+				pintuanDropload();
+			}
+
+			if(sc.auth.isLogin()) {
+				//获取会员信息
+				GetMemberInfo(function(data) {
+					var interText = doT.template($("#memberInfoTemp").text());
+					$(".userbox")[0].innerHTML += interText(data.data);
+				})
+			}
+
+			$('.tabNav ul li').click(function() {
+				$(this).addClass("active").siblings().removeClass("active");
+				$(".dropload-down").remove();
+				if($(this).attr("data-type") == 1) {
+					$('.tabtypeList ul li[data-status="0"]').addClass('active').siblings().removeClass('active');
+					//我的拼团要先登录
+					if(sc.auth.isLogin()) {						
+						$('.myPinTuanListBox').html("");
+						$('.pintuanTab2').show();
+						$('.pintuanTab1').hide();
+						status = 0;
+						myPinTuanDropload(status);
+					} else {
+						//先登录
+						layer.open({
+							content: '亲，您还没有登录，是否登录？',
+							btn: ['登录', '取消'],
+							yes: function(index) {
+								location.href = '/login.html'
+								layer.close(index);
+							},
+							no: function(index) {
+								layer.close(index);
+							}
+						});
+					}
+				}
+				if($(this).attr("data-type") == 0) {
+					$('.pintuanListBox').html("");
+					$('.pintuanTab2').hide();
+					$('.pintuanTab1').show();
+
+					pintuanDropload();
+				}
+			});
+
+			$('.m-pro').each(function() {
+				$(this).find('.btn').click(function(event) {
+					event.preventDefault();
+				})
+			});
+
+			$('.tabtypeList li').click(function() {
+				$('.myPinTuanListBox').html("");
+				$(".dropload-down").remove();
+				$(this).addClass("active").siblings().removeClass("active");
+				status = $(this).attr("data-status");
+			    myPinTuanDropload(status);			    
+            });
+            
+
+		});
+
+		function pintuanDropload() {
+			pageIndex = 1;
+			$('.pintuanTab1').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {					
+					getGroupProductList(pageIndex, pageSize, function(data) {
+						$(".dropload-down").remove();
+						if(data.data.length == 0) {
+							me.noData();
+							me.lock();
+							me.resetload();
+							if(pageIndex == 1) {
+								$(".dropload-down").remove();
+								emptytpl($('.pintuanTab1'));
+							}
+						}else{
+							pageIndex++;
+							if(data.data.length < pageSize) {
+								me.noData(); 
+								me.lock(); 
+							} 
+							var interText = doT.template($("#pintuanTemp").text());
+							$(".pintuanListBox")[0].innerHTML += interText(data.data);
+							//me.lock();
+							me.resetload();
+						}
+						
+					}, me);
+
+				}
+			});
+		}
+
+		function myPinTuanDropload(status) {
+		   pageIndex = 1;
+		   $('.pintuanTab2').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+					getMyGroupRecordList(pageIndex, pageSize, status, function(data) {
+						if(data.data.length == 0) {
+							me.lock(); 
+                            me.noData();
+                           	me.resetload();
+							if(pageIndex == 1) {
+								$(".dropload-down").remove();
+                                emptytpl($('.myPinTuanListBox'));
+                                loadcancelgroup();
+							}
+						}else{
+							pageIndex++;
+							if(data.data.length < pageSize) {	               		                  
+								me.noData(); 
+								me.lock();                 
+							}
+							var interText = doT.template($("#myPinTuanTemp").text());
+							$(".myPinTuanListBox")[0].innerHTML += interText(data.data);
+                            me.resetload();
+                            loadcancelgroup();
+						}
+						
+					}, me);
+				}
+			});
+		
+        }
+        function loadcancelgroup() {
+            $(".myPinTuanListBox .cancelgroup").click(function () {
+                var orderGroupId = $(this).attr("data-groupId");
+                var url = 'api/GroupBuy/Cancelgroup';
+                var callback = function (data) {
+                    if (data.code == 5) {
+                        layer.open({
+                            content: "操作成功",
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                        $(".tabList ul li")[1].click();
+                    } else {
+                        layer.open({
+                            content: data.msg,
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                    }
+                }
+                sc.post(url, {
+                    "GroupRecordId": orderGroupId,
+                    "UserId": userId,
+                    "Token": token
+                }, callback);
+
+            });
+        }
+	</script>
+
+</html>

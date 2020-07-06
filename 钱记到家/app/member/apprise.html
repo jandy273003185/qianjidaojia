@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>发表评价</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/script/upload.js?v=009"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="/script/order.js?v=004" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        .uploadImage .button-upload,
+        .uploadImage .upload-img {
+            width: .8rem;
+            height: .8rem;
+        }
+    </style>
+    
+</head>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="title center">发表评价</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="appriseTitle radius6 mA10">
+            <p class="title line_title"><span>请为我们打分</span></p>
+        </div>
+        <div class="apprise mA10">
+            <div class="pro_apprItem">
+                <div id="proinfo_Div"></div>
+                <script id="proinfo_Tpl" type="text/html">
+                    {{# for(var i = 0; i< d.orderDetails.length; i++){ }}
+                    {{# var DId = function(){var DetailsId = sc.utils.getQueryString("DId"); return DetailsId;};}}
+                    {{#  if(d.orderDetails[i].Id==DId()){ }}
+                    <div class="pro" data-pid="{{d.orderDetails[i].ProductId}}">
+                        <div class="img">
+                            <img src="{{d.orderDetails[i].ProductImg}}" alt="" />
+                        </div>
+                        <div class="txtBox">
+                            <ul class="starList">
+                                <li class="active" data-star="5">
+                                    <div class="star"></div>
+                                    <p>很满意</p>
+                                </li>
+                                <li data-star="3">
+                                    <div class="star"></div>
+                                    <p>满意</p>
+                                </li>
+                                <li data-star="1">
+                                    <div class="star"></div>
+                                    <p>不满意</p>
+                                </li>
+                                <input type="hidden" name="" id="startDate" value="5" />
+                            </ul>
+                        </div>
+                    </div>
+                    {{#  } }}
+                    {{# } }}
+                </script>
+                <div class="areaBox">
+                    <textarea name="" rows="" cols="" class="weui-input appr-textarea" placeholder="请您对这次购买给予评价" style="margin-bottom: 0;"></textarea>
+                    <div class="ft clear">
+                        <p class="fl tips red"></p>
+                        <div class="right fr c_999"><div class="counter"><span class="num">0</span><span>/300</span></div></div>
+                    </div>
+
+                </div>
+
+                <!--上传图片-->
+                <div class="uploadImage clear">
+                    <div class="queue" id="imgdiv">
+
+                    </div>
+                    <div class="btnUploadAll">
+                        <div class="button-upload button-upload2">
+                            <input type="file" id="fileImg" multiple="multiple" name="upimage" accept="image/*" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="com_apprise mA10" style="display: none;">
+            <div class="item flex">
+                <div class="flexItem title">物流服务</div>
+                <div class="flexItem flex1">
+                    <ul class="starList">
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <input type="hidden" name="" id="start_Wuliu" value="0" />
+                    </ul>
+                </div>
+            </div>
+            <div class="item flex">
+                <div class="flexItem title">服务态度</div>
+                <div class="flexItem flex1">
+                    <ul class="starList">
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <li>
+                            <div class="star"></div>
+                        </li>
+                        <input type="hidden" name="" id="start_Servie" value="0" />
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="ftbtn ml10 mr10 mt30 mb30">
+            <a href="javascript:;" class="btn" id="submitBtn">发布</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var PiclistArr = [];
+        $(function () {
+            var odId = getUrlParam("DId");
+            var OrderNo = getUrlParam("No");
+       
+            if (odId) { } else { odId = 0; }
+            OrderDetails(OrderNo, odId, function (data) {
+                var gettpl = document.getElementById('proinfo_Tpl').innerHTML;
+                laytpl(gettpl).render(data.data, function (html) {
+                    //得到的模板渲染到html
+                    document.getElementById('proinfo_Div').innerHTML = html;
+                });
+                $('.starList').each(function () {
+                    Star($(this));
+                });
+            });
+            upImage();
+            //3星级评论法
+            function Star(star) {
+                star.children('li').click(function () {
+                    var starnum = $(this).attr('data-star');
+                    $(this).addClass('active').siblings().removeClass('active');
+                    star.find('input[type="hidden"]').val(starnum);
+                });
+            }
+            //五星评论法
+            function Star2(star) {
+                star.children('li').click(function () {
+                    if ($(this).hasClass('active')) {
+                        $(this).nextAll().removeClass('active');
+                    } else {
+                        $(this).addClass('active');
+                        $(this).prevAll().addClass('active');
+                    }
+                    star.find('input[type="hidden"]').val($(this).parent().children('.active').length);
+                })
+            }
+            //			验证
+            function checkcommen(Text, piclength) {
+                var commenText = $.trim(Text);
+                if (!commenText) {
+                    layer.open({
+                        content: '请输入至少10个字符！',
+                        skin: 'msg',
+                        time: 1 //2秒后自动关闭
+                    });
+                    return false;
+                }
+                if (piclength > 8) {
+                    layer.open({
+                        content: '最多只能上传8张图片哦！',
+                        skin: 'msg',
+                        time: 1 //2秒后自动关闭
+                    });
+                    return false;
+                }
+                return true;
+            }
+            //文本计算
+            $('.appr-textarea').keyup(function () {
+                var maxLength = 300;
+                var num = $.trim(this.value).length;
+                var numbox = $(this).parents('.areaBox').find('.counter .num');
+                if (num > maxLength) {
+                    $(this).parents('.areaBox').find('.tips').text('最多可输入300个字符!');
+                    numbox.text(maxLength);
+                    $(this).val($(this).val().substr(0, maxLength));
+                } else {
+                    $(this).parents('.areaBox').find('.tips').text('');
+                    numbox.text(num);
+                }
+            })
+            $('#submitBtn').click(function () {
+                PiclistArr = [];
+                $('#imgdiv img').each(function () {
+                    PiclistArr.push({
+                        PicUrl: $(this).attr('src')
+                    });
+                });//获取图片路径64位
+                console.log(PiclistArr);
+                var idx = layer.open({
+                    type: 2
+                    , content: 'loading...'
+                });
+                var Pid = $('.pro_apprItem .pro').attr('data-pid'),
+                    PiclistJSON = JSON.stringify(PiclistArr),
+                    Text = $.trim($('.appr-textarea').val()),
+                    imglength = PiclistArr.length;//图片数量
+                now = new Date(),
+                    PicNo = now.format("yyyyMMddhhmmss"),
+                    Star = $('#startDate').val();
+                console.log(imglength);
+                if (checkcommen(Text, imglength)) {
+                    CommentProduct(OrderNo, Pid, PiclistJSON, Text, PicNo, Star, function () { layer.close(idx);});
+                }
+            })
+            Date.prototype.format = function (format) {
+                var o = {
+                    "M+": this.getMonth() + 1, //month
+                    "d+": this.getDate(), //day
+                    "h+": this.getHours(), //hour
+                    "m+": this.getMinutes(), //minute
+                    "s+": this.getSeconds(), //second
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                    "S": this.getMilliseconds() //millisecond
+                }
+
+                if (/(y+)/.test(format)) {
+                    format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                }
+
+                for (var k in o) {
+                    if (new RegExp("(" + k + ")").test(format)) {
+                        format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+                    }
+                }
+                return format;
+            }
+        });
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    </script>
+</body>
+
+</html>

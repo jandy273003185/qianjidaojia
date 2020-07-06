@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.admin.rolefunction.mapper.RoleFunctionMapper">
+	
+	
+	<insert id="insertList"  parameterType="java.util.List">  
+	    INSERT INTO SYS_ROLE_FUNCTION (
+	    	ROLE_ID,
+	    	FUNCTION_ID,
+	    	INST_USER
+	    )  VALUES  
+	    <foreach collection="list" item="roleFunction" index="index" separator="," >  
+	    (
+	        #{roleFunction.roleId},
+	        #{roleFunction.functionId},
+	        #{roleFunction.instUser}
+	     )  
+	    </foreach>  
+	</insert>  
+	
+	<select id="selectList"  parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.rolefunction.bean.RoleFunction">
+		SELECT * FROM SYS_ROLE_FUNCTION
+		WHERE ROLE_ID = #{roleId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByRoleId" parameterType="java.lang.Integer">
+		DELETE FROM SYS_ROLE_FUNCTION
+		WHERE ROLE_ID = #{roleId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteRoleFunctionbyFunctionId" parameterType="java.lang.Integer">
+		DELETE FROM 
+		SYS_ROLE_FUNCTION
+		WHERE FUNCTION_ID = #{functionId,jdbcType=INTEGER}
+	</delete>
+</mapper>

@@ -1,0 +1,239 @@
+.transactionState{
+	height:.66rem;
+	text-align: center;
+	line-height: .66rem;
+	font-size: .18rem;
+	color:#FF9800;
+	background:#fff;
+	border-bottom:1px dashed #999999;
+}
+.persionMeg{
+	background:#fff;
+	padding:.2rem 0 .15rem 0;
+	display: table;
+	width: 100%;
+}
+
+.zuobiao_icon{
+	display: table-cell;
+	vertical-align: middle;
+	background:#fff;
+	width:.46rem;
+	margin-top:.27rem;
+}
+.zuobiao_icon > img{
+	width:.24rem;
+	
+}
+.persionMeg_text{
+	display: table-cell;
+	vertical-align: middle;
+	width:3.2rem;
+	background:#fff;
+	padding-right: .15rem;
+}
+.persionMeg_text .name{
+	font-size: .15rem;
+	
+}
+.persionMeg_text .phoneNum{
+	font-size: .15rem;
+	color:#999999;
+	margin-left: .1rem;
+}
+.xxdizhi{
+	font-size: .13rem;
+}
+.goodsContent{
+	margin-top:.1rem;
+	background:#fff;	
+	border-bottom: 1px solid #e1e1e1;
+}
+.goodsContent .item{
+	padding:.15rem .1rem;
+	border-bottom: 1px solid #eee;
+}
+.goodsContent .item:last-child{
+	border-bottom: none;
+}
+.goodsContent .goodsImg{
+	width:.7rem;
+	height: .7rem;
+	float:left;
+}
+.goodsContent .goodsImg > img{
+	width:100%;
+	height: 100%;
+	border-radius:6px;
+}
+.goods_text{
+	margin-left: 1rem;
+	overflow: hidden;
+}
+.goods_text .goodstit{
+	font-size: .15rem;
+	line-height: .2rem;
+}
+.goods_text .goodstit p{ float: left; max-width: 80%;}
+.goods_text .goodstit .fr{ font-size: .14rem; }
+.goods_text .goodsMesg{
+	margin-top: .05rem;
+	font-size: .13rem;
+	color:#999999;
+}
+.goods_text .goodsPrice{
+	color:#ff6666;
+	font-size: .18rem;
+}
+.goods_text .goodsPrice:after{
+	content:"";
+	display: block;
+	clear: both;
+}
+.goods_text .goodsPrice .btn{ display: block; font-size: .12rem; color: #ff5c29; border: .01rem solid #ff5c29; border-radius: 100px; padding: .02rem .1rem; float: right;}
+    .goods_text .goodsPrice .text_r {
+        margin-top: .1rem;
+        text-align: right !important;
+    }
+    .goods_text .goodsPrice .wuliubtn, .goods_text .goodsPrice .Refund_btn {
+        color: #3e3e3e;
+        border: 1px solid #E1E1E1;
+    }
+    .cb {
+        clear: both;
+    }
+.pt05 {
+    padding-top: .05rem;
+}
+.price_mesg1{
+	padding:0 0 0 .2rem;
+	font-size: .14rem;
+	color:#666666;
+}
+.price_mesg1 .bor{
+	width:100%;
+	border-bottom: 1px solid #e1e1e1;
+	padding:.12rem .16rem .12rem 0;
+}
+.price_mesg2{
+	padding:.12rem .16rem .12rem .2rem;
+	font-size: .14rem;
+	color:#666666;
+}
+.goodsPrice_content{
+	background:#fff;
+	text-align: right;
+}
+.orderContent{
+	padding:.12rem .15rem .09rem .15rem;
+	color:#b4b4b4;
+	border-bottom: 1px solid #e1e1e1;
+	background:#fff;
+	margin-top:.1rem;
+}
+.lianxiBtn:after{
+	content: "";
+	display: block;
+	clear: both;
+}
+.lianxiBtn .phoneBtn ,.lianxiBtn .otherBtn{
+	float:left;
+	width:50%;
+	height:.5rem;
+	position: relative;
+	background:#fff;
+	/*text-align: center;*/
+	line-height: .5rem;
+	position: relative;
+}
+.lianxiBtn .phoneBtn span{
+	display: block;
+	width:.85rem;
+	height:.2rem;
+	line-height: .2rem;
+	position: absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	background:url(../images/icons/tel2.png);
+	background-size: .2rem .2rem;
+	background-repeat: no-repeat;
+	background-position: left;
+	text-align: right;
+}
+.lianxiBtn .otherBtn span{
+	display: block;
+	width:.85rem;
+	height:.2rem;
+	line-height: .2rem;
+	position: absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	background:url(../images/icons/kf.png);
+	background-size: .2rem .2rem;
+	background-repeat: no-repeat;
+	background-position: left;
+	text-align: right;
+}
+.lianxiBtn .phoneBtn:after{
+	content: "";
+	position: absolute;
+	width:1px;
+	height:.45rem;
+	top:0;
+	right:0;
+	background:#e1e1e1;
+}
+.successfoot{
+	width:100%;
+	height:.5rem;
+}
+.footerBtn{
+	width:100%;
+	height:.5rem;
+	background:#fff;
+	margin-top:.12rem;
+	border-top: 1px solid #e1e1e1;
+	position: fixed;
+	bottom:0;
+	left:0;
+	z-index: 10;
+	padding: .1rem;
+	text-align: right;
+	font-size: 0;
+}
+.footerBtn .btn0{
+	display: inline-block;
+    padding: 0 .15rem;
+    line-height: .28rem;
+    border: 1px solid #E1E1E1;
+    border-radius: 1rem;
+    margin-left: .1rem;
+    text-align: center;
+    font-size: .15rem;
+    color: #3e3e3e;
+    min-width: .7rem;
+}
+.footerBtn .btn0.active{
+	color: #ff5c29;
+    border-color: #ff5c29;
+}
+.wenList {
+  font-size: .15rem;
+}
+.wenList li {
+  padding: .05rem .1rem;
+  position: relative;
+}
+.wenList.reasonList {
+  font-size: .15rem;
+  color: #666;
+}
+.wenList.reasonList li.active {
+  color: #ff5c29;
+}

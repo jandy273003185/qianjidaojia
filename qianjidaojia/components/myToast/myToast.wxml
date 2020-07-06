@@ -1,0 +1,26 @@
+<!--components/myToast/myToast.wxml-->
+<text class="myToast {{isToast?'active':''}} {{toastNum}}"> {{toastText}}</text>
+
+<!-- 从下向上的弹窗用法：
+    1.引入组件 "myToast":"../../components/myToast/myToast"
+    2.引入标签
+    <myToast toastNum="{{toastNum}}"  isToast="{{isToast}}" toastText="{{toastText}}"></myToast>
+        
+       data:{ 
+        toastText:'',//弹窗内容
+        isToast:false,//弹窗显示
+        toastNum:0,//弹窗监听次数
+        }
+
+
+
+    3.在需要弹窗时：
+     this.setData({
+                toastText:'库存不足',
+                isToast:true,
+                toastNum: this.data.toastNum + 1
+     }); 
+
+
+
+ -->

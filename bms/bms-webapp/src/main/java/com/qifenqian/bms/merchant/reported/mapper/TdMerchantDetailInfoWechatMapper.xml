@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantDetailInfoWechatMapper">
+
+    <insert id="insert" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+      insert into td_merchant_detail_info_wechat (patch_no, merchant_code, cust_name,
+        store_name, industry_code, contact_phone,
+        merchant_province, merchant_city, merchant_area,
+        cpr_reg_addr, door_photo_path, shop_interior_path,
+        representative_name, mobile_no, email,
+        representative_cert_no, identity_eff_date,
+        identity_val_date, legal_cert_attribute1_path,
+        legal_cert_attribute2_path, account_nm, account_no,
+        bank_province, bank_city, bank,
+        interbankname, rate, out_merchant_code,
+        short_name, merchant_property, business_scene,
+        business_license, business_effective_term,
+        business_term, business_photo_path, qualification_path,
+        mp_appid, mp_app_screen_shots_path, miniprogram_appid,
+        miniprogram_appid_path, app_appid, app_download_url,
+        app_appid_path, web_url, web_appid,
+        web_url_path, rate_id, report_status,
+        result_msg, remark, applymentid,
+        sign_url, sign_qrcode, create_time,
+        modify_time)
+      values (#{patchNo,jdbcType=VARCHAR}, #{merchantCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR},
+        #{storeName,jdbcType=VARCHAR}, #{industryCode,jdbcType=VARCHAR}, #{contactPhone,jdbcType=VARCHAR},
+        #{merchantProvince,jdbcType=VARCHAR}, #{merchantCity,jdbcType=VARCHAR}, #{merchantArea,jdbcType=VARCHAR},
+        #{cprRegAddr,jdbcType=VARCHAR}, #{doorPhotoPath,jdbcType=VARCHAR}, #{shopInteriorPath,jdbcType=VARCHAR},
+        #{representativeName,jdbcType=VARCHAR}, #{mobileNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{representativeCertNo,jdbcType=VARCHAR}, #{identityEffDate,jdbcType=VARCHAR},
+        #{identityValDate,jdbcType=VARCHAR}, #{legalCertAttribute1Path,jdbcType=VARCHAR},
+        #{legalCertAttribute2Path,jdbcType=VARCHAR}, #{accountNm,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR},
+        #{bankProvince,jdbcType=VARCHAR}, #{bankCity,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR},
+        #{interbankname,jdbcType=VARCHAR}, #{rate,jdbcType=VARCHAR}, #{outMerchantCode,jdbcType=VARCHAR},
+        #{shortName,jdbcType=VARCHAR}, #{merchantProperty,jdbcType=VARCHAR}, #{businessScene,jdbcType=VARCHAR},
+        #{businessLicense,jdbcType=VARCHAR}, #{businessEffectiveTerm,jdbcType=VARCHAR},
+        #{businessTerm,jdbcType=VARCHAR}, #{businessPhotoPath,jdbcType=VARCHAR}, #{qualificationPath,jdbcType=VARCHAR},
+        #{mpAppid,jdbcType=VARCHAR}, #{mpAppScreenShotsPath,jdbcType=VARCHAR}, #{miniprogramAppid,jdbcType=VARCHAR},
+        #{miniprogramAppidPath,jdbcType=VARCHAR}, #{appAppid,jdbcType=VARCHAR}, #{appDownloadUrl,jdbcType=VARCHAR},
+        #{appAppidPath,jdbcType=VARCHAR}, #{webUrl,jdbcType=VARCHAR}, #{webAppid,jdbcType=VARCHAR},
+        #{webUrlPath,jdbcType=VARCHAR}, #{rateId,jdbcType=VARCHAR}, #{reportStatus,jdbcType=VARCHAR},
+        #{resultMsg,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{applymentid,jdbcType=VARCHAR},
+        #{signUrl,jdbcType=VARCHAR}, #{signQrcode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{modifyTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateDynamic" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+        update td_merchant_detail_info_wechat
+        <set>
+            <if test="merchantCode != null">
+                merchant_code = #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="storeName != null">
+                store_name = #{storeName,jdbcType=VARCHAR},
+            </if>
+            <if test="industryCode != null">
+                industry_code = #{industryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantProvince != null">
+                merchant_province = #{merchantProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantCity != null">
+                merchant_city = #{merchantCity,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantArea != null">
+                merchant_area = #{merchantArea,jdbcType=VARCHAR},
+            </if>
+            <if test="cprRegAddr != null">
+                cpr_reg_addr = #{cprRegAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="doorPhotoPath != null">
+                door_photo_path = #{doorPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="shopInteriorPath != null">
+                shop_interior_path = #{shopInteriorPath,jdbcType=VARCHAR},
+            </if>
+            <if test="representativeName != null">
+                representative_name = #{representativeName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobileNo != null">
+                mobile_no = #{mobileNo,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="representativeCertNo != null">
+                representative_cert_no = #{representativeCertNo,jdbcType=VARCHAR},
+            </if>
+            <if test="identityEffDate != null">
+                identity_eff_date = #{identityEffDate,jdbcType=VARCHAR},
+            </if>
+            <if test="identityValDate != null">
+                identity_val_date = #{identityValDate,jdbcType=VARCHAR},
+            </if>
+            <if test="legalCertAttribute1Path != null">
+                legal_cert_attribute1_path = #{legalCertAttribute1Path,jdbcType=VARCHAR},
+            </if>
+            <if test="legalCertAttribute2Path != null">
+                legal_cert_attribute2_path = #{legalCertAttribute2Path,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNm != null">
+                account_nm = #{accountNm,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNo != null">
+                account_no = #{accountNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankProvince != null">
+                bank_province = #{bankProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCity != null">
+                bank_city = #{bankCity,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="interbankname != null">
+                interbankname = #{interbankname,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                rate = #{rate,jdbcType=VARCHAR},
+            </if>
+            <if test="outMerchantCode != null">
+                out_merchant_code = #{outMerchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="shortName != null">
+                short_name = #{shortName,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantProperty != null">
+                merchant_property = #{merchantProperty,jdbcType=VARCHAR},
+            </if>
+            <if test="businessScene != null">
+                business_scene = #{businessScene,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicense != null">
+                business_license = #{businessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="businessEffectiveTerm != null">
+                business_effective_term = #{businessEffectiveTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="businessTerm != null">
+                business_term = #{businessTerm,jdbcType=VARCHAR},
+            </if>
+            <if test="businessPhotoPath != null">
+                business_photo_path = #{businessPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="qualificationPath != null">
+                qualification_path = #{qualificationPath,jdbcType=VARCHAR},
+            </if>
+            <if test="mpAppid != null">
+                mp_appid = #{mpAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="mpAppScreenShotsPath != null">
+                mp_app_screen_shots_path = #{mpAppScreenShotsPath,jdbcType=VARCHAR},
+            </if>
+            <if test="miniprogramAppid != null">
+                miniprogram_appid = #{miniprogramAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="miniprogramAppidPath != null">
+                miniprogram_appid_path = #{miniprogramAppidPath,jdbcType=VARCHAR},
+            </if>
+            <if test="appAppid != null">
+                app_appid = #{appAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="appDownloadUrl != null">
+                app_download_url = #{appDownloadUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="appAppidPath != null">
+                app_appid_path = #{appAppidPath,jdbcType=VARCHAR},
+            </if>
+            <if test="webUrl != null">
+                web_url = #{webUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="webAppid != null">
+                web_appid = #{webAppid,jdbcType=VARCHAR},
+            </if>
+            <if test="webUrlPath != null">
+                web_url_path = #{webUrlPath,jdbcType=VARCHAR},
+            </if>
+            <if test="rateId != null">
+                rate_id = #{rateId,jdbcType=VARCHAR},
+            </if>
+            <if test="reportStatus != null">
+                report_status = #{reportStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="resultMsg != null">
+                result_msg = #{resultMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="applymentid != null">
+                applymentid = #{applymentid,jdbcType=VARCHAR},
+            </if>
+            <if test="signUrl != null">
+                sign_url = #{signUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="signQrcode != null">
+                sign_qrcode = #{signQrcode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPatchNo" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoWeChat">
+        select
+            patch_no, merchant_code, cust_name, store_name, industry_code, contact_phone, merchant_province,
+            merchant_city, merchant_area, cpr_reg_addr, door_photo_path, shop_interior_path,
+            representative_name, mobile_no, email, representative_cert_no, identity_eff_date,
+            identity_val_date, legal_cert_attribute1_path, legal_cert_attribute2_path, account_nm,
+            account_no, bank_province, bank_city, bank, interbankname, rate, out_merchant_code,
+            short_name, merchant_property, business_scene, business_license, business_effective_term,
+            business_term, business_photo_path, qualification_path, mp_appid, mp_app_screen_shots_path,
+            miniprogram_appid, miniprogram_appid_path, app_appid, app_download_url, app_appid_path,
+            web_url, web_appid, web_url_path, rate_id, report_status, result_msg, remark, applymentid,
+            sign_url, sign_qrcode, create_time, modify_time
+        from  td_merchant_detail_info_wechat
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

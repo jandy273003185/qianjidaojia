@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>设置</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js?0" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/exif.js"></script>
+    <script src="/js/lrz.js"></script>
+
+    <style type="text/css">
+        .layui-m-layer0 .layui-m-layerchild {
+            width: 68%;
+        }
+
+        .alone__weui-cells .weui-cell {
+            border-radius: .06rem;
+        }
+
+        .weui-cell {
+            color: #3E3E3E;
+        }
+
+        .weui-cell__ft .txt {
+            color: #909090;
+        }
+
+        .info__weui-cells {
+            line-height: 1.4;
+        }
+    </style>
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">	
+				<a href="/member/member.html" class="btn_back"></a>
+				<div class="title center">设置</div>
+			</div>
+		</div>
+		<div class="main">
+			<script id="accountInfo_Tpl" type="text/html">
+				<div class="weui-cells info__weui-cells bb__weui-cells">
+					<div class="weui-cell tx__weui-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">头像</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<div class="uploadTx uploadAvatar">
+								<input type="file" id="fileImg" name="upimage" accept="image/*" />
+								{{#  if(d.Avatar){ }}
+								  <img src={{d.Avatar}} alt="" class="avatar" id="Avatar" data-headimg={{d.Avatar}} />
+								{{#  } else { }}
+								  <img id="Avatar" src="/images/tx/default.png" alt="" />
+								{{#  } }}  
+							</div>
+						</div>
+					</div>
+					<div class="weui-cell" onclick="location='changeName.html'">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">昵称</label>
+						</div>
+						<div class="weui-cell__bd text_r">							
+							{{#  if(d.NickName){ }}
+							  <p class="txt">{{d.NickName}}</p>
+							{{#  } else { }}
+							  <p class="txt">{{d.Mobile}}</p>
+							{{#  } }}  
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">账户</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<p class="txt">{{d.UserName}}</p>
+						</div>
+					</div>
+					<div class="weui-cell" id="changeSex">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">性别</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<p class="txt">{{d.Sex}}</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</div>					
+				</div>
+				<div class="weui-cells alone__weui-cells ml10 mr10">
+					<a href="bingCard.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">绑定银行卡</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<a href="address.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">收货地址</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<a href="accountSafe.html" class="weui-cell" style="display:none;">
+						<div class="weui-cell__bd">
+							<p class="txt">账号与安全</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<a href="about.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">关于我们</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<a href="feedback.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">意见反馈</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<a href="problem.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">常见问题</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<!--<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">推送服务</p>
+						</div>
+						<div class="weui-cell__ft">
+							<div class="switch_btn">
+								<input type="checkbox" class="switch" name="" id="tuisong" value="" />
+								<label for="tuisong"></label>
+							</div>
+						</div>
+					</div>-->
+					<!--<a href="version.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">版本信息</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>-->
+					<a href="agreement.html" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">服务协议</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="icon-arrow icon-arrowRight"></span>
+						</div>
+					</a>
+					<!--<a href="#" class="weui-cell">
+						<div class="weui-cell__bd">
+							<p class="txt">清理缓存</p>
+						</div>
+						<div class="weui-cell__ft">
+							<span class="txt">25.5M</span>
+						</div>
+					</a>-->
+				</div>
+			</script>
+			<div id="accountInfo_Div"></div>
+		</div>
+		<!--底部-->
+		<div class="h60">
+			<footer class="ftbtn bg_f6f6f6 ">
+				<div class="btn" style="border-radius: 1rem;" onclick="LoginOut()">退出当前登录账号</div>
+			</footer>
+		</div>
+	</body>
+	<script>
+        $(function () {
+            GetMemberInfo(function (data) {
+                var gettpl = document.getElementById('accountInfo_Tpl').innerHTML;
+                laytpl(gettpl).render(data.data, function (html) {
+                    //得到的模板渲染到html
+                    document.getElementById('accountInfo_Div').innerHTML = html;
+                });
+                //将图片转化为Base64				
+                $('#fileImg').change(function () {
+                    gen_base64();
+                    changepic();
+                })
+                //	修改性别
+                var nickname = data.data.NickName,
+                    mysex = data.data.Sex,
+                    mybirthday = data.data.Birthday.split("T")[0];
+                $('#changeSex').click(function () {
+                    layer.open({
+                        content: '<div class="pop-Sex"><div class="pop-hd">选择性别</div><ul><li data-sex="1">男</li><li data-sex="0">女</li></ul></div>',
+                    });
+                    if (mysex == "男") {
+                        $('.pop-Sex li[data-sex="1"]').addClass('active');
+                    }
+                    else if (mysex == "女") {
+                        $('.pop-Sex li[data-sex="0"]').addClass('active');
+                    }
+                    $('.pop-Sex li').click(function () {
+                        mysex = $(this).attr('data-sex');
+                        console.log(mysex);
+                        $(this).addClass('active').siblings().removeClass('active');
+                        UpdateMemberInfo(mybirthday, mysex, nickname);
+                    })
+                })
+
+            });
+
+        });
+        function LoginOut() {
+            sc.auth.clearToken();
+            sc.utils.deleteCookie(sc.auth.tokenCookieName, sc.appPath);
+            sc.auth.clearUserId();
+            sc.utils.deleteCookie(sc.auth.userIdName, sc.appPath);
+            sc.auth.clearUserInfo();
+            sc.utils.deleteCookie(sc.auth.userInfoName, sc.appPath);
+            sc.auth.clearTokenExpiresUtc();
+            sc.utils.deleteCookie(sc.auth.tokenExpiresUtcName, sc.appPath);
+            window.location.href = "/register.html";
+        }
+	</script>
+</html>

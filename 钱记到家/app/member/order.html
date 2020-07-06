@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/details.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/order.js?0" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .zhezhao {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 11;
+            background: #000000;
+            /*opacity: 0.5;*/
+            display: none;
+        }
+
+        .codeDiv {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 40%;
+            background: #fff;
+        }
+
+        .img canvas {
+            max-width: 100%;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .orderitem .item-prolist .proitem .descbox .btn {
+            margin-left: .05rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="member.html" class="btn_back"></a>
+				<div class="title center">我的订单</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="tabListBox fixed bg_f6f6f6 pA10">
+				<ul class="dd_tabList li_20">
+					<li class="active" data-type="0">
+						<a href="/member/order.html?orderType=0">
+							<span>全部</span>
+						</a>
+					</li>
+					<li data-type="1">
+						<a href="/member/order.html?orderType=1">
+							<span>待付款</span>
+						</a>
+					</li>
+					<li data-type="2">
+						<a href="/member/order.html?orderType=2">
+							<span>待发货</span>
+						</a>
+					</li>
+					<li data-type="3">
+						<a href="/member/order.html?orderType=3">
+							<span>配送中</span>
+						</a>
+					</li>
+					<li data-type="4">
+						<a href="/member/order.html?orderType=4">
+							<span>待评价</span>
+						</a>
+					</li>
+				</ul>
+			</div>			
+			<div class="Orderlist pt62 pl10 pr10" id="Orderlist">
+				<div id="Orderlist_Div"></div>				
+			</div>
+		</div>
+		<script id="Orderlist_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.length; i++){ }} 			
+			<!--如果是普通订单-->			
+			<div class="orderitem" data-Id="{{d[i].OrderId}}" data-No="{{d[i].OrderNumber}}">
+				<div class="item-hd">
+                    <span class="orderttype">[{{d[i].Type}}]</span><a href="/member/storeIndex.html?shopId={{d[i].ShopId}}" class="ordertype fl">{{d[i].ShopName}}</a>
+					<span class="orderstatus fr">{{d[i].StatusName}}</span>
+				</div>
+				<div class="item-prolist">
+					{{# for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+					<div class="proitem" data-Id="{{d[i].orderDetails[j].Id}}" data-pid="{{d[i].orderDetails[j].ProductId}}">
+						<div class="img fl">
+							<img src="{{d[i].orderDetails[j].ProductImg}}">
+						</div>
+                        <div class="descbox">
+                            <div class="titleBox flex">
+                                <div class="flex1 flexItem"><p class="title ellipsis">{{d[i].orderDetails[j].ProductName}} </p></div>
+                                <div class="flexItem">x<span class="num">{{d[i].orderDetails[j].ProductCount}}</span></div>
+                            </div>
+                            <p class="price">
+                                <span>￥{{d[i].orderDetails[j].UnitPrice}}</span>
+                                {{# if(d[i].orderDetails[j].OrderStatusId !=d[i].StatusId){ }}
+                                {{#  if(d[i].orderDetails[j].OrderStatusId==5){ }}
+                                <a class="CanelRefundbtn btn fr" href="javascript:;">取消退货</a>
+                                {{#  } else if(d[i].orderDetails[j].OrderStatusId==16){ }}
+                                <a class="CanelRefundbtn btn fr" href="javascript:;">取消退款</a>
+                                {{#  } }}
+                                <a class="c_green fz12 fr" href="javascript:;">{{d[i].orderDetails[j].OrderStatusName}}</a>
+                                {{#  } }}
+                            </p>
+                            {{# if(d[i].orderDetails[j].OrderStatusName=="已发货"){ }}
+                            <div class="ft-btns text_r">
+                                <a class="btn0 wuliubtn" href="logistics.html?No={{d[i].OrderNumber}}&&oId={{d[i].orderDetails[j].Id}}&rId={{d[i].orderDetails[j].rId}}">查看物流</a>
+                            </div>
+                            {{#  } else { }}
+
+                            {{#  } }}
+                        </div>
+					</div>										
+					{{# } }} 
+				</div>
+				<div class="item-ft">
+					<div class="ft-count">
+						<div class="flex flexAlignCenter">	
+							{{# var num = 0; for(var j = 0; j< d[i].orderDetails.length; j++){ }} 
+								{{#  
+								  (function(j){
+								  	num += parseInt(d[i].orderDetails[j].ProductCount);
+								    return num;
+								  })(j);
+								}}									
+							{{# } }} 
+                           
+                           <div class="flexItem">共{{num}}件商品</div>
+							<div class="flexItem flex1 text_r">
+								<p class="txt ellipsis">合计：<span class="price"><span class="fh" style="font-size: .13rem;">￥</span>{{d[i].TotalPrice}}</span></p>
+							</div>
+						</div>
+					</div>
+                    <div class="ft-btns text_r">
+                        {{#  if(d[i].StatusId==0){ }}
+                        <!--待付款-->
+                        <a class="btn0 cancelbtn" href="javascript:;" onclick="CancelBtn(this)">取消订单</a>
+                        {{# var urldata = ""; for(var j = 0; j< d[i].orderDetails.length; j++){ }}
+                        {{#
+								  (function(j){
+								  	urldata = encodeURIComponent("orderno=" + d[i].OrderNumber+"&gotoType=0");
+								    return urldata;
+								  })(j);
+                        }}
+                        {{# } }}
+                        <a class="btn0 paybtn active" href="/pay.html?{{urldata}}">付款</a>
+                        {{#  } else if(d[i].StatusId==1){ }}
+                        <!--待发货-->
+                        {{#  if(d[i].Type=='拼团订单'){ }}
+
+                        {{#  } else { }}
+                        <a class="btn0 Refundbtn" href="/aftersale/applyReturn.html?RefundType=1&OrderNo={{d[i].OrderNumber}}">退款</a>
+                        {{#  } }}
+
+                        <a class="btn0 remindbtn" href="javascript:;" onclick="RemindBtn(this)">提醒发货</a>
+                        {{#  } else if(d[i].StatusId==2){ }}
+                        <!--已发货-->
+                        <a class="btn0 wuliubtn" href="logistics.html?No={{d[i].OrderNumber}}">查看物流</a>
+                        <a class="btn0 Receiptbtn active" href="javascript:;" onclick="ReceiptBtn(this)">确认收货</a>
+                        {{#  } else if(d[i].StatusId==3){ }}
+                        <!--已收货-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        <a class="btn0 wuliubtn" href="logistics.html?No={{d[i].OrderNumber}}">查看物流</a>
+                        {{#  if(d[i].orderDetails.length>1){ }}
+                        <a class="btn0 Commentbtn active" href="apprise_orderlist.html?No={{d[i].OrderNumber}}">去评价</a>
+                        {{#  } else { }}
+                        <a class="btn0 Commentbtn active" href="apprise.html?No={{d[i].OrderNumber}}&DId={{d[i].orderDetails[0].Id}}">去评价</a>
+                        {{#  } }}
+                        {{#  } else if(d[i].StatusId==4){ }}
+                        <!--已评价订单-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        <a class="btn0 wuliubtn active" href="logistics.html?No={{d[i].OrderNumber}}">查看物流</a>
+                        {{#  } else if(d[i].StatusId==5||d[i].StatusId==16){ }}
+                        <!--申请退货退款-->
+                        <a class="btn0 CanelRefund" href="javascript:;" onclick="CanelRefundBtn(this)">撤销申请</a>
+
+                        {{#  } else if(d[i].StatusId==7||d[i].StatusId==17){ }}
+                        <!--拒绝申请退货退款申请-->
+                        <!--<a class="btn0 CanelRefund" href="/aftersale/aftersaleType.html?OrderNo={{d[i].OrderNumber}}">申请售后</a> -->
+                        {{#  } else if(d[i].StatusId==9){ }}
+                        <!--退货中-->
+                        <a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}&refundId={{d[i].RefundId}}">售后详情</a>
+                        {{#  } else if(d[i].StatusId==11){ }}
+                        <!--已退货-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        <a class="btn0 afterbtn active" href="/aftersale/returnProgress.html?OrderNo={{d[i].OrderNumber}}&refundId={{d[i].RefundId}}">售后详情</a>
+                        {{#  } else if(d[i].StatusId==13){ }}
+                        <!--已完成-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        <a class="btn0 wuliubtn active" href="logistics.html?No={{d[i].OrderNumber}}">查看物流</a>
+                        {{#  } else if(d[i].StatusId==14){ }}
+                        <!--已取消订单删除-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        {{#  } else if(d[i].StatusId==15){ }}
+                        <!--用户取消退货-->
+                        <a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+                        <a class="btn0 wuliubtn active" href="logistics.html?No={{d[i].OrderNumber}}">查看物流</a>
+                        {{#  } else if(d[i].StatusId==18){ }}
+                        <!--商家拒绝退款-->
+                        <!--<a class="btn0 wuliubtn active" href="/aftersale/aftersaleType.html?OrderNo={{d[i].OrderNumber}}">申请售后</a>-->
+                        {{#  } }}
+                    </div>  
+				</div>
+			</div>
+			
+		{{# } }} 	
+		</script>	
+        <!--弹窗-->
+        <div class="fcrs">
+            <div class="dvceng">
+                <img src="/images/er.png" />
+                <img class="know" src="/images/know.png"/>
+            </div>
+        </div>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			OrderPageint();
+		})
+	</script>
+</html>

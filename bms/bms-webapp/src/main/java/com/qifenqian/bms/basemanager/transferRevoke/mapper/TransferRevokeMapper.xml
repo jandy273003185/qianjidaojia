@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.transferRevoke.mapper.TransferRevokeMapper">
+
+	<select id="selectTransferRevokeList" parameterType="com.qifenqian.bms.basemanager.transferRevoke.bean.TransferRevoke" resultType="com.qifenqian.bms.basemanager.transferRevoke.bean.TransferRevoke">
+		SELECT
+		  T.ORDER_ID,
+		  T.ORIGIN_ORDER_ID,
+		  T.ORIGIN_TRANS_TIME,
+		  LU.MOBILE PAYER_CUST_ID,
+		  T.PAYER_CUST_NAME,
+		  U.MOBILE PAYEE_CUST_ID,
+		  T.PAYEE_CUST_NAME,
+		  T.CURR_CODE,
+		  T.REVOKE_AMT,
+		  T.REVOKE_MEMO,
+		  T.CORE_RETURN_MSG,
+		  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.CREATE_ID ) CREATE_ID,
+		  DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') AS CREATE_TIME,
+		  T.ORDER_STATUS,
+		  (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.AUDIT_ID ) AUDIT_ID,
+		  DATE_FORMAT(T.AUDIT_TIME,'%Y-%m-%d %H:%i:%s') AS AUDIT_TIME,
+		  T.AUDIT_STATE
+		FROM
+			TD_CUST_TRANSFER_REVOKE T,TD_LOGIN_USER_INFO LU,TD_LOGIN_USER_INFO U
+		<where> 
+			T.PAYER_CUST_ID=LU.CUST_ID AND T.PAYEE_CUST_ID = U.CUST_ID
+			<if test="orderId !=null and orderId !='' ">
+				AND T.ORDER_Id = #{orderId,jdbcType = VARCHAR}
+			</if>
+			<if test="originOrderId != null and originOrderId != '' ">
+				AND T.ORIGIN_ORDER_ID = #{originOrderId,jdbcType = VARCHAR}
+			</if>
+			<if test="payerCustId != null and payerCustId != '' ">
+				AND LU.MOBILE = #{payerCustId,jdbcType = VARCHAR}
+			</if>
+			<if test="revokeBeginTime != null and revokeBeginTime != '' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') >= #{revokeBeginTime} 
+	 			]]>
+			</if>
+			<if test="revokeEndTime !=null and revokeEndTime !='' ">
+				<![CDATA[ 
+	 				AND DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{revokeEndTime} 
+	 			]]>
+			</if>
+		</where>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+	
+	<insert id="insertTransferRevoke" parameterType="com.qifenqian.bms.basemanager.transferRevoke.bean.TransferRevoke">
+		INSERT INTO TD_CUST_TRANSFER_REVOKE(
+			  ORDER_ID,
+			  ORIGIN_ORDER_ID,
+			  ORIGIN_TRANS_TIME,
+			  PAYER_CUST_ID,
+			  PAYER_ACCT_ID,
+			  PAYER_CUST_NAME,
+			  PAYEE_CUST_ID,
+			  PAYEE_ACCT_ID,
+			  PAYEE_CUST_NAME,
+			  CURR_CODE,
+			  REVOKE_AMT,
+			  REVOKE_MEMO,
+			  CREATE_ID,
+			  ORDER_STATUS,
+			  AUDIT_STATE
+		)VALUES(
+	 		  #{orderId,				jdbcType = VARCHAR},
+			  #{originOrderId,			jdbcType = VARCHAR},
+			  #{originTransTime,		jdbcType = TIMESTAMP},
+			  #{payerCustId,			jdbcType = VARCHAR},
+			  #{payerAcctId,			jdbcType = VARCHAR},
+			  #{payerCustName,			jdbcType = VARCHAR},
+			  #{payeeCustId,			jdbcType = VARCHAR},
+			  #{payeeAcctId,			jdbcType = VARCHAR},
+			  #{payeeCustName,			jdbcType = VARCHAR},
+			  #{currCode,				jdbcType = VARCHAR},
+			  #{revokeAmt,				jdbcType = DECIMAL},
+			  #{revokeMemo,				jdbcType = VARCHAR},
+			  #{createId,				jdbcType = VARCHAR},
+			  #{orderStatus,			jdbcType = VARCHAR},
+			  #{auditState,				jdbcType = VARCHAR}
+			  
+		)
+	</insert>
+	
+	<update id="updateByRevoke" parameterType="com.qifenqian.bms.basemanager.transferRevoke.bean.TransferRevoke">
+		UPDATE TD_CUST_TRANSFER_REVOKE
+		<set>
+			<if test="orderStatus !=null and orderStatus !='' ">
+				ORDER_STATUS = #{orderStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="coreSn != null and coreSn != '' ">
+				CORE_SN = #{coreSn,jdbcType = VARCHAR},
+			</if>
+			<if test="coreReturnCode != null and coreReturnCode != '' ">
+				CORE_RETURN_CODE = #{coreReturnCode,jdbcType = VARCHAR},
+			</if>
+			<if test="coreReturnMsg !=null and coreReturnMsg !='' ">
+				CORE_RETURN_MSG = #{coreReturnMsg,jdbcType = VARCHAR},
+			</if>
+				CORE_RETURN_TIME = NOW()
+		</set>
+		WHERE ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateByAudit" parameterType="com.qifenqian.bms.basemanager.transferRevoke.bean.TransferRevoke">
+		UPDATE TD_CUST_TRANSFER_REVOKE T
+		<set>
+			<if test="orderStatus !=null and orderStatus !='' ">
+				ORDER_STATUS = #{orderStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="auditId !=null and auditId !='' ">
+				AUDIT_ID = #{auditId,jdbcType = VARCHAR},
+			</if>
+			<if test="auditState !=null and auditState !='' ">
+				AUDIT_STATE = #{auditState,jdbcType = VARCHAR},
+			</if>
+				AUDIT_TIME = NOW()
+		</set>
+		WHERE T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+	
+</mapper>

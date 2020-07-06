@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.acctsevenbuss.mapper.AcctSevenBussMapper">
+
+	<select id="queryAcctSevenBuss" resultType="com.qifenqian.bms.basemanager.acctsevenbuss.bean.AcctSevenBuss" parameterType="com.qifenqian.bms.basemanager.acctsevenbuss.bean.AcctSevenBuss">
+		SELECT
+			A.ACCT_ID,
+			A.ACCT_NAME,
+			U.MERCHANT_CODE,
+			A.SUBJECT_ID,
+			A.BALANCE,
+			A.BALANCE_FLAG,
+			A.FREEZE_AMT,
+			A.ONWAY_AMT,
+			A.USABLE_AMT,
+			A.STATUS,
+			A.INST_DATE,
+			DATE_FORMAT(A.INST_DATETIME,'%Y-%m-%d %H:%i:%s') as instDatetime
+			FROM
+			STCS.ACCT_SEVEN_BUSS A JOIN
+			TD_CUST_INFO U ON A.CUST_ID = U.CUST_ID
+		WHERE U.TRUST_CERTIFY_AUDIT_STATE in ('00','30')
+		<if test="merchantCode!='' and merchantCode!=null">
+			AND U.MERCHANT_CODE =#{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="acctName!='' and acctName!=null">
+			AND A.ACCT_NAME LIKE CONCAT('%',#{acctName},'%')
+		</if>
+		<if test="acctId!='' and acctId!=null">
+			AND A.ACCT_ID LIKE CONCAT('%',#{acctId},'%')
+		</if>
+		<if test="status!='' and status!=null">
+			AND A.STATUS = #{status,jdbcType = VARCHAR}
+		</if>
+		ORDER BY A.INST_DATETIME DESC
+	</select>
+	
+	<update id="updateAcctSevenBuss" parameterType="com.qifenqian.bms.basemanager.acctsevenbuss.bean.AcctSevenBuss">
+		UPDATE 
+			STCS.ACCT_SEVEN_BUSS ACC 
+		SET  
+			ACC.STATUS = #{status,jdbcType = VARCHAR}
+		WHERE 
+			ACC.ACCT_ID = #{acctId,jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 根据cust_id修改账务-核心账户表 -->
+	<update id="updateAcctSevenBussByCustId" parameterType="com.qifenqian.bms.basemanager.acctsevenbuss.bean.AcctSevenBuss">
+		update stcs.acct_seven_buss 
+		<set>
+			<if test="acctName != null">
+				acct_name = #{acctName}
+			</if>
+		</set>
+		where cust_id = #{custId}
+	</update>
+	
+</mapper>

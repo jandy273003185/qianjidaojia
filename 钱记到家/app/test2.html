@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <script>
+
+        var str = 'http://www.qianjidaojia.com/member/subShopShare.html?UserId=A2137009FA48A613&id=null#0-sqq-1-5891-9737f6f9e09dfaf5d3fd14d775bfee85';
+
+        alert(getQueryVariable(str));
+
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return (false);
+        }
+
+
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            var pair = vars[0].split("=");
+            return pair[1];
+        }
+
+    </script>
+</body>
+</html>

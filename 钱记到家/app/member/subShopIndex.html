@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>小店首页</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/fenxiang.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/Share.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/WxShare.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        .m-pro .bd .delbtn {
+            display: block;
+            height: .3rem;
+            width: .3rem;
+            position: absolute;
+            right: .1rem;
+            bottom: .08rem;
+            background: url(../images/icons/delete.png) center center no-repeat;
+            background-size: .2rem;
+        }
+    </style>
+</head>
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="title center">小店首页</div>
+            <a href="shKeeperOperation.html" class="icon_r txt btn">添加</a>
+            <a href="javascript:;" style="position:relative; left: 0px;" class="icon_r icons_share sharebtn"></a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="subShopCon pd10">
+            <div class="banner b-radius mb10">
+                <a href="javascript:;">
+                    <img src="../images/subShop-ggao1.png" alt="" />
+                </a>
+            </div>
+            <div class="ProItem">
+                <ul class="prolist li50 clear" id="prolist_Div"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="fenxiang">
+        <div>
+            <p class="fenxiang-title">分享小店</p>
+            <div class="bdsharebuttonbox">
+                <ul class="gb_resItms">
+                    <li>
+                        <a title="分享到微信" href="#" class="bds_weixin " data-cmd="weixin" data-url=""></a>微信好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ好友" href="#" class="bds_sqq " data-cmd="sqq" data-url=""></a>QQ好友
+                    </li>
+                    <li>
+                        <a title="分享到QQ空间" href="#" class="bds_qzone " data-cmd="qzone" data-url=""></a>QQ空间
+                    </li>
+                    <li>
+                        <a title="分享到新浪微博" href="#" class="bds_tsina " data-cmd="tsina" data-url=""></a>新浪微博
+                    </li>
+                </ul>
+            </div>
+            <p class="fenxiang-colse">取消</p>
+        </div>
+    </div>
+
+</body>
+	<script type="text/javascript" src="/js/top.js"></script>
+	<script id="prolist_Tpl" type="text/html">
+		{{# for(var i = 0; i< d.length; i++){ }} 
+			<li>
+				<a href="/details.html?id={{d[i].productId}}&sharememberId={{d[i].MemberId}}" class="m-pro" data-pid="{{d[i].productId}}" data-id="{{d[i].Id}}">
+					<div class="hd">						
+						<!--<div class="mark yh"><span>限时<br />优惠</span></div>-->	
+						{{#  
+						  function Img(){
+						  	var path = sc.fileServerUrl + d[i].PicNo;
+						    return path;
+						  }; 
+						}}
+						<div class="img">
+							<img src="{{Img()}}" />
+						</div>
+					</div>
+					<div class="bd">
+						<h4 class="name">{{d[i].productName}}</h4>
+						{{# if(d[i].Synopsis){ }}
+						<p class="desc">{{d[i].Synopsis}}</p>
+						{{#  } else { }}
+						<p class="desc">暂无产品简介</p>
+						{{#  } }} 
+						<p class="price">￥{{d[i].Price}}</p>						
+						<p class="Tags">{{# if(d[i].DiscountNum && d[i].DiscountNum<10){ }}<span class="rebate">{{d[i].DiscountNum}}折</span>{{# } }}<span class="counterPrice">￥{{d[i].MarketPrice}}</span></p>
+						
+						<span class="delbtn"></span>
+					</div>
+				</a>
+			</li>
+		{{# } }} 
+	</script>
+	<script type="text/javascript">
+		$(function() {
+            IsOwner();
+
+            $(".fenxiang a").attr("data-url", "http://www.qianjidaojia.com/member/subShopShare.html?UserId=" + userId + "&id=");
+
+			var pageNum = 0,pageSize = 6;	
+			$('.subShopCon').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+                    pageNum++;
+
+                    MyShopProductlist(pageNum,pageSize,function(data){
+						var gettpl = document.getElementById('prolist_Tpl').innerHTML;
+						if(data.data.length == 0 && !data.isok){
+							me.lock();
+		                    me.noData();
+		                    me.resetload();                    
+		                    if (pageNum == 1) {
+								$(".dropload-down").remove();
+								emptytpl($('.ProItem'));
+		                    }
+						}
+						else if(data.data.length<pageSize){
+							setTimeout(function () {
+								laytpl(gettpl).render(data.data, function(html) {
+									//得到的模板渲染到html
+									$('#prolist_Div').append(html);
+								});
+								$('#prolist_Div li').each(function(){
+									var that=$(this);
+									var btn=that.find('.delbtn');
+									var Pid=that.find('.m-pro').attr('data-pid');
+									var Id=that.find('.m-pro').attr('data-id');
+									btn.click(function(event){
+										event.preventDefault();
+										layer.open({
+											content: '您确定要移除该产品吗？',
+											btn: ['移除', '取消'],
+											skin: 'footer',
+											yes: function(index) {
+												ShopProductDelete(Pid,Id,function(data) {
+													layer.open({
+														content: '移除产品成功！',
+														skin: 'msg',
+														time: 1 //1秒后自动关闭
+													});
+													that.remove();
+													if($('#prolist_Div li').length==0){
+														$(".dropload-down").remove();
+														emptytpl($('.ProItem'));
+													}
+												});
+											}
+										});
+									})
+								})
+								me.resetload();	
+							},1000);
+							me.lock("down");
+							me.noData();
+						}
+						else{
+							if(pageNum == 1){
+								$("#prolist_Div").html("");
+							}
+							setTimeout(function() {
+								laytpl(gettpl).render(data.data, function(html) {
+									//得到的模板渲染到html
+									$('#prolist_Div').append(html);
+								});	
+								$('#prolist_Div li').each(function(){
+									var that=$(this);
+									var btn=that.find('.delbtn');
+									var Pid=that.find('.m-pro').attr('data-pid');
+									var Id=that.find('.m-pro').attr('data-id');
+									btn.click(function(event){
+										event.preventDefault();
+										layer.open({
+											content: '您确定要移除该产品吗？',
+											btn: ['移除', '取消'],
+											skin: 'footer',
+											yes: function(index) {
+												ShopProductDelete(Pid,Id,function(data) {
+													layer.open({
+														content: '移除产品成功！',
+														skin: 'msg',
+														time: 1 //1秒后自动关闭
+													});
+													that.remove();
+													if($('#prolist_Div li').length==0){
+														$(".dropload-down").remove();
+														emptytpl($('.ProItem'));
+													}
+												});
+											}
+										});
+									})
+								})
+								me.resetload();
+							}, 1000);
+						}
+					},me)
+				}
+			})
+			
+		})
+		//判断是否开通小店
+		function IsOwner() {
+			var url = 'api/User/GetMemberInfo';
+			var callback = function(data) {
+				if(data.code == 0) { //成功
+					var Ownerstatus = data.data.OwnerStatus;
+					if(!sc.auth.isLogin()) {
+						layer.open({
+							content: '您还没有登录，是否登录?',
+							btn: ['确定', '取消'],
+							yes: function(index) {
+								location.href = '/login.html';
+								layer.close(index);
+							},
+							no: function(index) {
+								layer.close(index);
+							}
+						});
+					} else {
+						if(Ownerstatus === 0) {
+							location.href = '/member/setUpShop.html';
+						} 
+					}
+				}
+				if(data.code == 2) { //登录超时
+					layer.open({
+						content: data.msg,
+						skin: 'msg',
+						time: 1 //1秒后自动关闭
+					});
+					setTimeout(function() {
+						location.href = "/login.html";
+					}, 1000);
+				}
+			}
+			sc.post(url, {
+				"UserId": userId,
+				"Token": token
+			}, callback);
+		}
+
+	</script>
+
+</html>

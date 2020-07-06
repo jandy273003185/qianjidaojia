@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.channel.mapper.AgentMerMapper">
+
+	<!-- 写入商户通道信息 -->
+	<insert id="insertAgentMerInfo" parameterType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		INSERT INTO
+		COMBINEDPAYMENT.td_channel_agent_mer_info (
+		CHANNEL_CODE,
+		MER_CUST_ID,
+		MER_NO,
+		APPID,
+		APPID_KEY,
+		CREATE_TIME,
+		MODIFY_TIME,
+		STATUS,
+		PUBLIC_STATUS,
+		RESERVED
+		)
+		VALUES (
+		#{channelCode, jdbcType=VARCHAR},
+		#{merCustId,
+		jdbcType=VARCHAR},
+		#{merNo, jdbcType=VARCHAR},
+		#{appId, jdbcType=VARCHAR},
+		#{appIdKey, jdbcType=VARCHAR},
+		#{createTime,
+		jdbcType=TIMESTAMP},
+		#{modifyTime, jdbcType=TIMESTAMP},
+		#{status,
+		jdbcType=VARCHAR},
+		#{publicStatus, jdbcType=VARCHAR},
+		#{reserved,
+		jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 删除详情 -->
+	<delete id="deleteChannleAgentMerInfoBymerCustId"	parameterType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		UPDATE COMBINEDPAYMENT.td_channel_agent_mer_info
+		<set>STATUS=#{status}</set>
+		WHERE MER_CUST_ID =
+		#{merCustId,jdbcType=VARCHAR} AND CHANNEL_CODE = #{channelCode,jdbcType=VARCHAR} AND MER_NO = #{merNo,jdbcType=VARCHAR}
+	</delete>
+
+	<!-- 更新详情信息 -->
+	<update id="updateChannleAgentMerInfo"	parameterType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		update COMBINEDPAYMENT.td_channel_agent_mer_info
+		<set>
+			<if test="channelCode != null">
+				CHANNEL_CODE = #{channelCode,jdbcType=VARCHAR},
+			</if>
+			<if test="merCustId != null">
+				MER_CUST_ID = #{merCustId,jdbcType=VARCHAR},
+			</if>
+			<if test="merNo != null">
+				MER_NO = #{merNo,jdbcType=VARCHAR},
+			</if>
+			<if test="appId != null">
+				APPID = #{appId,jdbcType=VARCHAR},
+			</if>
+			<if test="appIdKey != null">
+				APPID_KEY = #{appIdKey,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyTime != null">
+				MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="publicStatus != null">
+				PUBLIC_STATUS = #{publicStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="reserved != null">
+				RESERVED = #{reserved,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MER_CUST_ID = #{merCustId,jdbcType=VARCHAR} and MER_NO = #{merNo,jdbcType=VARCHAR} 
+	</update>
+	
+	<!-- 查询所有 -->
+	<select id="selectAllChannleAgentMerInfo" resultType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		SELECT C.*
+		FROM COMBINEDPAYMENT.td_channel_agent_mer_info C
+		ORDER BY C.CREATE_TIME
+	</select>
+	
+	<!-- 根据主键查询数据 -->
+	<select id="selectChannleAgentMerInfoByPrimaryKey" resultType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		SELECT C.*
+		FROM COMBINEDPAYMENT.td_channel_agent_mer_info C
+		<where>
+			<if test="channelCode !=null and channelCode !='' ">
+				AND C.CHANNEL_CODE LIKE CONCAT('%',#{channelCode, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="merCustId !=null and merCustId !='' ">
+				AND C.MER_CUST_ID LIKE CONCAT('%',#{merCustId, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="merNo !=null and merNo !='' ">
+				AND C.MER_NO LIKE CONCAT('%',#{merNo, jdbcType = VARCHAR},'%')
+			</if>
+		</where>
+		ORDER BY C.CREATE_TIME
+	</select>
+	
+	<!-- 根据ChannlCode查询对象 -->
+	<select id="selectAgentMerInfoByChannlCode" resultType="com.qifenqian.bms.merchant.channel.bean.AgentMerInfo">
+		SELECT C.*
+		FROM COMBINEDPAYMENT.td_channel_agent_mer_info C
+		WHERE MER_CUST_ID = #{channlCode,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

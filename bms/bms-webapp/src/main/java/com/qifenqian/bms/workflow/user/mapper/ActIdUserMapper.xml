@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.workflow.user.mapper.ActIdUserMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.workflow.user.bean.ActIdUser" >
+    <id column="ID_" property="id" jdbcType="VARCHAR" />
+    <result column="REV_" property="rev" jdbcType="INTEGER" />
+    <result column="FIRST_" property="first" jdbcType="VARCHAR" />
+    <result column="LAST_" property="last" jdbcType="VARCHAR" />
+    <result column="EMAIL_" property="email" jdbcType="VARCHAR" />
+    <result column="PWD_" property="pwd" jdbcType="VARCHAR" />
+    <result column="PICTURE_ID_" property="pictureId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_, PICTURE_ID_
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from act_id_user
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectListActUser" parameterType="com.qifenqian.bms.workflow.user.bean.ActIdUser" resultType="com.qifenqian.bms.workflow.user.bean.ActIdUser">
+  	 SELECT
+  	 <include refid="Base_Column_List" />
+  	 FROM ACT_ID_USER A
+  	 <where>
+  	 	<if test="id != null and id !=''" >
+         A.ID_ = #{id,jdbcType=VARCHAR}
+      	</if>
+  	 </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from act_id_user
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.workflow.user.bean.ActIdUser" >
+    insert into act_id_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID_,
+      </if>
+      <if test="rev != null" >
+        REV_,
+      </if>
+      <if test="first != null" >
+        FIRST_,
+      </if>
+      <if test="last != null" >
+        LAST_,
+      </if>
+      <if test="email != null" >
+        EMAIL_,
+      </if>
+      <if test="pwd != null" >
+        PWD_,
+      </if>
+      <if test="pictureId != null" >
+        PICTURE_ID_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="rev != null" >
+        #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="first != null" >
+        #{first,jdbcType=VARCHAR},
+      </if>
+      <if test="last != null" >
+        #{last,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureId != null" >
+        #{pictureId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.workflow.user.bean.ActIdUser" >
+    update act_id_user
+    <set >
+      <if test="rev != null" >
+        REV_ = #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="first != null" >
+        FIRST_ = #{first,jdbcType=VARCHAR},
+      </if>
+      <if test="last != null" >
+        LAST_ = #{last,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL_ = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        PWD_ = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureId != null" >
+        PICTURE_ID_ = #{pictureId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.workflow.user.bean.ActIdUser" >
+    update act_id_user
+    set REV_ = #{rev,jdbcType=INTEGER},
+      FIRST_ = #{first,jdbcType=VARCHAR},
+      LAST_ = #{last,jdbcType=VARCHAR},
+      EMAIL_ = #{email,jdbcType=VARCHAR},
+      PWD_ = #{pwd,jdbcType=VARCHAR},
+      PICTURE_ID_ = #{pictureId,jdbcType=VARCHAR}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,138 @@
+<!--pages/shop/shop.wxml-->
+
+
+<view>
+  <view class="search-wrap">
+    <view class="search-inner">
+      <myicon class="iconsearch" iconClass="iconsearch"></myicon>
+      <input type="text" name="search" placeholder-style="color:#fff" placeholder="搜索店内9999件商品" />
+    </view>
+    <view class="focus">关注</view>
+  </view>
+  <view class="main">
+    <view class="info">
+      <view class="photo">
+        <image src="https://mall.qianjidaojia.com//upload/admin/2020-03-12/2020031217582484774s07410.jpg" />
+      </view>
+      <view class="name">
+        <view>钱记到家-南山店</view>
+        <p>达达专送-60分钟 基础运费￥8.5元</p>
+      </view>
+      <view class="vip">尊享VIP
+        <image src="https://mall.qianjidaojia.com//upload/admin/2020-03-12/2020031217582484774s07410.jpg" />
+      </view>
+    </view>
+    <scroll-view class="coupons" scroll-x="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll">
+      <view class="coupon">10元
+        <text>领取</text>
+      </view>
+      <view class="coupon">1元
+        <text>领取</text>
+      </view>
+      <view class="coupon">10元
+        <text>领取</text>
+      </view>
+      <view class="coupon">1元
+        <text>领取</text>
+      </view>
+      <view class="coupon">1元
+        <text>领取</text>
+      </view>
+    </scroll-view>
+
+    <view class="gift">
+      <view class="seeDiscount">31种优惠
+        <myicon class="iconmore" iconClass="iconmore"></myicon>
+      </view>
+      <view class="item">
+        <text class="tag">返礼</text>
+        <text> 部分商品下单返酸奶25减5优惠券</text>
+      </view>
+    </view>
+    <view class="tit clearfix">
+      <navigator hover-class="none">首页</navigator>
+      <text class="{{topActiveIdx==index?'active':''}}" wx:for="{{topNav}}" wx:key="{{index}}" data-idx="{{index}}" bindtap="changeTopNav">{{item.name}}</text>
+    </view>
+    <view class="goods clearfix">
+      <view class="left">
+        <text bindtap="changeSideNav" data-idx="{{index}}" class="{{acitveSideIdx==index?'active':''}}" wx:for="{{sideNav}}" wx:key="{{index}}">{{item.name}}</text>
+      </view>
+      <view class="right">
+        <view class="item" wx:for="{{goods}}" wx:key="{{index}}">
+          <view class="img">
+            <image src="https://mall.qianjidaojia.com//upload/admin/2020-03-12/2020031217582484774s07410.jpg" />
+          </view>
+          <view class="detail">
+            <view>{{item.name}}</view>
+            <view class="num ">月售{{item.saleNum}} 好评{{item.appraise}}%</view>
+            <view class="discount">
+              <text>减2元运费</text>
+              <text>减2元运费</text>
+            </view>
+            <view class="price clearfix">¥{{item.price}}
+              <text class="normal">¥{{item.discount}}</text>
+              <myicon class="iconadd" iconClass="iconadd"></myicon>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="fixed {{isActive?'active':''}}">
+    <view class="buy" bindtap="showCarList">
+      <myicon class="iconcar" iconClass="iconcar"></myicon>
+      <text class="num">4</text>
+    </view>
+    <view class="cart">
+      <view class="sec-all">
+        <checkbox-group bindchange="checkAllboxChange">
+          <label>
+            <checkbox checked="true" value="all" />全选
+            <text>(已选4件,共6.03kg)</text>
+          </label>
+        </checkbox-group>
+        <view class="clear-goods">
+          <myicon class="icondel" iconClass="icondel"></myicon>清空购物车</view>
+      </view>
+      <view class="tips">
+        <view class="tag">打包 3件11.8元</view>
+        <text>再买两件，可享受打包价格3件11.8元</text>
+        <navigator hover-class="none" url="">去凑单
+          <myicon iconClass="iconmore"></myicon>
+        </navigator>
+      </view>
+      <view class="item" wx:for="{{carList}}" wx:key="{{index}}">
+        <view class="inp-box">
+
+          <checkbox checked="{{item.checked}}" />
+
+        </view>
+        <image src="https://mall.qianjidaojia.com//upload/admin/2020-03-12/2020031217582484774s07410.jpg" />
+        <view class="desc">
+          <view>{{item.name}}</view>
+          <view class="tag">
+            <text class="hot">直降</text>
+            <text class="hot">直降</text>
+          </view>
+          <view class="price">¥{{item.price}}
+            <text class="normal">¥{{item.discount}} </text>
+          </view>
+        </view>
+        <view class="charge">
+          <myicon class="iconcut" iconClass="iconcut" data-idx="{{index}}" bindtap="cutCarNum"></myicon>
+          <view class="num">{{item.num}}</view>
+          <myicon class="iconadd" iconClass="iconadd" data-idx="{{index}}" bindtap="addCarNum"></myicon>
+        </view>
+      </view>
+    </view>
+    <view class="all">
+      <view class="price">¥49.9
+        <text>已减0.4元</text>
+      </view>
+      <view class="account">去结算</view>
+    </view>
+
+  </view>
+  <view bindtap="showCarList" class="bg  {{isActive?'active':''}}"></view>
+
+</view>

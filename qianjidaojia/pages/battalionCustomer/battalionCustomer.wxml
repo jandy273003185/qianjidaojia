@@ -1,0 +1,58 @@
+<!--pages/battalionCustomer/battalionCustomer.wxml-->
+<view class="search">
+    <view class="bg {{bgColor}}"></view>
+    <input class="input-mobile" placeholder="输入手机号搜索" placeholder-style="color:#C0C0C0" value="{{tel}}" bindinput="inputListener"   bindconfirm="search"></input>
+    <image catchtap="search" class="search-icon" src="/images/search.png"></image>
+</view>
+<!-- 营长 -->
+<view wx:if="{{role==2}}" class="status">
+    <text class="{{item.id==idx?'active':''}}" wx:for="{{statusArr}}" wx:key="index" data-index="{{index}}" bindtap='onStatus'>{{item.name}}
+  </text>
+</view>
+<!-- 团长 -->
+<view wx:if="{{role==1}}" class="status">
+    <text class="{{item.id==idx?'Active':''}}" wx:for="{{statusList}}" wx:key="index" data-index="{{index}}" bindtap='onStatus'>{{item.name}}
+  </text>
+</view>
+
+<scroll-view style="height:{{warpHeight}};" scroll-y="true" bindscrolltolower="loadMore" class='deviceScroll'>
+    <view class="item" wx:for="{{listArr}}" wx:key="index" data-id="{{item.Id}}" data-GroupLevel="{{item.GroupLevel}}" bindtap="toBattalion">
+        <view class="photo">
+            <image src="{{item.headimgurl}}"></image>
+        </view>
+        <view class="content">
+            <view class="flex justs alic">
+                <view  class="flex justfs alic" data-id="{{item.Id}}" catchtap="ament">
+                    <text class="name hid-ell">{{item.nickname}}</text>
+                    <image class="edit" src="images/edit.png"></image>
+                </view>
+                <view wx:if="{{role==1}}">
+                    <view wx:if="{{item.GroupLevel == 0}}" class="set" data-memberid="{{item.memberId}}" catchtap="setBattalion">设为营长</view>
+                    <view wx:if="{{item.GroupLevel == 2}}" class="battalion flex justs alic">
+                        <myIcon iconClass="icon_head" class="iconhead"></myIcon>
+                        <text class="text">营长</text>
+                    </view>
+
+
+                </view>
+
+            </view>
+
+            <text class="remark">{{item.GroupRemark}}</text>
+            <text class="mobile">{{item.tel}}</text>
+            <text class="time">{{item.createtime}}</text>
+        </view>
+    </view>
+</scroll-view>
+<myModal bindconfirm="confirm" bindconcel="concel" isModal="{{isModal}}">
+    <view slot="title" class="title">添加或修改备注</view>
+    <input slot="main" class="input" placeholder="请输入备注名称" value="{{GroupRemark}}" bindinput="inputRemark" placeholder-class="placeholder"></input>
+</myModal>
+
+<myModal bindconfirm="confirm2" bindconcel="concel" isModal="{{isModal2}}">
+    <view slot="title" class="title2">确定设置为营长吗？设置后不可取消</view>
+    <view slot="title" class="calculate">
+      <image src="{{vImg}}"></image><input slot="main" value="{{code}}" bindinput="inputCode"></input>
+    </view>
+</myModal>
+<canvas style="display:none;" canvas-id="myCanvas"></canvas>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>全国新型肺炎疫情实时动态-钱记到家</title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery.min.js"></script>
+    <link href="css/yiqing.css" rel="stylesheet" type="text/css" />
+    <script src="/js/sc.core.js?v=1" type="text/javascript" charset="utf-8"></script>
+    <script src="../script/WxShare.js?v=2"></script>
+</head>
+<body>
+
+
+    <div class="contain">
+        <div style="text-align:center;width: 100%">
+            <div id="main_div">
+                <div id="container">
+                </div>
+
+                <div id='dxy' style="text-align:center; width:100%; height: 0px; margin: 0;">
+                    <iframe src="https://news.qq.com/zt2020/page/feiyan.htm" width="100%" frameborder="no" height="868"></iframe>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    <div class="tabcontent3">
+        <div class="share"></div>
+        <div class="dingyue"></div>
+    </div>
+
+    <div class="mask"><div class="arrow"></div><div class="hint">点击右上角更多<br />分享给好友或到朋友圈</div></div>
+    <script>
+        $(function () {
+            $(".share").click(function () {
+                $(".mask").show();
+            });
+            $(".mask").click(function () {
+                $(".mask").hide();
+            });
+
+            $(".dingyue").click(function () {
+                window.location.href = "yiqingshuoming.html";
+            });
+            // $(".share").click(function () {
+            getWxfxConfig(1, "地区疫情订阅『实时播报功能』-钱记到家", "点击订阅您关注的城市疫情实时动态播报；科学防护，共渡难关。", "https://www.qianjidaojia.com/pneumonia/images/yiqing/logo.jpg");
+            //});
+            $(".fold").click(function () {
+                if ($(this).find(".area:last").hasClass("none")) {
+                    $(".fold .area.block").addClass("none").removeClass("block");
+                    $(this).find(".area.none").removeClass("none").addClass("block");
+                    $(this).find(".close").removeClass("close").addClass("open");
+                } else {
+                    $(this).find(".area.block").addClass("none").removeClass("block");
+                    $(this).find(".open").removeClass("open").addClass("close");
+                }
+            });
+        });
+        function GetUrlRelativePath() {
+            var urlStr = '';
+            var url = document.location.toString();
+            var arrUrl = url.split("//");
+            var start = arrUrl[1].split("/");
+            urlStr = arrUrl[0] + '//' + start[0];
+            return urlStr;
+        }
+    </script>
+    <script src="js/resetFontSize.js?0" type="text/javascript"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?588c7e7b5e836d9e197a605517df0f9d";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>

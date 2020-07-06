@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.trade.mapper.TdTradeBillMainMapper">
+	
+	<select id="selectConsume" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO"
+	resultType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+			SELECT TT.* FROM 
+				(SELECT
+					T.ORDER_ID,
+					T.ORDER_NAME,
+					T.ORDER_DESC,
+					T.MER_ORDER_ID,
+					A.TRANS_ID,
+					H.ID CHANNEL_ID,
+					M.SERVICE,
+					CASE 
+					WHEN T.TRADE_TYPE ='1301' THEN 'RED_PACKET_PAYMENT'
+					WHEN T.IS_NEED_CHARGE ='0' THEN 'BALANCE_PAYMENT'
+					WHEN T.IS_NEED_CHARGE ='1' THEN 'BANK_CARD_PAYMENT'
+					END ORDER_TYPE,
+					T.PAYEE_CUST_NAME,
+					F.MERCHANT_CODE PAYEE_CUST_ID,
+					T.PAYER_CUST_ID,
+					T.PAYER_CUST_NAME,
+					IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+					T.ORDER_CREATE_TIME,
+					T.ORDER_CORE_RETURN_TIME,
+					T.ORDER_STATE,
+					T.SUM_AMT,
+					SH.SETTLE_AMT SETTLE_AMT,
+					I.MOBILE
+				FROM
+					TD_TRADE_BILL_MAIN T
+					JOIN TD_LOGIN_USER_INFO I
+					ON T.SRC_CUST_ID = I.CUST_ID
+				    LEFT JOIN TD_CUST_INFO F
+				    ON T.PAYEE_CUST_ID = f.CUST_ID
+					LEFT JOIN TD_TRANS_YL A
+					ON T.ORDER_ID = A.TRANS_SN
+					LEFT JOIN STCS.TRANS_RECORD SS
+					ON T.ORDER_ID = SS.REQ_SERIAL_ID
+					LEFT JOIN td_merchant_in M ON T.MER_ORDER_ID = M.OUT_ORDER_ID
+				LEFT JOIN (
+					SELECT
+						Y.TRANS_AMT,
+						Y.RTN_SEQ,
+						F.MSG_ID,
+						Y.ID
+					FROM
+						STCS.CLEAR_JGKJ_TRADE Y
+					LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+				WHERE F.OPERATE= 'JGKJ_PAYMENT' 
+				) H ON SS.MSG_ID = H.MSG_ID
+				LEFT JOIN
+				(
+					SELECT
+						S.SETTLE_AMT,
+						SF.MSG_ID
+					FROM
+						STCS.ACCT_SEVEN_BUSS_FLOW S
+					LEFT JOIN STCS.TRANS_RECORD_FLOW SF ON SF.ID = S.TRANS_FLOW_ID
+					WHERE SF.OPERATE= 'SEVEN_BUSS_RECEIVE' AND SF.STATUS = 'SUCCESS'
+				) SH ON SH.MSG_ID = T.CORE_SN
+				WHERE
+					T.TRADE_TYPE IN ('1101', '1301')) TT
+			<where>
+		        <if test="transId != null and '' != transId">  
+		            <![CDATA[  
+		              AND TT.TRANS_ID = #{transId,jdbcType = VARCHAR}
+		            ]]>  
+		        </if> 
+		        <if test="mobile != null and '' != mobile">  
+		            <![CDATA[  
+		              AND TT.MOBILE = #{mobile,jdbcType = VARCHAR}  
+		            ]]>  
+		        </if> 
+				<if test="orderState != null and '' != orderState">  
+		            <![CDATA[  
+		              AND TT.ORDER_STATE = #{orderState,jdbcType = VARCHAR}
+		            ]]>  
+		        </if> 
+				 <if test="payerCustId != null and '' != payerCustId">  
+		            <![CDATA[  
+		              AND TT.PAYER_CUST_ID  LIKE CONCAT('%', #{payerCustId}   ,'%') 
+		            ]]>  
+		        </if> 
+				<if test="payeeCustName != null and '' != payeeCustName">  
+		            <![CDATA[  
+		              AND TT.PAYEE_CUST_NAME LIKE CONCAT('%',#{payeeCustName}  ,'%')  
+		            ]]>  
+		        </if>
+		         <if test="payeeCustId != null and '' != payeeCustId">  
+		            <![CDATA[  
+		              AND TT.PAYEE_CUST_ID  LIKE CONCAT('%', #{payeeCustId}   ,'%') 
+		            ]]>  
+		        </if> 
+				<if test="orderId != null and '' != orderId">  
+		            <![CDATA[  
+		              AND TT.ORDER_ID  LIKE CONCAT('%',#{orderId} ,'%')  
+		            ]]>  
+		        </if> 
+		        <if test="merOrderId != null and '' != merOrderId">  
+		            <![CDATA[  
+		              AND TT.MER_ORDER_ID  LIKE CONCAT('%',#{merOrderId}  ,'%')  
+		            ]]>  
+		        </if> 
+		        <if test="channelId != null and '' != channelId">  
+		            <![CDATA[  
+		              AND TT.CHANNEL_ID = #{channelId,jdbcType = VARCHAR}  
+		            ]]>  
+		        </if>
+		        <if test="beginTime != null and '' != beginTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(TT.ORDER_CREATE_TIME ,'%Y-%m-%d') >= #{beginTime}  
+		            ]]>  
+		        </if>  
+		        <if test="endCreateTime!= null and '' !=endCreateTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(TT.ORDER_CREATE_TIME ,'%Y-%m-%d') <= #{endCreateTime}  
+		            ]]>  
+		        </if>  
+		         <if test="compBeginTime != null and '' != compBeginTime">  
+		            <![CDATA[  
+		              AND  TT.WORK_DATE >=  #{compBeginTime}
+		            ]]>  
+		        </if>  
+		        <if test="compEndCreateTime!= null and '' != compEndCreateTime">  
+		            <![CDATA[  
+		              AND  TT.WORK_DATE  <=  #{compEndCreateTime}
+		            ]]>  
+		        </if> 
+		         <if test="orderType != null and '' != orderType ">  
+		            <![CDATA[  
+		              AND TT.ORDER_TYPE =#{orderType}  
+		            ]]>  
+		        </if> 
+		         <if test="service != null and '' != service ">  
+		            <![CDATA[  
+		              AND TT.SERVICE =#{service}  
+		            ]]>  
+		        </if> 
+	        </where>	
+			ORDER BY TT.ORDER_CREATE_TIME DESC 
+	</select>
+	
+	<select id="selectTdradeBillMainByOrderId" parameterType="string" resultType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+			SELECT 
+				T.ORDER_NAME,
+				T.ORDER_DESC,
+				T.PAYER_IS_PLATFORM_CUST,
+				T.PAYER_CUST_ID,
+				T.PAYER_ACCT_TYPE,
+				T.PAYER_ACCT_ID,
+				T.PAYER_CUST_NAME,
+				T.PAYEE_IS_PLATFORM_CUST,
+				T.PAYEE_CUST_ID,
+				T.PAYEE_ACCT_TYPE,
+				T.PAYEE_ACCT_ID,
+				T.PAYEE_CUST_NAME,
+				T.SUM_AMT,
+				T.CURR_CODE,
+				T.CORE_SN,
+				CASE
+				WHEN T.TRADE_TYPE ='1301' THEN 'RED_PACKET_PAYMENT'
+				WHEN T.IS_NEED_CHARGE ='0' THEN 'BALANCE_PAYMENT'
+				WHEN T.IS_NEED_CHARGE ='1' THEN 'BANK_CARD_PAYMENT'
+				END TRADE_TYPE,
+				T.ORDER_CORE_RETURN_TIME
+		FROM
+			TD_TRADE_BILL_MAIN T,
+			TD_LOGIN_USER_INFO LU,
+			TD_CUST_INFO U
+		WHERE T.PAYER_CUST_ID=LU.CUST_ID 
+		AND T.PAYEE_CUST_ID = U.CUST_ID
+		AND T.TRADE_TYPE IN ('1101','1301')
+		AND T.ORDER_STATE = '00'
+		AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+		
+	</select>
+	
+	<select id="selectTradeConsumeExcel" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO"
+	resultType="com.qifenqian.bms.basemanager.trade.bean.TradeExcel">
+	   SELECT  
+				TT.ORDER_ID,
+				TT.ORDER_NAME,
+				TT.ORDER_DESC,
+				TT.MER_ORDER_ID,
+				TT.TRANS_ID,
+				TT.CHANNEL_ID,
+				CASE
+				WHEN TT.ORDER_TYPE ='RED_PACKET_PAYMENT' THEN '红包支付'
+				WHEN TT.ORDER_TYPE ='BALANCE_PAYMENT' THEN '余额支付'
+				WHEN TT.ORDER_TYPE ='BANK_CARD_PAYMENT' THEN '银行卡支付'
+				END AS ORDER_TYPE,
+				TT.PAYEE_CUST_NAME,
+				TT.PAYEE_CUST_ID,
+				TT.PAYER_CUST_ID,
+				TT.PAYER_CUST_NAME,
+				TT.WORK_DATE,   	
+				DATE_FORMAT(TT.ORDER_CREATE_TIME,'%Y-%m-%d %H:%i:%s') as orderCreateTime,
+				DATE_FORMAT(TT.ORDER_CORE_RETURN_TIME,'%Y-%m-%d %H:%i:%s') as orderCoreReturnTime,
+				CASE
+			WHEN TT.ORDER_STATE IN ('00') THEN
+				'成功'
+			WHEN TT.ORDER_STATE IN ('01') THEN
+				'待提交'
+			WHEN TT.ORDER_STATE IN ('02') THEN
+				'提交核心'
+			WHEN TT.ORDER_STATE IN ('03') THEN
+				'核心处理中'
+			WHEN TT.ORDER_STATE IN ('04') THEN
+				'失败'
+			WHEN TT.ORDER_STATE IN ('99') THEN
+				'取消'
+			WHEN TT.ORDER_STATE IN ('90') THEN
+				'未明'
+			END AS ORDER_STATE,
+				TT.SUM_AMT,
+				TT.SETTLE_AMT,
+				TT.MOBILE,
+				CASE WHEN TT.SERVICE = 'h5.gateway.pay' THEN '手机端Html5收银台'
+					 WHEN TT.SERVICE = 'mobile.plugin.pay' THEN '手机支付插件收银台'
+					 WHEN TT.SERVICE = 'onecode.coll.pay' THEN '一码收银'
+					 WHEN TT.SERVICE = 'pc.gateway.pay' THEN 'PC端收银台'
+					 WHEN TT.SERVICE = 'qrcode.paycode.pay' THEN '付款码支付'
+					 WHEN TT.SERVICE = 'h5_t.gateway.pay' THEN '原生H5支付'
+				ELSE TT.SERVICE
+				END AS SERVICE
+		FROM 
+				(SELECT
+					T.ORDER_ID,
+					T.ORDER_NAME,
+					T.ORDER_DESC,
+					T.MER_ORDER_ID,
+					A.TRANS_ID,
+					H.ID CHANNEL_ID,
+					CASE 
+					WHEN T.TRADE_TYPE ='1301' THEN 'RED_PACKET_PAYMENT'
+					WHEN T.IS_NEED_CHARGE ='0' THEN 'BALANCE_PAYMENT'
+					WHEN T.IS_NEED_CHARGE ='1' THEN 'BANK_CARD_PAYMENT'
+					END ORDER_TYPE,
+					T.PAYEE_CUST_NAME,
+					F.MERCHANT_CODE PAYEE_CUST_ID,
+					T.PAYER_CUST_ID,
+					T.PAYER_CUST_NAME,
+					IFNULL(DATE_FORMAT(T.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+					T.ORDER_CREATE_TIME,
+					T.ORDER_CORE_RETURN_TIME,
+					T.ORDER_STATE,
+					T.SUM_AMT,
+					SH.SETTLE_AMT SETTLE_AMT,
+					I.MOBILE,
+					M.SERVICE
+				FROM
+					TD_TRADE_BILL_MAIN T
+					JOIN TD_LOGIN_USER_INFO I
+					ON T.SRC_CUST_ID = I.CUST_ID
+				   	LEFT JOIN TD_CUST_INFO F
+				    ON T.PAYEE_CUST_ID = f.CUST_ID
+					LEFT JOIN TD_TRANS_YL A
+					ON T.ORDER_ID = A.TRANS_SN
+					LEFT JOIN STCS.TRANS_RECORD SS
+					ON T.ORDER_ID = SS.REQ_SERIAL_ID
+					LEFT JOIN td_merchant_in M ON T.MER_ORDER_ID = M.OUT_ORDER_ID
+				LEFT JOIN (
+					SELECT
+						Y.TRANS_AMT,
+						Y.RTN_SEQ,
+						F.MSG_ID,
+						Y.ID
+					FROM
+						STCS.CLEAR_JGKJ_TRADE Y
+					LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID
+				WHERE F.OPERATE= 'JGKJ_PAYMENT' 
+				) H ON SS.MSG_ID = H.MSG_ID
+				LEFT JOIN
+				(
+					SELECT
+						S.SETTLE_AMT,
+						SF.MSG_ID
+					FROM
+						STCS.ACCT_SEVEN_BUSS_FLOW S
+					LEFT JOIN STCS.TRANS_RECORD_FLOW SF ON SF.ID = S.TRANS_FLOW_ID
+					WHERE SF.OPERATE= 'SEVEN_BUSS_RECEIVE' AND SF.STATUS = 'SUCCESS'
+				) SH ON SH.MSG_ID = T.CORE_SN
+				WHERE
+					T.TRADE_TYPE IN ('1101', '1301')) TT
+			<where>
+				 <if test="transId != null and '' != transId">  
+		            <![CDATA[  
+		              AND TT.TRANS_ID = #{transId,jdbcType = VARCHAR}
+		            ]]>  
+		         </if> 
+		        <if test="mobile != null and '' != mobile">  
+		            <![CDATA[  
+		              AND TT.MOBILE = #{mobile,jdbcType = VARCHAR}  
+		            ]]>  
+		        </if> 
+				<if test="orderState != null and '' != orderState">  
+		            <![CDATA[  
+		              AND TT.ORDER_STATE = #{orderState,jdbcType = VARCHAR}
+		            ]]>  
+		        </if> 
+				 <if test="payerCustId != null and '' != payerCustId">  
+		            <![CDATA[  
+		              AND TT.PAYER_CUST_ID  LIKE CONCAT('%', #{payerCustId}   ,'%') 
+		            ]]>  
+		        </if> 
+				<if test="payeeCustName != null and '' != payeeCustName">  
+		            <![CDATA[  
+		              AND TT.PAYEE_CUST_NAME LIKE CONCAT('%',#{payeeCustName}  ,'%')  
+		            ]]>  
+		        </if>
+		         <if test="payeeCustId != null and '' != payeeCustId">  
+		            <![CDATA[  
+		              AND TT.PAYEE_CUST_ID  LIKE CONCAT('%', #{payeeCustId}   ,'%') 
+		            ]]>  
+		        </if> 
+				<if test="orderId != null and '' != orderId">  
+		            <![CDATA[  
+		              AND TT.ORDER_ID  LIKE CONCAT('%',#{orderId} ,'%')  
+		            ]]>  
+		        </if> 
+		        <if test="merOrderId != null and '' != merOrderId">  
+		            <![CDATA[  
+		              AND TT.MER_ORDER_ID  LIKE CONCAT('%',#{merOrderId}  ,'%')  
+		            ]]>  
+		        </if> 
+		        <if test="channelId != null and '' != channelId">  
+		            <![CDATA[  
+		              AND TT.CHANNEL_ID = #{channelId,jdbcType = VARCHAR}  
+		            ]]>  
+		        </if>
+		        <if test="beginTime != null and '' != beginTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(TT.ORDER_CREATE_TIME ,'%Y-%m-%d') >= #{beginTime}  
+		            ]]>  
+		        </if>  
+		        <if test="endCreateTime!= null and '' !=endCreateTime">  
+		            <![CDATA[  
+		              AND DATE_FORMAT(TT.ORDER_CREATE_TIME ,'%Y-%m-%d') <= #{endCreateTime}  
+		            ]]>  
+		        </if>  
+		         <if test="compBeginTime != null and '' != compBeginTime">  
+		            <![CDATA[  
+		              AND  TT.WORK_DATE >=  #{compBeginTime}
+		            ]]>  
+		        </if>  
+		        <if test="compEndCreateTime!= null and '' != compEndCreateTime">  
+		            <![CDATA[  
+		              AND  TT.WORK_DATE  <=  #{compEndCreateTime}
+		            ]]>  
+		        </if> 
+		         <if test="orderType != null and '' != orderType ">  
+		            <![CDATA[  
+		              AND TT.ORDER_TYPE =#{orderType}  
+		            ]]>  
+		        </if> 
+			</where>
+			ORDER BY TT.ORDER_CREATE_TIME DESC 
+	</select>
+	
+	<select id="selectTdradeBillMainSummary" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO"
+	resultType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+		SELECT 
+			C.MERCHANT_CODE,
+			C.CUST_NAME,
+			count(*) sumCount,
+			SUM(T.SUM_AMT)sumCountAmount,
+			SUM(Y.trans_amt) sumSettleAmt,
+			MIN(T.ORDER_CREATE_TIME) minDate,
+			MAX(T.ORDER_CREATE_TIME) maxDate,
+			CASE WHEN T.TRADE_TYPE IN ('1101','1102') THEN '消费'
+			END AS TRADE_TYPE
+		FROM 
+			TD_TRADE_BILL_MAIN T 
+			JOIN TD_MERCHANT_IN M ON T.ORDER_ID = M.IN_ORDER_ID
+			JOIN TD_CUST_INFO C ON M.CUST_ID = C.CUST_ID
+			JOIN STCS.TRANS_RECORD_FLOW F ON T.CORE_SN = F.MSG_ID AND F.OPERATE = 'SEVEN_BUSS_RECEIVE'
+			JOIN STCS.ACCT_SEVEN_BUSS_FLOW Y ON 	F.ID = Y.TRANS_FLOW_ID 
+		WHERE
+			T.TRADE_TYPE in ('1102','1101')
+		 <if test="custName != null and '' != custName">  
+            <![CDATA[  
+              AND C.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+            ]]>  
+        </if> 
+       
+        <if test="beginTime != null and '' != beginTime">  
+            <![CDATA[  
+              AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d')   >= #{beginTime}  
+            ]]>  
+        </if>  
+  
+        <if test="endCreateTime!= null and '' !=endCreateTime">  
+            <![CDATA[  
+              AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endCreateTime}  
+            ]]>  
+        </if>  
+        GROUP BY M.CUST_ID
+	</select>
+	
+	<select id="selectTradeSummaryExcel" parameterType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO"
+	resultType="com.qifenqian.bms.basemanager.trade.bean.TradeSummaryExcel">
+		SELECT 
+			C.MERCHANT_CODE,
+			C.CUST_NAME,
+			count(*) sumCount,
+			SUM(T.SUM_AMT)sumCountAmount,
+			SUM(Y.trans_amt) sumSettleAmt,
+			MIN(T.ORDER_CREATE_TIME) minDate,
+			MAX(T.ORDER_CREATE_TIME) maxDate,
+			CASE WHEN T.TRADE_TYPE IN ('1101','1102') THEN '消费'
+			END AS TRADE_TYPE
+		FROM 
+			TD_TRADE_BILL_MAIN T 
+			JOIN  	TD_MERCHANT_IN M ON 	T.ORDER_ID = M.IN_ORDER_ID
+			JOIN    TD_CUST_INFO C   ON   	M.CUST_ID = C.CUST_ID
+			JOIN 	STCS.TRANS_RECORD_FLOW F ON T.CORE_SN = F.MSG_ID AND 		F.OPERATE = 'JGKJ_PAYMENT'
+			JOIN 	STCS.CLEAR_JGKJ_TRADE Y ON 	F.ID = Y.TRANS_FLOW_ID 
+			WHERE
+			T.TRADE_TYPE IN ('1102','1101') 
+			
+		 <if test="custName != null and '' != custName">  
+            <![CDATA[  
+              AND C.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+            ]]>  
+        </if> 
+        <if test="beginTime != null and '' != beginTime">  
+            <![CDATA[  
+              AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d')   >= #{beginTime}  
+            ]]>  
+        </if>  
+  
+        <if test="endCreateTime!= null and '' !=endCreateTime">  
+            <![CDATA[  
+              AND  DATE_FORMAT(T.CREATE_TIME ,'%Y-%m-%d') <= #{endCreateTime}  
+            ]]>  
+        </if>  
+        GROUP BY M.CUST_ID
+	</select>
+	
+	<select id="selectRedpacketPaymentByOrderId" resultType="com.qifenqian.bms.basemanager.trade.bean.TdTradeBillMainVO">
+		SELECT
+			T.ORDER_ID,
+			T.CORE_SN,
+			T.ORDER_CORE_RETURN_TIME,
+			T.SUM_AMT,
+			T.PAYER_CUST_ID,
+			T.PAYER_ACCT_ID
+		FROM
+			TD_TRADE_BILL_MAIN T
+		WHERE
+			T.TRADE_TYPE = '1301'
+		AND T.ORDER_STATE = '00'
+		AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+</mapper>

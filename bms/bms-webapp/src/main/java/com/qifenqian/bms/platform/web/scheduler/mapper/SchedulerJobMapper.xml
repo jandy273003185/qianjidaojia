@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.scheduler.mapper.SchedulerJobMapper">
+
+	<insert id="addSchedulerJob" parameterType="com.qifenqian.bms.platform.web.scheduler.bean.SchedulerJob">
+		INSERT INTO BMS_SCHEDULER_JOB (
+		  	JOB_NAME,
+		  	CLASS_PATH,
+		  	HOST_NAME,
+		  	PARAMETER,
+		  	STATE,
+		  	CRON,
+		  	IS_ENABLE,
+		  	CREATOR,
+			CREATE_TIME,
+			MEMO,
+			DELETE_FLAG
+		) VALUES (
+			#{jobName, 		jdbcType=VARCHAR},
+		  	#{classPath, 	jdbcType=VARCHAR},
+		  	#{hostName, 	jdbcType=VARCHAR},
+		  	#{parameter, 	jdbcType=VARCHAR},
+		  	'waiting',
+			#{cron, 	jdbcType=VARCHAR},
+		  	#{isEnable, jdbcType=VARCHAR},
+			#{creator, 	jdbcType=VARCHAR},
+		  	now(),
+		  	#{memo, 	jdbcType=VARCHAR},
+		  	'N'
+		)
+	</insert>
+	
+	<select id="seleteSchedulerJob" parameterType="com.qifenqian.bms.platform.web.scheduler.bean.SchedulerJob" resultType="com.qifenqian.bms.platform.web.scheduler.bean.SchedulerJob">
+		SELECT J.*,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =J.CREATOR) instUserName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =J.LASTUPDATE_USER) lastUpdateUser
+		 	FROM BMS_SCHEDULER_JOB J WHERE J.DELETE_FLAG='N'
+			<if test="jobName != null and jobName != '' "> AND J.JOB_NAME  LIKE CONCAT('%',#{jobName, jdbcType=VARCHAR},'%')</if>
+			<if test="hostName != null and hostName != '' "> AND J.HOST_NAME  LIKE CONCAT('%',#{hostName, jdbcType=VARCHAR},'%')</if>
+			<if test="classPath != null and classPath != '' "> AND J.CLASS_PATH  LIKE CONCAT('%',#{classPath, jdbcType=VARCHAR},'%')</if>
+			<if test="isEnable != null and isEnable != '' "> AND J.IS_ENABLE =#{isEnable, jdbcType=VARCHAR}</if>
+	    ORDER BY J.ID DESC
+	</select>
+	
+	<update id="deleteSchedulerJob" parameterType="com.qifenqian.bms.platform.web.scheduler.bean.SchedulerJob">
+		UPDATE BMS_SCHEDULER_JOB J SET 
+		J.DELETE_FLAG='Y' ,
+		J.LASTUPDATE_USER= #{lastUpdateUser, jdbcType=VARCHAR}, 
+		J.LASTUPDATE_TIME=now()
+		WHERE J.ID = #{id, jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateSchedulerJob" parameterType="com.qifenqian.bms.platform.web.scheduler.bean.SchedulerJob" >
+		UPDATE BMS_SCHEDULER_JOB 
+		<set>
+			<if test="jobName != null">
+				JOB_NAME = #{jobName,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="hostName != null">
+				HOST_NAME = #{hostName,jdbcType=VARCHAR},
+			</if>
+			<if test="classPath != null">
+				CLASS_PATH = #{classPath,jdbcType=VARCHAR},
+			</if>
+			<if test="parameter != null">
+				PARAMETER = #{parameter,jdbcType=VARCHAR},
+			</if>
+			<if test="isEnable != null">
+				IS_ENABLE = #{isEnable,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				STATE = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="cron != null">
+				CRON = #{cron,jdbcType=VARCHAR},
+			</if>
+			<if test="lastUpdateUser != null">
+				LASTUPDATE_USER = #{lastUpdateUser,jdbcType=VARCHAR},
+			</if>
+				LASTUPDATE_TIME = now(),
+		</set>
+			WHERE ID = #{id, jdbcType=INTEGER}
+	</update>
+</mapper>

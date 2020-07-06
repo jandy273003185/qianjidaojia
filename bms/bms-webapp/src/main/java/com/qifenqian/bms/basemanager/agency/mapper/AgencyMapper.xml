@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.basemanager.agency.mapper.AgencyMapper">
+<!-- 微商户列表查询 -->
+	<select id="agencyList" resultType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+		select 
+		C.CUST_ID,
+		C.CUST_NAME,
+		C.TRADE_PWD,
+		C.ATTACH_STR,
+		C.CERTIFY_TYPE,
+		C.CERTIFY_NO,
+		(case C.CUST_TYPE
+		WHEN '0' THEN '个人'
+		WHEN '1' THEN '企业'
+		ELSE ''
+		END) CUST_TYPE,
+		C.MERCHANT_FLAG,
+		C.CUST_SCORE,
+		C.CUST_LVL,
+		C.TRUST_CERTIFY_LVL,
+		C.TRUST_CERTIFY_AUDIT_STATE,
+		C.CUST_INFO_LVL,
+		C.CUST_ADD,
+		C.CUST_POST_CODE,
+		C.BUSINESS_LICENSE,
+		C.TAX_REG_CERT,
+		C.REPRESENTATIVE_CERT_TYPE,
+		C.REPRESENTATIVE_CERT_NO,
+		C.REPRESENTATIVE_NAME,
+		C.REG_CAPITAL,
+		C.ENT_TYPE,
+		C.INDUSTRY_BELONG,
+		C.YEAR_TURNOVER,
+		C.MERCHANT_WEB_SITE,
+		C.STATE,
+		C.IS_USE_CERTIFICATION,
+		C.IS_USE_MSG,
+		C.QFQ_ACC_ID,
+		C.QFB_ACC_ID,
+		C.CREATE_ID,
+		C.MODIFY_ID,
+		C.MODIFY_TIME,
+		C.BUSINESS_TERM,
+		C.BUSINESS_REG_ADDR,
+		C.CONTACT_PHONE,
+		C.ORG_INST_CODE,
+		C.REPRESENTATIVE_ADDR,
+		C.REPRESENTATIVE_MOBILE,
+		C.AGENT_NAME,
+		C.AGENT_CERT_TYPE,
+		C.AGENT_CERT_CODE,
+		C.AGENT_MOBILE,
+		C.COMP_MAIN_ACCT,
+		C.COMP_ACCT_BANK,
+		C.COMP_VERIFY_AMT,
+		C.BRANCH_BANK,
+		C.BANK_ACCT_NAME,
+		C.FCONTACTUNIT_NUMBER,
+		C.MERCHANT_CODE,
+		C.BUSINESS_TERM_END,
+		C.BUSINESS_TERM_START,
+		DATE_FORMAT(c.CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+		b.id protocol_id,
+		b.disable_date,
+		b.valid_date,
+		u.email,
+		u.mobile,
+		(case u.state
+		WHEN '00' THEN '正常'
+		WHEN '01' THEN '停用'
+		WHEN '02' THEN '冻结'
+		WHEN '03' THEN '待激活'
+		WHEN '04' THEN '审核中'
+		WHEN '05' THEN '协议待录入'
+		WHEN '06' THEN '协议待录入'
+		ELSE ''
+		END
+		) merchantState,
+		(CASE b.`status` 
+		WHEN 'VALID' then '有效' 
+		WHEN 'DISABLE' THEN '无效'
+		WHEN 'AUDIT' THEN '审核中'
+		WHEN 'STOP'	THEN '终止'
+		ELSE
+		''
+		END) protocol_state,
+		concat('H5:',IFNULL(p5.column_value,'无'),'/','app:',IFNULL(p6.column_value,'无'),'/','扫码:',IFNULL(p7.column_value,'无'),'/','PC:',IFNULL(p8.column_value,'无'),'/','原生H5:',IFNULL(p9.column_value,'无')) agent_rate,
+		p1.column_value bankCardName,
+		p2.column_value bankCardNo,
+		p3.column_value bankName,
+		IFNULL((SELECT t.user_name from sys_user t where t.self_phone = p4.column_value or  t.user_id= p4.column_value),'无')	 custManager
+		from td_cust_info c 
+		LEFT join td_login_user_info u on c.cust_id = u.cust_id 
+		LEFT join bms_protocol_content b ON c.CUST_ID = b.cust_id
+		LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName'
+		LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+		LEFT JOIN bms_protocol_column p3 ON b.id = p3.protocol_id and p3.column_code = 'bankName'
+		LEFT  JOIN bms_protocol_column p4 ON b.id = p4.protocol_id and p4.column_code = 'custManager'
+		LEFT  JOIN bms_protocol_column p5 ON b.id = p5.protocol_id and p5.column_code = 'h5.gateway.pay_rate' and p5.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p6 ON b.id = p6.protocol_id and p6.column_code = 'mobile.plugin.pay_rate' and p6.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p7 ON b.id = p7.protocol_id and p7.column_code = 'onecode.coll.pay_rate'	and p7.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p8 ON b.id = p8.protocol_id and p8.column_code = 'pc.gateway.pay_rate' and p8.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p9 ON b.id = p9.protocol_id and p9.column_code = 'h5_t.gateway.pay_rate' and p9.`status` = 'VALID'			
+		<where>
+			c.merchant_flag = 3 and u.state in('00','01','02','05','06')
+			<if test="merchantCode != null and merchantCode != ''">
+				<![CDATA[ 
+					and c.merchant_code like CONCAT('%',#{merchantCode},'%') 
+				]]>
+			</if>
+			<if test="startCreateTime != null and startCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{startCreateTime}
+				]]>
+			</if>
+			<if test="endCreateTime != null and endCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') <= #{endCreateTime} 
+				]]>
+			</if>
+			<if test="email != null and email != ''">
+				<![CDATA[ 
+					and u.email like CONCAT('%',#{email},'%') 
+				]]>
+			</if>
+			<if test="custName != null and custName != ''">
+				<![CDATA[ 
+					and c.cust_name like CONCAT('%',#{custName},'%') 
+				]]>
+			</if>
+			<if test="agentName != null and agentName != ''">
+				<![CDATA[ 
+					and c.agent_name like CONCAT('%',#{agentName},'%') 
+				]]>
+			</if>
+			<if test="merchantState != null and merchantState != ''">
+				<![CDATA[ 
+					and U.STATE = #{merchantState,jdbcType=VARCHAR}
+				]]>
+			</if>
+			<if test="protocolState != null and protocolState != ''">
+				<![CDATA[ 
+					and b.status = #{protocolState} 
+				]]>
+			</if>
+		</where>
+		order by c.create_time desc
+	</select>
+	
+	
+	<select id="myAgencyList" resultType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo" parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+	select 
+		c.MERCHANT_CODE,
+		c.CUST_NAME,
+		DATE_FORMAT(c.CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+		b.id protocol_id,
+		u.email,
+		u.mobile,
+		(case u.state
+		WHEN '00' THEN '正常'
+		WHEN '01' THEN '停用'
+		WHEN '02' THEN '冻结'
+		WHEN '03' THEN '待激活'
+		WHEN '04' THEN '审核中'
+		WHEN '05' THEN '协议待录入'
+		WHEN '06' THEN '协议待录入'
+		ELSE ''
+		END
+		) merchantState,
+		(CASE b.`status` 
+		WHEN 'VALID' then '有效' 
+		WHEN 'DISABLE' THEN '无效'
+		ELSE
+		''
+		END) protocol_state,
+		concat('H5:',IFNULL(p5.column_value,'无'),'/','app:',IFNULL(p6.column_value,'无'),'/','扫码:',IFNULL(p7.column_value,'无'),'/','PC:',IFNULL(p8.column_value,'无'),'/','原生H5:',IFNULL(p9.column_value,'无')) agent_rate,
+		p1.column_value bankCardName,
+		p2.column_value bankCardNo,
+		p3.column_value bankName,
+		IFNULL((SELECT t.user_name from sys_user t where t.user_id = p4.column_value or t.self_phone = p4.column_value),'无')	 custManager
+		from td_cust_info c 
+		LEFT join td_login_user_info u on c.cust_id = u.cust_id 
+		LEFT join bms_protocol_content b ON c.CUST_ID = b.cust_id
+		LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName'
+		LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+		LEFT JOIN bms_protocol_column p3 ON b.id = p3.protocol_id and p3.column_code = 'bankName'
+		LEFT  JOIN bms_protocol_column p4 ON b.id = p4.protocol_id and p4.column_code = 'custManager'
+		LEFT  JOIN bms_protocol_column p5 ON b.id = p5.protocol_id and p5.column_code = 'h5.gateway.pay_rate' and p5.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p6 ON b.id = p6.protocol_id and p6.column_code = 'mobile.plugin.pay_rate' and p6.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p7 ON b.id = p7.protocol_id and p7.column_code = 'onecode.coll.pay_rate' and p7.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p8 ON b.id = p8.protocol_id and p8.column_code = 'pc.gateway.pay_rate'	 and p8.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p9 ON b.id = p9.protocol_id and p9.column_code = 'h5_t.gateway.pay_rate'		and p9.`status` = 'VALID'	
+		where 
+		1=1
+		and
+		 (EXISTS (
+				SELECT
+					1
+				FROM
+					(
+						SELECT
+							temp.cust_id
+						FROM
+							stcdb.bms_protocol_content temp
+						WHERE
+							temp.id IN (
+								SELECT
+									bms.protocol_id
+								FROM
+									stcdb.bms_protocol_column bms
+								WHERE
+									(bms.column_value = #{userName,jdbcType=VARCHAR}
+									or
+									bms.column_value = #{userId,jdbcType=VARCHAR})
+									AND
+									bms.column_code = 'custManager'
+							)
+					) TT
+				WHERE
+					TT.cust_id = C.CUST_ID
+			)
+			OR 
+				EXISTS(
+				SELECT
+								1
+							FROM
+								sys_user u
+							WHERE
+								u.user_id =c.CREATE_ID
+							AND u.user_id = #{userId,jdbcType=VARCHAR}
+			)
+			)
+			and
+			c.merchant_flag = 3  and u.state in('00','01','02','05','06')
+			<if test="merchantCode != null and merchantCode != ''">
+				<![CDATA[ 
+					and c.merchant_code like CONCAT('%',#{merchantCode},'%') 
+				]]>
+			</if>
+			<if test="startCreateTime != null and startCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{startCreateTime}
+				]]>
+			</if>
+			<if test="endCreateTime != null and endCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') <= #{endCreateTime} 
+				]]>
+			</if>
+			<if test="email != null and email != ''">
+				<![CDATA[ 
+					and u.email like CONCAT('%',#{email},'%') 
+				]]>
+			</if>
+			<if test="custName != null and custName != ''">
+				<![CDATA[ 
+					and c.cust_name like CONCAT('%',#{custName},'%') 
+				]]>
+			</if>
+			<if test="agentName != null and agentName != ''">
+				<![CDATA[ 
+					and c.agent_name like CONCAT('%',#{agentName},'%') 
+				]]>
+			</if>
+		order by c.create_time desc
+		</select>
+		
+		<!-- 代理商列表查询 -->
+	<select id="exportAgencysList" resultType="com.qifenqian.bms.basemanager.agency.bean.AgencyExport" parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+		select 
+		c.MERCHANT_CODE,
+		c.CUST_NAME,
+		DATE_FORMAT(c.CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+		u.email,
+		(case u.state
+		WHEN '00' THEN '正常'
+		WHEN '01' THEN '停用'
+		WHEN '02' THEN '冻结'
+		WHEN '03' THEN '待激活'
+		WHEN '04' THEN '审核中'
+		WHEN '05' THEN '协议待录入'
+		WHEN '06' THEN '协议待录入'
+		ELSE ''
+		END
+		) merchantState,
+		(CASE b.`status` 
+		WHEN 'VALID' then '有效' 
+		WHEN 'DISABLE' THEN '无效'
+		ELSE
+		''
+		END) protocol_state,
+		concat('H5:',IFNULL(p5.column_value,'无'),'/','app:',IFNULL(p6.column_value,'无'),'/','扫码:',IFNULL(p7.column_value,'无'),'/','PC:',IFNULL(p8.column_value,'无'),'/','原生H5:',IFNULL(p9.column_value,'无')) agent_rate,
+		p1.column_value bankCardName,
+		p2.column_value bankCardNo,
+		p3.column_value bankName,
+		IFNULL((SELECT t.user_name from sys_user t where t.user_id = p4.column_value ),'无')	 custManager
+		from td_cust_info c 
+		LEFT join td_login_user_info u on c.cust_id = u.cust_id 
+		LEFT join bms_protocol_content b ON c.CUST_ID = b.cust_id
+		LEFT JOIN bms_protocol_column p1 ON b.id = p1.protocol_id and p1.column_code = 'bankCardName'
+		LEFT JOIN bms_protocol_column p2 ON b.id = p2.protocol_id and p2.column_code = 'bankCardNo'
+		LEFT JOIN bms_protocol_column p3 ON b.id = p3.protocol_id and p3.column_code = 'bankName'
+		LEFT  JOIN bms_protocol_column p4 ON b.id = p4.protocol_id and p4.column_code = 'custManager'
+		LEFT  JOIN bms_protocol_column p5 ON b.id = p5.protocol_id and p5.column_code = 'h5.gateway.pay_rate' and p5.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p6 ON b.id = p6.protocol_id and p6.column_code = 'mobile.plugin.pay_rate' and p6.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p7 ON b.id = p7.protocol_id and p7.column_code = 'onecode.coll.pay_rate' and p7.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p8 ON b.id = p8.protocol_id and p8.column_code = 'pc.gateway.pay_rate'	 and p8.`status` = 'VALID'
+		LEFT  JOIN bms_protocol_column p9 ON b.id = p9.protocol_id and p9.column_code = 'h5_t.gateway.pay_rate'		and p9.`status` = 'VALID'	
+		<where>
+			c.merchant_flag = 3 and u.state in('00','01','02','05','06')
+			<if test="merchantCode != null and merchantCode != ''">
+				<![CDATA[ 
+					and c.merchant_code like CONCAT('%',#{merchantCode},'%') 
+				]]>
+			</if>
+			<if test="startCreateTime != null and startCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{startCreateTime}
+				]]>
+			</if>
+			<if test="endCreateTime != null and endCreateTime != ''">
+				<![CDATA[ 
+					and DATE_FORMAT(c.create_time,'%Y-%m-%d') <= #{endCreateTime} 
+				]]>
+			</if>
+			<if test="email != null and email != ''">
+				<![CDATA[ 
+					and u.email like CONCAT('%',#{email},'%') 
+				]]>
+			</if>
+			<if test="custName != null and custName != ''">
+				<![CDATA[ 
+					and c.cust_name like CONCAT('%',#{custName},'%') 
+				]]>
+			</if>
+			<if test="merchantState != null and merchantState != ''">
+				<![CDATA[ 
+					and U.STATE = #{merchantState,jdbcType=VARCHAR}
+				]]>
+			</if>
+			<if test="protocolState != null and protocolState != ''">
+				<![CDATA[ 
+					and b.status = #{protocolState} 
+				]]>
+			</if>
+			<if test="agentName != null and agentName != ''">
+					and c.agent_name like CONCAT('%',#{agentName},'%') 
+			</if>
+		</where>
+		order by c.create_time desc
+	</select>
+	<update id="updateMerchant"  parameterType="com.qifenqian.bms.basemanager.merchant.bean.MerchantVo">
+		UPDATE TD_CUST_INFO
+		<set>
+			<if test="custName != null">
+				CUST_NAME = #{custName,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyType != null">
+				CERTIFY_TYPE = #{certifyType,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyNo != null">
+				CERTIFY_NO =#{certifyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="businessLicense != null">
+				BUSINESS_LICENSE = #{businessLicense,jdbcType=VARCHAR},
+			</if>
+			<if test="businessRegAddr!=null">
+				BUSINESS_REG_ADDR=#{businessRegAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="businessTerm!=null">
+				BUSINESS_TERM=#{businessTerm,jdbcType=DATE},
+			</if>
+			<if test="custAdd!=null">
+				CUST_ADD=#{custAdd,jdbcType=VARCHAR},
+			</if>
+			<if test="fcontactunitNumber!=null">
+				FCONTACTUNIT_NUMBER = #{fcontactunitNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="contactPhone!=null">
+				CONTACT_PHONE=#{contactPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="orgInstCode!=null">
+				ORG_INST_CODE=#{orgInstCode,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeName!=null">
+				REPRESENTATIVE_NAME=#{representativeName,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeCertNo!=null">
+				REPRESENTATIVE_CERT_NO=#{representativeCertNo,jdbcType=VARCHAR},
+			</if>
+			<if test="representativeMobile!=null">
+				REPRESENTATIVE_MOBILE=#{representativeMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="compMainAcct!=null">
+				COMP_MAIN_ACCT=#{compMainAcct,jdbcType=VARCHAR},
+			</if>
+			<if test="compAcctBank!=null">
+				COMP_ACCT_BANK=#{compAcctBank,jdbcType=VARCHAR},
+			</if>
+			<if test="branchBank!=null">
+				BRANCH_BANK=#{branchBank,jdbcType=VARCHAR},
+			</if>
+			<if test="bankAcctName!=null">
+				BANK_ACCT_NAME=#{bankAcctName,jdbcType=VARCHAR},
+			</if>
+			<if test="comment !=null">
+				COMMENT = #{comment,jdbcType=VARCHAR},
+			</if>
+			<if test="qfqAccId !=null">
+				QFQ_ACC_ID = #{qfqAccId,jdbcType=VARCHAR},
+			</if>
+			<if test="merchantCode !=null">
+				MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="agentName !=null">
+				AGENT_NAME = #{agentName,jdbcType=VARCHAR},
+			</if>
+			<if test="businessTermStart !=null">
+				BUSINESS_TERM_START = #{businessTermStart,jdbcType=VARCHAR},
+			</if>
+			<if test="businessTermEnd !=null">
+				BUSINESS_TERM_END = #{businessTermEnd,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	<select id="findPath" parameterType="com.qifenqian.bms.basemanager.merchant.bean.CustScan" resultType="string" >
+		select scan_copy_path 
+		from td_cust_scan_copy 
+		where cust_id = #{custId,jdbcType=VARCHAR} and certify_type = #{certifyType,jdbcType=VARCHAR}
+	</select>
+	<select id="selectAgencyList" parameterType="com.qifenqian.bms.basemanager.merchant.bean.Merchant" resultType="com.qifenqian.bms.basemanager.merchant.bean.Merchant">
+		select 
+			t.*
+		from
+			TD_CUST_INFO t
+		<where>
+			t.MERCHANT_FLAG = #{merchantFlag , jdbcType=VARCHAR}
+		</where>
+	</select>
+</mapper>

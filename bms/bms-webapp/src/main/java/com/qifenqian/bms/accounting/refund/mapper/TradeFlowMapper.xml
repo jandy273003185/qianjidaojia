@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.refund.mapper.TradeFlowMapper">
+	<select id="selectTransFlowById" parameterType="string" resultType="com.qifenqian.bms.accounting.refund.bean.TradeFlow">
+		SELECT
+			R.ID,
+			R.BUSINESS_TYPE,
+			R.BRIEF,
+			R.INST_DATETIME,
+			F.MSG_ID,
+			F.MSG_TYPE,
+			F.CUST_ID,
+			F.TRANS_AMT,
+			F.CURR_CODE
+		FROM
+			STCS.ACCT_SEVEN_CUST_FLOW R
+			LEFT JOIN
+			STCS.TRANS_RECORD_FLOW F ON R.TRANS_FLOW_ID = F.ID
+		WHERE
+			F.MSG_ID = #{msgId,jdbcType = VARCHAR}
+			AND F.STATUS = 'SUCCESS'
+	</select>
+	
+	<select id="selectTransFlowByRecharge" parameterType="string" resultType="com.qifenqian.bms.accounting.refund.bean.TradeFlow">
+		SELECT
+			R.ID,
+			R.BUSINESS_TYPE,
+			R.BRIEF,
+			R.INST_DATETIME,
+			F.MSG_ID,
+			F.MSG_TYPE,
+			F.CUST_ID,
+			F.TRANS_AMT,
+			F.CURR_CODE
+		FROM
+			STCS.ACCT_SEVEN_CUST_FLOW R
+			LEFT JOIN
+			STCS.TRANS_RECORD_FLOW F ON R.TRANS_FLOW_ID = F.ID
+		WHERE
+			F.MSG_ID = #{msgId,jdbcType = VARCHAR}
+			AND F.STATUS = 'SUCCESS'
+	</select>
+	
+	<select id="selectTransferFlowById" parameterType="string" resultType="com.qifenqian.bms.accounting.refund.bean.TradeFlow">
+	SELECT
+			R.ID,
+			R.BUSINESS_TYPE,
+			R.BRIEF,
+			R.INST_DATETIME,
+			F.MSG_ID,
+			F.MSG_TYPE,
+			F.CUST_ID,
+			F.TRANS_AMT,
+			F.CURR_CODE
+		FROM
+			STCS.ACCT_SEVEN_CUST_FLOW R
+			LEFT JOIN
+			STCS.TRANS_RECORD_FLOW F ON R.TRANS_FLOW_ID = F.ID
+		WHERE
+			F.MSG_ID = #{msgId,jdbcType = VARCHAR}
+			AND F.STATUS = 'SUCCESS'
+	</select>
+</mapper>

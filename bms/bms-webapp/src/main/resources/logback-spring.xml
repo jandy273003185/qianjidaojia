@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>	
+	<springProperty scope="context" name="LOG.LEVEL" source="log.level" />
+	<springProperty scope="context" name="LOG.BASE" source="log.base" />
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date %level %logger{100} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 文件日志 -->
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG.BASE}/sevenpay-bms-web.log</file>		 
+         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <!-- linux 下后缀为gz, window 下后缀为zip -->
+		    <fileNamePattern>${LOG.BASE}/sevenpay-bms-web_%d{yyyy-MM-dd-HH}_%i.log.gz</fileNamePattern>
+	      	<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	    	 	<maxFileSize>100MB</maxFileSize>
+	   	  	</timeBasedFileNamingAndTriggeringPolicy>        
+		  </rollingPolicy>		  
+        <encoder>
+        	<pattern>%date %level [%thread] %X{thread_token} user_id:[%X{user_id}] %logger{10} [%file:%line] %msg%n</pattern>
+        	<charset>UTF-8</charset>
+        </encoder>
+    </appender>  
+    
+    <appender name="httpClientConnect_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG.BASE}/stc_web/httpClientConnect.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <FileNamePattern>${LOG.BASE}/stc_web/httpClientConnect_%d{yyyy-MM-dd-HH}_%i.log.gz</FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            	<maxFileSize>100MB</maxFileSize>
+	   	  	</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>  
+        <encoder>
+        	<pattern>%date %level [%thread] %X{thread_token} %logger{10} [%file:%line] %msg%n</pattern>
+        	<charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+	<root level="${LOG.LEVEL}">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+	<logger name="org.apache.zookeeper" level="info" additivity="true" />
+	<!-- <logger name="org.springframework" level="info" additivity="true" />
+	<logger name="org.apache.zookeeper" level="info" additivity="false" />
+	<logger name="org.apache" level="info" additivity="false" />
+	<logger name="org.activiti" level="info" additivity="false" />
+	<logger name="org.mybatis" level="info" additivity="true" /> --> 	
+	
+</configuration>

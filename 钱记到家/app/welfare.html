@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="js/commen.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">企业福利</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="welfareCon pd10">
+				<ul class="prolist li50 clear giftListBox"></ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/top.js"></script>
+
+	<!--产品列表模板-->
+	<script id="giftListTemp" type="text/x-dot-template">
+		{{~it:value:index}}
+		<li>
+			<a href="welfareDetails.html?id={{=value.Id}}" class="m-pro">
+				<div class="hd">
+					<div class="img">
+						{{? value.PicNo}}
+						<img src="{{=value.PicNo}}" /> {{??}}
+						<img src="/images/noPic.jpg" /> {{?}}
+					</div>
+				</div>
+				<div class="bd">
+					<h4 class="name">{{=value.Title}}</h4>
+					<p class="desc">{{=value.GiftSynopsis}}</p>
+					<p class="price">￥{{=value.Price}}</p>
+					<p class="Tags">{{? value.DiscountNum&&value.DiscountNum<10}}<span class="rebate">{{=value.DiscountNum}}折</span>{{?}}<span class="counterPrice">￥{{=value.MarketPrice}}</span></p>
+					<!--<span class="buybtn"></span>-->
+				</div>
+			</a>
+		</li>
+		{{~}}
+	</script>
+	<!--产品列表模板  end-->
+	<script>
+		var userId = sc.utils.getCookieValue("UserId");
+		var token = sc.utils.getCookieValue("Token");
+		var pageIndex = 0;
+		var pageSize = 12;
+		$(function() {
+			$('.welfareCon').dropload({
+				scrollArea: window,
+				domDown: {
+					domClass: 'dropload-down',
+					domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+					domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+					domNoData: '<div class="dropload-noData">已经到底了</div>'
+				},
+				loadDownFn: function(me) {
+					pageIndex++;
+					getGiftList(me);
+				}
+			});
+
+		})
+
+		function getGiftList(fn) {
+			var url = 'api/Gift/GiftList';
+			var callback = function(data) {
+				console.log(data);
+				if(data.code == 0) {
+					console.log("pageIndex:" + pageIndex);
+					if(!data.data.length) {
+						fn.lock();
+						fn.noData();
+						fn.resetload();
+						if(pageIndex == 1) {
+							$(".dropload-down").remove();
+							var emptystr = "";
+							emptystr += '<div class="emptybox">';
+							emptystr += '<div class="iconimg"><img src="/images/icons/empty2.png"/></div>';
+							emptystr += '<p class="tips center">暂无数据 </p>';
+							emptystr += '</div>';
+							$('.welfareCon').html(emptystr);
+						}
+					} else if(data.data.length < pageSize) {
+						setTimeout(function() {
+							var interText = doT.template($("#giftListTemp").text());
+							$(".giftListBox")[0].innerHTML += interText(data.data);
+							fn.resetload();
+						}, 1000);
+						fn.lock("down");
+						fn.noData();
+					} else {
+						if(pageIndex == 1) {
+							$(".giftListBox").html("");
+						}
+						setTimeout(function() {
+							var interText = doT.template($("#giftListTemp").text());
+							$(".giftListBox")[0].innerHTML += interText(data.data);
+							fn.resetload();
+						}, 1000);
+						
+					}
+
+				} else {
+					
+					if(pageIndex > 1) {
+						fn.noData();
+					} else {
+						$(".dropload-down").remove();
+					}
+					fn.lock("down");
+					fn.resetload();
+				}
+
+			}
+			var error = function(data) {
+				$(".dropload-down").remove();
+				fn.lock("down");
+			}
+			sc.post(url, {
+				"UserId": userId,
+				"Token": token,
+				"Page": pageIndex,
+				"PageSize": pageSize
+			}, callback, error);
+
+		}
+	</script>
+
+</html>

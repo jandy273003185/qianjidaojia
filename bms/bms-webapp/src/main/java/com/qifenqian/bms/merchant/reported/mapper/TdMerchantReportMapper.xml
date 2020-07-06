@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantReportMapper">
+
+    <update id="updateTdMerchantReport"  parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo" >
+        UPDATE `stcdb`.`td_merchant_report`
+		<set>
+			<if test="merchantCode != null">
+				merchant_code = #{merchantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="channelNo != null">
+				channel_no = #{channelNo,jdbcType=VARCHAR},
+			</if>
+			<if test="reportStatus != null">
+				report_status = #{reportStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="reportTime != null">
+				report_time = #{reportTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="resultMsg != null">
+				result_msg = #{resultMsg,jdbcType=VARCHAR},
+			</if>
+			<if test="outMerchantCode != null">
+				out_merchant_code = #{outMerchantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="detailStatus != null">
+				detail_status = #{detailStatus,jdbcType=VARCHAR},
+			</if>
+		</set>
+        WHERE patch_no = #{patchNo,jdbcType = VARCHAR}
+
+    </update>
+
+    <!-- 写入商户报备表 -->
+    <insert id="insertTdMerchantReport" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo">
+		INSERT INTO `stcdb`.`td_merchant_report` (
+			`id`,
+			`merchant_code`,
+			`patch_no`,
+			`channel_no`,
+			`report_status`,
+			`report_time`,
+			result_msg,
+			out_merchant_code,
+			detail_status
+		)
+		VALUES
+			(
+				#{id,jdbcType = VARCHAR},
+				#{merchantCode,jdbcType = VARCHAR},
+				#{patchNo,jdbcType = VARCHAR},
+				#{channelNo,jdbcType = VARCHAR},
+				#{reportStatus,jdbcType = VARCHAR},
+				now(),
+				#{resultMsg},
+				#{outMerchantCode},
+				#{detailStatus}
+			)
+	</insert>
+
+	<select id="selectById" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo">
+		select
+			id, merchant_code, patch_no, channel_no,
+			report_status, report_time, status,
+			result_msg,out_merchant_code, detail_status, channel_mark
+		from  td_merchant_report
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByMerchantCode" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo">
+		select
+			id, merchant_code, patch_no, channel_no,
+			report_status, report_time, status,
+			result_msg,out_merchant_code, detail_status, channel_mark
+		from  td_merchant_report
+		where merchant_code = #{merchantCode,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByPatchNo" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo">
+		select
+			id, merchant_code, patch_no, channel_no,
+			report_status, report_time, status,
+			result_msg,out_merchant_code, detail_status, channel_mark
+		from  td_merchant_report
+		where patch_no = #{patchNo,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByMerchantInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantReportInfo">
+		select
+			r.id,
+			r.merchant_code,
+			r.patch_no,
+			r.channel_no,
+			r.report_status,
+			r.report_time,
+			r.status,
+			r.result_msg,
+			r.out_merchant_code,
+			r.detail_status,
+			r.channel_mark
+		from  td_merchant_report r
+		<where>
+			<if test="merchantCode != null and merchantCode !=''">
+				and r.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo !=''">
+				and r.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus !=''">
+				and r.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+			<if test="reportTime != null and reportTime !=''">
+				and r.report_time = #{reportTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="status != null and status !=''">
+				and r.status = #{status,jdbcType=VARCHAR}
+			</if>
+			<if test="resultMsg != null and resultMsg !=''">
+				and r.result_msg = #{resultMsg,jdbcType=VARCHAR}
+			</if>
+			<if test="outMerchantCode != null and outMerchantCode !=''">
+				and r.out_merchant_code = #{outMerchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="detailStatus != null and detailStatus !=''">
+				and r.detail_status = #{detailStatus,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by r.report_time desc
+		LIMIT 1
+	</select>
+</mapper>

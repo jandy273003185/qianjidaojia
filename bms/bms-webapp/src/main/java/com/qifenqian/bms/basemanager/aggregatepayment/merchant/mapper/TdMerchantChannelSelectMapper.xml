@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.merchant.mapper.TdMerchantChannelSelectMapper">
+	
+	<select id="selectMerchantChannel" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantChannel"
+	resultType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantChannel">
+			select  
+				t.mch_id,
+				t.chanel,
+				t.chanel_status,
+				t.limit_per_amt,
+				t.limit_tot_amt,
+				DATE_FORMAT(t.modify_time,'%Y-%m-%d %H:%i:%s') modify_time ,
+				t.modify_id
+			from 
+				td_merchant_channel t
+			<where>
+				<if test="mchId != null and mchId != ''">
+					and t.mch_id = #{mchId,jdbcType = VARCHAR}
+				</if>
+				<if test="chanel != null and chanel != ''">
+				 	and	t.chanel = #{chanel,jdbcType = VARCHAR}
+				</if>
+				<if test="chanelStatus != null and chanelStatus != ''">
+					and t.chanel_status = #{chanelStatus,jdbcType = VARCHAR}
+				</if>
+			</where>
+	</select>
+</mapper>

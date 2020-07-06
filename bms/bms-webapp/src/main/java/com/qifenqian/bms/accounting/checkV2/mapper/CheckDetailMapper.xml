@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.checkV2.mapper.CheckDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="TRADE_ID" property="tradeId" jdbcType="VARCHAR" />
+    <result column="TRADE_TYPE" property="tradeType" jdbcType="VARCHAR" />
+    <result column="AGENT_MCH_ID" property="agentMchId" jdbcType="VARCHAR" />
+    <result column="MCH_ORDER_ID" property="mchOrderId" jdbcType="VARCHAR" />
+    <result column="MCH_ID" property="mchId" jdbcType="VARCHAR" />
+    <result column="MCH_NAME" property="mchName" jdbcType="VARCHAR" />
+    <result column="CHANNEL" property="channel" jdbcType="VARCHAR" />
+    <result column="CHANNEL_SUB" property="channelSub" jdbcType="VARCHAR" />
+    <result column="CHANNEL_TYPE" property="channelType" jdbcType="VARCHAR" />
+    <result column="CHANNEL_ORDER_ID" property="channelOrderId" jdbcType="VARCHAR" />
+    <result column="TRADE_AMT" property="tradeAmt" jdbcType="DECIMAL" />
+    <result column="CHANNEL_FEE" property="channelFee" jdbcType="DECIMAL" />
+    <result column="TRADE_FEE" property="tradeFee" jdbcType="DECIMAL" />
+    <result column="TRANSFER_AMT" property="transferAmt" jdbcType="DECIMAL" />
+    <result column="TRADE_CURRENCY" property="tradeCurrency" jdbcType="VARCHAR" />
+    <result column="REFUND_ORIGIN_ORDER_ID" property="refundOriginOrderId" jdbcType="VARCHAR" />
+    <result column="REFUND_ORIGIN_ORDER_AMT" property="refundOriginOrderAmt" jdbcType="DECIMAL" />
+    <result column="ORDER_CREATE_TIME" property="orderCreateTime" jdbcType="TIMESTAMP" />
+    <result column="ORDER_FINISH_TIME" property="orderFinishTime" jdbcType="TIMESTAMP" />
+    <result column="CHECK_RESULT" property="checkResult" jdbcType="VARCHAR" />
+    <result column="CHECK_DATE" property="checkDate" jdbcType="DATE" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TRADE_ID, TRADE_TYPE, AGENT_MCH_ID, MCH_ORDER_ID, MCH_ID, MCH_NAME, CHANNEL, 
+    CHANNEL_SUB, CHANNEL_TYPE, CHANNEL_ORDER_ID, TRADE_AMT, CHANNEL_FEE, TRADE_FEE, TRANSFER_AMT, 
+    TRADE_CURRENCY, REFUND_ORIGIN_ORDER_ID, REFUND_ORIGIN_ORDER_AMT, ORDER_CREATE_TIME, 
+    ORDER_FINISH_TIME, CHECK_RESULT, CHECK_DATE, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from td_check_detail
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from td_check_detail
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    insert into td_check_detail (ID, TRADE_ID, TRADE_TYPE, 
+      AGENT_MCH_ID, MCH_ORDER_ID, MCH_ID, 
+      MCH_NAME, CHANNEL, CHANNEL_SUB, 
+      CHANNEL_TYPE, CHANNEL_ORDER_ID, TRADE_AMT, 
+      CHANNEL_FEE, TRADE_FEE, TRANSFER_AMT, 
+      TRADE_CURRENCY, REFUND_ORIGIN_ORDER_ID, REFUND_ORIGIN_ORDER_AMT, 
+      ORDER_CREATE_TIME, ORDER_FINISH_TIME, CHECK_RESULT, 
+      CHECK_DATE, CREATE_TIME)
+    values (#{id,jdbcType=INTEGER}, #{tradeId,jdbcType=VARCHAR}, #{tradeType,jdbcType=VARCHAR}, 
+      #{agentMchId,jdbcType=VARCHAR}, #{mchOrderId,jdbcType=VARCHAR}, #{mchId,jdbcType=VARCHAR}, 
+      #{mchName,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR}, #{channelSub,jdbcType=VARCHAR}, 
+      #{channelType,jdbcType=VARCHAR}, #{channelOrderId,jdbcType=VARCHAR}, #{tradeAmt,jdbcType=DECIMAL}, 
+      #{channelFee,jdbcType=DECIMAL}, #{tradeFee,jdbcType=DECIMAL}, #{transferAmt,jdbcType=DECIMAL}, 
+      #{tradeCurrency,jdbcType=VARCHAR}, #{refundOriginOrderId,jdbcType=VARCHAR}, #{refundOriginOrderAmt,jdbcType=DECIMAL}, 
+      #{orderCreateTime,jdbcType=TIMESTAMP}, #{orderFinishTime,jdbcType=TIMESTAMP}, #{checkResult,jdbcType=VARCHAR}, 
+      #{checkDate,jdbcType=DATE}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    insert into td_check_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="tradeId != null" >
+        TRADE_ID,
+      </if>
+      <if test="tradeType != null" >
+        TRADE_TYPE,
+      </if>
+      <if test="agentMchId != null" >
+        AGENT_MCH_ID,
+      </if>
+      <if test="mchOrderId != null" >
+        MCH_ORDER_ID,
+      </if>
+      <if test="mchId != null" >
+        MCH_ID,
+      </if>
+      <if test="mchName != null" >
+        MCH_NAME,
+      </if>
+      <if test="channel != null" >
+        CHANNEL,
+      </if>
+      <if test="channelSub != null" >
+        CHANNEL_SUB,
+      </if>
+      <if test="channelType != null" >
+        CHANNEL_TYPE,
+      </if>
+      <if test="channelOrderId != null" >
+        CHANNEL_ORDER_ID,
+      </if>
+      <if test="tradeAmt != null" >
+        TRADE_AMT,
+      </if>
+      <if test="channelFee != null" >
+        CHANNEL_FEE,
+      </if>
+      <if test="tradeFee != null" >
+        TRADE_FEE,
+      </if>
+      <if test="transferAmt != null" >
+        TRANSFER_AMT,
+      </if>
+      <if test="tradeCurrency != null" >
+        TRADE_CURRENCY,
+      </if>
+      <if test="refundOriginOrderId != null" >
+        REFUND_ORIGIN_ORDER_ID,
+      </if>
+      <if test="refundOriginOrderAmt != null" >
+        REFUND_ORIGIN_ORDER_AMT,
+      </if>
+      <if test="orderCreateTime != null" >
+        ORDER_CREATE_TIME,
+      </if>
+      <if test="orderFinishTime != null" >
+        ORDER_FINISH_TIME,
+      </if>
+      <if test="checkResult != null" >
+        CHECK_RESULT,
+      </if>
+      <if test="checkDate != null" >
+        CHECK_DATE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tradeId != null" >
+        #{tradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeType != null" >
+        #{tradeType,jdbcType=VARCHAR},
+      </if>
+      <if test="agentMchId != null" >
+        #{agentMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderId != null" >
+        #{mchOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchName != null" >
+        #{mchName,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+        #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="channelSub != null" >
+        #{channelSub,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelOrderId != null" >
+        #{channelOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeAmt != null" >
+        #{tradeAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="channelFee != null" >
+        #{channelFee,jdbcType=DECIMAL},
+      </if>
+      <if test="tradeFee != null" >
+        #{tradeFee,jdbcType=DECIMAL},
+      </if>
+      <if test="transferAmt != null" >
+        #{transferAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="tradeCurrency != null" >
+        #{tradeCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="refundOriginOrderId != null" >
+        #{refundOriginOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="refundOriginOrderAmt != null" >
+        #{refundOriginOrderAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="orderCreateTime != null" >
+        #{orderCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderFinishTime != null" >
+        #{orderFinishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkResult != null" >
+        #{checkResult,jdbcType=VARCHAR},
+      </if>
+      <if test="checkDate != null" >
+        #{checkDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    update td_check_detail
+    <set >
+      <if test="tradeId != null" >
+        TRADE_ID = #{tradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeType != null" >
+        TRADE_TYPE = #{tradeType,jdbcType=VARCHAR},
+      </if>
+      <if test="agentMchId != null" >
+        AGENT_MCH_ID = #{agentMchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchOrderId != null" >
+        MCH_ORDER_ID = #{mchOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null" >
+        MCH_ID = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchName != null" >
+        MCH_NAME = #{mchName,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+        CHANNEL = #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="channelSub != null" >
+        CHANNEL_SUB = #{channelSub,jdbcType=VARCHAR},
+      </if>
+      <if test="channelType != null" >
+        CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="channelOrderId != null" >
+        CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeAmt != null" >
+        TRADE_AMT = #{tradeAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="channelFee != null" >
+        CHANNEL_FEE = #{channelFee,jdbcType=DECIMAL},
+      </if>
+      <if test="tradeFee != null" >
+        TRADE_FEE = #{tradeFee,jdbcType=DECIMAL},
+      </if>
+      <if test="transferAmt != null" >
+        TRANSFER_AMT = #{transferAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="tradeCurrency != null" >
+        TRADE_CURRENCY = #{tradeCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="refundOriginOrderId != null" >
+        REFUND_ORIGIN_ORDER_ID = #{refundOriginOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="refundOriginOrderAmt != null" >
+        REFUND_ORIGIN_ORDER_AMT = #{refundOriginOrderAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="orderCreateTime != null" >
+        ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderFinishTime != null" >
+        ORDER_FINISH_TIME = #{orderFinishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkResult != null" >
+        CHECK_RESULT = #{checkResult,jdbcType=VARCHAR},
+      </if>
+      <if test="checkDate != null" >
+        CHECK_DATE = #{checkDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    update td_check_detail
+    set TRADE_ID = #{tradeId,jdbcType=VARCHAR},
+      TRADE_TYPE = #{tradeType,jdbcType=VARCHAR},
+      AGENT_MCH_ID = #{agentMchId,jdbcType=VARCHAR},
+      MCH_ORDER_ID = #{mchOrderId,jdbcType=VARCHAR},
+      MCH_ID = #{mchId,jdbcType=VARCHAR},
+      MCH_NAME = #{mchName,jdbcType=VARCHAR},
+      CHANNEL = #{channel,jdbcType=VARCHAR},
+      CHANNEL_SUB = #{channelSub,jdbcType=VARCHAR},
+      CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR},
+      CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR},
+      TRADE_AMT = #{tradeAmt,jdbcType=DECIMAL},
+      CHANNEL_FEE = #{channelFee,jdbcType=DECIMAL},
+      TRADE_FEE = #{tradeFee,jdbcType=DECIMAL},
+      TRANSFER_AMT = #{transferAmt,jdbcType=DECIMAL},
+      TRADE_CURRENCY = #{tradeCurrency,jdbcType=VARCHAR},
+      REFUND_ORIGIN_ORDER_ID = #{refundOriginOrderId,jdbcType=VARCHAR},
+      REFUND_ORIGIN_ORDER_AMT = #{refundOriginOrderAmt,jdbcType=DECIMAL},
+      ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP},
+      ORDER_FINISH_TIME = #{orderFinishTime,jdbcType=TIMESTAMP},
+      CHECK_RESULT = #{checkResult,jdbcType=VARCHAR},
+      CHECK_DATE = #{checkDate,jdbcType=DATE},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findCheckDetail" resultType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    from td_check_detail
+    <where>
+      <if test="id != null" >
+        AND ID = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="tradeId != null and tradeId != ''" >
+        AND TRADE_ID = #{tradeId,jdbcType=VARCHAR}
+      </if>
+      <if test="tradeType != null and tradeType != ''" >
+        AND TRADE_TYPE = #{tradeType,jdbcType=VARCHAR}
+      </if>
+      <if test="agentMchId != null and agentMchId != ''" >
+        AND AGENT_MCH_ID = #{agentMchId,jdbcType=VARCHAR}
+      </if>
+      <if test="mchOrderId != null and mchOrderId != ''" >
+        AND MCH_ORDER_ID = #{mchOrderId,jdbcType=VARCHAR}
+      </if>
+      <if test="mchId != null and mchId != ''" >
+        AND MCH_ID = #{mchId,jdbcType=VARCHAR}
+      </if>
+      <if test="mchName != null and mchName != ''" >
+        AND MCH_NAME = #{mchName,jdbcType=VARCHAR}
+      </if>
+      <if test="channel != null and channel != ''" >
+        AND CHANNEL = #{channel,jdbcType=VARCHAR}
+      </if>
+      <if test="channelSub != null and channelSub != ''" >
+        AND CHANNEL_SUB = #{channelSub,jdbcType=VARCHAR}
+      </if>
+      <if test="channelType != null and channelType != '' " >
+        AND CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR}
+      </if>
+      <if test="channelOrderId != null and channelOrderId != ''" >
+        AND CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR}
+      </if>
+      <if test="tradeAmt != null" >
+        AND TRADE_AMT = #{tradeAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="channelFee != null" >
+        AND CHANNEL_FEE = #{channelFee,jdbcType=DECIMAL}
+      </if>
+      <if test="tradeFee != null" >
+        AND TRADE_FEE = #{tradeFee,jdbcType=DECIMAL}
+      </if>
+      <if test="transferAmt != null" >
+        AND TRANSFER_AMT = #{transferAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="tradeCurrency != null" >
+        AND TRADE_CURRENCY = #{tradeCurrency,jdbcType=VARCHAR}
+      </if>
+      <if test="refundOriginOrderId != null and refundOriginOrderId != ''" >
+        AND REFUND_ORIGIN_ORDER_ID = #{refundOriginOrderId,jdbcType=VARCHAR}
+      </if>
+      <if test="refundOriginOrderAmt != null" >
+        AND REFUND_ORIGIN_ORDER_AMT = #{refundOriginOrderAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="orderCreateTime != null" >
+        AND ORDER_CREATE_TIME = #{orderCreateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="orderFinishTime != null" >
+        AND ORDER_FINISH_TIME = #{orderFinishTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="checkResult != null and checkResult != ''" >
+        AND CHECK_RESULT = #{checkResult,jdbcType=VARCHAR}
+      </if>
+      <if test="checkDate != null" >
+        AND CHECK_DATE = #{checkDate,jdbcType=DATE}
+      </if>
+      <if test="createTime != null" >
+        AND CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+	</where>
+  </select>  
+</mapper>

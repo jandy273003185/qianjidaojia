@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "搜索",
+"navigationBarBackgroundColor": "#fff",
+"navigationBarTextStyle": "black",
+"usingComponents": {
+    "myIcon": "../../components/myIcon/myIcon",
+    "addCart": "../../components/addCart/addCart"
+}
+}

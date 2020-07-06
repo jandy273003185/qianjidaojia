@@ -1,0 +1,46 @@
+<!--pages/estimate/estimate.wxml-->
+<view class="estimate">
+    <view class="estimateTitle">
+        <view class="flex justs alic">
+            <view class="title">商品评价</view>
+            <view class="title">({{count}})</view>
+        </view>
+        <view class="selectLook flex justfs alic">
+            <block wx:for="{{btnList}}" wx:key="index">
+                <view class="selectItem {{isActive==index?selected:''}}" data-index="{{index}}" bindtap="selectLook">{{item.name}}</view>
+            </block>
+        </view>
+    </view>
+<scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+    <block wx:for="{{listArr}}" wx:key="idx" wx:for-index="idx" wx:for-item="item">
+        <view class="estimateList">
+            <view class="flex justs alic">
+                <view class="personnel flex justfs alic">
+                    <image class="personnelImg" src="{{item.MemberHeadImg}}"></image>
+                    <view class="personnelName">{{item.MemberName}}</view>
+                </view>
+                <text class="estimateTime">{{item.AddTime}}</text>
+            </view>
+
+            <view class="personnelText">{{item.ContentText}}</view>
+            <view class="imgBox flex justfs alic">
+                <block wx:for="{{numberUtil.strToArr(item.EvaluateImgList)}}" wx:key="index" wx:for-item="imgItem">
+                    <image class="estimateImg" src="{{imgItem}}"></image>
+                </block>
+            </view>
+            <view class="shopReply" wx:if="{{item.Reply}}">
+                <view class="flex justs alic">
+                    <text class="replyTitle">商家回复:</text>
+                    <text class="estimateTime">{{item.ReplyTime}}</text>
+                </view>
+                <view class="replyText">
+                    {{item.Reply}}
+                </view>
+            </view>
+        </view>
+
+    </block>
+   </scroll-view>
+</view>
+
+<wxs module="numberUtil" src="../../utils/util.wxs"></wxs>

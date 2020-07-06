@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.checkV2.mapper.CheckStatsMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CHANNEL_TYPE" property="channelType" jdbcType="VARCHAR" />
+    <result column="CHECK_ALL_NUM" property="checkAllNum" jdbcType="INTEGER" />
+    <result column="CHECK_ALL_AMT" property="checkAllAmt" jdbcType="DECIMAL" />
+    <result column="CHECK_SUCCESS_NUM" property="checkSuccessNum" jdbcType="INTEGER" />
+    <result column="CHECK_SUCCESS_TRADE_AMT" property="checkSuccessTradeAmt" jdbcType="DECIMAL" />
+    <result column="CHECK_PLACK_NUM" property="checkPlackNum" jdbcType="INTEGER" />
+    <result column="CHECK_PLACK_AMT" property="checkPlackAmt" jdbcType="DECIMAL" />
+    <result column="CHECK_CLACK_NUM" property="checkClackNum" jdbcType="INTEGER" />
+    <result column="CHECK_CLACK_AMT" property="checkClackAmt" jdbcType="DECIMAL" />
+    <result column="CHECK_OTHRER_NUM" property="checkOthrerNum" jdbcType="INTEGER" />
+    <result column="CHECK_OTHER_AMT" property="checkOtherAmt" jdbcType="DECIMAL" />
+    <result column="CHECK_DATE" property="checkDate" jdbcType="DATE" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CHANNEL_TYPE, CHECK_ALL_NUM, CHECK_ALL_AMT, CHECK_SUCCESS_NUM, CHECK_SUCCESS_TRADE_AMT, 
+    CHECK_PLACK_NUM, CHECK_PLACK_AMT, CHECK_CLACK_NUM, CHECK_CLACK_AMT, CHECK_OTHRER_NUM, 
+    CHECK_OTHER_AMT, CHECK_DATE, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from td_check_stats
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from td_check_stats
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    insert into td_check_stats (ID, CHANNEL_TYPE, CHECK_ALL_NUM, 
+      CHECK_ALL_AMT, CHECK_SUCCESS_NUM, CHECK_SUCCESS_TRADE_AMT, 
+      CHECK_PLACK_NUM, CHECK_PLACK_AMT, CHECK_CLACK_NUM, 
+      CHECK_CLACK_AMT, CHECK_OTHRER_NUM, CHECK_OTHER_AMT, 
+      CHECK_DATE, CREATE_TIME)
+    values (#{id,jdbcType=INTEGER}, #{channelType,jdbcType=VARCHAR}, #{checkAllNum,jdbcType=INTEGER}, 
+      #{checkAllAmt,jdbcType=DECIMAL}, #{checkSuccessNum,jdbcType=INTEGER}, #{checkSuccessTradeAmt,jdbcType=DECIMAL}, 
+      #{checkPlackNum,jdbcType=INTEGER}, #{checkPlackAmt,jdbcType=DECIMAL}, #{checkClackNum,jdbcType=INTEGER}, 
+      #{checkClackAmt,jdbcType=DECIMAL}, #{checkOthrerNum,jdbcType=INTEGER}, #{checkOtherAmt,jdbcType=DECIMAL}, 
+      #{checkDate,jdbcType=DATE}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    insert into td_check_stats
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="channelType != null" >
+        CHANNEL_TYPE,
+      </if>
+      <if test="checkAllNum != null" >
+        CHECK_ALL_NUM,
+      </if>
+      <if test="checkAllAmt != null" >
+        CHECK_ALL_AMT,
+      </if>
+      <if test="checkSuccessNum != null" >
+        CHECK_SUCCESS_NUM,
+      </if>
+      <if test="checkSuccessTradeAmt != null" >
+        CHECK_SUCCESS_TRADE_AMT,
+      </if>
+      <if test="checkPlackNum != null" >
+        CHECK_PLACK_NUM,
+      </if>
+      <if test="checkPlackAmt != null" >
+        CHECK_PLACK_AMT,
+      </if>
+      <if test="checkClackNum != null" >
+        CHECK_CLACK_NUM,
+      </if>
+      <if test="checkClackAmt != null" >
+        CHECK_CLACK_AMT,
+      </if>
+      <if test="checkOthrerNum != null" >
+        CHECK_OTHRER_NUM,
+      </if>
+      <if test="checkOtherAmt != null" >
+        CHECK_OTHER_AMT,
+      </if>
+      <if test="checkDate != null" >
+        CHECK_DATE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="channelType != null" >
+        #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="checkAllNum != null" >
+        #{checkAllNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkAllAmt != null" >
+        #{checkAllAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkSuccessNum != null" >
+        #{checkSuccessNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkSuccessTradeAmt != null" >
+        #{checkSuccessTradeAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkPlackNum != null" >
+        #{checkPlackNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkPlackAmt != null" >
+        #{checkPlackAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkClackNum != null" >
+        #{checkClackNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkClackAmt != null" >
+        #{checkClackAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkOthrerNum != null" >
+        #{checkOthrerNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkOtherAmt != null" >
+        #{checkOtherAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkDate != null" >
+        #{checkDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    update td_check_stats
+    <set >
+      <if test="channelType != null" >
+        CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR},
+      </if>
+      <if test="checkAllNum != null" >
+        CHECK_ALL_NUM = #{checkAllNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkAllAmt != null" >
+        CHECK_ALL_AMT = #{checkAllAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkSuccessNum != null" >
+        CHECK_SUCCESS_NUM = #{checkSuccessNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkSuccessTradeAmt != null" >
+        CHECK_SUCCESS_TRADE_AMT = #{checkSuccessTradeAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkPlackNum != null" >
+        CHECK_PLACK_NUM = #{checkPlackNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkPlackAmt != null" >
+        CHECK_PLACK_AMT = #{checkPlackAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkClackNum != null" >
+        CHECK_CLACK_NUM = #{checkClackNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkClackAmt != null" >
+        CHECK_CLACK_AMT = #{checkClackAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkOthrerNum != null" >
+        CHECK_OTHRER_NUM = #{checkOthrerNum,jdbcType=INTEGER},
+      </if>
+      <if test="checkOtherAmt != null" >
+        CHECK_OTHER_AMT = #{checkOtherAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="checkDate != null" >
+        CHECK_DATE = #{checkDate,jdbcType=DATE},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    update td_check_stats
+    set CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR},
+      CHECK_ALL_NUM = #{checkAllNum,jdbcType=INTEGER},
+      CHECK_ALL_AMT = #{checkAllAmt,jdbcType=DECIMAL},
+      CHECK_SUCCESS_NUM = #{checkSuccessNum,jdbcType=INTEGER},
+      CHECK_SUCCESS_TRADE_AMT = #{checkSuccessTradeAmt,jdbcType=DECIMAL},
+      CHECK_PLACK_NUM = #{checkPlackNum,jdbcType=INTEGER},
+      CHECK_PLACK_AMT = #{checkPlackAmt,jdbcType=DECIMAL},
+      CHECK_CLACK_NUM = #{checkClackNum,jdbcType=INTEGER},
+      CHECK_CLACK_AMT = #{checkClackAmt,jdbcType=DECIMAL},
+      CHECK_OTHRER_NUM = #{checkOthrerNum,jdbcType=INTEGER},
+      CHECK_OTHER_AMT = #{checkOtherAmt,jdbcType=DECIMAL},
+      CHECK_DATE = #{checkDate,jdbcType=DATE},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findCheckStats" resultType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" parameterType="com.qifenqian.bms.accounting.checkV2.bean.CheckStats" >
+    select 
+    <include refid="Base_Column_List" />
+    from td_check_stats
+    <where>
+      <if test="id != null" >
+        AND ID = #{id,jdbcType=INTEGER}
+      </if>    
+      <if test="channelType != null and channelType != '' " >
+        AND CHANNEL_TYPE = #{channelType,jdbcType=VARCHAR}
+      </if>
+      <if test="checkAllNum != null" >
+        AND CHECK_ALL_NUM = #{checkAllNum,jdbcType=INTEGER}
+      </if>
+      <if test="checkAllAmt != null" >
+        AND CHECK_ALL_AMT = #{checkAllAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="checkSuccessNum != null" >
+        AND CHECK_SUCCESS_NUM = #{checkSuccessNum,jdbcType=INTEGER}
+      </if>
+      <if test="checkSuccessTradeAmt != null" >
+        AND CHECK_SUCCESS_TRADE_AMT = #{checkSuccessTradeAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="checkPlackNum != null" >
+        AND CHECK_PLACK_NUM = #{checkPlackNum,jdbcType=INTEGER}
+      </if>
+      <if test="checkPlackAmt != null" >
+        AND CHECK_PLACK_AMT = #{checkPlackAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="checkClackNum != null" >
+        AND CHECK_CLACK_NUM = #{checkClackNum,jdbcType=INTEGER}
+      </if>
+      <if test="checkClackAmt != null" >
+        AND CHECK_CLACK_AMT = #{checkClackAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="checkOthrerNum != null" >
+        AND CHECK_OTHRER_NUM = #{checkOthrerNum,jdbcType=INTEGER}
+      </if>
+      <if test="checkOtherAmt != null" >
+        AND CHECK_OTHER_AMT = #{checkOtherAmt,jdbcType=DECIMAL}
+      </if>
+      <if test="checkDate != null" >
+        AND CHECK_DATE = #{checkDate,jdbcType=DATE}
+      </if>
+      <if test="createTime != null" >
+        AND CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+	</where>
+	ORDER BY CHECK_DATE DESC
+  </select>  
+</mapper>

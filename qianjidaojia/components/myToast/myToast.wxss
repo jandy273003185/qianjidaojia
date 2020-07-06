@@ -1,0 +1,48 @@
+/* components/myToast/myToast.wxss */
+
+.myToast {
+    display: inline-block;
+    text-align: center;
+    max-width: 50%;
+    position: fixed;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    color: #fff;
+    font-size: 30rpx;
+    line-height: 40rpx;
+    padding: 20rpx 30rpx;
+    border-radius: 10rpx;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.myToast.active {
+    animation: myToast 1s;
+}
+
+@keyframes myToast {
+    0% {
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    25% {
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    75% {
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    100% {
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+}

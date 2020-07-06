@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>支付</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="script/payment.js?v=0.01"></script>
+    <style type="text/css">
+        .payType {
+            margin-left: .1rem;
+            margin-right: .1rem;
+        }
+
+        .payTips {
+            margin: .1rem;
+            padding: .1rem;
+            border-radius: .06rem;
+            background-color: #fff;
+            font-size: .15rem;
+            color: #505050;
+        }
+
+            .payTips .price {
+                color: #ff5c29;
+                font-size: .13rem;
+            }
+
+                .payTips .price .num {
+                    font-size: .22rem;
+                }
+        .ftbtn {
+            border-top: none;
+            padding: .1rem;
+            background: none;
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            background: #fff;
+        }
+        .chongdi {
+            height: .5rem;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head search_head">
+            <a href="javascript:history.go(-1);" id="RollBack" class="btn_back"></a>
+            <div class="title center">选择支付方式</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="payTips">
+            产 品 金 额：<span class="price">￥<span class="num ProductAmount"></span></span>
+        </div>
+        <div class="payTips">
+            运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费：<span class="price">￥<span class="num freight"></span></span>
+        </div>
+        <div class="payTips">
+            优惠券减免：<span class="price">-￥<span class="num discountedAmount"></span></span>
+        </div>
+        <div class="payTips">
+            订 单 金 额：<span class="price">￥<span class="num OrderAmount"></span></span>
+        </div>
+        <div class="payTips" id="walletPayAmount" style="display:none;">
+            订 单 金 额：<span class="price">￥<span class="num walletPayAmount"></span></span>
+        </div>
+        <div class="payTips" style="display:none;">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">使用余额</label>
+            </div>
+            <div class="weui-cell__bd text_r">
+                <p class="txt usablePrice">余额￥<span id="balance">0</span></p>
+            </div>
+            <div class="weui-cell__ft">
+                <div class="switch_btn">
+                    <input type="checkbox" class="switch" id="use__usablePrice" />
+                    <label for="use__usablePrice"></label>
+                </div>
+            </div>
+        </div>
+        <div class="payTips">
+            待支付金额：<span class="price">￥<span class="num surePrice"></span></span>
+        </div>
+        <div class="payType">
+            <div class="section__hd weui-cell bbTitle__section__hd">
+                <div class="weui-cell__bd">
+                    <p class="title">支付方式</p>
+                </div>
+            </div>
+            <ul class="waylist">
+                <li class="active">
+                    <i class="icon icon-weixin"></i>
+                    <span class="recom">微信支付</span>
+                    <span class="tips">亿万用户的选择，更快更安全</span>
+                </li>
+                <!--<li>
+                <i class="icon icon-zfb"></i>
+                <span>支付宝</span>
+            </li>-->
+            </ul>
+
+        </div>
+        <div class="chongdi">&nbsp;</div>
+        <div class="ftbtn">
+            <div class="btn payment_order">提交订单</div>
+        </div>
+    </div>
+    <div id="pay_js"></div>
+</body>
+</html>

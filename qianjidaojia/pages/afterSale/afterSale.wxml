@@ -1,0 +1,67 @@
+<!--pages/afterSale/afterSale.wxml-->
+<scroll-view  style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+    <view wx:if="{{listName.ShopName}}" class="goods" wx:for="{{listArr}}" wx:key="index" wx:for-index="idx" wx:for-item="listName">
+      <view class="goods-up">
+          <view>
+            <text class="merchant">{{listName.ShopName}}</text>
+          </view>
+          <!-- <view class="deal-status">{{item.orderDetails[0].OrderStatusId == 16?'退款中':item.StatusName}}</view> -->
+          <view class="deal-status">{{listName.StatusName}}</view>
+        </view>
+        <block wx:for="{{listName.orderDetails}}" wx:key="index" wx:for-item="item">
+            <view class="goods-middle">
+              <view class="goods-img"><image src="{{item.ProductImg}}"></image></view>
+              <view class="goods-txt">
+                <text class="goods-title">{{item.ProductName}}</text>
+                <text class="price">¥{{item.UnitPrice}}</text>
+              </view>
+              <text class="num">×{{item.ProductCount}}</text>
+            </view>
+            <view wx:if="{{listName.StatusName!=item.OrderStatusName}}" class="single-status">{{item.OrderStatusName}}</view>
+        </block>
+
+        <view wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 0}}" class="del">
+          <text class="btn-gray" data-index="{{index}}" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" bindtap="cancelOrder">取消订单</text>
+          <text class="btn-red" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" bindtap="payment">付款</text>
+        </view>
+        <view wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 1}}" class="del">
+          <text class="btn-gray" bindtap="refund" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}">退款</text>
+          <text class="btn-gray" bindtap="remindDelivery" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}">提醒发货</text>
+        </view>
+        <view wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 2}}" class="del">
+          <text class="btn-gray" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" bindtap="checkLogistics">查看物流</text>
+          <text class="btn-red" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" bindtap="confirm">确认收货</text>
+        </view>
+        <view wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 3}}" class="del">
+          <text class="btn-gray" bindtap="delOrder" data-index="{{index}}" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}">删除订单</text>
+          <text class="btn-gray" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" bindtap="checkLogistics">查看物流</text>
+          <text class="btn-red" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" class="evaluate" bindtap="evaluation">去评价</text>
+        </view>
+        <view wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 14}}" class="del" bindtap="delOrder" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}">
+          <text class="btn-gray">删除订单</text>
+        </view>
+        <view class="del">
+          <text wx:if="{{listArr[idx].orderDetails[0].OrderStatusId == 16}}" class="btn-gray" bindtap="withdraw" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" data-productid="{{listArr[idx].orderDetails[0].Id}}">撤销申请</text>
+          <text class="btn-red" bindtap="afterSaleDetails" data-ordernum="{{listArr[idx].orderDetails[0].OrderNumber}}" data-RefundId="{{listName.RefundId}}">售后详情</text>
+        </view>
+    </view>
+</scroll-view>
+
+<view class="wrap">
+  <!-- modal  -->
+  <view class="modal modal-bottom-dialog" hidden="{{hideFlag}}">
+    <view class="modal-cancel" bindtap="hideModal"></view>
+    <view class="bottom-dialog-body bottom-positon" animation="{{animationData}}">
+      <!--  -->
+      <view class='Mselect'>
+        <view wx:for="{{reasonsArr}}" wx:key="unique" data-value='{{item.code}}' bindtap='getOption'>
+          {{item.message}}
+        </view>
+      </view>
+      <view></view>
+      <view class='Mcancel' bindtap='mCancel'>
+        <text>取消</text>
+      </view>
+    </view>
+  </view>
+</view>

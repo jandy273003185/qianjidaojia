@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.aggregations.mapper.AggregationResultExceptionMapper" >
+	
+  <select id="selectErrorList"  resultType="com.qifenqian.bms.accounting.aggregations.bean.BalAggregationResultException" 
+  	parameterType="com.qifenqian.bms.accounting.aggregations.bean.BalAggregationResultException" >
+  		SELECT 
+		      T.BAL_DATE,
+			  <!-- 
+			  IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'CHANNEL_ID' AND TYPE_CODE = T.CHANNEL_ID),T.CHANNEL_ID) CHANNEL_ID,
+			  IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = A.TRANS_TYPE),A.TRANS_TYPE) TRANS_TYPE,
+		      IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'TRANS_STATUS' AND TYPE_CODE = A.TRANS_STATUS),A.TRANS_STATUS) TRANS_STATUS, 
+		      IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BAL_RESULT' AND TYPE_CODE = A.BAL_RESULT),A.BAL_RESULT) BAL_RESULT,
+		 	 	-->
+		 	  A.*
+			 
+			FROM
+			BAL_BATCH T
+			INNER JOIN BAL_EXTERNAL_RESULT_EXCEPTION A ON A.BATCH_ID = T.BATCH_ID 
+		  	AND T.STATUS = 'BAL_OVER' 
+		  	AND A.BAL_RESULT IN ('BAL_ERROR') 
+		<where>													
+	 		<if test="balDate!=null and balDate!='' ">   
+	         	 AND  T.BAL_DATE = #{balDate,jdbcType = VARCHAR} 
+	        </if> 
+	        <if test="clearId!=null and clearId!='' ">   
+	         	 AND  A.CLEAR_ID  LIKE CONCAT('%',#{clearId},'%') 
+	        </if> 
+	        <if test="beginBalTime != null and '' != beginBalTime">  
+	            <![CDATA[  
+	              AND A.WORK_DATE >= #{beginBalTime, jdbcType=VARCHAR}       
+	            ]]>  
+	        </if>
+	        <if test="endBalTime!= null and '' !=endBalTime">  
+	            <![CDATA[  
+	             AND #{endBalTime, jdbcType=VARCHAR} >=  A.WORK_DATE
+	            ]]>  
+	        </if>  
+        </where>
+		ORDER BY A.INST_DATETIME DESC	    
+  </select>
+  	
+  		
+</mapper>  	

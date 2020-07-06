@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.mapper.OrderMapperSlave">
+	<select id="getOrderInfoList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		select 
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.MCH_NAME,
+			T.SERVICE,
+			T.INPUT_CHARSET,
+			T.PAGE_LANGUAGE,
+			T.CHANNEL,
+			T.CHANNEL_SUB,
+			T.ZX_ORDER_ID,
+			T.CHANNEL_ORDER_ID,
+			T.PG_URL,
+			T.BG_URL,
+			T.VERSION,
+			T.ORDER_AMT,
+			T.TRADE_AMT,
+			case T.CHANNEL when 'sevenpay' then ttt5.SETTLE_AMT else tt3.SETTLE_AMT end as SETTLE_AMT,
+			T.COUPON_AMT,
+			T.PROD_DESC,
+			T.PAY_TYPE,
+			T.ORDER_TIMESTAMP,
+			T.ORDER_TIME_OUT,
+			T.ORDER_EXPIRE,
+			T.SIGN_TYPE,
+			T.SIGN_MSG,
+			T.ORDER_STATE,
+			T.NOTIFY_TIME,
+			T.NOTIFY_COUNT,
+			T.NOTIFY_RESULT,
+			T.CREATE_TIME,
+			T.FINISH_TIME,
+			T.REFUND_TIME,
+			T.MODIFY_TIME,
+			T.PAYER_CONTACT,
+			T.PAYER_ID,
+			T.MODIFY_ID,
+			T.CORE_SUBMIT_STATE,
+			T.CORE_SN,
+			T.ORDER_CORE_RETURN_CODE,
+			T.ORDER_CORE_RETURN_MSG,
+			T.ORDER_CORE_RETURN_TIME,
+			A.merchant_code,
+			B.PAY_CHANNEL_NAME channelSubName,
+			C.PROD_NAME
+		from 
+			td_order T
+		left join 
+			stcdb.td_cust_info A
+   		ON
+			T.mch_id=A.cust_id
+		left join
+			td_pay_channel_cfg B
+		on
+			T.CHANNEL_SUB = B.PAY_CHANNEL_CODE
+		left join 
+			td_payment_prod_for_merchant C
+		on
+			T.service = C.PROD_CODE
+		
+	left join stcs.trans_record tt1
+     on T.CORE_SN = tt1.req_serial_id
+    left join stcs.trans_record_buss_accounting tt2
+     on tt1.msg_id = tt2.msg_id
+    left join stcs.acct_seven_buss_flow tt3
+     on tt2.id = tt3.trans_flow_id
+
+
+    left join stcdb.td_merchant_in ttt1
+     on T.ORDER_ID = ttt1.OUT_ORDER_ID
+    left join stcdb.td_trade_bill_main ttt2
+     on ttt1.IN_ORDER_ID = ttt2.ORDER_ID
+    left join stcs.trans_record ttt3
+     on ttt2.CORE_SN = ttt3.msg_id
+    left join stcs.trans_record_flow ttt4
+     on ttt3.msg_id = ttt4.msg_id and ttt4.business_type='RECEIVE' and ttt4.acct_type='SEVEN_BUSS'
+    left join stcs.acct_seven_buss_flow ttt5
+     on ttt4.id = ttt5.trans_flow_id
+		
+		
+		<where>
+			<if test="orderId != null and orderId != ''">
+				AND T.ORDER_ID = #{orderId,jdbcType=VARCHAR}
+			</if>
+			<if test="zxOrderId != null and zxOrderId != ''">
+				AND T.ZX_ORDER_ID = #{zxOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="channelOrderId != null and channelOrderId != ''">
+				AND T.CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="payProd != null and payProd != ''">
+				AND T.service like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND T.create_time >= #{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				AND #{createTimeE,jdbcType = VARCHAR}> T.create_time
+			</if>
+			<if test="finishTimeB != null and finishTimeB != ''">
+				AND DATE_FORMAT(T.finish_time,'%Y-%m-%d') >= #{finishTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="finishTimeE != null and finishTimeE != ''">
+				AND #{finishTimeE,jdbcType = VARCHAR}>=DATE_FORMAT(T.finish_time,'%Y-%m-%d')
+			</if>
+			<!-- 未选择支付成功状态：按状态值查询 -->
+			<if test="orderState != null and orderState != '' and orderState != '00'">
+				AND T.order_state = #{orderState,jdbcType=VARCHAR}
+			</if>
+			<!-- 选择支付成功状态：去查询状态包含 已退款90 部分退款91 支付成功00 -->
+			<if test="orderState != null and orderState != '' and orderState == '00'">
+				AND T.order_state in ('00','90','91')
+			</if>
+			<if test="channel != null and channel != ''">
+				AND T.channel = #{channel,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND A.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by  CREATE_TIME DESC
+	</select>
+	
+	<!-- 导出 -->
+	<select id="getOrderInfoListExport" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.ExportOrderInfoBean">
+		select 
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.MCH_NAME,
+			T.SERVICE,
+			
+			T.CHANNEL,
+			T.CHANNEL_SUB,
+			T.ZX_ORDER_ID,
+			T.CHANNEL_ORDER_ID,
+			
+			T.VERSION,
+			T.ORDER_AMT,
+			T.TRADE_AMT,
+			case T.CHANNEL when 'sevenpay' then ttt5.SETTLE_AMT else tt3.SETTLE_AMT end as SETTLE_AMT,
+			T.COUPON_AMT,
+			T.PROD_DESC,
+			CASE T.PAY_TYPE WHEN '1' THEN '刷卡' WHEN 'SK' THEN '刷卡'  WHEN 'SM' THEN '扫码'  WHEN 'SL' THEN '刷脸'  END as PAY_TYPE,
+			T.ORDER_TIMESTAMP,
+			T.ORDER_TIME_OUT,
+			T.ORDER_EXPIRE,
+			T.SIGN_TYPE,
+			T.SIGN_MSG,
+			CASE T.ORDER_STATE WHEN '01' THEN '创建订单' when '02' then '支付处理中' when '00' then '支付成功' when '09' then '支付失败' when '90' then '已退款' when '91' then '部分退款' when '99' then '取消' END as ORDER_STATE,
+			T.NOTIFY_TIME,
+			T.NOTIFY_COUNT,
+			T.NOTIFY_RESULT,
+			T.CREATE_TIME,
+			T.MODIFY_TIME,
+			
+			T.MODIFY_ID,
+			T.PAYER_CONTACT,
+			T.PAYER_ID,
+			T.FINISH_TIME,
+			T.REFUND_TIME,
+			
+			T.CORE_SUBMIT_STATE,
+			T.CORE_SN,
+			T.ORDER_CORE_RETURN_CODE,
+			T.ORDER_CORE_RETURN_MSG,
+			T.ORDER_CORE_RETURN_TIME,
+			A.merchant_code,
+			B.PAY_CHANNEL_NAME channelSubName,
+			C.PROD_NAME
+		from 
+		    td_order T
+		left join 
+			stcdb.td_cust_info A
+   		ON
+			T.mch_id=A.cust_id
+		left join
+			td_pay_channel_cfg B
+		on
+			T.CHANNEL_SUB = B.PAY_CHANNEL_CODE
+		left join 
+			td_payment_prod_for_merchant C
+		on
+			T.service = C.PROD_CODE
+		
+	left join stcs.trans_record tt1
+     on T.CORE_SN = tt1.req_serial_id
+    left join stcs.trans_record_buss_accounting tt2
+     on tt1.msg_id = tt2.msg_id
+    left join stcs.acct_seven_buss_flow tt3
+     on tt2.id = tt3.trans_flow_id
+
+
+    left join stcdb.td_merchant_in ttt1
+     on T.ORDER_ID = ttt1.OUT_ORDER_ID
+    left join stcdb.td_trade_bill_main ttt2
+     on ttt1.IN_ORDER_ID = ttt2.ORDER_ID
+    left join stcs.trans_record ttt3
+     on ttt2.CORE_SN = ttt3.msg_id
+    left join stcs.trans_record_flow ttt4
+     on ttt3.msg_id = ttt4.msg_id and ttt4.business_type='RECEIVE' and ttt4.acct_type='SEVEN_BUSS'
+    left join stcs.acct_seven_buss_flow ttt5
+     on ttt4.id = ttt5.trans_flow_id
+			
+		<where>
+			<if test="orderId != null and orderId != ''">
+				AND T.ORDER_ID = #{orderId,jdbcType=VARCHAR}
+			</if>
+			<if test="zxOrderId != null and zxOrderId != ''">
+				AND T.ZX_ORDER_ID = #{zxOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="channelOrderId != null and channelOrderId != ''">
+				AND T.CHANNEL_ORDER_ID = #{channelOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="payProd != null and payProd != ''">
+				AND T.service like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+			
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >= #{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				AND #{createTimeE,jdbcType = VARCHAR}>=DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			<if test="finishTimeB != null and finishTimeB != ''">
+				AND DATE_FORMAT(T.finish_time,'%Y-%m-%d') >= #{finishTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="finishTimeE != null and finishTimeE != ''">
+				AND #{finishTimeE,jdbcType = VARCHAR}>=DATE_FORMAT(T.finish_time,'%Y-%m-%d')
+			</if>
+			<if test="orderState != null and orderState != '' and orderState != '00'">
+				AND T.order_state = #{orderState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderState != null and orderState != '' and orderState == '00'">
+				AND T.order_state in ('00','90','91')
+			</if>
+			<if test="channel != null and channel != ''">
+				AND T.channel = #{channel,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND A.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by  CREATE_TIME DESC
+	</select>
+	<!-- 查询交易成功非七分钱支付，写核心失败的交易数据 AND t.CORE_SUBMIT_STATE IN ('04') AND t.CORE_SUBMIT_STATE IN ('04')-->
+	<select id="getOrderExceptionList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		
+	select ORDER_ID,MCH_ID,MCH_NAME,TRADE_AMT,ORDER_STATE,ORDER_TIME_STAMP,
+	CORE_SUBMIT_STATE,CORE_SN,SERVICE,ORDER_CORE_RETURN_CODE,ORDER_CORE_RETURN_MSG,ORDER_CORE_RETURN_TIME,
+	order_type,REFUND_ID from(	
+		SELECT
+		t.ORDER_ID,
+		t.MCH_ID,
+		t.MCH_NAME,
+		t.TRADE_AMT,
+		t.ORDER_STATE,
+	    date_format(t.ORDER_TIMESTAMP,'%Y-%m-%d %H:%i:%s') ORDER_TIME_STAMP,
+		t.CORE_SUBMIT_STATE,
+		t.CORE_SN,
+	    t.SERVICE,
+		t.ORDER_CORE_RETURN_CODE,
+		t.ORDER_CORE_RETURN_MSG,
+	    t.ORDER_CORE_RETURN_TIME,
+	    '1' order_type ,
+	    '' REFUND_ID
+	FROM
+		td_order t
+	WHERE  t.CHANNEL_SUB NOT LIKE 'local.%'
+	and t.ORDER_STATE IN ('00', '90', '91')
+ AND t.CORE_SUBMIT_STATE IN ('04')
+	       <if test="orderId != null and orderId != ''">
+				AND T.ORDER_ID = #{orderId,jdbcType=VARCHAR}
+		   </if>
+	       <if test="createTimeB != null and createTimeB != ''">
+				AND T.ORDER_TIMESTAMP >= date_format(str_to_date(#{createTimeB,jdbcType=VARCHAR}, '%Y-%m-%d'),'%Y%m%d000000')	
+		   </if>
+		   <if test="createTimeE != null and createTimeE != ''">
+				AND   T.ORDER_TIMESTAMP <![CDATA[ <=   ]]> date_format(str_to_date(#{createTimeE,jdbcType=VARCHAR}, '%Y-%m-%d'),'%Y%m%d235959')  
+			</if>
+			
+	UNION
+	ALL
+	SELECT
+		
+		t.ORDER_ID,
+		t.MCH_ID,
+	  tor.MCH_NAME,
+		t.REFUND_AMT TRADE_AMT,
+		t.REFUND_STATE ORDER_STATE,
+		t.REFUND_TIME ORDER_TIME_STAMP,
+		t.CORE_SUBMIT_STATE ,
+		t.CORE_SN,
+	  tor.SERVICE,
+		t.ORDER_CORE_RETURN_CODE,
+		t.ORDER_CORE_RETURN_MSG,
+	 	t.ORDER_CORE_RETURN_TIME,
+		'2' order_type ,
+		t.REFUND_ID
+	FROM
+		td_refund t left join td_order tor on t.ORDER_ID = tor.ORDER_ID 
+	WHERE
+		t.REFUND_STATE = '0'
+ AND t.CORE_SUBMIT_STATE IN ('04')
+	AND EXISTS (
+		SELECT
+			1
+		FROM
+			td_order d
+		WHERE
+			d.ORDER_ID = t.ORDER_ID
+		AND d.CHANNEL_SUB NOT LIKE 'local.%'
+	)
+	
+
+	      <if test="createTimeB != null and createTimeB != ''">
+				AND T.REFUND_TIME >= str_to_date(#{createTimeB,jdbcType=VARCHAR} '00:00:00','%Y-%m-%d %H:%i:%s')
+		   </if>
+		   <if test="createTimeE != null and createTimeE != ''">
+				AND  T.REFUND_TIME  <![CDATA[ <=   ]]>  str_to_date(#{createTimeE,jdbcType = VARCHAR} '23:59:59','%Y-%m-%d %H:%i:%s')
+			</if>
+	      
+	) a
+	
+	    <if test="orderType != null and orderType != '' ">
+				where order_Type = #{orderType,jdbcType=VARCHAR}
+		   </if>
+	 order by ORDER_TIME_STAMP desc
+	
+
+	</select>
+
+	<select id="getOrderRefundList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+		select
+			T.REFUND_ID,
+			T.MER_REFUND_ID,
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.TOTAL_AMT,
+			T.REFUND_AMT,
+			case C.CHANNEL when 'sevenpay' then ttt3.SETTLE_AMT-ttt3.TRANS_AMT else tt3.SETTLE_AMT-tt3.TRANS_AMT end as settleAmt,
+			T.CHANNEL_TRANS_ID,
+			T.CHANNEL_REFUND_ID,
+			T.REFUND_CHANNEL,
+			T.ERR_CODE,
+			T.ERR_DESC,
+			DATE_FORMAT(T.REFUND_TIME,'%Y-%m-%d %H:%m:%s') REFUND_TIME,
+			T.REFUND_STATE,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%m:%s') CREATE_TIME,
+			T.CREATE_ID,
+			C.channel,
+			D.prod_Name,
+			E.merchant_code
+		from
+			td_refund T
+		left JOIN td_order C 
+        ON T.ORDER_ID= C.ORDER_ID 
+ 		LEFT JOIN td_payment_prod_for_merchant D 
+        ON D.PROD_CODE = C.SERVICE
+		LEFT JOIN	stcdb.td_cust_info E
+		    ON T.mch_id = E.cust_id
+
+    left join stcs.trans_record tt1
+     on T.CORE_SN = tt1.req_serial_id
+    left join stcs.trans_record_buss_accounting tt2
+     on tt1.msg_id = tt2.msg_id
+    left join stcs.acct_seven_buss_flow tt3
+     on tt2.id = tt3.trans_flow_id
+
+
+    left join stcdb.td_refund_bill ttt1
+     on T.MER_REFUND_ID = ttt1.REFUND_MER_ORDER_ID
+    left join stcs.trans_record_flow ttt2
+     on ttt2.msg_id = ttt1.core_sn and ttt2.business_type='RECEIVE_REFUND' and ttt2.acct_type='SEVEN_BUSS'
+    left join stcs.acct_seven_buss_flow ttt3
+     on ttt2.id = ttt3.trans_flow_id
+			
+		<where>
+			<if test="refundId != null and refundId != ''">
+				AND T.refund_id =#{refundId,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND E.merchant_code =#{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchId != null and mchId != ''">
+				AND T.mch_id =#{mchId,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >=#{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				 AND #{createTimeE,jdbcType=VARCHAR} >= DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			<if test="refundState != null and refundState != ''">
+				AND T.refund_state =#{refundState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and orderId != ''">
+				AND T.order_id =#{orderId,jdbcType=VARCHAR}
+			</if>
+				<if test="channel != null and channel != ''">
+				AND C.channel =#{channel,jdbcType=VARCHAR}
+			</if>
+		</where>
+
+		order by  CREATE_TIME DESC
+
+
+	</select>
+	
+	<select id="getOrderRefundListExport" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+		select
+			T.REFUND_ID,
+			T.MER_REFUND_ID,
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.TOTAL_AMT,
+			T.REFUND_AMT,
+			case C.CHANNEL when 'sevenpay' then ttt3.SETTLE_AMT-ttt3.TRANS_AMT else tt3.SETTLE_AMT-tt3.TRANS_AMT end as settleAmt,
+			T.CHANNEL_TRANS_ID,
+			T.CHANNEL_REFUND_ID,
+			T.REFUND_CHANNEL,
+			T.ERR_CODE,
+			T.ERR_DESC,
+			DATE_FORMAT(T.REFUND_TIME,'%Y-%m-%d %H:%m:%s') REFUND_TIME,
+			CASE T.REFUND_STATE when '0' then '退款成功' when '1' then '退款申请' when '9' then '退款失败' end as REFUND_STATE,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%m:%s') CREATE_TIME,
+			T.CREATE_ID,
+			D.prod_Name,
+			C.channel,
+			E.MERCHANT_CODE
+		from
+			td_refund T
+		left JOIN td_order C 
+        ON T.ORDER_ID= C.ORDER_ID 
+ 		LEFT JOIN td_payment_prod_for_merchant D 
+        ON D.PROD_CODE = C.SERVICE
+		LEFT JOIN	stcdb.td_cust_info E
+		    ON T.mch_id = E.cust_id
+
+    left join stcs.trans_record tt1
+     on T.CORE_SN = tt1.req_serial_id
+    left join stcs.trans_record_buss_accounting tt2
+     on tt1.msg_id = tt2.msg_id
+    left join stcs.acct_seven_buss_flow tt3
+     on tt2.id = tt3.trans_flow_id
+
+
+    left join stcdb.td_refund_bill ttt1
+     on T.MER_REFUND_ID = ttt1.REFUND_MER_ORDER_ID
+    left join stcs.trans_record_flow ttt2
+     on ttt2.msg_id = ttt1.core_sn and ttt2.business_type='RECEIVE_REFUND' and ttt2.acct_type='SEVEN_BUSS'
+    left join stcs.acct_seven_buss_flow ttt3
+     on ttt2.id = ttt3.trans_flow_id
+		<where>
+			<if test="refundId != null and refundId != ''">
+				AND T.refund_id =#{refundId,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND E.merchant_code =#{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchId != null and mchId != ''">
+				AND T.mch_id =#{mchId,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >=#{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				 AND #{createTimeE,jdbcType=VARCHAR} >= DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			<if test="refundState != null and refundState != ''">
+				AND T.refund_state =#{refundState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and orderId != ''">
+				AND T.order_id =#{orderId,jdbcType=VARCHAR}
+			</if>
+			<if test="channel != null and channel != ''">
+				AND C.channel =#{channel,jdbcType=VARCHAR}
+			</if>
+		</where>
+
+		order by  CREATE_TIME DESC
+
+	</select>
+	<select id="getOrderInfoDetail" parameterType="string" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		select 
+			* ,
+			'1' orderType
+		from
+			td_order t
+		where
+			t.CHANNEL_SUB NOT LIKE 'local.%' and
+			t.ORDER_ID = #{orderId,jdbcType=VARCHAR}
+	</select>
+	<select id="getRefundDetail" parameterType="string" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+		select
+			 T.REFUND_ID,
+			 T.MER_REFUND_ID,
+			 T.ORDER_ID,
+			 T.MCH_ID merchantCode,
+			 T.TOTAL_AMT,
+			 T.REFUND_AMT,
+			 T.CHANNEL_TRANS_ID,
+			 T.CHANNEL_REFUND_ID,
+			 T.REFUND_CHANNEL,
+			 T.ERR_CODE,
+			 T.ERR_DESC,
+			 T.REFUND_TIME,
+			 T.REFUND_STATE,
+			 T.CREATE_TIME,
+			 T.CREATE_ID,
+			 T.CORE_SUBMIT_STATE,
+			 T.CORE_SN,
+			 T.ORDER_CORE_RETURN_CODE,
+			 T.ORDER_CORE_RETURN_MSG,
+			 T.ORDER_CORE_RETURN_TIME,
+			'2' orderType
+		from
+			td_refund t
+		join 
+			td_order d
+		on
+			t.ORDER_ID = d.ORDER_ID
+		where
+			t.REFUND_ID = #{refundId,jdbcType=VARCHAR}
+		and
+			d.CHANNEL_SUB NOT LIKE 'local.%'
+	</select>
+	
+	<select id="queryMylist" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoBean">
+		SELECT
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.MCH_NAME,
+			T.SERVICE,
+			T.INPUT_CHARSET,
+			T.PAGE_LANGUAGE,
+			T.CHANNEL,
+			T.CHANNEL_SUB,
+			T.ZX_ORDER_ID,
+			T.CHANNEL_ORDER_ID,
+			T.PG_URL,
+			T.BG_URL,
+			T.VERSION,
+			T.ORDER_AMT,
+			T.TRADE_AMT,
+			T.COUPON_AMT,
+			T.PROD_DESC,
+			T.PAY_TYPE,
+			T.ORDER_TIMESTAMP,
+			T.ORDER_TIME_OUT,
+			T.ORDER_EXPIRE,
+			T.SIGN_TYPE,
+			T.SIGN_MSG,
+			T.ORDER_STATE,
+			T.NOTIFY_TIME,
+			T.NOTIFY_COUNT,
+			T.NOTIFY_RESULT,
+			T.CREATE_TIME,
+			T.FINISH_TIME,
+			T.REFUND_TIME,
+			T.MODIFY_TIME,
+			T.PAYER_CONTACT,
+			T.PAYER_ID,
+			T.MODIFY_ID,
+			T.CORE_SUBMIT_STATE,
+			T.CORE_SN,
+			T.ORDER_CORE_RETURN_CODE,
+			T.ORDER_CORE_RETURN_MSG,
+			T.ORDER_CORE_RETURN_TIME,
+			A.merchant_code,
+			B.PAY_CHANNEL_NAME channelSubName,
+			C.PROD_NAME
+		FROM
+			td_order T
+		LEFT JOIN stcdb.td_cust_info A ON T.mch_id = A.cust_id
+		LEFT JOIN td_pay_channel_cfg B ON T.CHANNEL_SUB = B.PAY_CHANNEL_CODE
+		LEFT JOIN td_payment_prod_for_merchant C ON T.service = C.PROD_CODE
+		WHERE
+			EXISTS (
+				SELECT
+					1
+				FROM
+					(
+					SELECT
+					I.CUST_ID 
+					FROM
+						stcdb.td_cust_info I 
+					WHERE
+						I.custManager = #{userId,jdbcType=VARCHAR}
+					UNION
+					SELECT 
+					B.CUST_ID
+					FROM 
+						stcdb.td_cust_belong_info B 
+					WHERE B.manager_id = #{userId,jdbcType=VARCHAR}
+					) TT
+				WHERE
+					TT.cust_id = T.MCH_ID
+			)
+			<if test="payProd != null and payProd != ''">
+				AND T.service like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND T.create_time >= #{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				AND #{createTimeE,jdbcType = VARCHAR}>T.create_time
+			</if>
+			<!-- 未选择支付成功状态：按状态值查询 -->
+			<if test="orderState != null and orderState != '' and orderState != '00'">
+				AND T.order_state = #{orderState,jdbcType=VARCHAR}
+			</if>
+			<!-- 选择支付成功状态：去查询状态包含 已退款90 部分退款91 支付成功00 -->
+			<if test="orderState != null and orderState != '' and orderState == '00'">
+				AND T.order_state in ('00','90','91')
+			</if>
+			<if test="channel != null and channel != ''">
+				AND T.channel = #{channel,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND A.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+		ORDER BY
+		CREATE_TIME DESC
+	</select>
+	<select id="queryMyRefundList"
+		parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundQueryBean" 
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+		select
+			T.REFUND_ID,
+			T.MER_REFUND_ID,
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.TOTAL_AMT,
+			T.REFUND_AMT,
+			T.CHANNEL_TRANS_ID,
+			T.CHANNEL_REFUND_ID,
+			T.REFUND_CHANNEL,
+			T.ERR_CODE,
+			T.ERR_DESC,
+			DATE_FORMAT(T.REFUND_TIME,'%Y-%m-%d %H:%m:%s') REFUND_TIME,
+			T.REFUND_STATE,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%m:%s') CREATE_TIME,
+			T.CREATE_ID,
+			A.channel,
+			B.merchant_code
+		from
+			td_refund T
+		left join 
+			td_order A
+		on  T.order_id = A.order_id
+		left join
+			stcdb.td_cust_info B
+		on
+			T.mch_id = B.cust_id	
+		WHERE	
+			EXISTS (
+				SELECT
+					1
+				FROM
+					(
+						SELECT
+							temp.cust_id
+						FROM
+							stcdb.bms_protocol_content temp
+						WHERE
+							temp.id IN (
+								SELECT
+									bms.protocol_id
+								FROM
+									stcdb.bms_protocol_column bms
+								WHERE
+									(bms.column_value = #{userName,jdbcType=VARCHAR}
+									or
+									bms.column_value = #{userId,jdbcType=VARCHAR})	
+									AND
+									bms.column_code = 'custManager'
+							)
+					) TT
+				WHERE
+					TT.cust_id = T.MCH_ID
+			)
+			<if test="refundId != null and refundId != ''">
+				AND T.refund_id =#{refundId,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND B.merchant_code =#{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchId != null and mchId != ''">
+				AND T.mch_id =#{mchId,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >=#{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				 AND #{createTimeE,jdbcType=VARCHAR} >= DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			<if test="refundState != null and refundState != ''">
+				AND T.refund_state =#{refundState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and orderId != ''">
+				AND T.order_id =#{orderId,jdbcType=VARCHAR}
+			</if>
+				<if test="channel != null and channel != ''">
+				AND A.channel =#{channel,jdbcType=VARCHAR}
+			</if>
+			
+		order by  T.CREATE_TIME DESC
+			
+	</select>
+	<select id="getMyOrderInfoListExport" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.OrderInfoQueryBean" resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.ExportOrderInfoBean">
+		select 
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.MCH_NAME,
+			T.SERVICE,
+			
+			T.CHANNEL,
+			T.CHANNEL_SUB,
+			T.ZX_ORDER_ID,
+			T.CHANNEL_ORDER_ID,
+			
+			T.VERSION,
+			T.ORDER_AMT,
+			T.TRADE_AMT,
+			T.COUPON_AMT,
+			T.PROD_DESC,
+			T.PAY_TYPE,
+			T.ORDER_TIMESTAMP,
+			T.ORDER_TIME_OUT,
+			T.ORDER_EXPIRE,
+			T.SIGN_TYPE,
+			T.SIGN_MSG,
+			CASE T.ORDER_STATE WHEN '01' THEN '创建订单' when '02' then '支付处理中' when '00' then '支付成功' when '09' then '支付失败' when '90' then '已退款' when '91' then '部分退款' when '99' then '取消' END as ORDER_STATE,
+			T.NOTIFY_TIME,
+			T.NOTIFY_COUNT,
+			T.NOTIFY_RESULT,
+			T.CREATE_TIME,
+			T.MODIFY_TIME,
+			
+			T.MODIFY_ID,
+			T.PAYER_CONTACT,
+			T.PAYER_ID,
+			T.FINISH_TIME,
+			T.REFUND_TIME,
+			
+			T.CORE_SUBMIT_STATE,
+			T.CORE_SN,
+			T.ORDER_CORE_RETURN_CODE,
+			T.ORDER_CORE_RETURN_MSG,
+			T.ORDER_CORE_RETURN_TIME,
+			A.merchant_code,
+			B.PAY_CHANNEL_NAME channelSubName,
+			C.PROD_NAME
+		from 
+		    td_order T
+		left join 
+			stcdb.td_cust_info A
+   		ON
+			T.mch_id=A.cust_id
+		left join
+			td_pay_channel_cfg B
+		on
+			T.CHANNEL_SUB = B.PAY_CHANNEL_CODE
+		left join 
+			td_payment_prod_for_merchant C
+		on
+			T.service = C.PROD_CODE
+		where
+			EXISTS (
+				SELECT
+					1
+				FROM
+					(
+						SELECT
+							temp.cust_id
+						FROM
+							stcdb.bms_protocol_content temp
+						WHERE
+							temp.id IN (
+								SELECT
+									bms.protocol_id
+								FROM
+									stcdb.bms_protocol_column bms
+								WHERE
+									(bms.column_value = #{userName,jdbcType=VARCHAR}
+									or
+									bms.column_value = #{userId,jdbcType=VARCHAR})
+									AND
+									bms.column_code = 'custManager'
+							)
+					) TT
+				WHERE
+					TT.cust_id = T.MCH_ID
+			)
+			
+			<if test="payProd != null and payProd != ''">
+				AND T.service like CONCAT('%',#{payProd},'%')
+			</if>
+			<if test="payChannel != null and payChannel != ''">
+				AND T.channel_sub like CONCAT('%',#{payChannel},'%')
+			</if>
+			
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >= #{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				AND #{createTimeE,jdbcType = VARCHAR}>=DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			
+			<if test="orderState != null and orderState != '' and orderState != '00'">
+				AND T.order_state = #{orderState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderState != null and orderState != '' and orderState == '00'">
+				AND T.order_state in ('00','90','91')
+			</if>
+			<if test="channel != null and channel != ''">
+				AND T.channel = #{channel,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND A.merchant_code = #{merchantCode,jdbcType=VARCHAR}
+			</if>
+		order by  CREATE_TIME DESC
+	</select>
+	<select id="getMyOrderRefundListExport" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundQueryBean" 
+			resultType="com.qifenqian.bms.basemanager.aggregatepayment.orderinfo.bean.RefundBean">
+			select
+			T.REFUND_ID,
+			T.MER_REFUND_ID,
+			T.ORDER_ID,
+			T.MCH_ID,
+			T.TOTAL_AMT,
+			T.REFUND_AMT,
+			T.CHANNEL_TRANS_ID,
+			T.CHANNEL_REFUND_ID,
+			T.REFUND_CHANNEL,
+			T.ERR_CODE,
+			T.ERR_DESC,
+			DATE_FORMAT(T.REFUND_TIME,'%Y-%m-%d %H:%m:%s') REFUND_TIME,
+			CASE T.REFUND_STATE when '0' then '退款成功' when '1' then '退款申请' when '9' then '退款失败' end as REFUND_STATE,
+			DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%m:%s') CREATE_TIME,
+			T.CREATE_ID,
+			A.channel,
+			B.MERCHANT_CODE
+		from
+			td_refund T
+		left join 
+			td_order A
+		on  T.order_id = A.order_id
+		left join
+			stcdb.td_cust_info B
+		on
+			T.mch_id = B.cust_id
+		WHERE	
+			EXISTS (
+				SELECT
+					1
+				FROM
+					(
+						SELECT
+							temp.cust_id
+						FROM
+							stcdb.bms_protocol_content temp
+						WHERE
+							temp.id IN (
+								SELECT
+									bms.protocol_id
+								FROM
+									stcdb.bms_protocol_column bms
+								WHERE
+									(bms.column_value = #{userName,jdbcType=VARCHAR}
+									or
+									bms.column_value = #{userId,jdbcType=VARCHAR})	
+									AND
+									bms.column_code = 'custManager'
+							)
+					) TT
+				WHERE
+					TT.cust_id = T.MCH_ID
+			)
+			<if test="refundId != null and refundId != ''">
+				AND T.refund_id =#{refundId,jdbcType=VARCHAR}
+			</if>
+			<if test="merchantCode != null and merchantCode != ''">
+				AND B.merchant_code =#{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="mchId != null and mchId != ''">
+				AND T.mch_id =#{mchId,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeB != null and createTimeB != ''">
+				AND DATE_FORMAT(T.create_time,'%Y-%m-%d') >=#{createTimeB,jdbcType=VARCHAR}
+			</if>
+			<if test="createTimeE != null and createTimeE != ''">
+				 AND #{createTimeE,jdbcType=VARCHAR} >= DATE_FORMAT(T.create_time,'%Y-%m-%d')
+			</if>
+			<if test="refundState != null and refundState != ''">
+				AND T.refund_state =#{refundState,jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and orderId != ''">
+				AND T.order_id =#{orderId,jdbcType=VARCHAR}
+			</if>
+			<if test="channel != null and channel != ''">
+				AND A.channel =#{channel,jdbcType=VARCHAR}
+			</if>
+		order by  CREATE_TIME DESC
+	</select>
+</mapper>

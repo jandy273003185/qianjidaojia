@@ -1,0 +1,182 @@
+        body {
+            background-color: #F5F5F5;
+            padding: 0;
+            margin: 0;
+            font-family: PingFangSC-Regular, PingFang SC;
+        }
+        
+        .up {
+            width: 100%;
+            height: 0.72rem;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.22rem 0.44rem;
+            font-size: 0.24rem;
+            position: fixed;
+            top: 0;
+        }
+        
+        .select {
+            width: 0.28rem;
+            height: 0.28rem;
+        }
+        
+        .allSelect {
+            color: #4C4C4C;
+            margin-left: 0.1rem;
+        }
+        
+        .del {
+            color: #A4A4A4;
+        }
+        
+        .middle {
+            margin: 0.9rem 0 1.5rem 0;
+        }
+        
+        .item {
+            margin: 0.2rem;
+            background: #ffffff;
+            padding: 0.3rem 0.24rem;
+        }
+        
+        .store {
+            display: flex;
+            align-items: center;
+        }
+        
+        .storeName {
+            margin: 0 0.12rem 0 0.24rem;
+        }
+        
+        .arrow {
+            width: 0.1rem;
+            height: 0.18rem;
+        }
+        
+        .goods {
+            display: flex;
+            align-items: center;
+            padding: 0.3rem 0;
+            height: 2.16rem;
+        }
+        
+        .img-goods {
+            width: 1.56rem;
+            min-width: 1.56rem;
+            height: 1.56rem;
+            background: #F5F5F5;
+            margin: 0 0.34rem 0 0.26rem;
+        }
+        
+        .img-goods>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .goods-right {
+            padding-right: 0.2rem;
+        }
+        
+        .goodsName {
+            color: #4C4C4C;
+            font-size: 0.28rem;
+            width: 4.2rem;
+            height: 0.8rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 0.2rem;
+        }
+        
+        .goods-right-down {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .add,
+        .reduce {
+            width: 0.36rem;
+            height: 0.36rem;
+        }
+        
+        .price {
+            color: #4C4C4C;
+            font-size: 0.28rem;
+            font-weight: 550;
+        }
+        
+        .num {
+            margin: 0 0.4rem;
+            color: #424A55;
+            font-size: 0.24rem;
+        }
+        
+        .down {
+            position: fixed;
+            bottom: 0;
+            height: 0.96rem;
+            background: #ffffff;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0.2rem 0 0.4rem;
+        }
+        
+        .total {
+            color: #4C4C4C;
+            font-size: 0.28rem;
+            font-weight: 550;
+        }
+        
+        .totalAmount {
+            color: #FF4343;
+            font-size: 0.32rem;
+            font-weight: 550;
+            margin-left: 0.22rem;
+        }
+        
+        .settlement {
+            width: 3.76rem;
+            height: 0.76rem;
+            color: #ffffff;
+            font-size: 0.32rem;
+            background: #028A3C;
+            border-radius: 0.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 2rem;
+        }
+        
+        .empty>img {
+            width: 4rem;
+        }
+        
+        .empty>p {
+            color: #979797;
+            font-size: 0.28rem;
+            margin-top: 0.3rem;
+        }
+        
+        .empty>button {
+            width: 6.3rem;
+            height: 0.76rem;
+            background: #028a3c;
+            box-shadow: 0 0.08rem 0.12rem 0 #029c013d;
+            border-radius: 0.4rem;
+            margin-top: 0.7rem;
+            font-size: 0.32rem;
+            color: #ffffff;
+        }

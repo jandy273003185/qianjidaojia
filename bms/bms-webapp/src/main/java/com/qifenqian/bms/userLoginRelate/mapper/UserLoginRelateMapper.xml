@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.userLoginRelate.mapper.UserLoginRelateMapper">
+
+
+	<!-- 查询商户产品列表 -->
+	<select id="selectUserLoginRelateList" parameterType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate" resultType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate" >
+		SELECT
+		*
+		FROM
+			user_login_relate 
+		<where>
+			<if test="userType != null and userType != '' "> 
+				AND user_type =#{userType, jdbcType=VARCHAR}
+			</if>
+			<if test="ifUnbind != null and ifUnbind != '' "> 
+				AND if_unbind =#{ifUnbind, jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null and custId != '' "> 
+				AND cust_id =#{custId, jdbcType=VARCHAR}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				<![CDATA[ 
+					and  create_time >= #{startTime}
+				]]>
+			</if>
+			<if test="endTime != null and endTime != ''">
+				<![CDATA[ 
+					and  create_time <= #{endTime}
+				]]>
+			</if>
+		</where>
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 写入单个商户产品信息 -->
+	<insert id="insertUserLoginRelate" parameterType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate">
+		INSERT INTO user_login_relate (
+			user_id,
+			user_type,
+			login_type,
+			open_id,
+			if_unbind,
+			create_time,
+			update_time,
+			cust_id
+		) VALUES (
+			#{userId, 	jdbcType=VARCHAR},
+			#{userType, 	    jdbcType=VARCHAR},
+		  	#{loginType, 		jdbcType=VARCHAR},
+		  	#{openId, 	jdbcType=VARCHAR},
+		  	#{ifUnbind, 	jdbcType=VARCHAR},
+		  	#{createTime, 			jdbcType=VARCHAR},
+		  	#{updateTime, 			    jdbcType=VARCHAR},
+		  	#{custId, 			    jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	
+	
+	
+	<!-- 根据商户编号和产品编号查询 -->
+	<select id="selectUserLoginRelateById" parameterType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate" resultType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate">
+		SELECT *
+		FROM user_login_relate
+		<where>			
+			<if test="id != null and id != '' "> AND id = #{id, jdbcType=INTEGER}</if>
+			<if test="userId != null and userId != '' "> AND user_id = #{userId, jdbcType=VARCHAR}</if>
+		</where>
+
+	</select>
+	
+	
+	<!-- 修改商户产品信息 -->
+	<update id="updateUserLoginRelate" parameterType="com.qifenqian.bms.userLoginRelate.bean.UserLoginRelate">
+		UPDATE 
+			   user_login_relate  
+	   <set>		   
+	
+			<if test="userType != null and userType != '' "> 
+				user_type = #{userType, jdbcType=VARCHAR},
+			</if>
+			<if test="loginType != null and loginType != '' "> 
+				login_type = #{loginType, jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null and openId != '' "> 
+				open_id = #{openId, jdbcType=VARCHAR},
+			</if>
+			<if test="ifUnbind != null and ifUnbind != '' "> 
+				if_unbind = #{ifUnbind, jdbcType=VARCHAR},
+			</if>
+				update_time = NOW()						
+	   </set>
+		 WHERE 
+		 id = #{id, jdbcType=INTEGER}
+	</update>
+		
+	
+
+
+	
+</mapper>

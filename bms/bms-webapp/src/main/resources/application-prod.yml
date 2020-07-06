@@ -1,0 +1,179 @@
+#自定义
+log:
+   level: info
+   base: /data/stc_bms/logs/
+   
+ADVERT_URL: https://file.qifenqian.com
+ACCOUNT_NAME: 洪佳桂
+ACCOUNT_NUMBER: 6226220634022296
+ADMANAGE_FILE_SAVE_PATH: /data/nfsshare/upload/picture
+AD_FILE_MAX_SIZE: 2048000
+AD_FILE_SAVE_PATH: /data/nfsshare/upload/ad
+AD_SUPPORT_FILE_TYPE: .jpg|.jpeg|.gif|.bmp|.png
+AGRICULTURAL_BANK_SMS_PATH: /data/nfsshare/upload/agricultural_bank_sms
+APP_EDITION_SERVICE_IP: https://file.qifenqian.com/pic/
+CERTIFY_FILE_MAX_SIZE: 5120000
+CERTIFY_FILE_SAVE_PATH: /data/nfsshare/upload/certify
+CERTIFY_SUPPORT_FILE_TYPE: .jpg|.jpeg|.gif|.bmp|.png
+CF_FILE_SAVE_PATH: /data/nfsshare/upload/certificate
+CHANNEL_NAME: yyt
+DUBBO_CONFIG_IP: zookeeper://172.16.30.5:2181
+EXCEL_FILE_SAVE_PATH: /data/nfsshare/upload/payment
+EXPORT_EXCEL: /data/nfsshare/upload/excel
+FM_PROD_CHECK_FILE: D:/data/nfsshare/combined/fm
+GATEWAY:
+    CHANNEL:
+        IP: http://localhost:10024
+    KINGDEE:
+        IP: http://localhost:15300
+    UNIO:
+        IP: http://localhost:9001
+IDENTITY_FILE_SAVE_PATH: /data/nfsshare/upload/identity
+IMAGEIP: localhost
+IMG_FILE_PATH: /data/nfsshare/upload/headimg
+JGKJ_FILE_PATH: /data/nfsshare/upload/yintong
+MERCHANT_CODE: INNER_EPAY_7777777
+MQ_URL: failover:(tcp://172.16.30.70:61616,tcp://172.16.30.70:61616)?randomize=false&amp;backup=true&amp;priorityBackup=true
+PERSON_FILE_SAVE_PATH: /data/nfsshare/upload/person
+PRODUCET_FILE_SAVE_PATH: /data/nfsshare/upload/producet
+REDIS:
+    AUTH: pass123
+    IP: 172.16.30.70
+    PORT: 6379
+SERVICE_IP: https://www.qifenqian.com
+SERVICE_IP_TEST: https://183.11.223.2:7443
+SKIP_FILTER_IP: '127.0.0.1#172.16.30.5#172.16.30.73#172.16.20.72#172.16.20.70#172.16.20.71'
+SX_FILE_SAVE_PATH: /data/nfsshare/upload/vbill/
+SYSTEM:
+    CORE:
+        IP: http://localhost:1234
+    PLUGIN:
+        IP: http://localhost:5002
+UNIONPAY_FILE_PATH: /data/nfsshare/upload/unionpay
+VERSION: v1.0.0
+channelMerchantid: Z0000842
+images:
+   relativePaths: /pic/**
+   absolutePaths: /data/nfsshare/upload/picture
+ip:
+    white:
+        list: '127.0.0.1#172.16.30.5#172.16.30.73#172.16.20.72#172.16.20.70#172.16.20.71'
+mybatis:
+    config-location: classpath:/mybatis/MyBatisMapConfig.xml
+
+dubbo:
+  application:
+    name: dubbo-customer-manager
+  registry:
+    address: zookeeper://172.16.30.5:2181?backup=172.16.30.70:2181,172.16.30.71:2181&client=curator
+    file: /data/dubbo/dubbo-bms.cache
+  scan:
+      basePackages: com.sevenpay
+  provider:
+     version: 1.0.0
+     jellyfish:
+        version: 1.0.0
+  consumer:
+     cluster: failfast
+     loadbalance: leastactive
+     check: false
+     init: true
+     layer: service
+
+spring:
+   redis:
+      database: 2
+      host: 172.16.30.70
+      port: 6379
+      password: pass123
+      timeout: 20000
+      pool:
+      jedis:
+         max-active: 68
+         min-idle: 0
+         max-idle: 8
+         max-wait: -1
+   jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+   datasource:
+      combinedmaster:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: sunxun
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.7:3306/combinedpayment?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: combinedpayment
+            validationQuery: select 1
+      combinedslave:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: sunxun
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.8:3306/combinedpayment?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: combinedpayment
+            validationQuery: select 1
+            driverClassName: com.mysql.jdbc.Driver
+      sabs:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: szgyzb@123456
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.7:3306/sabs?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: sabs_user
+            validationQuery: select 1
+      stcdb:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: szgyzb@9231018
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.7:3306/stcdb?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: stc_web_user
+            validationQuery: select 1
+      stcdbslave:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: 123456
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.8:3306/stcdb?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: stc_web_user
+            validationQuery: select 1
+      stcs:
+            initialSize: 1
+            maxActive: 20
+            maxWait: 60000
+            minEvictableIdleTimeMillis: 300000
+            minIdle: 1
+            password: szgyzb@1443
+            testWhileIdle: true
+            timeBetweenEvictionRunsMillis: 60000
+            url: jdbc:mysql://172.16.40.7:3306/stcs?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+            username: stcs_user
+            validationQuery: select 1
+            type: com.alibaba.druid.pool.DruidDataSource
+system:
+    sevenmall: http://mg.qifenqian.com/sevenmall
+    sevenpay: http://mg.qifenqian.com
+
+swagger:
+   enable: true

@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>商家登录</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/layer_mobile/layer.js"></script>
+    <script src="../js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="../js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .fixed__defaultPage .main {
+            height: calc( 100% - .45rem);
+            height: -webkit-calc( 100% - .45rem);
+            height: -moz-calc( 100% - .45rem);
+            height: -ms-calc( 100% - .45rem);
+            height: -o-calc( 100% - .45rem);
+        }
+
+        .applyStatusCon {
+            height: calc( 100% - .35rem);
+            height: -webkit-calc( 100% - .35rem);
+            height: -moz-calc( 100% - .35rem);
+            height: -ms-calc( 100% - .35rem);
+            height: -o-calc( 100% - .35rem);
+        }
+
+        footer {
+            position: relative;
+            top: .2rem;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">商家登录</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="applyForm weui-cells alone__weui-cells">
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<input id="shopName" type="text" disabled="disabled" class="weui-input" placeholder="请输入预留手机号码" />
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<input id="pswd" type="password" class="weui-input" placeholder="请输入商铺注册密码" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--底部-->
+		<div class="h60">
+			<footer class="ftbtn bg_f6f6f6">
+				<div id="submit" class="btn" style="border-radius: 1rem;">登录</div>
+			</footer>
+		</div>
+
+		<!--申请状态-->
+		<div class="defaultPage fixed__defaultPage bg_f6f6f6">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:history.go(-1);" class="btn_back"></a>
+					<div class="title center">入驻申请</div>
+				</div>
+			</div>
+			<div class="main">
+				<div class="applyStatusCon">
+					<!--审核中-->
+					<div class="statusBox">
+						<div class="icons">
+							<img src="../images/icons/verify-ing.jpg" alt="" />
+						</div>
+						<p class="status">审核中</p>
+						<p class="status-tips">您的入驻申请一提交审核，工作人员会在3个工作日内联系您，请保持手机号码畅通</p>
+					</div>
+					<!--审核中  end-->
+
+					<!--入驻申请成功-->
+					<div class="statusBox" style="display: none;">
+						<div class="icons">
+							<img src="../images/icons/verify-success.jpg" alt="" />
+						</div>
+						<p class="status">入驻申请成功</p>
+						<p class="status-tips">恭喜您入驻申通过，请尽快登录修改相关信息</p>
+						<div class="ftbtn">
+							<a href="#" class="btn">查看店铺</a>
+						</div>
+					</div>
+					<!--入驻申请成功  end-->
+				</div>
+			</div>
+		</div>
+		<!--申请状态  end-->
+		<script type="text/javascript">
+			$(function() {
+
+				//获取用户信息
+				var userId = sc.utils.getCookieValue("UserId");
+				var token = sc.utils.getCookieValue("Token");
+				var phone = "";
+				getinfo()
+				function getinfo() {
+					var url = "/api/User/GetMemberInfo";
+					var calback = function(data) {
+						console.log(data)
+						phone = data.data.Mobile
+						$("#shopName").val(phone);
+					}
+					sc.post(url, {
+						"UserId": userId,
+						"Token": token
+					}, calback)
+				}
+
+				$("#submit").click(function() {
+					var psd = $("#pswd").val();
+//					if(){
+//						
+//					}
+					
+					var url = "api/Shop/LoginByMobile";
+					var calback = function(data) {
+						console.log(data)
+						if(data.code === 0) {
+							var userNameid = data.data.ShopId;
+							window.location.href='/member/storeIndex.html?dataid='+userNameid;
+						}
+					}
+					sc.post(url, {
+						"Mobile": phone,
+						"PassWord": psd
+					}, calback)
+
+				})
+			})
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新用户专享</title>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/lottery.js"></script>
+    <script src="../script/address.js"></script>
+    <link rel="stylesheet" href="/css/popaddress.css" />
+    <link href="/css/memberbase.css" rel="stylesheet" />
+    <link href="/css/lottery.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div id="mylotterylistBox" class="pd86"></div>
+    <script id="mylotterylist" type="text/x-dot-template">
+        {{~it:value:index}}
+        {{ if(value.IsExpire){ }}
+        <!-- 已过期 -->
+        <div class="prize-item past">
+            <div class="left">
+                {{ if(value.Image==null || value.Image=="" ) { }}
+                {{=value.Name}}
+                {{ }else{ }}
+                <span style="background:url('{{=value.Image}}');background-size:100% 100%;"></span>x1
+                {{ } }}
+            </div>
+            <div class="right">已过期</div>
+        </div>
+        {{ }else{ }}
+        {{ if(value.AddressId==null || value.AddressId==""|| value.AddressId=="0"){}}
+        <!-- 立即领取 -->
+        <div class="prize-item await {{ if(value.Image==null || value.Image=="" ) { }}await2{{??}}await3{{?}}" data-id="{{=value.Id}}">
+            <div class="left">
+                {{ if(value.Image==null || value.Image=="" ) { }}
+                {{=value.Name}}
+                {{ }else{ }}
+                <span style="background:url('{{=value.Image}}');background-size:100% 100%;"></span>x1
+                {{ } }}
+            </div>
+            <div class="right">
+                <button onclick="myAddress.Init({{=value.Id}})"></button>
+                <p>{{=value.ExpireTime}}过期</p>
+            </div>
+        </div>
+        {{ }else{ }}
+        <!-- 已领取 -->
+        <div class="prize-item await receive">
+            <div class="left">
+                {{ if(value.Image==null || value.Image=="" ) { }}
+                {{=value.Name}}
+                {{ }else{ }}
+                <span style="background:url('{{=value.Image}}');background-size:100% 100%;"></span>x1
+                {{ } }}
+            </div>
+            <div class="right">已领取</div>
+        </div>
+        {{ } }}
+        {{ } }}
+        {{~}}
+        {{ if(!it.length){ }}
+        <!-- 无奖品状态 => 无奖品时，控制该元素display显示和隐藏 -->
+        <div class="no-prize">
+            <div class="icon"></div>
+            <p class="tips">您暂时还没有奖品</p>
+            <p class="no-more">没有更多了</p>
+        </div>
+        {{ } }}
+    </script>
+    <!--弹出选择地址-->
+    <div id="pop-addrlist" class="pd6 none">
+        <div class="Addr-list mA10" id="Addrlist_Div"></div>
+        <script id="Addrlist_Tpl" type="text/html">
+            {{# for(var i = 0; i< d.length; i++){ }}
+            <div class="delivery-item" data-id="{{d[i].id}}" data-addressinfo={{d[i].addressinfo}}>
+                <div class="item-com icon"></div>
+                <div class="item-address">
+                    <h5>{{d[i].name}}<span>{{d[i].tel}}</span></h5>
+                    <p>{{d[i].addressinfo}}</p>
+                </div>
+                <div class="item-com editor editbtn">编辑</div>
+            </div>
+            {{# } }}
+            <button class="submit btnEadit">添加新地址</button>
+        </script>
+        <!--弹出编辑地址-->
+    </div>
+        <div class="fixed__defaultPage none" id="pop-addrEadit">
+            <div class="address-wrap">
+                <form id="address_form">
+                    <label><span>联系人</span><input placeholder="名字" type="text" id="name" class="ipt0"><span class="username"></span></label>
+                    <label><span>手机号码</span><input placeholder="11位手机号" type="text" maxlength="11" id="tel" class="ipt0"></label>
+                    <label><span>选择地址</span><input class="from-item-City ipt0" placeholder="地区信息" type="text" id="selectCity" data-code="" readonly><span class="address"></span></label>
+                    <label><span>详细信息</span><textarea placeholder="街道门牌信息" id="fullAddress" class="ipt0"></textarea></label>
+                </form>
+            </div>
+            <button class="submit" onclick="myAddress.SaveAddress()">完成</button>
+        </div>
+        <!--弹出省市区街道列表-->
+        <div id="addressSelectWrapper">
+            <div id="addressSelect">
+                <div class="tip">
+                    <h3>所在地区</h3>
+                    <button type="button" id="cancel"></button>
+                </div>
+                <div id="address">
+                    <ul class="selected-address">
+                        <li class="lastarea" id="lastprovince" data-code="">请选择</li>
+                        <li class="lastarea" id="lastcity" data-code="">请选择</li>
+                        <li class="lastarea" id="lastarea" data-code="">请选择</li>
+                        <li class="lastarea" id="lasttown" data-code="">请选择</li>
+                    </ul>
+                    <div class="address-content">
+                        <ul id="province" data-type="0"></ul>
+                        <ul id="city" data-type="1"></ul>
+                        <ul id="area" data-type="2"></ul>
+                        <ul id="town" data-type="3"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--弹出省市区街道列表-->
+    
+        <script>
+            mylottery.Init();
+        </script>
+</body>
+</html>

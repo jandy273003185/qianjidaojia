@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.question.mapper.QuestionMapper">
+
+    <select id="selectQuestions" resultType="com.qifenqian.bms.basemanager.question.bean.Question"  parameterType="com.qifenqian.bms.basemanager.question.bean.Question">
+		SELECT U.* 
+	    FROM TB_SECURITY_QUESTION U 
+	    <where>
+	    	<if test="questNo != null and questNo != ''">AND U.QUEST_NO LIKE CONCAT('%',#{questNo,jdbcType=VARCHAR},'%')</if>
+	    	<if test="questContent != null and questContent != ''">AND U.QUEST_CONTENT LIKE CONCAT('%',#{questContent,jdbcType=VARCHAR},'%')</if>
+	    </where>
+		ORDER BY U.QUEST_NO
+	</select>
+	
+	<insert id="insertQuestion" parameterType="com.qifenqian.bms.basemanager.question.bean.Question">
+	INSERT INTO TB_SECURITY_QUESTION (
+			QUEST_NO,
+			STATUS,
+		  	QUEST_CONTENT
+			) VALUES (
+			#{questNo, 		jdbcType=SMALLINT},
+			#{status, 		jdbcType=VARCHAR},
+		  	#{questContent, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 更新城市信息 -->
+	<update id="updateQuestion" parameterType="com.qifenqian.bms.basemanager.question.bean.Question">
+		update TB_SECURITY_QUESTION
+		<set>
+			<if test="questContent != null">
+				QUEST_CONTENT = #{questContent,jdbcType=VARCHAR}
+			</if>
+		</set>
+			where QUEST_NO = #{questNo,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="deleteQuestion" parameterType="string">
+		UPDATE TB_SECURITY_QUESTION SET STATUS='DISABLE'
+		WHERE QUEST_NO = #{questNo,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="selectQuestionMaxId" resultType="string">
+	SELECT MAX(Q.QUEST_NO) FROM TB_SECURITY_QUESTION Q
+	</select>
+	
+</mapper>

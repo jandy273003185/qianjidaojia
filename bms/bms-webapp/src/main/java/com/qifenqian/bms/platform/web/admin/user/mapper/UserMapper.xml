@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.admin.user.mapper.UserMapper">
+
+	<!-- 写入单个用户 -->
+	<insert id="insertUserSingle" useGeneratedKeys="true" keyProperty="userId" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		INSERT INTO SYS_USER (
+			USER_CODE,
+			USER_NAME,
+		  	PASSWORD,
+		  	REAL_NAME,
+		  	NICK_NAME,
+		  	DEPT_ID,
+		  	SEX,
+		  	WORK_PHONE,
+		  	SELF_PHONE,
+		  	WORK_EMAIL,
+		  	SELF_EMAIL,
+		  	STATUS,
+		  	MEMO,
+		  	INST_USER
+		) VALUES (
+			#{userCode, 	jdbcType=VARCHAR},
+			#{userName, 	jdbcType=VARCHAR},
+		  	#{password, 	jdbcType=VARCHAR},
+		  	#{realName, 	jdbcType=VARCHAR},
+		  	#{nickName, 	jdbcType=VARCHAR},
+		  	#{deptId, 		jdbcType=INTEGER},
+		  	#{sex, 			jdbcType=VARCHAR},
+		  	#{workPhone, 	jdbcType=VARCHAR},
+		  	#{selfPhone, 	jdbcType=VARCHAR},
+		  	#{workEmail, 	jdbcType=VARCHAR},
+		  	#{selfEmail, 	jdbcType=VARCHAR},
+		  	#{status, 		jdbcType=VARCHAR},
+		  	#{memo, 		jdbcType=VARCHAR},
+		  	#{instUser, 	jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<insert id="insertUserByCas" useGeneratedKeys="true" keyProperty="userId" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		INSERT INTO SYS_USER (
+			USER_ID,
+			USER_CODE,
+			USER_NAME,
+		  	PASSWORD,
+		  	REAL_NAME,
+		  	NICK_NAME,
+		  	DEPT_ID,
+		  	SEX,
+		  	WORK_PHONE,
+		  	SELF_PHONE,
+		  	WORK_EMAIL,
+		  	SELF_EMAIL,
+		  	STATUS,
+		  	MEMO,
+		  	INST_USER
+		) VALUES (
+			#{userId, 		jdbcType=INTEGER},
+			#{userCode, 	jdbcType=VARCHAR},
+			#{userName, 	jdbcType=VARCHAR},
+		  	#{password, 	jdbcType=VARCHAR},
+		  	#{realName, 	jdbcType=VARCHAR},
+		  	#{nickName, 	jdbcType=VARCHAR},
+		  	#{deptId, 		jdbcType=INTEGER},
+		  	#{sex, 			jdbcType=VARCHAR},
+		  	#{workPhone, 	jdbcType=VARCHAR},
+		  	#{selfPhone, 	jdbcType=VARCHAR},
+		  	#{workEmail, 	jdbcType=VARCHAR},
+		  	#{selfEmail, 	jdbcType=VARCHAR},
+		  	#{status, 		jdbcType=VARCHAR},
+		  	#{memo, 		jdbcType=VARCHAR},
+		  	#{instUser, 	jdbcType=INTEGER}
+		)
+	</insert>
+
+	<!-- 根据用户编号查询单个用户 -->
+	<select id="selectUserSingleById" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		SELECT U.*,
+			   D.DEPT_NAME 
+		  FROM SYS_USER U
+		LEFT JOIN SYS_DEPT D ON D.DEPT_ID = U.DEPT_ID
+		WHERE U.USER_ID = #{userId, jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectUserSingleByCode" parameterType="string" resultType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		SELECT U.*,
+			   D.DEPT_NAME 
+		  FROM SYS_USER U
+		LEFT JOIN SYS_DEPT D ON D.DEPT_ID = U.DEPT_ID
+		WHERE U.USER_CODE = #{userCode, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询用户列表 -->
+	<select id="selectUserList" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User" resultType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		SELECT
+			U.USER_ID,
+			U.USER_CODE,
+			U.USER_NAME,
+			U.PASSWORD,
+			U.REAL_NAME,
+			U.NICK_NAME,
+			U.DEPT_ID,
+			U.SEX,
+			U.WORK_PHONE,
+			U.SELF_PHONE,
+			U.WORK_EMAIL,
+			U.SELF_EMAIL,
+			U.STATUS,
+			U.MEMO,
+			(SELECT S.USER_NAME FROM SYS_USER S WHERE S.USER_ID = U.INST_USER)INST_USER_NAME,
+			U.INST_DATETIME,
+			(SELECT S.USER_NAME FROM SYS_USER S WHERE S.USER_ID = U.LUPD_USER)LUPD_USER_NAME,
+			U.LUPD_DATETIME,
+			D.DEPT_NAME
+		FROM
+			SYS_USER U
+			LEFT JOIN SYS_DEPT D ON D.DEPT_ID = U.DEPT_ID
+		<where>
+			<if test="deptId > 0 "> AND U.DEPT_ID =#{deptId, jdbcType=INTEGER}</if>
+			<if test="realName != null and realName != '' "> AND U.REAL_NAME LIKE CONCAT('%',#{realName, jdbcType=VARCHAR},'%')</if>
+			<if test="status != null "> AND U.STATUS =#{status, jdbcType=VARCHAR}</if>
+		</where>
+		ORDER BY U.USER_ID
+	</select>
+	
+	<!-- 修改用户信息 -->
+	<update id="updateUserById" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		UPDATE 
+			   SYS_USER U 
+	   <set>
+		   	<if test="password != null and password !=''">
+				U.PASSWORD 	= #{password, 	jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				U.USER_NAME 	= #{userName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				U.REAL_NAME 	= #{realName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="nickName != null">
+				U.NICK_NAME 	= #{nickName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="deptId > 0">
+				U.DEPT_ID 	= #{deptId, 	jdbcType=INTEGER},
+			</if>
+			<if test="sex != null">
+				U.SEX 		= #{sex, 		jdbcType=VARCHAR},
+			</if>
+			<if test="workPhone != null">
+				U.WORK_PHONE = #{workPhone, 	jdbcType=VARCHAR},
+			</if>
+			<if test="selfPhone != null">
+	   			U.SELF_PHONE = #{selfPhone, 	jdbcType=VARCHAR},
+			</if>
+			<if test="workEmail != null">
+				U.WORK_EMAIL = #{workEmail, 	jdbcType=VARCHAR},
+			</if>
+			<if test="selfEmail != null">
+				U.SELF_EMAIL = #{selfEmail, 	jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				U.STATUS 	= #{status, 	jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+			  	U.MEMO 		= #{memo, 		jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser > 0">
+				U.LUPD_USER 	= #{lupdUser, 	jdbcType=INTEGER},
+			</if>
+				U.LUPD_DATETIME = NOW()
+	   </set>
+		 WHERE U.USER_ID 	= #{userId, 	jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateUserByCas" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User">
+		UPDATE 
+			   SYS_USER U 
+	   <set>
+		   	<if test="password != null and password !=''">
+				U.PASSWORD 	= #{password, 	jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				U.USER_NAME 	= #{userName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				U.REAL_NAME 	= #{realName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="nickName != null">
+				U.NICK_NAME 	= #{nickName, 	jdbcType=VARCHAR},
+			</if>
+			<if test="deptId > 0">
+				U.DEPT_ID 	= #{deptId, 	jdbcType=INTEGER},
+			</if>
+			<if test="sex != null">
+				U.SEX 		= #{sex, 		jdbcType=VARCHAR},
+			</if>
+			<if test="workPhone != null">
+				U.WORK_PHONE = #{workPhone, 	jdbcType=VARCHAR},
+			</if>
+			<if test="selfPhone != null">
+	   			U.SELF_PHONE = #{selfPhone, 	jdbcType=VARCHAR},
+			</if>
+			<if test="workEmail != null">
+				U.WORK_EMAIL = #{workEmail, 	jdbcType=VARCHAR},
+			</if>
+			<if test="selfEmail != null">
+				U.SELF_EMAIL = #{selfEmail, 	jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				U.STATUS 	= #{status, 	jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+			  	U.MEMO 		= #{memo, 		jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser > 0">
+				U.LUPD_USER 	= #{lupdUser, 	jdbcType=INTEGER},
+			</if>
+				U.LUPD_DATETIME = NOW()
+	   </set>
+		 WHERE U.USER_CODE 	= #{userCode, 	jdbcType=VARCHAR}
+	</update>
+	
+	<update id="loginOutAllUsers">
+		UPDATE SYS_USER U 
+		   SET U.STATUS = 'VALID'
+		WHERE U.STATUS = 'LOGIN'
+	</update>
+	<select id="selectUserNameIsExists" parameterType="string" resultType="string">
+		SELECT 
+		COUNT(*) 
+		FROM 
+		SYS_USER U 
+		WHERE
+		U.USER_NAME = #{userName,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="userNameAndIdIsExists" parameterType="com.qifenqian.bms.platform.web.admin.user.bean.User" resultType="string">
+		SELECT 
+		COUNT(*) 
+		FROM 
+		SYS_USER U 
+		WHERE
+		U.USER_NAME = #{userName,jdbcType = VARCHAR}
+		AND U.USER_ID != #{userId,jdbcType = INTEGER}
+	</select>
+</mapper>

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.protocolcontent.mapper.ProtocolContentMapper">
+	<insert id="insertContent" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		INSERT INTO BMS_PROTOCOL_CONTENT(
+		ID,
+		PROTOCOL_NAME,
+		TEMPLATE_ID,
+		PROTOCOL_CONTENT,
+		STATUS,
+		MEMO,
+		INST_USER,
+		CUST_ID,
+		INST_DATETIME,
+		valid_date,
+		disable_date
+		)values(
+		#{id, 				jdbcType = VARCHAR},
+		#{protocolName, 	jdbcType = VARCHAR},
+		#{templateId, 		jdbcType = VARCHAR},
+		#{protocolContent, 	jdbcType = VARCHAR},
+		#{status, 			jdbcType = VARCHAR},
+		#{memo, 			jdbcType = VARCHAR},
+		#{instUser, 		jdbcType = VARCHAR},
+		#{custId, 			jdbcType = VARCHAR},
+		now(),
+		DATE_FORMAT(now(),'%Y-%m-%d'),
+		#{disableDate,jdbcType = VARCHAR}
+		)
+	</insert>
+	<select id="selectProto" parameterType="string" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		SELECT
+			ID,
+			PROTOCOL_NAME,
+			TEMPLATE_ID,
+			PROTOCOL_CONTENT,
+			STATUS,
+			MEMO,
+			INST_USER,
+			CUST_ID,
+			INST_DATETIME
+		FROM
+			BMS_PROTOCOL_CONTENT
+		WHERE
+			CUST_ID = #{custId,jdbcType=VARCHAR} and STATUS = 'VALID'
+			
+	</select>
+	<select id="selectByBean" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		select 
+			ID,
+			PROTOCOL_NAME,
+			TEMPLATE_ID,
+			PROTOCOL_CONTENT,
+			STATUS,
+			MEMO,
+			INST_USER,
+			CUST_ID,
+			INST_DATETIME,
+			is_update
+		from 
+			BMS_PROTOCOL_CONTENT T
+		<where>
+			1 = 1
+			<if test="id != null and id != ''">
+			AND	T.id = #{id,jdbcType=VARCHAR}
+			</if>
+			<if test="custId != null and custId != ''">
+			AND T.cust_id = #{custId,jdbcType =VARCHAR}
+			</if>
+			<if test="status != null and status != ''">
+			AND T.status = #{status,jdbcType = VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="select" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		SELECT
+			C.*,
+			U.MERCHANT_CODE,
+			U.cust_name merchantName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =C.INST_USER) instUserName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =C.UPDATE_USER) updateUserName,
+			T.PROTOCOL_TEMPLATE_NAME,
+			T.ID AS templateId
+		FROM
+			BMS_PROTOCOL_CONTENT C,
+			BMS_PROTOCOL_TEMPLATE T,
+			TD_CUST_INFO U
+		WHERE
+			C.TEMPLATE_ID = T.ID
+			AND C.CUST_ID =U.CUST_ID
+			and U.MERCHANT_FLAG IN('0','2')
+		<if test="templateId != null and templateId != ''">
+			AND T.ID = #{templateId,jdbcType=VARCHAR}
+		</if>
+		<if test="protocolName != null and protocolName != ''">
+			AND C.PROTOCOL_NAME = #{protocolName,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCode != null and merchantCode != ''">
+			AND U.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status!= ''">
+			AND C.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		ORDER BY C.INST_DATETIME DESC
+	</select>
+	
+	<select id="selectAgent" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		SELECT
+			C.*,
+			DATE_FORMAT(C.update_datetime,'%Y-%m-%d %H:%i:%s') AS upDatetime,
+			DATE_FORMAT(C.inst_datetime,'%Y-%m-%d %H:%i:%s') AS inDatetime,
+			U.MERCHANT_CODE,
+			U.cust_name merchantName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =C.INST_USER) instUserName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =C.UPDATE_USER) updateUserName,
+			T.PROTOCOL_TEMPLATE_NAME,
+			T.ID AS templateId
+		FROM
+			BMS_PROTOCOL_CONTENT C,
+			BMS_PROTOCOL_TEMPLATE T,
+			TD_CUST_INFO U
+		WHERE
+			C.TEMPLATE_ID = T.ID
+			AND C.CUST_ID =U.CUST_ID
+			and U.MERCHANT_FLAG = '3'
+		<if test="templateId != null and templateId != ''">
+			AND T.ID = #{templateId,jdbcType=VARCHAR}
+		</if>
+		<if test="protocolName != null and protocolName != ''">
+			AND C.PROTOCOL_NAME = #{protocolName,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCode != null and merchantCode != ''">
+			AND U.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status!= ''">
+			AND C.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		ORDER BY C.INST_DATETIME DESC
+	</select>
+	<select id="selectMyAgentProto" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+			SELECT
+				C.*, 
+				DATE_FORMAT(C.update_datetime,'%Y-%m-%d %H:%i:%s') AS upDatetime,
+				DATE_FORMAT(C.inst_datetime,'%Y-%m-%d %H:%i:%s') AS inDatetime,
+				U.MERCHANT_CODE,
+				U.cust_name merchantName,
+				(
+					SELECT
+						U.USER_NAME
+					FROM
+						SYS_USER U
+					WHERE
+						U.USER_ID = C.INST_USER
+				) instUserName,
+				(
+					SELECT
+						U.USER_NAME
+					FROM
+						SYS_USER U
+					WHERE
+						U.USER_ID = C.UPDATE_USER
+				) updateUserName,
+				T.PROTOCOL_TEMPLATE_NAME,
+				T.ID AS templateId
+			FROM
+				BMS_PROTOCOL_CONTENT C
+			JOIN BMS_PROTOCOL_TEMPLATE T ON C.TEMPLATE_ID = T.ID
+			JOIN TD_CUST_INFO U ON C.CUST_ID = U.CUST_ID
+			WHERE
+				1 = 1
+			AND (
+				EXISTS (
+					SELECT
+						1
+					FROM
+						sys_user u
+					WHERE
+						u.user_id = C.inst_user
+					AND u.user_id = #{userId,jdbcType=VARCHAR}
+				)
+				OR EXISTS (
+					SELECT
+						1
+					FROM
+						(
+							SELECT
+								temp.cust_id
+							FROM
+								bms_protocol_content temp
+							WHERE
+								temp.id IN (
+									SELECT
+										bms.protocol_id
+									FROM
+										bms_protocol_column bms
+									WHERE
+										(bms.column_value = #{userName,jdbcType=VARCHAR}
+										or
+										bms.column_value = #{userId,jdbcType=VARCHAR})
+									AND bms.column_code = 'custManager'
+								)
+						) TT
+					WHERE
+						TT.cust_id = C.cust_id
+				)
+			)
+		<if test="templateId != null and templateId != ''">
+			AND T.ID = #{templateId,jdbcType=VARCHAR}
+		</if>
+		<if test="protocolName != null and protocolName != ''">
+			AND C.PROTOCOL_NAME = #{protocolName,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCode != null and merchantCode != ''">
+			AND U.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status!= ''">
+			AND C.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		and U.MERCHANT_FLAG = '3'
+		ORDER BY C.INST_DATETIME DESC
+	</select>
+	
+	<select id="selectMyProto" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+			SELECT
+				C.*, U.MERCHANT_CODE,
+				U.cust_name merchantName,
+				(
+					SELECT
+						U.USER_NAME
+					FROM
+						SYS_USER U
+					WHERE
+						U.USER_ID = C.INST_USER
+				) instUserName,
+				(
+					SELECT
+						U.USER_NAME
+					FROM
+						SYS_USER U
+					WHERE
+						U.USER_ID = C.UPDATE_USER
+				) updateUserName,
+				T.PROTOCOL_TEMPLATE_NAME,
+				T.ID AS templateId
+			FROM
+				BMS_PROTOCOL_CONTENT C
+			JOIN BMS_PROTOCOL_TEMPLATE T ON C.TEMPLATE_ID = T.ID
+			JOIN TD_CUST_INFO U ON C.CUST_ID = U.CUST_ID
+			WHERE
+				1 = 1
+			AND (
+				EXISTS (
+					SELECT
+						1
+					FROM
+						sys_user u
+					WHERE
+						u.user_id = C.inst_user
+					AND u.user_id = #{userId,jdbcType=VARCHAR}
+				)
+				OR EXISTS (
+					SELECT
+						1
+					FROM
+						(
+							SELECT
+								temp.cust_id
+							FROM
+								bms_protocol_content temp
+							WHERE
+								temp.id IN (
+									SELECT
+										bms.protocol_id
+									FROM
+										bms_protocol_column bms
+									WHERE
+										(bms.column_value = #{userName,jdbcType=VARCHAR}
+											or
+										bms.column_value = #{userId,jdbcType=VARCHAR})
+									AND bms.column_code = 'custManager'
+								)
+						) TT
+					WHERE
+						TT.cust_id = C.cust_id
+				)
+			)
+		<if test="templateId != null and templateId != ''">
+			AND T.ID = #{templateId,jdbcType=VARCHAR}
+		</if>
+		<if test="protocolName != null and protocolName != ''">
+			AND C.PROTOCOL_NAME = #{protocolName,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCode != null and merchantCode != ''">
+			AND U.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status!= ''">
+			AND C.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		and U.MERCHANT_FLAG IN('0','2')
+		ORDER BY C.INST_DATETIME DESC
+	</select>
+	
+	<insert id="insertColumn" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolColumn">
+	
+	INSERT INTO BMS_PROTOCOL_COLUMN( 
+	  ID,
+	  PROTOCOL_ID,
+	  COLUMN_CODE,
+	  COLUMN_VALUE,
+	  COLUMN_DESC,
+	  STATUS,
+	  INST_USER,
+	  INST_DATETIME
+	  )
+	  VALUES(
+	  #{id, 			jdbcType = VARCHAR},
+	  #{protocolId, 	jdbcType = VARCHAR},
+	  #{columnCode, 	jdbcType = VARCHAR},
+	  #{columnValue,	jdbcType = VARCHAR},
+	  #{columnDesc, 	jdbcType = VARCHAR},
+	  #{status, 		jdbcType = VARCHAR},
+	  #{instUser, 		jdbcType = VARCHAR},
+	  now()
+	  )
+	
+	</insert>
+	<update id="delete" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+	 UPDATE 
+		 BMS_PROTOCOL_CONTENT b LEFT JOIN td_login_user_info t ON b.cust_id = t.CUST_ID
+	 SET 
+	 	b.STATUS= 'STOP' ,
+	 	b.UPDATE_USER= #{updateUser,jdbcType=VARCHAR},
+	 	b.UPDATE_DATETIME= now(),
+	 	t.STATE = '01'
+	 WHERE 
+	 	ID = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<update id="deleteProtocol" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+	 UPDATE BMS_PROTOCOL_CONTENT
+		SET UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
+		 UPDATE_DATETIME = now(),
+		 disable_date = DATE_FORMAT(now(), '%Y-%m-%d')
+		WHERE
+			cust_id = #{custId, jdbcType = VARCHAR}
+		AND STATUS = 'STOP'
+		AND inst_datetime = (
+			SELECT
+				TT.DATETIME
+			FROM
+				(
+					SELECT
+						MAX(T.inst_datetime) DATETIME
+					FROM
+						bms_protocol_content t
+					WHERE
+						t.cust_id = #{custId, jdbcType = VARCHAR}
+					AND t.`status` = 'STOP'
+				) TT
+		)
+	</update>
+	<select id="selectProtocolInfo" parameterType="string" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolInfo">
+		SELECT
+			t.inst_user,
+			c1.column_value custManager,
+			(
+				SELECT
+					s.self_phone
+				FROM
+					sys_user s
+				WHERE
+					s.user_id = c1.column_value
+			) selfPhone,
+			c2.column_value serviceProvider
+		FROM
+			bms_protocol_content t
+		JOIN bms_protocol_column c1 ON t.id = c1.protocol_id
+		AND c1.column_code = 'custManager'
+		JOIN bms_protocol_column c2 ON t.id = c2.protocol_id
+		AND c2.column_code = 'serviceProvider'
+		WHERE
+			t.cust_id = #{custId,jdbcType=VARCHAR}
+		AND t.`status` = 'AUDIT'
+	</select>
+	<update id="updateProt" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		update
+			BMS_PROTOCOL_CONTENT
+		set
+			<if test="status != null and status != ''">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null and memo !=''">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="updateUser != null and updateUser !=''">
+				update_user = #{updateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="isUpdate != null and isUpdate !=''">
+				is_update = #{isUpdate,jdbcType=VARCHAR},
+			</if>
+			<if test="validDate!= null and validDate !=''">
+				valid_date = #{validDate,jdbcType=VARCHAR},
+			</if>
+			<if test="disableDate!= null and disableDate !=''">
+				disable_date = DATE_FORMAT(now(),'%Y-%m-%d'),
+			</if>
+			<if test="protocolContent != null and protocolContent !=''">
+				protocol_content = #{protocolContent,jdbcType=VARCHAR},
+			</if>
+				update_datetime = NOW()
+			<where>
+				1 = 1
+				<if test="id != null and id != ''">
+				and ID = #{id ,jdbcType = VARCHAR}
+				</if>
+				<if test="tempStatus != null and tempStatus != ''">
+				and STATUS = #{tempStatus,jdbcType =VARCHAR}
+				</if>
+			</where>
+	</update>
+	<select id="getProtocolContentExport" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContentExportBean">
+		SELECT 
+			A.*,
+			DATE_FORMAT(A.update_datetime,'%Y-%m-%d %H:%i:%s') AS updateDatetime,
+			DATE_FORMAT(A.inst_datetime,'%Y-%m-%d %H:%i:%s') AS insertDatetime,
+		  	C.MERCHANT_CODE,
+			C.cust_name merchantName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =A.INST_USER) instUserName,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =A.UPDATE_USER) updateUserName,
+			B.PROTOCOL_TEMPLATE_NAME,
+			B.ID AS templateId,
+			IFNULL((SELECT t.user_name from sys_user t where t.self_phone = D.custManager or  t.user_id= D.custManager),'无')	 custManager,
+			IFNULL((SELECT t.cust_name from td_cust_info t where t.cust_id = D.serviceProvider),'无')	 serviceProvider,
+			D.*
+		from 
+			BMS_PROTOCOL_CONTENT A
+			LEFT JOIN BMS_PROTOCOL_TEMPLATE B ON A.template_id = B.id
+			LEFT JOIN TD_CUST_INFO C ON A.cust_id = C.CUST_ID
+			LEFT JOIN (select T.protocol_id,
+			MAX(CASE T.column_code WHEN 'period' THEN T.column_value END) 'period',
+			MAX(CASE T.column_code WHEN 'isSkipHoliday' THEN T.column_value END) 'isSkipHoliday',
+			MAX(CASE T.column_code WHEN 'bankCardNo' THEN T.column_value END) 'bankCardNo',
+			MAX(CASE T.column_code WHEN 'bankCardName' THEN T.column_value END) 'bankCardName',
+			MAX(CASE T.column_code WHEN 'bankName' THEN T.column_value END) 'bankName',
+			MAX(CASE T.column_code WHEN 'OpenAddressRec' THEN T.column_value END) 'OpenAddressRec',
+			MAX(CASE T.column_code WHEN 'CNAPS' THEN T.column_value END) 'CNAPS',
+			MAX(CASE T.column_code WHEN 'serviceProvider' THEN T.column_value END) 'serviceProvider',
+			MAX(CASE T.column_code WHEN 'custManager' THEN T.column_value END) 'custManager',
+			MAX(CASE T.column_code WHEN 'h5.gateway.pay_rate' THEN T.column_value END) 'h5Gateway',
+			MAX(CASE T.column_code WHEN 'mobile.plugin.pay_rate' THEN T.column_value END) 'mobilePlugin',
+			MAX(CASE T.column_code WHEN 'onecode.coll.pay_rate' THEN T.column_value END) 'onecodeColl',
+			MAX(CASE T.column_code WHEN 'h5_t.gateway.pay_rate' THEN T.column_value END) 'h5tGateway',
+			MAX(CASE T.column_code WHEN 'pc.gateway.pay_rate' THEN T.column_value END) 'pcGateway'
+			from bms_protocol_column T GROUP BY T.protocol_id)D ON A.id = D.protocol_id
+		where 1=1
+		<if test="templateId != null and templateId != ''">
+			AND A.ID = #{templateId,jdbcType=VARCHAR}
+		</if>
+		<if test="protocolName != null and protocolName != ''">
+			AND A.PROTOCOL_NAME = #{protocolName,jdbcType=VARCHAR}
+		</if>
+		<if test="merchantCode != null and merchantCode != ''">
+			AND C.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status!= ''">
+			AND A.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		ORDER BY A.INST_DATETIME DESC
+	</select>
+	
+	<update id="updateColumn" parameterType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolColumn" >
+		UPDATE 
+			BMS_PROTOCOL_COLUMN
+		set
+			<if test="status != null and status != ''">
+				STATUS = #{status,jdbcType=VARCHAR}
+			</if>
+			
+			<where>
+				1 = 1
+				<if test="protocolId != null and protocolId != ''">
+					and protocol_id = #{protocolId ,jdbcType = VARCHAR}
+				</if>
+				
+			</where>
+	</update>
+	
+	<select id="selectNewProtocolInfo" parameterType="string" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolContent">
+		select * from 
+		bms_protocol_content t 
+		where t.cust_id = #{custId,jdbcType=VARCHAR} and (t.`status` = 'VALID' or t.`status` = 'AUDIT')
+	</select>
+	
+	<select id="selectProtocolForEmail" parameterType="string" resultType="com.qifenqian.bms.basemanager.protocolcontent.bean.ProtocolInfo">
+		SELECT
+			t.inst_user,
+			CASE WHEN
+				(c1.column_value is null or c1.column_value = 'null' )
+			then
+				''
+			ELSE
+			 ( select ss.user_name from sys_user ss where ss.user_id = c1.column_value)
+			end custManager,
+			(
+				SELECT
+					s.self_phone
+				FROM
+					sys_user s
+				WHERE
+					s.user_id = c1.column_value
+			) selfPhone,
+			CASE WHEN
+				(c2.column_value is null or c2.column_value = 'null' )
+			then
+				''
+			ELSE
+			 ( select ii.CUST_NAME from td_cust_info ii  where ii.CUST_ID = c2.column_value)
+			end serviceProvider,
+			CASE WHEN
+				(c2.column_value is null or c2.column_value = 'null' )
+			then
+				''
+			ELSE
+			 ( select ii.MOBILE from td_login_user_info ii  where ii.CUST_ID = c2.column_value)
+			end servicePhone,
+			cust.AGENT_NAME linkMan
+		FROM
+			bms_protocol_content t
+		JOIN bms_protocol_column c1 ON t.id = c1.protocol_id
+		AND c1.column_code = 'custManager'
+		JOIN bms_protocol_column c2 ON t.id = c2.protocol_id
+		AND c2.column_code = 'serviceProvider'
+		join td_cust_info cust ON t.cust_id = cust.CUST_ID
+		WHERE
+			t.cust_id = #{custId,jdbcType = VARCHAR}
+	</select>
+</mapper>

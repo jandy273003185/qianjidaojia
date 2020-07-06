@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.tradesummary.mapper.TransSummaryMapper">
+	<select id="selectTradeSummary" resultType="com.qifenqian.bms.basemanager.tradesummary.bean.TransSummaryBean" parameterType="com.qifenqian.bms.basemanager.tradesummary.bean.TransSummaryBean">
+		SELECT 
+			SUMM.* 
+		FROM (
+		SELECT 
+			 '消费成功' TRANS_NAME,
+			 'CUST_PAYMENT' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT 
+		FROM (SELECT
+			T1.ORDER_ID,
+			T1.SUM_AMT,
+			IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+		FROM
+			STCDB.TD_TRADE_BILL_MAIN T1
+		WHERE
+			T1.TRADE_TYPE IN ('1101','1301')
+		AND T1.ORDER_STATE = '00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT
+			 '充值成功' TRANS_NAME,
+			 'CUST_RECHARGE' OPER_TYPE,
+			 COUNT(R.CHARGE_SN) TRANS_COUNT,
+			 IFNULL(SUM(R.CHARGE_AMT),0) TRANS_AMT
+		FROM 
+			(SELECT 
+				T1.CHARGE_SN,
+				T1.CHARGE_AMT,
+				IFNULL(DATE_FORMAT(T1.CHARGE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.CREATE_TIME,'%Y%m%d')) WORK_DATE
+			FROM
+				TD_CHARGE_BILL T1
+			LEFT JOIN  TD_TRANS_YL Y1
+			ON T1.CHARGE_SN = Y1.TRANS_SN
+			WHERE T1.CHARGE_NETPAY_STATE = '00'
+			UNION ALL
+			SELECT
+				T2.ORDER_ID CHARGE_SN,
+				T2.CHARGE_AMT,
+				IFNULL(DATE_FORMAT(T2.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T2.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+			FROM
+				TD_TRADE_BILL_MAIN T2 
+			LEFT JOIN TD_TRANS_YL Y2 
+			ON T2.ORDER_ID = Y2.TRANS_SN 
+			WHERE T2.IS_NEED_CHARGE = '1'
+			AND T2.CHARGE_NETPAY_STATE ='00') R
+			<where>
+					<if test="workBeginDate!= null and '' != workBeginDate">  
+			            <![CDATA[  
+			              AND R.WORK_DATE >=  #{workBeginDate}
+			            ]]>  
+			        </if>  
+			        <if test="workEndDate!= null and '' != workEndDate">  
+			            <![CDATA[  
+			              AND R.WORK_DATE  <=  #{workEndDate}
+			            ]]>  
+			        </if> 
+			</where> 
+			UNION
+			SELECT 
+			 '退款成功' TRANS_NAME,
+			 'CUST_REFUND' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REFUND_AMT),0) TRANS_AMT	 
+			FROM (
+				SELECT
+					T1.ORDER_ID,
+					T1.REFUND_AMT,
+					IFNULL(DATE_FORMAT(T1.REFUND_TIME,'%Y%m%d'),DATE_FORMAT(T1.SUBMIT_TIME,'%Y%m%d')) AS WORK_DATE
+				FROM
+					TD_REFUND_BILL T1
+				WHERE T1.REFUND_STATE ='00')T
+			<where>
+					<if test="workBeginDate!= null and '' != workBeginDate">  
+			            <![CDATA[  
+			              AND T.WORK_DATE >=  #{workBeginDate}
+			            ]]>  
+			        </if>  
+			        <if test="workEndDate!= null and '' != workEndDate">  
+			            <![CDATA[  
+			              AND T.WORK_DATE  <=  #{workEndDate}
+			            ]]>  
+			        </if> 
+			</where>
+			UNION
+			SELECT 
+				 '客户转账成功' TRANS_NAME,
+				 'CUST_TRANSFER' OPER_TYPE,
+				 COUNT(T.ORDER_ID) TRANS_COUNT,
+				 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT	 
+			FROM (SELECT
+					T1.ORDER_ID,
+					T1.SUM_AMT,
+					IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+				FROM
+					TD_TRADE_BILL_MAIN T1
+			WHERE
+				T1.TRADE_TYPE IN ('1001','1302')
+			AND T1.ORDER_STATE='00') T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+			</where>
+			UNION
+			SELECT 
+				 '商户转账成功' TRANS_NAME,
+				 'BUSS_TRANSFER' OPER_TYPE,
+				 COUNT(T.ORDER_ID) TRANS_COUNT,
+				 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT	 
+			FROM (SELECT
+					T1.ORDER_ID,
+					T1.SUM_AMT,
+					IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+				FROM
+					TD_TRADE_BILL_MAIN T1
+			WHERE
+				T1.TRADE_TYPE = '1002'
+			AND T1.ORDER_STATE='00') T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+			</where>
+			UNION
+		SELECT 
+			 '客户转账撤销成功' TRANS_NAME,
+			 'CUST_TRANSFER_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_TRANSFER_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+			UNION
+			SELECT 
+				 '客户提现申请' TRANS_NAME,
+				 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+				 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+				 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT		 
+			FROM (SELECT
+						ST.WITHDRAW_SN,
+						ST.WITHDRAW_AMT,
+						DATE_FORMAT(ST.CREATE_TIME,'%Y%m%d') AS WORK_DATE
+					FROM
+						TD_WITHDRAW_BILL ST) T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '客户提现审核通过' TRANS_NAME,
+			 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='02') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '客户提现审核不通过' TRANS_NAME,
+			 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='04') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+			SELECT 
+				 '商户提现申请' TRANS_NAME,
+				 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+				 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+				 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT 
+			FROM (SELECT
+						ST.WITHDRAW_SN,
+						ST.WITHDRAW_AMT,
+						DATE_FORMAT(ST.CREATE_TIME,'%Y%m%d') AS WORK_DATE
+					FROM
+						TD_BUSS_WITHDRAW_BILL ST) T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '商户提现审核通过' TRANS_NAME,
+			 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_BUSS_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='02') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '商户提现审核不通过' TRANS_NAME,
+			 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_BUSS_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='04') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '交易撤销成功' TRANS_NAME,
+			 'CUST_PAYMENT_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_TRANS_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[   
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '充值撤销成功' TRANS_NAME,
+			 'CUST_RECHARGE_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_RECHARGE_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+			) SUMM
+			<where>
+					<if test="operType!= null and '' != operType">  
+			              SUMM.OPER_TYPE =  #{operType,jdbcType = VARCHAR}
+			        </if>  
+			</where>
+	</select>
+	
+	<select id="selectTradeSummaryExcel" resultType="com.qifenqian.bms.basemanager.tradesummary.bean.TransSummaryBean" parameterType="com.qifenqian.bms.basemanager.tradesummary.bean.TransSummaryBean">
+		SELECT 
+			SUMM.TRANS_NAME,
+			SUMM.TRANS_COUNT,
+			SUMM.TRANS_AMT,
+			CASE SUMM.OPER_TYPE
+			WHEN 'CUST_PAYMENT' THEN '消费' 
+			WHEN 'CUST_RECHARGE' THEN '充值' 
+			WHEN 'CUST_REFUND' THEN '退款' 
+			WHEN 'CUST_TRANSFER' THEN '客户转账' 
+			WHEN 'BUSS_TRANSFER' THEN '商户转账' 
+			WHEN 'CUST_TRANSFER_REVOKE' THEN '客户转账撤销' 
+			WHEN 'CUST_WITHDRAW_APPLY' THEN '客户提现'
+			WHEN 'MERCHANT_WITHDRAW_APPLY' THEN '商户提现' 
+			WHEN 'CUST_PAYMENT_REVOKE' THEN '交易撤销' 
+			WHEN 'CUST_RECHARGE_REVOKE' THEN '充值撤销' 
+			ELSE SUMM.OPER_TYPE END OPER_TYPE
+			<if test="workBeginDate!= null and '' != workBeginDate">  
+	           , #{workBeginDate} AS WORK_BEGIN_DATE
+	        </if>
+	        <if test="workBeginDate== null or '' == workBeginDate">  
+	           ,'19000101' AS WORK_BEGIN_DATE
+	        </if>  
+	        <if test="workEndDate!= null and '' != workEndDate">  
+	           , #{workEndDate} AS WORK_END_DATE
+	        </if> 
+	        <if test="workEndDate== null or '' == workEndDate">  
+	           ,'29991231' AS WORK_END_DATE
+	        </if> 
+		FROM (
+		SELECT 
+			 '消费成功' TRANS_NAME,
+			 'CUST_PAYMENT' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT 
+		FROM (SELECT
+			T1.ORDER_ID,
+			T1.SUM_AMT,
+			IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+		FROM
+			TD_TRADE_BILL_MAIN T1
+		WHERE
+			T1.TRADE_TYPE IN ('1101', '1301')
+		AND T1.ORDER_STATE = '00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT
+			 '充值成功' TRANS_NAME,
+			 'CUST_RECHARGE' OPER_TYPE,
+			 COUNT(R.CHARGE_SN) TRANS_COUNT,
+			 IFNULL(SUM(R.CHARGE_AMT),0) TRANS_AMT
+		FROM 
+			(SELECT 
+				T1.CHARGE_SN,
+				T1.CHARGE_AMT,
+				IFNULL(DATE_FORMAT(T1.CHARGE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.CREATE_TIME,'%Y%m%d')) WORK_DATE
+			FROM
+				TD_CHARGE_BILL T1
+			LEFT JOIN  TD_TRANS_YL Y1
+			ON T1.CHARGE_SN = Y1.TRANS_SN
+			WHERE T1.CHARGE_NETPAY_STATE = '00'
+			UNION ALL
+			SELECT
+				T2.ORDER_ID CHARGE_SN,
+				T2.CHARGE_AMT,
+				IFNULL(DATE_FORMAT(T2.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T2.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+			FROM
+				TD_TRADE_BILL_MAIN T2 
+			LEFT JOIN TD_TRANS_YL Y2 
+			ON T2.ORDER_ID = Y2.TRANS_SN 
+			WHERE T2.IS_NEED_CHARGE = '1'
+			AND T2.CHARGE_NETPAY_STATE ='00') R
+			<where>
+					<if test="workBeginDate!= null and '' != workBeginDate">  
+			            <![CDATA[  
+			              AND R.WORK_DATE >=  #{workBeginDate}
+			            ]]>  
+			        </if>  
+			        <if test="workEndDate!= null and '' != workEndDate">  
+			            <![CDATA[  
+			              AND R.WORK_DATE  <=  #{workEndDate}
+			            ]]>  
+			        </if> 
+			</where> 
+			UNION
+			SELECT 
+			 '退款成功' TRANS_NAME,
+			 'CUST_REFUND' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REFUND_AMT),0) TRANS_AMT	 
+			FROM (
+				SELECT
+					T1.ORDER_ID,
+					T1.REFUND_AMT,
+					IFNULL(DATE_FORMAT(T1.REFUND_TIME,'%Y%m%d'),DATE_FORMAT(T1.SUBMIT_TIME,'%Y%m%d')) AS WORK_DATE
+				FROM
+					TD_REFUND_BILL T1
+				WHERE T1.REFUND_STATE ='00')T
+			<where>
+					<if test="workBeginDate!= null and '' != workBeginDate">  
+			            <![CDATA[  
+			              AND T.WORK_DATE >=  #{workBeginDate}
+			            ]]>  
+			        </if>  
+			        <if test="workEndDate!= null and '' != workEndDate">  
+			            <![CDATA[  
+			              AND T.WORK_DATE  <=  #{workEndDate}
+			            ]]>  
+			        </if> 
+			</where>
+			UNION
+			SELECT 
+				 '客户转账成功' TRANS_NAME,
+				 'CUST_TRANSFER' OPER_TYPE,
+				 COUNT(T.ORDER_ID) TRANS_COUNT,
+				 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT	 
+			FROM (SELECT
+					T1.ORDER_ID,
+					T1.SUM_AMT,
+					IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+				FROM
+					TD_TRADE_BILL_MAIN T1
+			WHERE
+				T1.TRADE_TYPE IN ('1001','1302')
+			AND T1.ORDER_STATE='00') T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+			</where>
+			UNION
+			SELECT 
+				 '商户转账成功' TRANS_NAME,
+				 'BUSS_TRANSFER' OPER_TYPE,
+				 COUNT(T.ORDER_ID) TRANS_COUNT,
+				 IFNULL(SUM(T.SUM_AMT),0) TRANS_AMT	 
+			FROM (SELECT
+					T1.ORDER_ID,
+					T1.SUM_AMT,
+					IFNULL(DATE_FORMAT(T1.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE
+				FROM
+					TD_TRADE_BILL_MAIN T1
+			WHERE
+				T1.TRADE_TYPE = '1002'
+			AND T1.ORDER_STATE='00') T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+			</where>
+		UNION
+		SELECT 
+			 '客户转账撤销成功' TRANS_NAME,
+			 'CUST_TRANSFER_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_TRANSFER_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+			UNION
+			SELECT 
+				 '客户提现申请' TRANS_NAME,
+				 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+				 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+				 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT		 
+			FROM (SELECT
+						ST.WITHDRAW_SN,
+						ST.WITHDRAW_AMT,
+						DATE_FORMAT(ST.SUBMIT_TIME,'%Y%m%d') AS WORK_DATE
+					FROM
+						TD_WITHDRAW_BILL ST) T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '客户提现审核通过' TRANS_NAME,
+			 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='02') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '客户提现审核不通过' TRANS_NAME,
+			 'CUST_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='04') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+			SELECT 
+				 '商户提现申请' TRANS_NAME,
+				 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+				 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+				 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT 
+			FROM (SELECT
+						ST.WITHDRAW_SN,
+						ST.WITHDRAW_AMT,
+						DATE_FORMAT(ST.SUBMIT_TIME,'%Y%m%d') AS WORK_DATE
+					FROM
+						TD_BUSS_WITHDRAW_BILL ST) T
+			<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '商户提现审核通过' TRANS_NAME,
+			 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_BUSS_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='02') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '商户提现审核不通过' TRANS_NAME,
+			 'MERCHANT_WITHDRAW_APPLY' OPER_TYPE,
+			 COUNT(T.WITHDRAW_SN) TRANS_COUNT,
+			 IFNULL(SUM(T.WITHDRAW_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.WITHDRAW_SN,
+					ST.WITHDRAW_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_BUSS_WITHDRAW_BILL ST
+				WHERE ST.AUDIT_STATE='04') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '交易撤销成功' TRANS_NAME,
+			 'CUST_PAYMENT_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_TRANS_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+		UNION
+		SELECT 
+			 '充值撤销成功' TRANS_NAME,
+			 'CUST_RECHARGE_REVOKE' OPER_TYPE,
+			 COUNT(T.ORDER_ID) TRANS_COUNT,
+			 IFNULL(SUM(T.REVOKE_AMT),0) TRANS_AMT	 
+		FROM (SELECT
+					ST.ORDER_ID,
+					ST.REVOKE_AMT,
+					DATE_FORMAT(ST.AUDIT_TIME,'%Y%m%d') AS WORK_DATE
+				FROM
+					TD_CUST_RECHARGE_REVOKE ST
+				WHERE ST.ORDER_STATUS='00') T
+		<where>
+				<if test="workBeginDate!= null and '' != workBeginDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE >=  #{workBeginDate}
+		            ]]>  
+		        </if>  
+		        <if test="workEndDate!= null and '' != workEndDate">  
+		            <![CDATA[  
+		              AND T.WORK_DATE  <=  #{workEndDate}
+		            ]]>  
+		        </if> 
+		</where>
+			) SUMM
+	<where>
+			<if test="operType!= null and '' != operType">  
+	              SUMM.OPER_TYPE =  #{operType,jdbcType = VARCHAR}
+	        </if>  
+	</where>
+	</select>
+</mapper>

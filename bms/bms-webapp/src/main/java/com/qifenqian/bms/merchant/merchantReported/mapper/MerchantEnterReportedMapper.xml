@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.merchantReported.mapper.MerchantEnterReportedMapper">
+	
+	<select id="selMerchantDetailInfoList" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+    	
+		SELECT
+			t1.*,
+			t2.report_status AS detailStatus,
+			t2.result_msg,
+		    t2.out_merchant_code, 
+			f.CUST_NAME,
+			f.short_name,
+			f.cust_id,
+			f.merchant_email
+		FROM
+			td_merchant_report t1
+			INNER JOIN td_merchant_detail_info t2 ON t1.patch_no = t2.patch_no
+			LEFT JOIN td_cust_info f ON f.MERCHANT_CODE = t1.merchant_code 
+		
+		<where>
+			1=1
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t1.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			 and t1.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			 and t1.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelCode != null and channelCode != '' ">
+			 and t1.channel_no = #{channelCode,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+			 and t1.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null and custName != '' ">
+			 and f.cust_name = #{custName,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null and email != '' ">
+			 and f.merchant_email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="startModifyTime != null and '' != startModifyTime">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')>= #{startModifyTime}
+	            ]]>
+			</if>
+			<if test="endModifyTime !=null and '' !=endModifyTime">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')<= #{endModifyTime}
+	            ]]>
+			</if>
+		</where>
+		ORDER BY t1.report_time DESC
+    </select>
+</mapper>

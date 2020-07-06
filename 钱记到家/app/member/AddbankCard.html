@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>添加银行卡</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .icons-tips {
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/bingCard.html" class="btn_back"></a>
+				<div class="title center">绑定银行卡</div>
+			</div>
+		</div>				
+		<div class="main">
+			<div class="icons-tips dd-tips">
+				姓名必须和身份证中的一样，务必保证银行卡信息正确，否则无法退款
+			</div>
+			<div class="applyForm weui-cells alone__weui-cells" style="margin-top:0;">
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<input type="text" name="" class="weui-input" id="CardName" value="" placeholder="请输入持卡人姓名" />
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<input type="text" name="" class="weui-input" id="bankNo" value="" placeholder="请输入卡号" />
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<select name="" id="selectBank" class="weui-input">
+							<option value="0">请选择银行</option>
+						</select>
+					</div>
+					<div class="weui-cell__ft">
+						<span class="icon-arrow icon-arrowRight"></span>
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<input type="text" class="weui-input" name="" id="zhihang" value="" placeholder="开户支行" />
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__bd">
+						<!--<input type="text" name="" class="weui-input" id="phoneNumber" value="" placeholder="请输入手机号" />-->
+						<p class="txt c_999" id="xghm"></p>
+					</div>
+				</div>
+				<div class="weui-cell sendCode__weui-cell">
+					<div class="weui-cell__bd">
+						<input type="text" class="weui-input" id="VerifyCode" placeholder="请输入手机验证码">
+					</div>
+					<div class="code" id="sendCode">
+						<span>获取验证码</span>
+					</div>
+				</div>
+			</div>
+			<div class="ftbtn" style="padding:.2rem .1rem;">
+				<a href="javascript:;" class="btn" id="submitBtn">提交</a>
+			</div>
+		</div>
+	
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			var code = "", //输入的验证码
+				phoneNumber="";
+			GetMemberInfo(function(data) {
+				//显示绑定手机号
+				phoneNumber=data.data.Mobile;
+				if(data.data.Mobile){
+					$("#xghm").text('已绑定手机号：'+plusXing(phoneNumber, 3, 4,'*'));
+				}else{
+					$("#xghm").html('<span class="red">未绑定</span>');
+				}
+			});
+			    //点击发送验证码
+			$('#sendCode').click(function() {				
+				//phoneNumber = $.trim($('#phoneNumber').val());
+				//if(valPhone(phoneNumber)){
+					if(!has_click) {
+						GetAddBankSms(phoneNumber);
+					}
+				//}		
+			});    			
+			//加载银行卡信息
+			BankinfoList();
+			//点击提交
+			$('#submitBtn').click(function(){
+				var bankName=$('#selectBank option:selected').text(),
+					bankCardNo=$.trim($('#bankNo').val()),
+					bankCardName=$('#CardName').val(),
+					bankAddress=$('#zhihang').val(),
+                    code = $.trim($('#VerifyCode').val());
+                if ($.trim(bankAddress) == "") {
+                    layer.open({
+                        content: '请输入开支分行！',
+                        skin: 'msg',
+                        time: 1 //2秒后自动关闭
+                    });
+                    return false;
+                }
+				if(VerifyAddBank(bankCardName,bankCardNo,bankName,code)){
+					AddBank(bankName,bankCardNo,bankCardName,bankAddress,phoneNumber,code);
+				}								
+			})	
+			
+		})
+	</script>
+</html>

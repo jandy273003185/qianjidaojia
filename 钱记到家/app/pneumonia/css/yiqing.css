@@ -1,0 +1,300 @@
+﻿body
+{
+    background-color: #ffffff;
+    padding: 0;
+    margin: 0;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+}
+
+.banner
+{
+    background: url('../images/yiqing/banner.png') no-repeat center;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    height: 1.39rem;
+}
+.tabcontent
+{
+    margin: 0 .18rem;
+}
+.tabcontent .lab
+{
+    font-size: .12rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    margin-top: .14rem;
+}
+.tabcontent .lab span
+{
+    color: #000;
+}
+.tabcontent ul
+{
+    margin-top: .19rem;
+    list-style-type: none;
+    padding: 0;
+}
+.tabcontent ul li
+{
+    float: left;
+    width: .8rem;
+    height: .78rem;
+    text-align: center;
+}
+
+.tabcontent ul li div:first-child
+{
+    font-size: .1rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #666666;
+    line-height: .14rem;
+    margin-top: .03rem;
+}
+.tabcontent ul li div:last-child
+{
+    font-size: .21rem;
+    font-family: PingFangSC-Semibold,PingFang SC;
+    font-weight: 600;
+    line-height: .29rem;
+    margin-top: .03rem;
+}
+.tabcontent ul li:first-child
+{
+    background: url('../images/yiqing/tab1.png') no-repeat center;
+    background-size: 100% 100%;
+}
+.tabcontent ul li:nth-child(2)
+{
+    background: url('../images/yiqing/tab2.png') no-repeat center;
+    background-size: 100% 100%;
+    margin-left: .06rem;
+}
+
+.tabcontent ul li:nth-child(3)
+{
+    background: url('../images/yiqing/tab3.png') no-repeat center;
+    background-size: 100% 100%;
+    margin-left: .06rem;
+}
+.tabcontent ul li:last-child
+{
+    background: url('../images/yiqing/tab4.png') no-repeat center;
+    background-size: 100% 100%;
+    margin-left: .06rem;
+}
+.tabcontent ul li:nth-child(1) div:first-child span, .tabcontent ul li:nth-child(1) div:last-child
+{
+    color: #FC6465;
+}
+.tabcontent ul li:nth-child(2) div:first-child span, .tabcontent ul li:nth-child(2) div:last-child
+{
+    color: #E98A37;
+}
+.tabcontent ul li:nth-child(3) div:first-child span, .tabcontent ul li:nth-child(3) div:last-child
+{
+    color: #438045;
+}
+.tabcontent ul li:nth-child(4) div:first-child span, .tabcontent ul li:nth-child(4) div:last-child
+{
+    color: #626364;
+}
+.tabcontent .bmap
+{
+    width: .67rem;
+    margin-top: .16rem;
+}
+.map
+{
+    width: 100%;
+    margin-top: .06rem;
+}
+.report
+{
+    width: 100%;
+    margin-top: .19rem;
+}
+
+.tabcontent .tip
+{
+    font-size: .12rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 17px;
+}
+
+.tabcontent .tip .wenhao
+{
+    width: .11rem;
+    margin-right: .04rem;
+}
+.tabcontent .layall
+{
+    font-size: .1rem;
+    font-family: PingFangSC-Semibold,PingFang SC;
+    font-weight: 600;
+    color: #999999;
+    line-height: .2rem;
+    width: 100%;
+    margin-top: .16rem;
+}
+.tabcontent .layall .tbing
+{
+    width: .67rem;
+    height: .2rem;
+    float: left;
+}
+.tabcontent .layall span
+{
+    display: block;
+    float: left;
+    height: .2rem;
+}
+
+.tabcontent3
+{
+    background: #ffffff;
+    position: fixed;
+    bottom: 0rem;
+    left: 0px;
+    width: 3.47rem;
+    padding: .10rem .14rem .28rem;
+}
+.tabcontent3 .share
+{
+    background: url("../images/yiqing/btnshare.png") no-repeat;
+    background-size: 100% 100%;
+    width: .78rem;
+    height: .4rem;
+    float: left;
+}
+.tabcontent3 .dingyue
+{
+    background: url("../images/yiqing/btnbuy.png") no-repeat;
+    background-size: 100% 100%;
+    width: 2.51em;
+    height: .4rem;
+    float: right;
+}
+.pangbai
+{
+       font-size: .1rem;
+    height: .9rem;
+    clear: both;
+}
+
+/*病例样式*/
+.area
+{
+    float: left;
+    border-bottom: 1px solid #E3E4E5;
+}
+.area div
+{
+    font-size: .12rem;
+    font-family: PingFangSC-Regular,PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: .17rem;
+    float: left;
+    height: .32rem;
+    line-height: .32rem;
+    text-align: center;
+}
+.area div:nth-child(1)
+{
+    text-align: left;
+    width: .74rem;
+}
+.area div:nth-child(2)
+{
+    width: .64rem;
+}
+.area div:nth-child(3)
+{
+    width: .64rem;
+}
+.area div:nth-child(4)
+{
+    width: .64rem;
+}
+.area div:nth-child(5)
+{
+    width: .64rem;
+}
+.fold .area div
+{
+    color: #999999;
+}
+.area.blod div:nth-child(1)
+{
+    font-weight: 600;
+    font-size: .15rem;
+}
+.area.blod div:nth-child(2)
+{
+    font-weight: 500;
+    font-size: .15rem;
+}
+.area.blod div:nth-child(3), .area.blod div:nth-child(4), .area.blod div:nth-child(5), .area.head div:nth-child(3), .area.head div:nth-child(4), .area.head div:nth-child(5)
+{
+    font-weight: 400;
+    font-size: .14rem;
+    color: #333333;
+}
+.area.blod div:nth-child(1), .area.blod div:nth-child(2), .area.head div:nth-child(1), .area.head div:nth-child(2)
+{
+    color: #F09B4F;
+}
+.area.blod .open
+{
+    background: url("../images/yiqing/open.png") no-repeat;
+    background-size: 100% 100%;
+    width: .09rem;
+    height: .04rem;
+    margin-top: .14rem;
+}
+.area.blod .close
+{
+    background: url("../images/yiqing/close.png") no-repeat;
+    background-size: 100% 100%;
+    width: .09rem;
+    height: .04rem;
+    margin-top: .14rem;
+}
+.none
+{
+    display:none;
+}
+.mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    background-color: rgba(0,0,0,.6);
+    display:none;
+}
+.mask .arrow {
+    position: absolute;
+    top: .23rem;
+    right: .17rem;
+    width: 1.03rem;
+    height: 1.11rem;
+    background-image: url(../images/yiqing/j.png);
+    background-size: 100% 100%;
+}
+.mask .hint {
+    position: absolute;
+    top: 1.2rem;
+    right: .84rem;
+    color: #fff;
+    font-weight: 500;
+    font-size: .16rem;
+}

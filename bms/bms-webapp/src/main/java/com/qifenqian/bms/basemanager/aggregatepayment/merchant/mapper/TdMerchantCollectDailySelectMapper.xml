@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.merchant.mapper.TdMerchantCollectDailySelectMapper">
+	
+	<select id="selectMerchantCollectDaily" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantCollectDaily"
+	resultType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantCollectDaily">
+		select
+			t.daily_id,
+			t.merchant_id,
+			t.work_date,
+			t.channel_code,
+			t.trans_type,
+			t.trans_count,
+			t.trans_total_amt,
+			t.trans_total_fee,
+			t.status,
+			t.inst_date,
+			t.inst_datetime
+		from
+			td_merchant_collect_daily t
+		<where>
+			<if test="merchantId != null and merchantId != ''">
+				AND t.merchant_id = #{merchantId ,jdbcType= VARCHAR}
+			</if>
+			<if test="beginWorkDate != null and beginWorkDate != ''">
+			 <![CDATA[  
+	              AND DATE_FORMAT(t.work_date ,'%Y-%m-%d') >= #{beginWorkDate}  
+	            ]]>  
+			</if>		
+			<if test="endWorkDate != null and endWorkDate != ''">
+				 <![CDATA[  
+	              AND DATE_FORMAT(t.work_date ,'%Y-%m-%d') <= #{endWorkDate}  
+	            ]]>  
+			</if>
+			<if test="transType != null and transType != ''">
+				AND t.trans_type = #{transType,jdbcType = VARCHAR},
+			</if>
+			<if test="status != null and status != ''">
+				AND t.status = #{status,jdbcType = VARCHAR}
+			</if>
+			<if test="channelCode != null and channelCode != ''">
+				AND t.channel_code = #{channelCode,jdbcType = VARCHAR}
+			</if>
+		</where>
+			order by t.inst_datetime desc
+	</select>
+	
+</mapper>

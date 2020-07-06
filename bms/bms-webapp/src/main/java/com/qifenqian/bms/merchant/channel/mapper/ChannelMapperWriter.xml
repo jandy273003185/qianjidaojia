@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.channel.mapper.ChannelMapperWriter">
+
+
+	<insert id="insertChannel" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		insert into
+		td_channel_agent_mer_info(MER_CUST_ID,MER_NO,CHANNEL_CODE,CREATE_TIME,MODIFY_TIME,STATUS,PUBLIC_STATUS ) values (
+		#{custId},
+		#{merchantChannelId},
+		#{channelName},
+		now(),
+		now(),
+		'09',
+		'01'
+		)
+	</insert>
+
+	<delete id="deleteChannel" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		delete from td_channel_agent_mer_info where MER_CUST_ID=#{custId} and MER_NO=#{merchantChannelId} and
+		CHANNEL_CODE=#{channelName}
+	</delete>
+
+	<update id="updateChannel" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		update td_channel_agent_mer_info set MER_NO=#{channel.merchantChannelId},
+		CHANNEL_CODE=#{channel.channelName}
+		where
+		MER_CUST_ID=#{oldChannel.custId} and MER_NO=#{oldChannel.merchantChannelId} and
+		CHANNEL_CODE=#{oldChannel.channelName}
+	</update>
+
+	<insert id="insertChannelDetail" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		INSERT INTO td_channel_agent_mer_detail (
+		MER_CUST_ID, 
+		MER_NO, 
+		MER_KEY, 
+		PAY_TYPE, 
+		SUB_PAY_TYPE, 	
+		CREATE_TIME, 
+		MODIFY_TIME, 	
+		STATUS,
+		APPID, 
+		APPID_KEY,
+		WX_CHILD_NO,
+		ZFB_CHILD_NO
+		 ) 
+		VALUES
+		<foreach collection="details" index="index" item="item" separator="," >
+			(
+			#{custId}, 
+			#{merchantChannelId},
+			#{merchantChannelKey},
+			#{item.channelCode,jdbcType=VARCHAR},
+			#{item.subCode,jdbcType=VARCHAR},
+			now(), 		
+			now(),	
+			'09',
+			#{item.wxAppId}, 
+			#{item.wxAppsecret},
+		 	#{item.wxChildNo},
+		 	#{item.zfbChildNo}
+			)
+		</foreach>
+	</insert>
+
+	<delete id="deleteChannelDetail">
+		delete from td_channel_agent_mer_detail where MER_NO=#{merchantChannelNo} and MER_CUST_ID=#{custId}
+	</delete>
+
+	<update id="activeChannel" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		update td_channel_agent_mer_info set STATUS='00' where MER_CUST_ID=#{custId} and
+		MER_NO=#{merchantChannelId} and CHANNEL_CODE=#{channelName}
+	</update>
+
+
+
+	<update id="activeChannelDetail" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		update td_channel_agent_mer_detail set STATUS='00' where MER_CUST_ID=#{custId} and
+		MER_NO=#{merchantChannelId}
+	</update>
+
+	<update id="deactiveChannel" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		update td_channel_agent_mer_info set STATUS='09' where MER_CUST_ID=#{custId} and
+		MER_NO=#{merchantChannelId} and CHANNEL_CODE=#{channelName}
+	</update>
+
+	<update id="deactiveChannelDetail" parameterType="com.qifenqian.bms.merchant.channel.bean.ChannelBean">
+		update td_channel_agent_mer_detail set STATUS='09' where MER_CUST_ID=#{custId} and
+		MER_NO=#{merchantChannelId}
+	</update>
+
+
+
+</mapper>

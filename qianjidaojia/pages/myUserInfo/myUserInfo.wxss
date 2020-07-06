@@ -1,0 +1,63 @@
+/* pages/myUserInfo/myUserInfo.wxss */
+page{
+  background-color:#FDFAFE;
+  padding-bottom: 200rpx;
+}
+.item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx; 
+  background-color: #ffffff;
+}
+.userinfo-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+}
+.title{
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  color: #333333;
+}
+.title>image{
+  width: 34rpx;
+  height: 40rpx; 
+  margin-left: 20rpx;  
+}
+.name{
+  font-size: 30rpx;
+  color: #999999;
+}
+.nickName{
+  display: flex;
+  align-items: center;
+}
+.arrow{
+  width: 16rpx;
+  height: 22rpx;
+  transform: rotate(180deg);
+  margin-left: 10rpx;
+}
+.bankCard{
+  width: 40rpx !important;
+  height: 40rpx !important;
+}
+.line{
+  border-top: 2rpx solid #eeeeee; 
+}
+.distance{
+  margin-top: 20rpx;
+}
+
+.logout{
+  display: flex;
+  justify-content: center;
+  background-color: #EF1941;
+  margin: 400rpx 100rpx 50rpx 100rpx;
+  border-radius: 50rpx;
+  padding: 20rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+}

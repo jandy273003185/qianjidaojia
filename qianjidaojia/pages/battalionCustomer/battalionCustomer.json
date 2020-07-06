@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "我的客户",
+"navigationBarBackgroundColor": "#fff",
+"navigationBarTextStyle": "black",
+"usingComponents": {
+    "myModal": "../../components/myModal/myModal",
+    "myIcon": "../../components/myIcon/myIcon"
+
+}
+}

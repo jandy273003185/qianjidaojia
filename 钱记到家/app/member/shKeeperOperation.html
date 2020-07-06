@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/classify.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/dropload.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .fixdtips {
+            position: fixed;
+            top: .45rem;
+            width: 100%;
+            max-width: 750px;
+            font-size: .12rem;
+            color: #999;
+            background-color: #F6F6F6;
+            padding: .1rem;
+            z-index: 30;
+            border-bottom: 1px solid #E8E8E8;
+        }
+
+        .m-pro .bd .icon-add {
+            display: block;
+            height: .3rem;
+            width: .3rem;
+            position: absolute;
+            right: .1rem;
+            bottom: .08rem;
+            background: url(/images/icons/addPro.png) center center no-repeat;
+            background-size: .24rem;
+            right: 0;
+            bottom: 0;
+        }
+
+            .m-pro .bd .icon-add.disabled {
+                background: url(/images/icons/disabledAddPro.png) center center no-repeat;
+                background-size: .24rem;
+            }
+
+        .operationFoot {
+            text-align: right;
+            height: .55rem;
+        }
+
+        .fixed {
+            position: fixed;
+            width: 100%;
+            z-index: 30;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            max-width: 750px;
+            background-color: #F6F6F6;
+            height: .55rem;
+            bottom: 0;
+            padding: 0 .1rem;
+            line-height: .55rem;
+        }
+
+        .operationFoot .btnAdd {
+            display: inline-block;
+            padding: 0 .1rem;
+            line-height: .32rem;
+            font-size: .15rem;
+            border: 1px solid #ff4e17;
+            color: #ff4e17;
+            border-radius: 1rem;
+        }
+
+        .search_head .search {
+            margin-left: .45rem;
+            margin-right: .45rem;
+        }
+
+        .classifyNavList {
+            position: fixed;
+            left: 0;
+            top: 1.02rem;
+        }
+
+        .classifyTabContent {
+            border-top: none;
+        }
+    </style>
+</head>
+
+	<body class="ac">
+		<!--正在加载中-->
+		<div class="allScreenLoading">
+			<div class="inner">
+				<div class="con">
+					<img src="/images/icons/bigLoading.gif" alt="" />
+					<p>正在加载中...</p>
+				</div>
+				
+			</div>
+		</div>
+		<!--正在加载中  end-->
+		<div class="h45">
+			<div class="head search_head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="search">
+					<div class="inner">
+						<span class="ico_search"></span>
+						<input type="text" id="gotoSearchProduct" placeholder="搜索商品、类品" class="input_txt" />
+					</div>
+				</div>
+				<a href="javascript:;" class="icon_r txt" id="btnSearch">搜索</a>
+			</div>
+		</div>
+		<div class="main">
+			<div style="height: .56rem;">
+				<p class="fixdtips">会员点击图标可以把商品添加到自己开的小店中，也可选择底部的一键添加</p>
+			</div>
+			<div class="classifyContent">
+				<div class="classifyTabContent">
+					<!--左边-->
+					<div class="classifyNavList"></div>
+					<!--右边-->
+					<div class="classifyTabShow">
+						<!--<h2 class="typeTitle">今日推荐</h2>-->
+						<div class="AllclassifyCon">
+							<ul class="prolist2" id="prolist2_Div">
+										
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!--操作底部-->
+		<div class="operationFoot">
+			<div class="inner fixed">
+				<span class="btnAdd">一键添加到店铺</span>
+			</div>
+		</div>		
+		<!--操作底部  end-->
+		<script id="prolist2_Tpl" type="text/html">
+			{{# for(var i = 0; i< d.length; i++){ }} 
+			<li data-Pid="{{d[i].productId}}" data-shopid="{{d[i].shopId}}">
+				<a href="/details.html?id={{d[i].productId}}" class="m-pro">
+					<div class="hd">
+						<div class="img">
+							{{#  
+							  function Img(){
+							  	var path = sc.fileServerUrl + d[i].PicNo;
+							    return path;
+							  }; 
+							}}
+							<img src="{{Img()}}" alt="{{d[i].productName}}">
+						</div>
+					</div>
+					<div class="bd">
+						<h4 class="name">{{d[i].productName}}</h4>
+						<!--<p class="desc">越南芒果新鲜当季青芒新鲜水果</p>-->
+						<p class="price"><span>￥{{d[i].Price}}</span><span class="counterPrice">￥{{d[i].MarketPrice}}</span></p>
+						
+						<p class="Tags">
+							{{# if(d[i].DiscountNum && d[i].DiscountNum<10){ }}
+								<span class="rebate">{{d[i].DiscountNum}}折</span>
+							{{# } }}
+						</p>						
+						<span class="btn icon-add"></span>
+					</div>
+				</a>
+			</li>		
+			{{# } }} 
+		</script>
+		<script type="text/javascript">			
+			$(function() {
+				var objTop = $('.classifyContent').offset().top;
+				var ftHeight = $('.operationFoot').height();
+				var wHeight = $(window).height();
+//				$('.classifyNavList').css('height', wHeight - objTop - ftHeight + 'px');
+//				
+				//获取产品类型
+				var classTypeId="",
+					proName="";
+				var listItem=[],
+					btns;				
+				getProductType();
+				function getProductType() {
+					var url = 'api/Goods/GetProductType';
+					var callback = function(data) {
+						console.log(data);
+						$('.allScreenLoading').hide();						
+						var strhtml="";
+						if(data.code == 0) {
+							if(data.data.length) {
+								strhtml+='<ul class="list">';
+								strhtml+='<li class="active" data-id="">';								
+								strhtml+='<a href="javascript:;">今日推荐</a>';
+								strhtml+='</li>';
+								for(var i = 0; i< data.data.length; i++){									
+									strhtml+='<li data-id="'+data.data[i].Id+'">';
+									strhtml+='<a href="javascript:;">'+data.data[i].TypeName+'</a>';
+									strhtml+='</li>';
+								}
+								strhtml+='</ul>';
+								$('.classifyNavList').append(strhtml);
+								classTypeId = $('.classifyNavList .list li').eq(0).attr('data-id');
+								DroploadProduct(classTypeId,proName);
+								$('.classifyNavList').on('click','li',function() {	
+									$("#prolist2_Div").html("");
+									classTypeId = $(this).attr('data-id');
+									$(this).addClass('active').siblings().removeClass('active');
+									DroploadProduct(classTypeId,proName);
+								});
+							} 
+
+						} else if(data.code == 99) {
+							layer.open({
+								content: '服务器开了点小差，请重新刷新!',
+								skin: 'msg',
+								time: 2 //2秒后自动关闭
+							});
+						}
+
+					}
+					var error = function(data) {
+						$('.allScreenLoading').hide();
+					}
+					sc.get(url, {}, callback, error);
+				}				
+				function DroploadProduct(parentId,proName){
+					var pageNum = 0,pageSize = 10;	
+					$(".dropload-down").remove();
+					$('.classifyTabShow').dropload({
+						scrollArea: window,
+						domDown: {
+							domClass: 'dropload-down',
+							domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+							domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+							domNoData: '<div class="dropload-noData">已经到底了</div>'
+						},
+						loadDownFn: function(me) {
+							pageNum++;
+							MyGetProductlist(parentId,proName,pageNum, pageSize, function(data){
+								for(var i = 0; i < data.data.length; i++) {
+									var comJson = {};
+									comJson["ShopId"] = data.data[i].shopId;
+									comJson["ProductId"] = data.data[i].productId;
+									listItem.push(comJson);
+								}
+								//console.log(JSON.stringify(listItem));
+
+								var gettpl = document.getElementById('prolist2_Tpl').innerHTML;
+								if(data.data.length == 0 && !data.isok){
+									me.lock();
+				                    me.noData();
+				                    me.resetload(); 
+				                    if (pageNum == 1) {
+				                    	$(".dropload-down").remove();
+				                    	$('#prolist2_Div').html("");
+									    emptytpl($('#prolist2_Div'));
+				                    }
+								}
+								else if(data.data.length<pageSize){									
+									laytpl(gettpl).render(data.data, function(html) {
+										//得到的模板渲染到html
+										$('#prolist2_Div').append(html);
+									});
+									$('#prolist2_Div li').each(function(){
+										var btn =$(this).find('.icon-add');
+										var Pid=$(this).attr('data-Pid'),
+											Shopid=$(this).attr('data-shopid');
+										btn.click(function(event){
+											event.preventDefault();
+											MyShopProductBinding(Pid,Shopid,function(data){
+												layer.open({
+													content: '添加成功',
+													skin: 'msg',
+													time: 1 //1秒后自动关闭
+												});
+												btn.addClass('disabled');
+											})
+										})
+									})
+									me.lock("down");									
+									me.noData();
+									me.resetload();
+								}
+								else{
+									if(pageNum == 1){
+										$("#prolist2_Div").html("");
+									}
+//									setTimeout(function() {
+										laytpl(gettpl).render(data.data, function(html) {
+											//得到的模板渲染到html
+											$('#prolist2_Div').append(html);
+										});
+										$('#prolist2_Div li').each(function(){
+											var btn =$(this).find('.icon-add');
+											var Pid=$(this).attr('data-Pid'),
+												Shopid=$(this).attr('data-shopid');
+											btn.click(function(event){
+												event.preventDefault();
+												MyShopProductBinding(Pid,Shopid,function(data){
+													layer.open({
+														content: '添加成功',
+														skin: 'msg',
+														time: 1 //1秒后自动关闭
+													});
+													btn.addClass('disabled');
+												})
+											})
+										})
+										me.resetload();
+//									}, 1000);
+								}
+							},me)
+						}
+					})
+				}
+				//搜索
+
+				$('#btnSearch').click(function() {
+					pageNum = 0;
+					proName = $('#gotoSearchProduct').val();
+					if(!proName) {
+						layer.open({
+							content: '请输入你要搜索的内容!',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					} else {
+						$(".dropload-down").remove();
+				        $('#prolist2_Div').html("");
+						DroploadProduct(classTypeId,proName);
+					}
+				})
+				//一键绑定
+				$('.btnAdd').click(function(){
+					//var btns=$('#prolist2_Div li').find('.icon-add');
+					var list =JSON.stringify(listItem);
+					AllProductBinding(list,function(data){
+						layer.open({
+							content: '一键添加成功！',
+							skin: 'msg',
+							time: 1 //1秒后自动关闭
+						});
+						//btn.addClass('disabled');
+					})
+				})
+				
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的客户</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/myCustomer.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+        <input type="text" placeholder="输入手机号搜索">
+    </div>
+    <div class="timer">
+        <div class="active">全部</div>
+        <div>今日</div>
+        <div>昨日</div>
+        <div>近7日</div>
+    </div>
+
+    <div id="content"></div>
+    <script>
+        $(function() {
+            $(".timer").children().click(function () {
+                $(this).addClass("active").siblings().removeClass("active");
+            });
+        })
+        window.onload = function() {
+            for (let i = 0; i < 5; i++) {
+                const str = `<div class="list">
+                    <div><img src="../images/goods1.png" alt=""></div>
+                    <div>
+                        <p>花京院</p>
+                        <p>153****0404</p>
+                        <p>注册时间：2020-01.01 12:00</p>
+                    </div>
+                </div>`;
+                document.getElementById("content").innerHTML += str;
+            }
+        }
+    </script>
+</body>
+
+</html>

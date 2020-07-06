@@ -1,0 +1,44 @@
+<footer class="index_footer">
+	<ul class="navList clear">
+		<li class="ft1">
+			<a href="/indexV.html">首页</a>
+		</li>
+		<li class="ft2">
+			<a href="/classify.html">分类</a>
+		</li>
+		<li class="ft3">
+			<a href="/discover.html">发现</a>
+		</li>
+		<li class="ft4">
+			<a href="/cart.html" id="mycart">购物车</a>
+		</li>
+		<li class="ft5">
+			<a href="/member/member.html" id="My">我的</a>
+		</li>
+	</ul>
+</footer>		
+<script>
+	$(function() {
+		//		导航添加选中样式
+		var Url = window.location.pathname.substring(0);
+		$(".navList li").each(function() {
+			var item = $(this);
+			var item_url = item.find('a').attr('href');
+			if (item_url == Url) {
+				item.addClass("active");
+			}
+		})	
+		var isLogin = sc.auth.isLogin();
+		$('#My').click(function() {		
+			if(!isLogin){
+				$(this).attr("href","/login.html");
+			}
+		})
+		$('#mycart').click(function() {
+			if(!isLogin){
+				$(this).attr("href","/login.html");
+			}
+		})		
+	});
+</script>
+

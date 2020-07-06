@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.recharge.mapper.RechargeMapper">
+	<select id="selectRecharge" parameterType="com.qifenqian.bms.basemanager.recharge.bean.RechargeBean" resultType="com.qifenqian.bms.basemanager.recharge.bean.RechargeBean">
+		SELECT
+				TTT.CHARGE_SN,
+				TTT.MER_ORDER_ID,
+				TTT.TRANS_ID,
+				H.ID CHANNEL_ID,
+				TTT.ORDER_ID,
+		    	TTT.WORK_DATE compDate,
+				TTT.CHARGE_SUBMIT_TIME,
+				TTT.CHARGE_RETURN_TIME,
+				TTT.CUST_NAME,
+				TTT.CHARGE_AMT,
+				H.TRANS_AMT settleAmt,
+				TTT.CHARGE_TYPE,
+				TTT.CHARGE_NETPAY_STATE,
+				TTT.MOBILE,
+				TTT.CHARGE_WAY,
+				TTT.TRANS_TYPE
+			FROM
+				(SELECT 
+					T1.CHARGE_SN,
+					''  MER_ORDER_ID,	
+						Y1.TRANS_ID,
+					'' ORDER_ID,
+					T1.CREATE_TIME CHARGE_SUBMIT_TIME,
+					T1.CHARGE_RETURN_TIME,
+					T1.CUST_NAME,
+					T1.CHARGE_AMT,
+					T1.CHARGE_TYPE,
+					T1.CHARGE_NETPAY_STATE,
+					IFNULL(DATE_FORMAT(T1.CHARGE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.CREATE_TIME,'%Y%m%d')) WORK_DATE,
+					T1.CORE_SN,
+					U1.MOBILE,	
+					'0' CHARGE_WAY,
+					(CASE 	WHEN Y1.TRANS_TYPE ='REVOCATION'  THEN 'UNIONPAY_REVOKE' 
+					WHEN Y1.TRANS_TYPE ='REFUND'  THEN 'UNIONPAY_REFUND' else 'UNIONPAY_PAYMENT' end) TRANS_TYPE
+				FROM
+					TD_CHARGE_BILL T1
+				LEFT JOIN  (SELECT
+								YL2.*
+							FROM
+								TD_TRANS_YL YL2
+							JOIN (
+								SELECT
+									MAX(YL.TRANS_SUBMIT_TIME) MAXTIME,
+									YL.TRANS_SN
+								FROM
+									TD_TRANS_YL YL
+								GROUP BY
+									YL.TRANS_SN
+							) SS ON YL2.TRANS_SN = SS.TRANS_SN
+							AND YL2.TRANS_SUBMIT_TIME = SS.MAXTIME) Y1
+				ON T1.CHARGE_SN = Y1.TRANS_SN
+				LEFT JOIN TD_LOGIN_USER_INFO U1
+				on T1.CUST_ID = U1.CUST_ID
+				UNION ALL
+					SELECT
+						T2.ORDER_ID CHARGE_SN,
+						T2.MER_ORDER_ID,
+						Y2.TRANS_ID,
+						T2.ORDER_ID,	
+						T2.ORDER_CREATE_TIME CHARGE_SUBMIT_TIME,
+						T2.ORDER_CORE_RETURN_TIME CHARGE_RETURN_TIME,
+						T2.PAYER_CUST_NAME CUST_NAME,
+						T2.CHARGE_AMT,
+						T2.CHARGE_TYPE,
+						T2.CHARGE_NETPAY_STATE,
+					  	IFNULL(DATE_FORMAT(T2.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T2.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+						T2.CORE_SN,
+						U2.MOBILE,	
+						'1'  CHARGE_WAY,
+						'UNIONPAY_PAYMENT' TRANS_TYPE
+					FROM
+						TD_TRADE_BILL_MAIN T2 
+					LEFT JOIN TD_LOGIN_USER_INFO U2
+					ON T2.SRC_CUST_ID = U2.CUST_ID	
+					LEFT JOIN TD_TRANS_YL Y2 
+					ON T2.ORDER_ID = Y2.TRANS_SN 
+					WHERE T2.IS_NEED_CHARGE = '1'
+					) TTT
+			LEFT JOIN STCS.TRANS_RECORD SS
+			ON TTT.CHARGE_SN = SS.REQ_SERIAL_ID
+			LEFT JOIN (
+			SELECT
+				Y.TRANS_AMT,
+				Y.RTN_SEQ,
+				F.MSG_ID,
+				Y.ID
+			FROM
+				STCS.CLEAR_JGKJ_RECHARGE Y
+				LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID 
+			WHERE
+				F.OPERATE = 'JGKJ_RECHARGE'
+			) H ON  H.MSG_ID = SS.MSG_ID
+		<where>
+			<if test="null !=  transId and '' != transId">
+				AND TTT.TRANS_ID LIKE CONCAT('%',#{transId},'%')
+			</if>
+			<if test="merOrderId != null and '' != merOrderId">
+				AND TTT.MER_ORDER_ID LIKE CONCAT('%',#{merOrderId},'%')
+			</if>
+			<if test="channelId != null and '' != channelId">
+				AND H.ID LIKE CONCAT('%',#{channelId},'%')
+			</if>
+			<if test="custId != null and '' != custId">
+				AND TTT.CUST_ID LIKE CONCAT('%',#{custId},'%')
+			</if>
+			<if test="custName != null and '' != custName">
+				AND TTT.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+			</if>
+			<if test="chargeType != null and '' != chargeType">
+				AND TTT.CHARGE_TYPE = #{chargeType}
+			</if>
+			<if test="chargeWay != null and '' != chargeWay">
+				AND TTT.CHARGE_WAY =  #{chargeWay}
+			</if>
+			<if test="chargeNetpayState != null and '' != chargeNetpayState">
+			    AND TTT.CHARGE_NETPAY_STATE = #{chargeNetpayState ,jdbcType=VARCHAR}
+			</if> 
+			<if test="mobile != null and '' != mobile ">
+				AND TTT.MOBILE  = #{mobile ,jdbcType=VARCHAR}
+			</if>
+			<if test="orderId != null and '' != orderId">
+				AND TTT.ORDER_ID LIKE CONCAT('%',#{orderId},'%')
+			</if>
+			<if test="chargeSn != null and '' != chargeSn">
+				AND TTT.CHARGE_SN LIKE CONCAT('%',#{chargeSn},'%')
+			</if>
+			<if test="transType != null and '' != transType">
+				AND TTT.TRANS_TYPE = #{transType,jdbcType = VARCHAR}
+			</if>
+			<if test="beginTime != null and '' != beginTime">
+	 		<![CDATA[ 
+	 			AND DATE_FORMAT(TTT.CHARGE_SUBMIT_TIME ,'%Y-%m-%d') >= #{beginTime} 
+	 			]]>
+			</if>
+			<if test="endTime != null and '' != endTime">
+	 		    <![CDATA[ 
+	 			AND DATE_FORMAT(TTT.CHARGE_SUBMIT_TIME ,'%Y-%m-%d') <= #{endTime}
+	 			]]>
+			</if>
+			<if test="compBeginTime != null and '' != compBeginTime">
+				<![CDATA[
+					AND TTT.WORK_DATE >= #{compBeginTime}
+				]]>
+			</if>
+			<if test="compEndTime != null and '' != compEndTime">
+				<![CDATA[
+					AND TTT.WORK_DATE <= #{compEndTime}
+				]]>
+			</if>
+		</where>
+			
+		ORDER BY TTT.CHARGE_SUBMIT_TIME DESC
+	</select>
+
+	<select id="selectRechargeExcel" parameterType="com.qifenqian.bms.basemanager.recharge.bean.RechargeBean" resultType="com.qifenqian.bms.basemanager.recharge.bean.RechargeExcel">
+		SELECT
+			TTT.CHARGE_SN,
+			TTT.MER_ORDER_ID,
+			TTT.TRANS_ID,
+			H.ID CHANNEL_ID,
+			TTT.ORDER_ID,
+			TTT.WORK_DATE compDate,
+			DATE_FORMAT(TTT.CHARGE_SUBMIT_TIME,'%Y-%m-%d %H:%i:%s') as chargeSubmitTime,
+			DATE_FORMAT(TTT.CHARGE_RETURN_TIME,'%Y-%m-%d %H:%i:%s') as chargeReturnTime,
+			TTT.CUST_NAME,
+			TTT.CHARGE_AMT,
+			H.TRANS_AMT settleAmt,
+			CASE TTT.CHARGE_TYPE WHEN '1'
+			THEN '快捷支付（已开通）'
+			WHEN '2'
+			THEN '快捷支付（未开通）'
+			WHEN '3'
+			THEN '网银'
+			WHEN '4'
+			THEN '银联支付'
+			WHEN '5'
+			THEN '小快捷支付'
+			WHEN '6'
+			THEN '红包充值'
+			END AS chargeType,
+			CASE
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('00')
+			THEN '充值成功'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('01')
+			THEN '待支付'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('02')
+			THEN '银联处理成功'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('03')
+			THEN '银联处理失败'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('04')
+			THEN '核心处理中'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('05')
+			THEN '核心处理失败'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('99')
+			THEN '取消'
+			WHEN TTT.CHARGE_NETPAY_STATE IN ('90')
+			THEN '未明'
+			END AS chargeNetpayState,
+			TTT.MOBILE,
+			CASE TTT.CHARGE_WAY 
+			WHEN '0' THEN '充值'
+			WHEN '1' THEN '支付' END CHARGE_WAY,
+			CASE TTT.TRANS_TYPE
+			WHEN 'UNIONPAY_REVOKE' THEN '撤销'
+			WHEN 'UNIONPAY_REFUND' THEN '退款'
+			WHEN 'UNIONPAY_PAYMENT' THEN '充值' END TRANS_TYPE
+		FROM
+				(SELECT 
+					T1.CHARGE_SN,
+					''  MER_ORDER_ID,	
+						Y1.TRANS_ID,
+					'' ORDER_ID,
+					T1.CREATE_TIME CHARGE_SUBMIT_TIME,
+					T1.CHARGE_RETURN_TIME,
+					T1.CUST_NAME,
+					T1.CHARGE_AMT,
+					T1.CHARGE_TYPE,
+					T1.CHARGE_NETPAY_STATE,
+					IFNULL(DATE_FORMAT(T1.CHARGE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T1.CREATE_TIME,'%Y%m%d')) WORK_DATE,
+					T1.CORE_SN,
+					U1.MOBILE,	
+					'0' CHARGE_WAY,
+					(CASE 	WHEN Y1.TRANS_TYPE ='REVOCATION'  THEN 'UNIONPAY_REVOKE' 
+					WHEN Y1.TRANS_TYPE ='REFUND'  THEN 'UNIONPAY_REFUND' else 'UNIONPAY_PAYMENT' end) TRANS_TYPE
+				FROM
+					TD_CHARGE_BILL T1
+				LEFT JOIN 
+						(SELECT
+								YL2.*
+							FROM
+								TD_TRANS_YL YL2
+							JOIN (
+								SELECT
+									MAX(YL.TRANS_SUBMIT_TIME) MAXTIME,
+									YL.TRANS_SN
+								FROM
+									TD_TRANS_YL YL
+								GROUP BY
+									YL.TRANS_SN
+							) SS ON YL2.TRANS_SN = SS.TRANS_SN
+							AND YL2.TRANS_SUBMIT_TIME = SS.MAXTIME) Y1
+				ON 
+						T1.CHARGE_SN = Y1.TRANS_SN
+				LEFT JOIN 
+					TD_LOGIN_USER_INFO U1
+				ON T1.CUST_ID = U1.CUST_ID
+				UNION ALL
+					SELECT
+						T2.ORDER_ID CHARGE_SN,
+						T2.MER_ORDER_ID,
+						Y2.TRANS_ID,
+						T2.ORDER_ID,	
+						T2.ORDER_CREATE_TIME CHARGE_SUBMIT_TIME,
+						T2.ORDER_CORE_RETURN_TIME CHARGE_RETURN_TIME,
+						T2.PAYER_CUST_NAME CUST_NAME,
+						T2.CHARGE_AMT,
+						T2.CHARGE_TYPE,
+						T2.CHARGE_NETPAY_STATE,
+						IFNULL(DATE_FORMAT(T2.ORDER_CORE_RETURN_TIME,'%Y%m%d'),DATE_FORMAT(T2.ORDER_CREATE_TIME,'%Y%m%d')) WORK_DATE,
+						T2.CORE_SN,
+						U2.MOBILE,	
+						'1'  CHARGE_WAY,
+						'UNIONPAY_PAYMENT' TRANS_TYPE
+					FROM
+						TD_TRADE_BILL_MAIN T2 
+					LEFT JOIN 
+						TD_LOGIN_USER_INFO U2
+					on T2.SRC_CUST_ID = U2.CUST_ID	
+						
+					LEFT JOIN 
+						TD_TRANS_YL Y2 
+					ON 
+						T2.ORDER_ID = Y2.TRANS_SN 
+					WHERE 
+						T2.IS_NEED_CHARGE = '1'
+					) TTT
+			LEFT JOIN STCS.TRANS_RECORD SS
+			ON TTT.CHARGE_SN = SS.REQ_SERIAL_ID
+			LEFT JOIN (
+			SELECT
+				Y.TRANS_AMT,
+				Y.RTN_SEQ,
+				F.MSG_ID,
+				Y.ID
+			FROM
+				STCS.CLEAR_JGKJ_RECHARGE Y
+				LEFT JOIN STCS.TRANS_RECORD_FLOW F ON F.ID = Y.TRANS_FLOW_ID 
+			WHERE
+				F.OPERATE = 'JGKJ_RECHARGE'
+			) H ON H.MSG_ID = SS.MSG_ID
+			<where>
+				<if test="null !=  transId and '' != transId">
+					AND TTT.TRANS_ID LIKE CONCAT('%',#{transId},'%')
+				</if>
+				<if test="merOrderId != null and '' != merOrderId">
+					AND TTT.MER_ORDER_ID LIKE CONCAT('%',#{merOrderId},'%')
+				</if>
+				<if test="channelId != null and '' != channelId">
+					AND H.ID LIKE CONCAT('%',#{channelId},'%')
+				</if>
+				<if test="custId != null and '' != custId">
+					AND TTT.CUST_ID LIKE CONCAT('%',#{custId},'%')
+				</if>
+				<if test="custName != null and '' != custName">
+					AND TTT.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+				</if>
+				<if test="chargeType != null and '' != chargeType">
+					AND TTT.CHARGE_TYPE = #{chargeType}
+				</if>
+				<if test="chargeWay != null and '' != chargeWay">
+					AND TTT.CHARGE_WAY =  #{chargeWay}
+				</if>
+				<if test="chargeNetpayState != null and '' != chargeNetpayState">
+				    AND TTT.CHARGE_NETPAY_STATE = #{chargeNetpayState ,jdbcType=VARCHAR}
+				</if> 
+				<if test="mobile != null and '' != mobile ">
+					AND TTT.MOBILE  = #{mobile ,jdbcType=VARCHAR}
+				</if>
+				<if test="orderId != null and '' != orderId">
+					AND TTT.ORDER_ID LIKE CONCAT('%',#{orderId},'%')
+				</if>
+				<if test="chargeSn != null and '' != chargeSn">
+					AND TTT.CHARGE_SN LIKE CONCAT('%',#{chargeSn},'%')
+				</if>
+				<if test="transType != null and '' != transType">
+					AND TTT.TRANS_TYPE = #{transType,jdbcType = VARCHAR}
+				</if>
+				<if test="beginTime != null and '' != beginTime">
+		 		<![CDATA[ 
+		 			AND DATE_FORMAT(TTT.CHARGE_SUBMIT_TIME ,'%Y-%m-%d') >= #{beginTime} 
+		 			]]>
+				</if>
+				<if test="endTime != null and '' != endTime">
+		 		    <![CDATA[ 
+		 			AND DATE_FORMAT(TTT.CHARGE_SUBMIT_TIME ,'%Y-%m-%d') <= #{endTime}
+		 			]]>
+				</if>
+				<if test="compBeginTime != null and '' != compBeginTime">
+					<![CDATA[
+						AND TTT.WORK_DATE >= #{compBeginTime}
+					]]>
+				</if>
+				<if test="compEndTime != null and '' != compEndTime">
+					<![CDATA[
+						AND TTT.WORK_DATE <= #{compEndTime}
+					]]>
+				</if>
+			</where>
+			ORDER BY TTT.CHARGE_SUBMIT_TIME DESC
+	</select>
+	
+	<select id="selectRechargeBeanByChargeSn" parameterType="string" resultType="com.qifenqian.bms.basemanager.recharge.bean.RechargeBean">
+		SELECT 
+			T.* 
+		FROM 
+			TD_CHARGE_BILL T
+		WHERE 
+			T.CHARGE_SN = #{chargeSn,jdbcType = VARCHAR}
+		AND T.CHARGE_NETPAY_STATE = '00'
+	</select>
+</mapper>

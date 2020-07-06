@@ -1,0 +1,51 @@
+<!--pages/address/address.wxml-->
+<view class="item">
+  <view class="item-left">
+    <text class="title">联系人</text>
+    <input placeholder="名字" placeholder-style="color:#999999" value="{{consignee}}" bindinput="consigneeInput"></input>
+  </view>
+  <image class="icon" src="images/address_book.png" mode="cover"></image>
+</view>
+<view class="item line">
+  <view class="item-left">
+    <text class="title">手机电话</text>
+    <input placeholder="11位手机号" placeholder-style="color:#999999" bindblur="mobileBlur" bindinput="mobileInput" value="{{mobile}}" maxlength="11"></input>
+  </view>
+</view>
+<view class="item line">
+  <view class="item-left">
+    <text class="title">选择地址</text>
+    <!-- <input placeholder="地区信息" placeholder-style="color:#999999"></input> -->
+    <picker mode="multiSelector" bindchange="bindRegionChange" bindcolumnchange="bindRegionColumnChange" range='{{multiArray}}'>
+      <text wx:if="{{addressCity}}">{{addressCity[0]}}  {{addressCity[1]}}  {{addressCity[2]}}</text>
+      <text wx:else class="address">地区信息</text>
+    </picker>
+  </view>
+  <image class="icon2" src="/images/address.png" mode="cover"></image>
+</view>
+<view class="item line">
+  <view class="item-left">
+    <text class="title">详细地址</text>
+    <input placeholder="街道门牌信息" placeholder-style="color:#999999" value="{{fullAddress}}" bindinput="fullAddressInput"></input>
+  </view>
+</view>
+
+<view class="item default">
+  <view class="item-left">
+    <text class="title title-width">设置为默认地址</text>
+  </view>
+  <!-- <image class="toggle-img" src="{{toggle}}" mode="cover"></image> -->
+  <switch class="swith-img" checked="{{IsDefault}}" bindchange="changeSwitch"/>
+</view>
+
+<view wx:if="{{id}}" class="item default" bindtap="delAddress">
+  <view class="item-left">
+    <text class="title title-width title-color">删除收货地址</text>
+  </view>
+</view>
+
+<modal title="确定删除收货地址" confirm-text="确认" cancel-text="取消" hidden="{{remarkHidden}}" bindconfirm="modalConfirm" bindcancel="modalCancel">
+</modal>
+
+<view bindtap="finish" class="finish">保存</view>
+

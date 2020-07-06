@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>疫情订阅消息-钱记到家</title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+    <script src="/js/sc.core.js?v=1" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?5"></script>    
+    <link href="css/yiqingribao.css" rel="stylesheet" type="text/css" />
+    <script src="../script/WxShare.js?v=2"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="day1"></div>
+        <div class="day2"></div>
+        <div class="line">心怀希望、好事发生！</div>
+        <div class="tent">
+            <ul>
+                <li>
+                    <div id="TotalConfirm"></div>
+                    <div>确诊人数</div>
+                    <div>较上日<span id="AddTotalConfirm"></span></div>
+                </li>
+                <li>
+                    <div id="TotalSuspected"></div>
+                    <div>疑似人数</div>
+                    <div>较上日<span id="AddToatlSuspected"></span></div>
+                </li>
+                <li>
+                    <div id="TotalCure"></div>
+                    <div>治愈人数</div>
+                    <div>较上日<span id="AddTotalCure"></span></div>
+                </li>
+                <li>
+                    <div id="Totaldeath"></div>
+                    <div>死亡人数</div>
+                    <div>较上日<span id="AddTotaldeath"></span></div>
+                </li>
+            </ul>
+            <div class="remark">数据说明：以上为截止为2月5日19:00的疫情实时数据</div>
+        </div>
+        <div class="nav2">
+
+
+        </div>
+        <p class="pangbai">&nbsp;</p>
+    </div>
+    <div class="tabcontent3">
+        <div class="share"></div>
+        <div class="dingyue"></div>
+    </div>
+    <div class="mask"><div class="arrow"></div><div class="hint">点击右上角更多<br />分享给好友或到朋友圈</div></div>
+    <script type="text/javascript">
+        $(".share").click(function () {
+            $(".mask").show();
+        });
+        $(".mask").click(function () {
+            $(".mask").hide();
+        });
+
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        $(".dingyue").click(function () {
+            window.location.href = "yiqingdingyue.html";
+        });
+        // $(".share").click(function () {
+        getWxfxConfig(1, "地区疫情订阅『实时播报功能』-钱记到家", "点击订阅您关注的城市疫情实时动态播报；科学防护，共渡难关。", "https://www.qianjidaojia.com/pneumonia/images/yiqing/logo.jpg");
+        // });
+        var s = setInterval(function () {
+            if (!iswx() && !sc.auth.isLogin()) {
+                window.location.href = "/login.html";
+            }
+            if (!iswx() || (iswx() && isWxLoginOver == true)) {
+                clearInterval(s);
+                setTimeout(function () {
+                    //登录过了
+                    if (sc.utils.isNullOrEmpty(token)) {
+                        userId = sc.utils.getCookieValue("UserId");
+                        token = sc.utils.getCookieValue("Token");
+                    }
+                    // 初始化分享链接
+                    //GetMemberInfo(function (data) {
+                    //    var url = 'https://www.qianjidaojia.com/register.html?referralCode=' + data.data.ReferralCode + '&id=';
+                    //    $(".fenxiang a").attr("data-url", url);
+                    //});
+                    //加载数据
+                    var url = 'api/Pneumonia/LoaddailyData';
+                    var callback = function (data) {
+                        console.log(data);
+                        if (data.code == "0") {
+                            $(".day1").html(data.data.Month);
+                            $(".day2").html(data.data.LunarMonth);
+                            $("#TotalConfirm").html(data.data.TotalConfirm);
+                            $("#AddTotalConfirm").html("+" + data.data.AddTotalConfirm);
+                            $("#TotalSuspected").html(data.data.TotalSuspected);
+                            $("#AddToatlSuspected").html("+" + data.data.AddToatlSuspected);
+                            $("#TotalCure").html(data.data.TotalCure);
+                            $("#AddTotalCure").html("+" + data.data.AddTotalCure);
+                            $("#Totaldeath").html(data.data.Totaldeath);
+                            $("#AddTotaldeath").html("+" + data.data.AddTotaldeath);
+                            $(".remark").html("数据说明：以上为截止为" + data.data.UpDate + "的疫情实时数据");
+                            var html = "<div class=\"guanzhutxt\">你关注的地区</div>";
+                            if (data.data.cityList != null && data.data.cityList.length > 0) {
+                                for (var i = 0; i < data.data.cityList.length; i++) {
+                                    html += "<div class=\"area\"><div class=\"biao\"></div><div class=\"txt\">";
+                                    if (data.data.cityList[i].Name != data.data.cityList[i].parentName && data.data.cityList[i].parentName != "All") {
+                                        html += data.data.cityList[i].parentName + data.data.cityList[i].Name;
+                                    } else {
+                                        html += data.data.cityList[i].Name;
+                                    }
+                                    html += "</div></div><div class=\"tx\"><p>截至今日<span>累计确诊：";
+                                    html += data.data.cityList[i].ConfirmCount;
+                                    html += "例</span></p><p>今日<span>";
+                                    if (data.data.cityList[i].AddConfirm != "待更新") {
+                                        html += data.data.cityList[i].AddConfirm + "例";
+                                    } else {
+                                        html += "待更新";
+                                    }
+                                    html += "</span>，较昨日<span>增加 " + data.data.cityList[i].Rate + "</span></p></div>";
+
+                                }
+                                html += "<div class=\"t\">数据说明：获取各省市卫健委官网的最新数据</div>";
+                            }
+                            $(".nav2").html(html);
+                        }
+                    }
+                    sc.post(url, {
+                        "UserId": userId,
+                        "Token": token
+                    }, callback);
+                }, 100);
+            }
+        }, 300);
+    </script>
+    <script src="js/resetFontSize.js?0" type="text/javascript"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?588c7e7b5e836d9e197a605517df0f9d";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html> 

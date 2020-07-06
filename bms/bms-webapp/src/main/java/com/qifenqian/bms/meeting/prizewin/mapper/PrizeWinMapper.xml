@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.meeting.prizewin.mapper.PrizeWinMapper">
+
+	<insert id="insertList" useGeneratedKeys="true" parameterType="java.util.List">  
+		INSERT INTO BASE_PRIZE_WIN (
+			PRIZE_ID,
+			WIN_CUST_ID,
+			WIN_CUST_NAME,
+			WIN_CUST_PHONE,
+			WIN_AMOUNT,
+			WIN_MARK,
+			EFFECTIVE_DEADLINE,
+			STATUS,
+			INST_USER,
+			INST_DATE
+		)   VALUES  
+	    <foreach collection="list" item="prizeWin" index="index" separator="," >  
+	    (
+	        #{prizeWin.prizeId, 		jdbcType=INTEGER},
+	        #{prizeWin.winCustId, 		jdbcType=VARCHAR},
+	        #{prizeWin.winCustName, 	jdbcType=VARCHAR},
+	        #{prizeWin.winCustPhone, 	jdbcType=VARCHAR},
+	        #{prizeWin.winAmount, 		jdbcType=DECIMAL},
+	        #{prizeWin.winMark, 		jdbcType=VARCHAR},
+	        #{prizeWin.effectiveDeadline, jdbcType=TIMESTAMP},
+	        #{prizeWin.status, 		jdbcType=VARCHAR},
+	        #{prizeWin.instUser, 		jdbcType=INTEGER},
+	        #{prizeWin.instDate, 		jdbcType=VARCHAR}
+	     )  
+	    </foreach>  
+	</insert>  
+
+	<select id="selectPrizeWinList" parameterType="com.qifenqian.bms.meeting.prizewin.bean.PrizeWinBean" resultType="com.qifenqian.bms.meeting.prizewin.bean.PrizeWinBean">
+		   SELECT     T.WIN_ID,
+					  T.PRIZE_ID,
+					  B.PRIZE_NAME,
+					  T.WIN_CUST_ID,
+					  T.WIN_CUST_NAME,
+					  T.WIN_CUST_PHONE,
+					  T.WIN_AMOUNT,
+					  T.EFFECTIVE_DEADLINE,
+					  T.STATUS,
+					  T.INST_USER,
+					  T.INST_DATE,
+					  T.WIN_MARK,
+					  DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS INST_DATETIME,
+					  T.LUPD_USER,
+					  T.LUPD_DATETIME
+			 FROM BASE_PRIZE_WIN T LEFT JOIN BASE_PRIZE B ON T.PRIZE_ID = B.PRIZE_ID
+			<where>
+				<if test="winCustPhone!= '' and winCustPhone!=null ">
+				 AND T.WIN_CUST_PHONE LIKE CONCAT('%',#{winCustPhone},'%')
+				</if>
+				<if test="prizeName!= '' and prizeName!=null ">
+				 AND B.PRIZE_NAME LIKE CONCAT('%',#{prizeName},'%')
+				</if>
+				<if test="instDate!= null and instDate!= '' "> 
+				 AND T.INST_DATE =#{instDate, jdbcType=VARCHAR}
+				</if>
+			    <if test="status != null and status != '' "> 
+			     AND T.STATUS = #{status, jdbcType=VARCHAR}
+			    </if>
+			</where>
+			  ORDER BY T.LUPD_DATETIME DESC,T.WIN_ID DESC
+	</select>
+	
+	<update id="updatePrizeWin" parameterType="com.qifenqian.bms.meeting.prizewin.bean.PrizeWinBean">
+			UPDATE BASE_PRIZE_WIN T 
+		<set>
+			<if test="lupdUser!= null  and lupdUser!= '' ">
+				T.LUPD_USER = #{lupdUser,jdbcType = VARCHAR},
+			</if>
+			<if test="status!= null  and status!= '' ">
+				T.STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+				T.LUPD_DATETIME = now()
+			</set>
+			WHERE T.WIN_ID = #{winId,jdbcType = VARCHAR}
+	</update>
+	
+	<select id="selectPrizeWinExcel" parameterType="com.qifenqian.bms.meeting.prizewin.bean.PrizeWinBean" resultType="com.qifenqian.bms.meeting.prizewin.bean.PrizeWinExcel">
+		   SELECT     T.WIN_ID,
+					  T.PRIZE_ID,
+					  B.PRIZE_NAME,
+					  T.WIN_CUST_ID,
+					  T.WIN_CUST_NAME,
+					  T.WIN_CUST_PHONE,
+					  T.WIN_AMOUNT,
+					  DATE_FORMAT(T.EFFECTIVE_DEADLINE,'%Y-%m-%d %H:%i:%s') AS EFFECTIVE_DEADLINE,
+					  CASE T.STATUS 
+					  WHEN 'WAIT_RECEIVE' THEN '待领取'
+	  				  WHEN 'HAVE_RECEIVED' THEN '已领取'
+	 				  WHEN 'TAKE_BACK' THEN '已收回'
+	  				  WHEN 'DISABLE' THEN '无效' END AS STATUS,
+					  T.INST_USER,
+					  T.INST_DATE,
+					  CASE T.WIN_MARK 
+					  WHEN 'BEST' THEN '最佳手气'
+	  				  WHEN 'WORST' THEN '最差手气'
+	  				  ELSE '' END AS WIN_MARK,
+					  DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS INST_DATETIME,
+					  T.LUPD_USER,
+					  DATE_FORMAT(T.LUPD_DATETIME,'%Y-%m-%d %H:%i:%s') AS LUPD_DATETIME
+			 FROM BASE_PRIZE_WIN T LEFT JOIN BASE_PRIZE B ON T.PRIZE_ID = B.PRIZE_ID
+			<where>
+				<if test="winCustPhone!= '' and winCustPhone!=null ">
+				 AND T.WIN_CUST_PHONE LIKE CONCAT('%',#{winCustPhone},'%')
+				</if>
+				<if test="prizeName!= '' and prizeName!=null ">
+				 AND B.PRIZE_NAME LIKE CONCAT('%',#{prizeName},'%')
+				</if>
+				<if test="instDate!= null and instDate!= '' "> 
+				 AND T.INST_DATE =#{instDate, jdbcType=VARCHAR}
+				</if>
+			    <if test="status != null and status != '' "> 
+			     AND T.STATUS = #{status, jdbcType=VARCHAR}
+			    </if>
+			</where>
+			  ORDER BY T.INST_DATETIME DESC
+	</select>
+</mapper>

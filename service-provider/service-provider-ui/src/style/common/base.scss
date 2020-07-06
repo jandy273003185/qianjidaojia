@@ -1,0 +1,137 @@
+// rem 单位换算：定为 75px 只是方便运算，750px-75px、640-64px、1080px-108px，如此类推
+$vw_base:750;
+@function vw($px) {
+    @return ($px /$vw_base) * 100vw;
+}
+
+// body 也增加最大最小宽度限制，避免默认100%宽度的 block 元素跟随 body 而过大过小
+body,
+input,
+select,
+a,
+span,
+div,
+ul,
+li,
+dl,
+dd,
+dt,
+p,
+header,
+footer {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-size: vw(26);
+}
+
+body {
+    color: #333;
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+}
+
+.van-nav-bar__title {
+    margin: 0 auto;
+}
+
+input,
+input:focus {
+    font-size: vw(26);
+    background: #fff;
+    outline: none;
+    border: none;
+    -webkit-appearance: none;
+}
+
+select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: #fff;
+}
+
+.fileInp {
+    display: none;
+}
+
+img {
+    display: block;
+    width: 100%;
+}
+
+.mainColor {
+    color: #1484FF;
+}
+
+.mainBg {
+    background: #1484FF
+}
+
+.placeholder {
+    color: #ccc;
+    font-size: vw(26);
+}
+
+.icon {
+    font-size: vw(28);
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+.clearfix:after {
+    width: 0;
+    height: 0;
+    display: block;
+    content: "";
+    clear: both;
+    visibility: none;
+}
+
+.buttonIcon {
+    width: vw(600);
+    height: vw(80);
+    line-height: vw(80);
+    color: #F2FCFA;
+    font-size: vw(32);
+    text-align: center;
+    margin: vw(30) auto;
+    border-radius: vw(40);
+    outline: none;
+    appearance: none;
+    border: none;
+}
+
+.modal-wrap {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 999;
+}
+
+.van-picker {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 999;
+}

@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>团长个人中心</title>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/resetFontSize.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/clipboard.js"></script>
+    <script src="/js/jquery.qrcode.min.js"></script>
+    <link href="/css/groupcenter.css?2" rel="stylesheet" />
+</head>
+<body>
+    <div id="GroupuserInfo"></div>
+    <div id="cengbg"></div>
+    <div id="ceng">
+        <div class="cengdv">
+            <div id="erweimaImg"></div>
+            <img src="/images/noPic.jpg" id="myqrcodeImg"/>
+            <div class="qrtext">长按保存二维码</div>
+            <div id="copy_img" class="copy_img"></div>
+        </div>
+        <div id="close"></div>
+    </div>
+    <script id="GroupuserInfoTemp" type="text/x-dot-template">
+        <div class="banner">
+            <div class="person" id="groupuser">
+                <img src="/images/noPic.jpg" alt="" onclick="window.location.href='/member/set.html'">
+                <div class="two">
+                    <div id="tuannickname">团长</div>
+                    <div id="see">查看推广链接</div>
+                </div>
+            </div>
+
+            <div class="new-guidelines">
+                <a href="groupremark.html">
+                    <span>新手指引></span>
+                </a>
+            </div>
+        </div>
+        <div class="withdraw">
+            <div>余额</div>
+            <div><span class="w_one">￥</span><span class="w_two" id="Wallet">{{=it.Wallet}}</span></div>
+            <div id="balancego" class="balancego">
+                <span>去提现  &#62;</span>
+            </div>
+        </div>
+        <div class="content">
+            <div class="content-up">
+                <div>
+                    <span>我的客户</span>
+                    <img src="/images/groupuser/eye.png" alt="">
+                </div>
+                <div>
+                    <a href="groupoffineuserlist.html">
+                        <span>更多</span>
+                        <img src="/images/groupuser/arrow-right.png" alt="" class="more">
+                    </a>
+                </div>
+            </div>
+            <div class="content-down">
+                <div class="content-down-txt content-down-left auser" data-day="0">
+                    <div><span>{{=it.offineuserTodayTotal}}</span><span>人</span></div>
+                    <div>今日客户</div>
+                </div>
+                <div class="line"></div>
+                <div class="content-down-txt auser" data-day="">
+                    <div><span>{{=it.offineuserTotal}}</span><span>人</span></div>
+                    <div>累计客户</div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="content-up">
+                <div>
+                    <span>预估收益</span>
+                    <img src="/images/groupuser/eye.png" alt="">
+                </div>
+                <a href="groupoffineprofitlist.html">
+                    <span>更多</span>
+                    <img src="/images/groupuser/arrow-right.png" alt="" class="more">
+                </a>
+            </div>
+            <div class="content-down">
+                <div class="content-down-txt content-down-left aprofit" data-day="0">
+                    <div><span>{{=it.commissionPriceTodayTotal}}</span><span></span></div>
+                    <div>今日收益</div>
+                </div>
+                <div class="line"></div>
+                <div class="content-down-txt aprofit" data-day="1">
+                    <div><span>{{=it.commissionPriceYesterdayTotal}}</span><span></span></div>
+                    <div>昨日收益</div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="content-up">
+                <div>
+                    <span>我的订单</span>
+                    <img src="../images/groupuser/eye.png" alt="">
+                </div>
+                <a href="groupoffineorderlist.html">
+                    <span>更多</span>
+                    <img src="/images/groupuser/arrow-right.png" alt="" class="more">
+                </a>
+            </div>
+            <div class="content-down">
+                <div class="content-down-txt content-down-left aorder" data-day="0">
+                    <div><span>{{=it.offineorderTodayTotal}}</span><span>&nbsp;</span></div>
+                    <div class="aorder">今日购买订单量</div>
+                </div>
+                <div class="line"></div>
+                <div class="content-down-txt aorder" data-day="1">
+                    <div><span>{{=it.offineorderYesterdayTotal}}</span><span>&nbsp;</span></div>
+                    <div>昨日购买订单量</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            转发分享，手有余香
+        </div>
+    </script>
+
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        $(function () {
+            //GroupUserLevel();
+            getGroupUserInfo();
+        });
+        var level = 0;
+        //function GroupUserLevel() {
+        //    var url = 'api/User/GroupUserLevel';
+        //    var callback = function (data) {
+        //        if (data.code === 0) {
+        //            if (data.data > 0) {
+        //                level = data.data;
+        //                $(".banner").addClass("banner" + level);
+        //            }
+        //        }
+        //    }
+        //    sc.post(url, {
+        //        "UserId": userId,
+        //        "Token": token
+        //    }, callback);
+        //}
+        var spreadCode = "";
+        function getGroupUserInfo() {
+            var url = 'api/User/getGroupUserInfo';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data != "") {
+                        var arrText = doT.template($("#GroupuserInfoTemp").text());
+                        $("#GroupuserInfo").append(arrText(data.data));
+                        if (data.data.headimgurl != "")
+                            $("#groupuser img").attr("src", data.data.headimgurl);
+                        $("#groupuser #tuannickname").html(data.data.nickname);
+                        $(".banner").addClass("banner" + data.data.grouplevel);
+                        spreadCode = data.data.spreadCode;
+                        var url = window.location.protocol + "//" + window.location.host + "/indexv.html?spreadcode=" + spreadCode;
+                        $('#erweimaImg').qrcode({ width: 168, height: 168, correctLevel: 0, text: url }, "haibaoqrcanvas001");
+                        var drawing = document.getElementById("haibaoqrcanvas001");
+                        var context = drawing.getContext('2d');
+                        var imgURI = drawing.toDataURL("image/png");
+                        var image = document.createElement("img");
+                        image.src = imgURI;
+                        $("#myqrcodeImg").attr("src", image.src);
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                } else if (data.code == -1) {
+                    layer.open({
+                        content: '登录超时，请重新登录!',
+                        skin: 'msg',
+                        time: 1 //1秒后自动关闭
+                    });
+                    setTimeout(function () {
+                        location.href = "/register.html";
+                    }, 1000);
+                }
+
+                $(".balancego").click(function () {
+                    window.location.href = "/member/balance.html";
+                });
+                $(".aorder").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineorderlist.html?day=" + day;
+                });
+                $(".auser").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineuserlist.html?day=" + day;
+                });
+                $(".aprofit").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineprofitlist.html?day=" + day;
+                });
+                $("#see").click(function () {
+                    $("#ceng,#cengbg").show();
+                });
+                $("#close").click(function () {
+                    $("#ceng,#cengbg").hide();
+                });
+                $("#copy_img").click(function () {
+                    new Clipboard('.copy_img', {
+                        text: function () {
+                            if (spreadCode != "") {
+                                var elText = window.location.protocol + "//" + window.location.host + "/indexv.html?spreadcode=" + spreadCode;
+                                return elText;
+                            }
+                        }
+                    });
+                    if (spreadCode != "") {
+                        layer.open({
+                            content: "已复制",
+                            skin: 'msg',
+                            time: 2
+                        });
+                    } else {
+                        layer.open({
+                            content: "复制失败",
+                            skin: 'msg',
+                            time: 2
+                        });
+                    }                   
+                });
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "UserId": userId,
+                "Token": token
+            }, callback, error);
+        }
+    </script>
+</body>
+</html>

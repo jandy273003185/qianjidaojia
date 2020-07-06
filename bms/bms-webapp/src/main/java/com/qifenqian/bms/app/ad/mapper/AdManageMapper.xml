@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.app.ad.mapper.AdManageMapper">
+	<!-- 查询APP登录页广告信息列表 -->
+	<select id="listAdManageInfo" parameterType="com.qifenqian.bms.app.ad.bean.AdManageBean" resultType="com.qifenqian.bms.app.ad.bean.AdManageBean">
+		SELECT
+			T.AD_ID,
+			T.AD_NAME,
+			T.IMG_PATH,
+			T.SHOW_TIME,
+			T.STATUS,
+			T.CREATE_TIME,
+			(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.CREATE_USER) CREATE_USER
+		FROM
+			TD_APP_AD T
+		<where>
+			<if test="adName != null and adName!= '' "> AND T.AD_NAME LIKE CONCAT('%',#{cardName, jdbcType=VARCHAR},'%')</if>
+			<if test="status != null and status != '' "> AND T.STATUS =#{status, jdbcType=VARCHAR}</if>
+		</where>
+		ORDER BY T.CREATE_TIME DESC
+	</select>
+	
+	<insert id="saveAdManageInfo" parameterType="com.qifenqian.bms.app.ad.bean.AdManageBean">
+		INSERT INTO TD_APP_AD
+		(
+			`AD_ID`,
+			`AD_NAME`,
+			`IMG_PATH`,
+			`SHOW_TIME`,
+			`STATUS`,		
+			`CREATE_TIME`,
+			`CREATE_USER`
+		)
+		VALUES
+		(
+			#{adId},
+			#{adName},
+			#{imgPath},
+			#{showTime},
+			#{status},
+			#{createTime},
+			#{createUser}
+		)	
+	</insert>
+	
+	<update id="updateAdManageInfo" parameterType="com.qifenqian.bms.app.ad.bean.AdManageBean">
+		UPDATE TD_APP_AD
+		<set>
+			AD_NAME=#{adName},
+			IMG_PATH=#{imgPath},
+			SHOW_TIME=#{showTime},
+			STATUS=#{status},
+		</set>
+		WHERE AD_ID=#{adId}
+	</update>
+
+	
+	<delete id="deleteAdManageInfoByAdId" parameterType="java.lang.String">
+		DELETE
+		FROM
+			TD_APP_AD
+		WHERE
+			AD_ID=#{adId}
+	</delete>
+</mapper>

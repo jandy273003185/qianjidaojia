@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#share{
+				width: 102px;
+				height: 40px;
+				line-height: 40px;
+				margin:0 auto;
+				border:1px solid #CC4242;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="share">获取分享</div>
+		<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+		<script type="text/javascript">
+			var imgUrl = 'http://mall.qianjidaojia.com/upload/shop/10019/2019-01-18/2019011810365578613.jpg';
+			var lineLink = 'http://www.qianjidaojia.com/test.html';
+			var descContent = '人类天生就爱玩游戏，游戏为什么吸引人？如果借助游戏的规律，是否可以让工作学习变得更精彩？';
+			var shareTitle = '游戏化学习工作坊第四站-北京清华科技园';
+            $(function(){
+            	
+            	$('#share').click(function(){
+            		onClickStory();
+            	});
+            });
+			private void onClickStory() {
+				if(mTencent.isSessionValid() && mTencent.getOpenId() != null) {
+					Bundle params = new Bundle();
+					params.putString(Constants.PARAM_TITLE,shareTitle);
+					params.putString(Constants.PARAM_COMMENT,'记的加上我');
+					params.putString(Constants.PARAM_IMAGE,imgUrl);
+					params.putString(Constants.PARAM_SUMMARY,descContent);
+					mTencent.story(MainActivity.this, params, new BaseUiListener());
+				}
+			}
+		</script>
+		<script>
+   $(document).ready(function(){
+        //加载分页
+        load();
+    });
+    function load() {
+            var num = 4;
+            var counter1 = 1;
+            var dropload = $('.assess').dropload({
+            scrollArea:window,
+            loadDownFn:function(me){
+                // 加载“推荐医生”的数据
+                $.ajax({
+                    url:'getDAListByUserId?nowpage="+counter1+"pageSize="+num,
+                    type: 'GET',
+                    success: function (data) {
+                        var data = JSON.parse(data)
+                        var datas=data.content.content;
+                        var html="";
+                        var html3 ="";
+                        var length=datas.length;
+                        if(length==0){
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            me.resetload();
+                            if(counter1 ==1){
+                                $(".dropload-down").css("display","none");//没有更多数据的文字
+                            }
+                        }else{
+
+
+                            $(".dropload-load").show();
+                            counter1++;
+                            for(var i=0;i<length;i++){
+                                var evaluate='';
+                                if(datas[i].status==1){
+                                    evaluate='<span class="right go" title="'+datas[i].id+'">去评价</span>';
+                                    html3= '<ul class="add" title="'+datas[i].id+'">';
+
+
+                                }else if(datas[i].status==2){
+                                    evaluate='<span class="right right2" title="'+datas[i].id+'">已评价</span>';
+                                    html3='<ul class="detail" title="'+datas[i].id+'">';
+                                }
+
+
+                                html+='<div class="assess-main">'+
+                                        '<p class="time">'+
+                                        '<span class="left">'+datas[i].dateCreate+'</span>'+
+                                        evaluate+
+                                        '</p>'+
+                                       html3+
+                                        '<li><span>看诊医生：</span><span>'+datas[i].doctorName+'</span><span class="doctor">'+datas[i].doctorTitle+'</span></li>'+
+                                        '<li><span>就诊机构：</span><span>'+datas[i].workUnit+'</span></li>'+
+                                        '<li><span>就诊人：</span><span>'+datas[i].patientName+'</span></li>'+
+                                        '</ul>'+
+                                        '</div>'
+                                if(length < 4 &&  i ==(length-1)){//表示一页未满已经没有数据
+                                    // 锁定
+                                    me.lock();
+                                    // 无数据
+                                    me.noData();
+                                    break;
+                                }
+                            }
+                            $(".assess1").append(html)
+                           // me.noData();
+                            //me.unlock();
+                           me.resetload();
+                        };
+                    },
+                    error: function (xhr, type) {
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                    }
+                });
+            }
+        });
+    }
+</script>
+--------------------- 
+作者：奔跑的小伟 
+来源：CSDN 
+原文：https://blog.csdn.net/fengbaozonghuiguoqu/article/details/73526854 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+	</body>
+
+</html>

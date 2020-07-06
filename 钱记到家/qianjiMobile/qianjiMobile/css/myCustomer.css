@@ -1,0 +1,85 @@
+    body {
+        background-color: #FDFAFE;
+        padding: 0;
+        margin: 0;
+        font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    }
+    
+    .banner {
+        background: url('../images/my_customer_bg.png') no-repeat center;
+        background-size: 7.5rem 0.8rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        height: 0.8rem;
+    }
+    
+    .banner input {
+        width: 5.7rem;
+        height: 0.64rem;
+        border-radius: 0.4rem;
+        text-align: center;
+        font-size: 0.3rem;
+    }
+    
+     ::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: #C0C0C0;
+    }
+    
+     ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: #C0C0C0;
+    }
+    
+     :-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: #C0C0C0;
+    }
+    
+    .timer {
+        display: flex;
+    }
+    
+    .timer div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 0.94rem;
+        height: 0.46rem;
+        color: #C0C0C0;
+        border-radius: 0.14rem;
+        border: 1px solid #C0C0C0;
+        margin: 0.24rem 0 0.24rem 0.24rem;
+        font-size: 0.3rem;
+        padding-bottom: 0.007rem;
+    }
+    
+    .active {
+        color: #F74146 !important;
+        border: 1px solid #F74146 !important;
+    }
+    
+    .list {
+        display: flex;
+        align-items: center;
+        height: 1.76rem;
+        background: #ffffff;
+        box-shadow: 0 0 0.08rem 0 #cacaca3d;
+        margin-top: 0.2rem;
+    }
+    
+    .list>div>img {
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        margin: 0.28rem 0.24rem;
+    }
+    
+    .list>div>p {
+        color: #666;
+        font-size: 0.3rem;
+        margin-top: 0.1rem;
+        margin-left: 0.16rem;
+    }

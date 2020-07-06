@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.unionpayQuery.mapper.UnionpayResultMapper" >
+  
+  <sql id="Base_Column_List" >
+	t.bal_date,
+	t.channel_id ,CONCAT(a.inst_datetime,'') inst_datetime, 
+	a.batch_id,a.sevenpay_id,
+	a.platform_id,a.trans_amt ,a.bal_memo 
+  </sql>
+  
+  <sql id="Where_Clause">	
+		<if test="balDate != null and '' != balDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(t.bal_date ,'%Y-%m-%d') >= #{balDate}               
+            ]]>  
+        </if>
+            
+        <if test="endBalTime!= null and '' !=endBalTime">  
+            <![CDATA[  
+              AND DATE_FORMAT(t.bal_date ,'%Y-%m-%d') <= #{endBalTime}  
+            ]]>  
+        </if>  
+        
+        <if test="sevenpayId!=null and sevenpayId!='' ">   
+          and  a.sevenpay_id  like CONCAT('%',#{sevenpayId},'%') 
+        </if> 
+	</sql>
+	
+  <select id="selectImpeachList"  resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpayUnionResultException" 
+  parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.UnionpayUnionResultExceptionBean" >
+    SELECT 
+   		a.file_id ,
+		a.seq ,
+		a.work_date ,
+		a.batch_id ,
+		a.txn_code ,
+		a.acq_ins_code ,
+		a.iss_ins_code ,
+		a.trace_no ,
+		a.txn_time ,
+		a.pay_card_no ,
+		a.txn_amt ,
+		a.mer_cat_code ,
+		a.term_type ,
+		a.query_id ,
+		a.old_pay_type ,
+		a.order_id ,
+		a.pay_card_type ,
+		a.orig_trace_no ,
+		a.orig_txn_time ,
+		a.mchnt_fee_flag ,
+		a.mchnt_fee ,
+		a.settle_amt_flag , 
+		a.settle_amt ,
+		a.pay_type ,
+		a.group_mer_id ,
+		a.txn_type ,
+		a.txn_sub_type ,
+		a.biz_type ,
+		a.acc_type ,
+		a.bill_type ,
+		a.bill_no ,
+		a.interact_mode ,
+		a.orig_qry_id ,
+		a.mer_id ,
+		a.split_in_way ,
+		a.sub_mer_id ,
+		a.sub_mer_abbr ,
+		a.sub_mer_split_in_amt_flag ,
+		a.sub_mer_split_in_amt ,
+		a.settle_net_amt_flag ,
+		a.settle_net_amt ,
+		a.term_id ,
+		a.mer_reserved ,
+		a.discount_amt_flag ,
+		a.discount_amt ,
+		a.invoice_amt_flag ,
+		a.invoice_amt ,
+		a.period_pay_plus_fee_flag ,
+		a.period_pay_plus_fee ,
+		a.pay_periods ,
+		a.trade_medium ,
+		a.reserve ,
+		a.inst_date ,
+		DATE_FORMAT(a.inst_datetime ,'%Y-%m-%d %H:%i:%s') inst_datetime,
+		a.bal_result ,
+		DATE_FORMAT(a.bal_datetime ,'%Y-%m-%d %H:%i:%s') bal_datetime,
+		a.bal_memo ,
+		a.deal_flag ,
+		a.deal_user ,
+		a.deal_datetime ,
+		a.deal_memo 
+	FROM
+		bal_file_batch t
+	INNER JOIN 
+		bal_unionpay_union_result_exception a 
+		ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('SELF_DOUBT','BAL_DOUBT')
+	
+	<where>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+            ]]>  
+        </if>
+        <if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+            ]]>  
+        </if>
+        <if test="batchId != null and '' != batchId">  
+            <![CDATA[  
+              AND  a.batch_id  like CONCAT('%',#{batchId},'%')         
+            ]]>  
+        </if>
+        <if test="queryId != null and '' != queryId">  
+            <![CDATA[  
+              AND  a.query_id  like CONCAT('%',#{queryId},'%')         
+            ]]>  
+        </if>
+        <if test="orderId != null and '' != orderId">  
+            <![CDATA[  
+              AND  a.order_id  like CONCAT('%',#{orderId},'%')         
+            ]]>  
+        </if>
+	</where> 
+		ORDER BY a.work_date desc
+  </select>
+  <select id="selectImpeachListExport"  resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.UnionpayImpeathExport" 
+  parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpayUnionResultException" >
+    SELECT 
+   		a.file_id ,
+		a.seq ,
+		a.work_date ,
+		a.batch_id ,
+		a.txn_code ,
+		a.acq_ins_code ,
+		a.iss_ins_code ,
+		a.trace_no ,
+		a.txn_time ,
+		a.pay_card_no ,
+		a.txn_amt ,
+		a.mer_cat_code ,
+		a.term_type ,
+		a.query_id ,
+		a.old_pay_type ,
+		a.order_id ,
+		a.pay_card_type ,
+		a.orig_trace_no ,
+		a.orig_txn_time ,
+		a.mchnt_fee_flag ,
+		a.mchnt_fee ,
+		a.settle_amt_flag , 
+		a.settle_amt ,
+		a.pay_type ,
+		a.group_mer_id ,
+		a.txn_type ,
+		a.txn_sub_type ,
+		a.biz_type ,
+		a.acc_type ,
+		a.bill_type ,
+		a.bill_no ,
+		a.interact_mode ,
+		a.orig_qry_id ,
+		a.mer_id ,
+		a.split_in_way ,
+		a.sub_mer_id ,
+		a.sub_mer_abbr ,
+		a.sub_mer_split_in_amt_flag ,
+		a.sub_mer_split_in_amt ,
+		a.settle_net_amt_flag ,
+		a.settle_net_amt ,
+		a.term_id ,
+		a.mer_reserved ,
+		a.discount_amt_flag ,
+		a.discount_amt ,
+		a.invoice_amt_flag ,
+		a.invoice_amt ,
+		a.period_pay_plus_fee_flag ,
+		a.period_pay_plus_fee ,
+		a.pay_periods ,
+		a.trade_medium ,
+		a.reserve ,
+		a.inst_date ,
+		DATE_FORMAT(a.inst_datetime ,'%Y-%m-%d %H:%i:%s') as instDatetime,
+		a.bal_result ,
+		DATE_FORMAT(a.bal_datetime ,'%Y-%m-%d %H:%i:%s') as balDatetime,
+		a.bal_memo ,
+		a.deal_flag ,
+		a.deal_user ,
+		a.deal_datetime ,
+		a.deal_memo 
+	FROM
+		stcs.bal_file_batch t
+	INNER JOIN 
+		stcs.bal_unionpay_union_result_exception a 
+	ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('SELF_DOUBT','BAL_DOUBT')
+	
+	<where>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+            ]]>  
+        </if>
+        <if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+            ]]>  
+        </if>
+        <if test="batchId != null and '' != batchId">  
+            <![CDATA[  
+              AND  a.batch_id  like CONCAT('%',#{batchId},'%')         
+            ]]>  
+        </if>
+        <if test="queryId != null and '' != queryId">  
+            <![CDATA[  
+              AND  a.query_id  like CONCAT('%',#{queryId},'%')         
+            ]]>  
+        </if>
+        <if test="orderId != null and '' != orderId">  
+            <![CDATA[  
+              AND  a.order_id  like CONCAT('%',#{orderId},'%')         
+            ]]>  
+        </if>
+	</where> 
+		ORDER BY a.work_date desc
+  </select>
+   
+   <select id="selectQfqImpeachList"  parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionBean"
+   resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultException">
+   	SELECT
+   		a.*
+   	FROM
+		bal_file_batch t
+	INNER JOIN 
+		bal_unionpay_seven_result_exception a 
+	ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('SELF_DOUBT','BAL_DOUBT')
+	<where>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+            ]]>  
+        </if>
+        <if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+            ]]>  
+        </if>
+        <if test="batchId != null and '' != batchId">  
+            <![CDATA[  
+              AND  a.batch_id  like CONCAT('%',#{batchId},'%')         
+            ]]>  
+        </if>
+        <if test="queryId != null and '' != queryId">  
+            <![CDATA[  
+              AND  a.query_id  like CONCAT('%',#{queryId},'%')         
+            ]]>  
+        </if>
+        <if test="orderId != null and '' != orderId">  
+            <![CDATA[  
+              AND  a.order_id  like CONCAT('%',#{orderId},'%')         
+            ]]>  
+        </if>
+         <if test="clearId != null and '' != clearId">  
+            <![CDATA[  
+              AND  a.clear_id  like CONCAT('%',#{clearId},'%')         
+            ]]>  
+        </if>
+	</where> 
+		ORDER BY A.inst_datetime DESC
+   </select>
+  
+  <select id="selectQfqImpeachExport" parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionBean"
+  resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionExport">
+  	SELECT
+	  	  a.clear_id,
+		  a.batch_id,
+		  a.trans_flow_id,
+		  a.work_date,
+		  a.cust_id,
+		  a.acct_id,
+		  a.trans_type,
+		  a.acct_no,
+		  a.pay_card_type,
+		  a.order_id,
+		  a.query_id,
+		  a.orig_qry_id,
+		  a.txn_time,
+		  a.currency_code,
+		  a.txn_amt,
+		  a.resp_code,
+		  a.resp_msg,
+		  a.resp_time,
+		  a.settle_amt,
+		  a.settle_currency_code,
+		  a.settle_date,
+		  a.trace_no,
+		  a.trace_time,
+		  a.txn_type,
+		  a.txn_sub_type,
+		  a.biz_type,
+		  a.access_type,
+		  a.mer_id,
+		  a.req_reserved,
+		  a.reserved,
+		  a.exchange_date,
+		  a.exchange_rate,
+		  a.vpc_trans_data,
+		  a.pay_type,
+		  a.pay_card_no,
+		  a.pay_card_issue_name,
+		  a.bind_id,
+		  a.brief,
+		  a.inst_date,
+		  DATE_FORMAT(a.inst_datetime ,'%Y-%m-%d %H:%i:%s') as inst_datetime,
+		  a.bal_result,
+		  DATE_FORMAT(a.bal_datetime ,'%Y-%m-%d %H:%i:%s') as bal_datetime,
+		  a.bal_memo,
+		  a.deal_flag,
+		  a.deal_user,
+		  a.deal_datetime,
+		  a.deal_memo
+   	FROM
+		bal_file_batch t
+	INNER JOIN 
+		bal_unionpay_seven_result_exception a 
+	ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('SELF_DOUBT','BAL_DOUBT')
+	<where>
+		<if test="beginWorkDate != null and '' != beginWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+            ]]>  
+        </if>
+        <if test="endWorkDate != null and '' != endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+            ]]>  
+        </if>
+        <if test="batchId != null and '' != batchId">  
+            <![CDATA[  
+              AND  a.batch_id  like CONCAT('%',#{batchId},'%')         
+            ]]>  
+        </if>
+        <if test="queryId != null and '' != queryId">  
+            <![CDATA[  
+              AND  a.query_id  like CONCAT('%',#{queryId},'%')         
+            ]]>  
+        </if>
+        <if test="orderId != null and '' != orderId">  
+            <![CDATA[  
+              AND  a.order_id  like CONCAT('%',#{orderId},'%')         
+            ]]>  
+        </if>
+         <if test="clearId != null and '' != clearId">  
+            <![CDATA[  
+              AND  a.clear_id  like CONCAT('%',#{clearId},'%')         
+            ]]>  
+        </if>
+	</where> 
+  </select>
+  
+  <select id="selectSlipList" parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionBean"
+   resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultException">
+   	  SELECT 
+    	  b.clear_id,
+		  b.batch_id,
+		  b.trans_flow_id,
+		  b.work_date,
+		  b.cust_id,
+		  b.acct_id,
+		  b.trans_type,
+		  b.acct_no,
+		  b.pay_card_type,
+		  b.order_id,
+		  b.query_id,
+		  b.orig_qry_id,
+		  b.txn_time,
+		  b.currency_code,
+		  b.txn_amt,
+		  b.resp_code,
+		  b.resp_msg,
+		  b.resp_time,
+		  b.settle_amt,
+		  b.settle_currency_code,
+		  b.settle_date,
+		  b.trace_no,
+		  b.trace_time,
+		  b.txn_type,
+		  b.txn_sub_type,
+		  b.biz_type,
+		  b.access_type,
+		  b.mer_id,
+		  b.req_reserved,
+		  b.reserved,
+		  b.exchange_date,
+		  b.exchange_rate,
+		  b.vpc_trans_data,
+		  b.pay_type,
+		  b.pay_card_no,
+		  b.pay_card_issue_name,
+		  b.bind_id,
+		  b.brief,
+		  b.inst_date,
+		  DATE_FORMAT(b.inst_datetime ,'%Y-%m-%d %H:%i:%s') as inst_datetime,
+		  b.bal_result,
+		  DATE_FORMAT(b.bal_datetime ,'%Y-%m-%d %H:%i:%s') as bal_datetime,
+		  b.bal_memo,
+		  b.deal_flag,
+		  b.deal_user,
+		  b.deal_datetime,
+		  b.deal_memo
+     	FROM 
+    		bal_file_batch t
+		
+		INNER JOIN bal_unionpay_seven_result_exception b ON b.batch_id = t.batch_id AND b.bal_result IN('BAL_ERROR') 
+		LEFT JOIN bal_unionpay_union_result_exception a ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('BAL_ERROR') 
+		AND b.order_id = a.order_id  
+		<where>
+			<if test="beginWorkDate != null and '' != beginWorkDate">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(b.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="endWorkDate != null and '' != endWorkDate">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(b.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="batchId != null and '' != batchId">  
+	            <![CDATA[  
+	              AND  b.batch_id  like CONCAT('%',#{batchId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="queryId != null and '' != queryId">  
+	            <![CDATA[  
+	              AND  b.query_id  like CONCAT('%',#{queryId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND  b.order_id  like CONCAT('%',#{orderId},'%')         
+	            ]]>  
+	        </if>
+	         <if test="clearId != null and '' != clearId">  
+	            <![CDATA[  
+	              AND  b.clear_id  like CONCAT('%',#{clearId},'%')         
+	            ]]>  
+	        </if>
+		</where> 
+			ORDER BY  b.work_date DESC
+   </select>
+  	
+  	<select id="selectSlipExport" parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionBean"
+  resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultExceptionExport">
+  	SELECT 
+    		b.*
+     	FROM 
+    		bal_file_batch t
+		
+		INNER JOIN bal_unionpay_seven_result_exception b ON b.batch_id = t.batch_id AND b.bal_result IN('BAL_ERROR') 
+		LEFT JOIN bal_unionpay_union_result_exception a ON a.batch_id = t.batch_id AND t.status='BAL_OVER' AND a.bal_result IN('BAL_ERROR') 
+		AND b.order_id = a.order_id  
+		<where>
+			<if test="beginWorkDate != null and '' != beginWorkDate">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(b.work_date ,'%Y-%m-%d') >= #{beginWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="endWorkDate != null and '' != endWorkDate">  
+	            <![CDATA[  
+	              AND DATE_FORMAT(b.work_date ,'%Y-%m-%d') <= #{endWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="batchId != null and '' != batchId">  
+	            <![CDATA[  
+	              AND  b.batch_id  like CONCAT('%',#{batchId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="queryId != null and '' != queryId">  
+	            <![CDATA[  
+	              AND  b.query_id  like CONCAT('%',#{queryId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND  b.order_id  like CONCAT('%',#{orderId},'%')         
+	            ]]>  
+	        </if>
+	         <if test="clearId != null and '' != clearId">  
+	            <![CDATA[  
+	              AND  b.clear_id  like CONCAT('%',#{clearId},'%')         
+	            ]]>  
+	        </if>
+		</where> 
+		 ORDER BY  b.work_date DESC
+  </select>
+  <select id="selectFitList" parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultEqualBean"
+   resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultEqual">
+   	 	SELECT 
+			b.*
+    	FROM
+    		bal_file_batch t
+		INNER JOIN  bal_unionpay_seven_result_equal b ON b.batch_id = t.batch_id AND t.status='BAL_OVER' 
+		<where>
+			<if test="beginWorkDate != null and '' != beginWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date >= #{beginWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="endWorkDate != null and '' != endWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date  <= #{endWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="batchId != null and '' != batchId">  
+	            <![CDATA[  
+	              AND  b.batch_id  like CONCAT('%',#{batchId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="queryId != null and '' != queryId">  
+	            <![CDATA[  
+	              AND  b.query_id  like CONCAT('%',#{queryId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND  b.order_id  like CONCAT('%',#{orderId},'%')         
+	            ]]>  
+	        </if>
+	         <if test="clearId != null and '' != clearId">  
+	            <![CDATA[  
+	              AND  b.clear_id  like CONCAT('%',#{clearId},'%')         
+	            ]]>  
+	        </if>
+		</where> 
+		order by b.work_date desc
+
+   </select>
+   
+   <select id="selectFitexport" parameterType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultEqualBean"
+   resultType="com.qifenqian.bms.accounting.unionpayQuery.bean.BalUnionpaySevenResultEqualExport">
+   		SELECT 
+		  b.clear_id,
+		  b.batch_id,
+		  b.trans_flow_id,
+		  b.work_date,
+		  b.cust_id,
+		  b.acct_id,
+		  b.trans_type,
+		  b.acct_no,
+		  b.pay_card_type,
+		  b.order_id,
+		  b.query_id,
+		  b.orig_qry_id,
+		  b.txn_time,
+		  b.currency_code,
+		  b.txn_amt,
+		  b.resp_code,
+		  b.resp_msg,
+		  b.resp_time,
+		  b.settle_amt,
+		  b.settle_currency_code,
+		  b.settle_date,
+		  b.trace_no,
+		  b.trace_time,
+		  b.txn_type,
+		  b.txn_sub_type,
+		  b.biz_type,
+		  b.access_type,
+		  b.mer_id,
+		  b.req_reserved,
+		  b.reserved,
+		  b.exchange_date,
+		  b.exchange_rate,
+		  b.vpc_trans_data,
+		  b.pay_type,
+		  b.pay_card_no,
+		  b.pay_card_issue_name,
+		  b.bind_id,
+		  b.brief,
+		  b.inst_date,
+		   DATE_FORMAT(b.inst_datetime ,'%Y-%m-%d %H:%i:%s') as inst_datetime,
+		  b.bal_result,
+		   DATE_FORMAT(b.bal_datetime ,'%Y-%m-%d %H:%i:%s') as bal_datetime,
+		  b.bal_memo
+    	FROM
+    		bal_file_batch t
+		INNER JOIN  bal_unionpay_seven_result_equal b ON b.batch_id = t.batch_id AND t.status='BAL_OVER' 
+		<where>
+			<if test="beginWorkDate != null and '' != beginWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date >= #{beginWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="endWorkDate != null and '' != endWorkDate">  
+	            <![CDATA[  
+	              AND b.work_date  <= #{endWorkDate}               
+	            ]]>  
+	        </if>
+	        <if test="batchId != null and '' != batchId">  
+	            <![CDATA[  
+	              AND  b.batch_id  like CONCAT('%',#{batchId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="queryId != null and '' != queryId">  
+	            <![CDATA[  
+	              AND  b.query_id  like CONCAT('%',#{queryId},'%')         
+	            ]]>  
+	        </if>
+	        <if test="orderId != null and '' != orderId">  
+	            <![CDATA[  
+	              AND  b.order_id  like CONCAT('%',#{orderId},'%')         
+	            ]]>  
+	        </if>
+	         <if test="clearId != null and '' != clearId">  
+	            <![CDATA[  
+	              AND  b.clear_id  like CONCAT('%',#{clearId},'%')         
+	            ]]>  
+	        </if>
+		</where> 
+		order by b.work_date desc
+   </select>
+</mapper>

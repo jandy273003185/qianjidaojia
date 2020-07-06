@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>添加收货地址</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="/css/dd_style.css" />
+    <link rel="stylesheet" href="/css/popaddress.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/address.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .setDefault-item {
+            background-color: #fff;
+            border-radius: .06rem;
+            line-height: 1.7;
+            font-size: .15rem;
+        }
+
+        .from .btn_bb {
+            margin: .1rem .1rem .1rem 0;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/address.html" class="btn_back"></a>
+				<div class="title center">添加收货地址</div>
+			</div>
+		</div>
+		<div class="main Add_addr">
+			<div class="from mb10 pl10 pr10">
+				<div class="from-item">
+					<label class="text">收货人</label>
+					<div class="txt-r"><input type="text" class="ipt0" id="name" placeholder="收货人姓名"></div>
+				</div>
+				<div class="from-item">
+					<label class="text">手机号码</label>
+					<div class="txt-r"><input type="text" class="ipt0" id="tel" placeholder="联系电话"></div>
+				</div>
+				<div class="from-item from-item-City arrow_r">
+					<label class="text">所在城市</label>
+					<div class="txt-r">
+						<input type="text" class="ipt0" id="selectCity" readonly="" data-code="" placeholder="请选择您所在城市">
+					</div>
+				</div>
+				<div class="from-item">
+					<label class="text">详细地址</label>
+					<div class="txt-r"><input type="text" class="ipt0" id="fullAddress" placeholder="输入您详细地址"></div>
+				</div>
+				<!--<div class="from-item" style="line-height: .5rem;">
+					<label class="text">地址标签</label>
+					<div class="txt-r" style="height: inherit;">
+						<div class="btns-min">
+							<a class="btn_bb" href="javascript:;">住宅</a>
+							<a class="btn_bb active" href="javascript:;">公司</a>
+							<a class="btn_bb" href="javascript:;">学校</a>
+							<a class="btn_bb" href="javascript:;">其他</a>
+						</div>
+					</div>
+				</div>-->
+			</div>
+			<div class="setDefault-item weui-cell mb10">
+				<div class="weui-cell__bd">
+					<p class="txt">设为默认地址</p>
+				</div>
+				<div class="weui-cell__ft">
+					<div class="switch_btn">
+						<input type="checkbox" class="switch" id="switch1" data-def="0">
+						<label for="switch1"></label>
+					</div>
+				</div>
+			</div>
+			<div class="setDefault-item weui-cell" id="Del_addr" style="display: none;">
+				<div class="weui-cell__bd">
+					<p class="txt red">删除收货地址</p>
+				</div>
+			</div>
+		</div>
+		<div class="null50">
+			<footer class="ftbtn">
+				<a class="btn" id="submitBtn" href="javascript:;">保存</a>
+			</footer>
+		</div>
+		<!--弹出省市区街道列表-->
+		<div id="addressSelectWrapper">
+			<div id="addressSelect">
+				<div class="tip">
+					<h3>所在地区</h3>
+					<button type="button" id="cancel"></button>
+				</div>
+				<div id="address">
+					<ul class="selected-address">
+						<li class="lastarea" id="lastprovince" data-code="">请选择</li>
+						<li class="lastarea" id="lastcity" data-code="">请选择</li>
+						<li class="lastarea" id="lastarea" data-code="">请选择</li>
+						<li class="lastarea" id="lasttown" data-code="">请选择</li>
+					</ul>
+					<div class="address-content">
+						<ul id="province" data-type="0"></ul>
+						<ul id="city" data-type="1"></ul>
+						<ul id="area" data-type="2"></ul>
+						<ul id="town" data-type="3"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出省市区街道列表-->
+	</body>
+
+	<script>
+		$(function() {
+			var addrId = sc.utils.getQueryString("id");
+			if(addrId) {
+				$('.head .title').text('编辑收货地址');
+				GetAddressInfo(addrId, function(data) {
+					var selectedName = [];
+					selectedName[0] = data.data.province;
+					selectedName[1] = data.data.city;
+					selectedName[2] = data.data.district;
+					selectedName[3] = data.data.street;
+					$('#name').val(data.data.name);
+					$('#tel').val(data.data.tel);
+					$('#selectCity').attr('data-code', selectedName.join(","));
+					$('#selectCity').val(data.data.addressstr);
+					$('#fullAddress').val(data.data.address);
+					$('#switch1').attr("data-def", data.data.is_def);
+					if(data.data.is_def == 1) {
+						$('#switch1').prop({
+							checked: true
+						})
+					} else {
+						$('#switch1').prop({
+							checked: false
+						})
+					}
+				})
+				$('#Del_addr').show();
+				$('#Del_addr').click(function() {
+					layer.open({
+						content: '您确定要删除该地址吗？',
+						btn: ['删除', '取消'],
+						skin: 'footer',
+						yes: function(index) {
+							DeleteAddress(addrId, function(data) {
+								layer.open({
+									content: '删除地址成功！',
+									skin: 'msg',
+									time: 1 //1秒后自动关闭
+								});
+								setTimeout(function() {
+									location.href = "/member/address.html";
+								}, 2000);
+							});
+						}
+					});
+				})
+			} else {
+				$('#Del_addr').remove();
+			}
+			selectCity(); //弹出城市选择四级联动
+			//		点击是否设置为默认
+			$("#switch1").click(function() {
+				var def = $(this).attr("data-def");
+				if(def == 0) {
+					$(this).attr("data-def", "1");
+				} else {
+					$(this).attr("data-def", "0");
+				}
+			})
+			$('#submitBtn').click(function() {
+				var txt_name = $('#name').val();
+				txt_tel = $('#tel').val(),
+					isDefault = $("#switch1").attr("data-def"),
+					txt_fullAddress = $('#fullAddress').val(),
+					txt_Zipcode = "",
+					selectCityTxt = $('#selectCity').val(),
+					selectCityCode = $('#selectCity').attr("data-code"),
+					selectedArr = [];
+				selectedArr.push(selectCityCode.split(","));
+				var txt_Province = selectedArr[0][0],
+					txt_City = selectedArr[0][1],
+					txt_District = selectedArr[0][2],
+					txt_Street = selectedArr[0][3];
+				if(valCreateAddress(txt_name, txt_tel, selectCityTxt, txt_fullAddress)) {
+					if(addrId) { //表示修改地址
+						UpdateAddress(addrId, txt_name, txt_tel, isDefault, txt_Province, txt_City, txt_District, txt_Street, txt_fullAddress, txt_Zipcode);
+					} else { //表示添加地址
+						AddAddress(txt_name, txt_tel, isDefault, txt_Province, txt_City, txt_District, txt_Street, txt_fullAddress, txt_Zipcode);
+					}
+				}
+			})
+		})
+	</script>
+
+</html>

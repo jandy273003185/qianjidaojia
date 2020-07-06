@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.adjust.dao.AccountingAdjustDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetail" >
+    <id column="op_id" property="opId" jdbcType="VARCHAR" />
+    <id column="entry_id" property="entryId" jdbcType="VARCHAR" />
+    <result column="debit_acct_type" property="debitAcctType" jdbcType="VARCHAR" />
+    <result column="debit_acct_no" property="debitAcctNo" jdbcType="VARCHAR" />
+    <result column="debit_acct_name" property="debitAcctName" jdbcType="VARCHAR" />
+    <result column="debit_cust_id" property="debitCustId" jdbcType="VARCHAR" />
+    <result column="debit_subject_id" property="debitSubjectId" jdbcType="VARCHAR" />
+    <result column="credit_acct_type" property="creditAcctType" jdbcType="VARCHAR" />
+    <result column="credit_acct_no" property="creditAcctNo" jdbcType="VARCHAR" />
+    <result column="credit_acct_name" property="creditAcctName" jdbcType="VARCHAR" />
+    <result column="credit_cust_id" property="creditCustId" jdbcType="VARCHAR" />
+    <result column="credit_subject_id" property="creditSubjectId" jdbcType="VARCHAR" />
+    <result column="curcde" property="curcde" jdbcType="VARCHAR" />
+    <result column="amt" property="amt" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    op_id, entry_id, debit_acct_type, debit_acct_no, debit_acct_name, debit_cust_id, 
+    debit_subject_id, credit_acct_type, credit_acct_no, credit_acct_name, credit_cust_id, 
+    credit_subject_id, curcde, amt
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetailKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from bms_td_accounting_adjust_detail
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetailKey" >
+    delete from bms_td_accounting_adjust_detail
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetailExample" >
+    delete from bms_td_accounting_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetail" >
+    insert into bms_td_accounting_adjust_detail (op_id, entry_id, debit_acct_type, 
+      debit_acct_no, debit_acct_name, debit_cust_id, 
+      debit_subject_id, credit_acct_type, credit_acct_no, 
+      credit_acct_name, credit_cust_id, credit_subject_id, 
+      curcde, amt)
+    values (#{opId,jdbcType=VARCHAR}, #{entryId,jdbcType=VARCHAR}, #{debitAcctType,jdbcType=VARCHAR}, 
+      #{debitAcctNo,jdbcType=VARCHAR}, #{debitAcctName,jdbcType=VARCHAR}, #{debitCustId,jdbcType=VARCHAR}, 
+      #{debitSubjectId,jdbcType=VARCHAR}, #{creditAcctType,jdbcType=VARCHAR}, #{creditAcctNo,jdbcType=VARCHAR}, 
+      #{creditAcctName,jdbcType=VARCHAR}, #{creditCustId,jdbcType=VARCHAR}, #{creditSubjectId,jdbcType=VARCHAR}, 
+      #{curcde,jdbcType=VARCHAR}, #{amt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetail" >
+    insert into bms_td_accounting_adjust_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        op_id,
+      </if>
+      <if test="entryId != null" >
+        entry_id,
+      </if>
+      <if test="debitAcctType != null" >
+        debit_acct_type,
+      </if>
+      <if test="debitAcctNo != null" >
+        debit_acct_no,
+      </if>
+      <if test="debitAcctName != null" >
+        debit_acct_name,
+      </if>
+      <if test="debitCustId != null" >
+        debit_cust_id,
+      </if>
+      <if test="debitSubjectId != null" >
+        debit_subject_id,
+      </if>
+      <if test="creditAcctType != null" >
+        credit_acct_type,
+      </if>
+      <if test="creditAcctNo != null" >
+        credit_acct_no,
+      </if>
+      <if test="creditAcctName != null" >
+        credit_acct_name,
+      </if>
+      <if test="creditCustId != null" >
+        credit_cust_id,
+      </if>
+      <if test="creditSubjectId != null" >
+        credit_subject_id,
+      </if>
+      <if test="curcde != null" >
+        curcde,
+      </if>
+      <if test="amt != null" >
+        amt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="opId != null" >
+        #{opId,jdbcType=VARCHAR},
+      </if>
+      <if test="entryId != null" >
+        #{entryId,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAcctType != null" >
+        #{debitAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAcctNo != null" >
+        #{debitAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAcctName != null" >
+        #{debitAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="debitCustId != null" >
+        #{debitCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="debitSubjectId != null" >
+        #{debitSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctType != null" >
+        #{creditAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctNo != null" >
+        #{creditAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctName != null" >
+        #{creditAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="creditCustId != null" >
+        #{creditCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditSubjectId != null" >
+        #{creditSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="curcde != null" >
+        #{curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetailExample" resultType="java.lang.Integer" >
+    select count(*) from bms_td_accounting_adjust_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update bms_td_accounting_adjust_detail
+    <set >
+      <if test="record.opId != null" >
+        op_id = #{record.opId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.entryId != null" >
+        entry_id = #{record.entryId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAcctType != null" >
+        debit_acct_type = #{record.debitAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAcctNo != null" >
+        debit_acct_no = #{record.debitAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAcctName != null" >
+        debit_acct_name = #{record.debitAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitCustId != null" >
+        debit_cust_id = #{record.debitCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitSubjectId != null" >
+        debit_subject_id = #{record.debitSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAcctType != null" >
+        credit_acct_type = #{record.creditAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAcctNo != null" >
+        credit_acct_no = #{record.creditAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAcctName != null" >
+        credit_acct_name = #{record.creditAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditCustId != null" >
+        credit_cust_id = #{record.creditCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditSubjectId != null" >
+        credit_subject_id = #{record.creditSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.curcde != null" >
+        curcde = #{record.curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amt != null" >
+        amt = #{record.amt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update bms_td_accounting_adjust_detail
+    set op_id = #{record.opId,jdbcType=VARCHAR},
+      entry_id = #{record.entryId,jdbcType=VARCHAR},
+      debit_acct_type = #{record.debitAcctType,jdbcType=VARCHAR},
+      debit_acct_no = #{record.debitAcctNo,jdbcType=VARCHAR},
+      debit_acct_name = #{record.debitAcctName,jdbcType=VARCHAR},
+      debit_cust_id = #{record.debitCustId,jdbcType=VARCHAR},
+      debit_subject_id = #{record.debitSubjectId,jdbcType=VARCHAR},
+      credit_acct_type = #{record.creditAcctType,jdbcType=VARCHAR},
+      credit_acct_no = #{record.creditAcctNo,jdbcType=VARCHAR},
+      credit_acct_name = #{record.creditAcctName,jdbcType=VARCHAR},
+      credit_cust_id = #{record.creditCustId,jdbcType=VARCHAR},
+      credit_subject_id = #{record.creditSubjectId,jdbcType=VARCHAR},
+      curcde = #{record.curcde,jdbcType=VARCHAR},
+      amt = #{record.amt,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetail" >
+    update bms_td_accounting_adjust_detail
+    <set >
+      <if test="debitAcctType != null" >
+        debit_acct_type = #{debitAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAcctNo != null" >
+        debit_acct_no = #{debitAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAcctName != null" >
+        debit_acct_name = #{debitAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="debitCustId != null" >
+        debit_cust_id = #{debitCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="debitSubjectId != null" >
+        debit_subject_id = #{debitSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctType != null" >
+        credit_acct_type = #{creditAcctType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctNo != null" >
+        credit_acct_no = #{creditAcctNo,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAcctName != null" >
+        credit_acct_name = #{creditAcctName,jdbcType=VARCHAR},
+      </if>
+      <if test="creditCustId != null" >
+        credit_cust_id = #{creditCustId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditSubjectId != null" >
+        credit_subject_id = #{creditSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="curcde != null" >
+        curcde = #{curcde,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        amt = #{amt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.accounting.adjust.bean.AccountingAdjustDetail" >
+    update bms_td_accounting_adjust_detail
+    set debit_acct_type = #{debitAcctType,jdbcType=VARCHAR},
+      debit_acct_no = #{debitAcctNo,jdbcType=VARCHAR},
+      debit_acct_name = #{debitAcctName,jdbcType=VARCHAR},
+      debit_cust_id = #{debitCustId,jdbcType=VARCHAR},
+      debit_subject_id = #{debitSubjectId,jdbcType=VARCHAR},
+      credit_acct_type = #{creditAcctType,jdbcType=VARCHAR},
+      credit_acct_no = #{creditAcctNo,jdbcType=VARCHAR},
+      credit_acct_name = #{creditAcctName,jdbcType=VARCHAR},
+      credit_cust_id = #{creditCustId,jdbcType=VARCHAR},
+      credit_subject_id = #{creditSubjectId,jdbcType=VARCHAR},
+      curcde = #{curcde,jdbcType=VARCHAR},
+      amt = #{amt,jdbcType=DECIMAL}
+    where op_id = #{opId,jdbcType=VARCHAR}
+      and entry_id = #{entryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

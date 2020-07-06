@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.expresspay.mpper.CommonMapper">
+
+  <select id="getCustId" parameterType="com.qifenqian.bms.expresspay.cardholderInfo.bean.Cardholder" resultType="string">
+		SELECT
+			C.CUST_ID
+		FROM
+			TD_LOGIN_USER_INFO U,
+			STCS.ACCT_JGKJ_CARD C
+		WHERE 
+			U.CUST_ID = C.CUST_ID 
+			<if test="mobile!=null and mobile!='' ">
+				AND U.MOBILE = #{mobile,jdbcType = VARCHAR}
+			</if>
+			<if test="cardNo!=null and cardNo!=''">
+				AND C.CARD_NO  = #{cardNo,jdbcType = VARCHAR}
+			</if>
+  </select>
+</mapper>

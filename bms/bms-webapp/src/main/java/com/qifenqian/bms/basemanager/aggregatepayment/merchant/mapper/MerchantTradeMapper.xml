@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.merchant.mapper.MerchantTradeMapper">
+	<select id="getMerchantTradeList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.MerchantTradeQueryBean"
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.OrderSummaryBean">
+		SELECT 
+			COUNT(*) countTrade, 
+			temp.MCH_ID custId,
+			temp.MERCHANT_CODE,
+			temp.MCH_NAME merchantName,
+			temp.channel,
+			SUM(temp.ORDER_AMT) sumTrade,
+			SUM(temp.settle_amt) settle_amt
+		from 
+		(
+			select 
+				T.MCH_ID,
+				T.MCH_NAME,
+				T.CHANNEL,
+				T.ORDER_AMT,
+				T.TRADE_AMT,
+				T.CREATE_TIME,
+				T.FINISH_TIME,
+				IFNULL(case T.CHANNEL when 'sevenpay' then ttt5.SETTLE_AMT else tt3.SETTLE_AMT end,0.00) SETTLE_AMT,
+				A.merchant_code
+			from 
+				td_order T
+			left join 
+				stcdb.td_cust_info A
+	   		ON
+				T.mch_id=A.cust_id
+		<!-- 	left join
+				td_pay_channel_cfg B
+			on
+				T.CHANNEL_SUB = B.PAY_CHANNEL_CODE
+			left join 
+				td_payment_prod_for_merchant C
+			on
+				T.service = C.PROD_CODE -->
+				
+			left join stcs.trans_record tt1
+		     on T.CORE_SN = tt1.req_serial_id
+		    left join stcs.trans_record_buss_accounting tt2
+		     on tt1.msg_id = tt2.msg_id
+		    left join stcs.acct_seven_buss_flow tt3
+		     on tt2.id = tt3.trans_flow_id
+
+		
+		    left join stcdb.td_merchant_in ttt1
+		     on T.ORDER_ID = ttt1.OUT_ORDER_ID
+		    left join stcdb.td_trade_bill_main ttt2
+		     on ttt1.IN_ORDER_ID = ttt2.ORDER_ID
+		    left join stcs.trans_record ttt3
+		     on ttt2.CORE_SN = ttt3.msg_id
+		    left join stcs.trans_record_flow ttt4
+		     on ttt3.msg_id = ttt4.msg_id and ttt4.business_type='RECEIVE' and ttt4.acct_type='SEVEN_BUSS'
+		    left join stcs.acct_seven_buss_flow ttt5
+		     on ttt4.id = ttt5.trans_flow_id
+		    <where>
+			T.order_state in('00','90','91')
+			<if test="createTimeB != null and createTimeB != '' ">
+				 <![CDATA[  
+             	 	AND  DATE_FORMAT(T.FINISH_TIME ,'%Y-%m-%d')   >= #{createTimeB}  
+            	 ]]>  
+			</if>
+			<if test="createTimeE != null and createTimeE != '' ">
+				 <![CDATA[  
+             	 	AND  DATE_FORMAT(T.FINISH_TIME ,'%Y-%m-%d')   <= #{createTimeE}  
+            	 ]]>  
+			</if>
+			<if test="merchantName != null and '' != merchantName">  
+	            <![CDATA[  
+	                AND T.mch_Name LIKE CONCAT('%',#{merchantName,jdbcType=VARCHAR},'%')
+	            ]]>  
+      		</if>
+      		<if test="merchantCode != null and '' != merchantCode">  
+	             AND A.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+      		</if>  
+      		
+      	</where>
+			)temp
+		group BY temp.CHANNEL,temp.MCH_ID,temp.MCH_NAME
+		ORDER BY SUM(temp.ORDER_AMT) desc 
+	</select>	
+	
+	<select id="getMerchantRefundList" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.MerchantTradeQueryBean"
+		resultType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.OrderSummaryBean">
+		SELECT 
+			COUNT(*) countTrade, 
+			temp.MCH_ID custId,
+			temp.MERCHANT_CODE,
+			temp.MCH_NAME merchantName,
+			temp.channel,
+			SUM(temp.REFUND_AMT) sumTrade,
+			SUM(temp.settleAmt) settle_amt
+			from 
+			(
+				select
+						T.REFUND_ID,
+						T.MER_REFUND_ID,
+						T.ORDER_ID,
+						T.MCH_ID,
+						T.TOTAL_AMT,
+						T.REFUND_AMT,
+						IFNULL((case C.CHANNEL when 'sevenpay' then ttt3.SETTLE_AMT-ttt3.TRANS_AMT else tt3.SETTLE_AMT-tt3.TRANS_AMT end),0.00) settleAmt,
+						T.CHANNEL_TRANS_ID,
+						T.CHANNEL_REFUND_ID,
+						T.REFUND_CHANNEL,
+						T.ERR_CODE,
+						T.ERR_DESC,
+						DATE_FORMAT(T.REFUND_TIME,'%Y-%m-%d %H:%m:%s') REFUND_TIME,
+						T.REFUND_STATE,
+						DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%m:%s') CREATE_TIME,
+						T.CREATE_ID,
+						C.channel,
+						D.prod_Name,
+						E.merchant_code,
+						E.cust_name MCH_NAME
+					from
+						td_refund T
+					left JOIN td_order C 
+			        ON T.ORDER_ID= C.ORDER_ID 
+			 		LEFT JOIN td_payment_prod_for_merchant D 
+			        ON D.PROD_CODE = C.SERVICE
+					LEFT JOIN	stcdb.td_cust_info E
+					    ON T.mch_id = E.cust_id
+			
+			    left join stcs.trans_record tt1
+			     on T.CORE_SN = tt1.req_serial_id
+			    left join stcs.trans_record_buss_accounting tt2
+			     on tt1.msg_id = tt2.msg_id
+			    left join stcs.acct_seven_buss_flow tt3
+			     on tt2.id = tt3.trans_flow_id
+			
+			
+			    left join stcdb.td_refund_bill ttt1
+			     on T.MER_REFUND_ID = ttt1.REFUND_MER_ORDER_ID
+			    left join stcs.trans_record_flow ttt2
+			     on ttt2.msg_id = ttt1.core_sn and ttt2.business_type='RECEIVE_REFUND' and ttt2.acct_type='SEVEN_BUSS'
+			    left join stcs.acct_seven_buss_flow ttt3
+			     on ttt2.id = ttt3.trans_flow_id
+			 <where>
+			T.REFUND_STATE = '0'
+			<if test="createTimeB != null and createTimeB != '' ">
+				 <![CDATA[  
+             	 	AND  DATE_FORMAT(T.REFUND_TIME ,'%Y-%m-%d')   >= #{createTimeB}  
+            	 ]]>  
+			</if>
+			<if test="createTimeE != null and createTimeE != '' ">
+				 <![CDATA[  
+             	 	AND  DATE_FORMAT(T.REFUND_TIME ,'%Y-%m-%d')   <= #{createTimeE}  
+            	 ]]>  
+			</if>
+			<if test="merchantName != null and '' != merchantName">  
+	            <![CDATA[  
+	                AND T.MCH_NAME LIKE CONCAT('%',#{merchantName,jdbcType=VARCHAR},'%')
+	            ]]>  
+      		</if> 
+      		<if test="merchantCode != null and '' != merchantCode">  
+	             AND E.MERCHANT_CODE = #{merchantCode,jdbcType=VARCHAR}
+      		</if> 
+      	</where>
+			)temp
+		
+		group BY temp.CHANNEL,temp.MCH_ID,temp.MCH_NAME
+		ORDER BY SUM(temp.REFUND_AMT) desc 
+	</select>	
+</mapper>

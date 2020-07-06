@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.dictData.mapper.DictDataMapper">
+
+	<select id="selectListDict" resultType="com.qifenqian.bms.basemanager.dictData.bean.DictData" parameterType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+	 SELECT 
+	 	T.ID,	
+		T.DICT_PATH,
+		T.NAME,
+		T.VALUE,
+		T.DATA_TYPE,
+		T.ORDER_BY,
+		T.DESCRIPTION,
+		T.ROLE,
+		T.LANGUAGE,
+		(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.CREATOR) creator,
+		DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') as createTime,
+		T.STATUS,
+		T.DICT_TYPE,
+		T.LEVEL ,
+		(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID =T.LASTUPDATE_USER) LASTUPDATE_USER,
+		DATE_FORMAT(T.LASTUPDATE_TIME,'%Y-%m-%d %H:%i:%s') as lastupdateTime
+		FROM BMS_DICT_DATA T 
+	    <where>
+	    	<if test="level != null and level != ''">AND T.LEVEL = #{level,jdbcType=VARCHAR}</if>
+	    	<if test="id != null and id != ''">AND T.ID = #{id,jdbcType=INTEGER}</if>
+	    	<if test="name != null and name != ''">AND T.NAME LIKE CONCAT('%',#{name, jdbcType=VARCHAR},'%')</if>
+	    	<if test="dictPath != null and dictPath != ''">AND T.DICT_PATH  LIKE CONCAT('%',#{dictPath, jdbcType=VARCHAR},'%')</if>
+	    </where>
+	</select>
+
+	<insert id="insertDict" parameterType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+	INSERT INTO BMS_DICT_DATA (
+		DICT_PATH,
+		NAME,
+		VALUE,
+		DATA_TYPE,
+		ORDER_BY,
+		DESCRIPTION,
+		ROLE,
+		LANGUAGE,
+		CREATOR,
+		CREATE_TIME,
+		STATUS,
+		DICT_TYPE,
+		LEVEL
+		
+	)
+	VALUES
+	(
+		#{dictPath, 		jdbcType=VARCHAR},
+		#{name, 	jdbcType=VARCHAR},
+		#{value, 	jdbcType=VARCHAR},
+		#{dataType, 		jdbcType=VARCHAR},
+		#{orderBy, 	jdbcType=VARCHAR},
+		#{description, 	jdbcType=VARCHAR},
+		#{role, 		jdbcType=VARCHAR},
+		#{language, 	jdbcType=VARCHAR},
+		#{creator, 	jdbcType=VARCHAR},
+		NOW(),
+		#{status, 		jdbcType=VARCHAR},
+		#{dictType, 	jdbcType=VARCHAR},
+		#{level, 	jdbcType=VARCHAR}
+	)
+	</insert>
+	
+	
+	<update id="updateDict" parameterType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+		update bms_dict_data
+		<set>
+			<if test="null != value and value != '' ">
+				value = #{value,jdbcType=VARCHAR},
+			</if>
+			<if test=" null != dictPath and dictPath != ''" >
+				DICT_PATH = #{dictPath,jdbcType=VARCHAR},
+			</if>
+			<if test="null != name and name != '' ">
+				NAME = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="null != dataType and dataType != '' ">
+				DATA_TYPE = #{dataType,jdbcType=VARCHAR},
+			</if>
+			<if test="null != orderBy and orderBy != ''">
+				ORDER_BY = #{orderBy,jdbcType=VARCHAR},
+			</if>
+			<if test="null != description and description != ''">
+				DESCRIPTION = #{description,jdbcType=VARCHAR},
+			</if>
+			<if test="null != role and role != ''">
+				ROLE = #{role,jdbcType=VARCHAR},
+			</if>
+			<if test="null != language and language!= ''">
+				LANGUAGE = #{language,jdbcType=VARCHAR},
+			</if>
+			<if test="null != status and status != ''">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="null != dictType and dictType !=''">
+				DICT_TYPE = #{dictType,jdbcType=VARCHAR},
+			</if>
+			<if test="null != level and level !=''">
+				LEVEL = #{level,jdbcType=VARCHAR},
+			</if>
+			<if test="null != lastupdateUser and lastupdateUser != ''">
+				LASTUPDATE_USER = #{lastupdateUser,jdbcType=VARCHAR},
+			</if>
+				LASTUPDATE_TIME = now()
+		</set>
+			WHERE id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<delete id="delDict" parameterType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+		DELETE FROM bms_dict_data
+		WHERE id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="selectDictionaryBeanByRestrict" resultType="com.qifenqian.bms.basemanager.dictData.bean.DictData" parameterType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+		SELECT 
+			 	T.ID,	
+			  T.DICT_PATH,
+				T.NAME,
+				T.VALUE,
+				T.DATA_TYPE,
+				T.ORDER_BY,
+				T.DESCRIPTION,
+				T.ROLE,
+				T.LANGUAGE,
+				(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.CREATOR) CREATOR,
+				DATE_FORMAT(T.CREATE_TIME,'%Y-%m-%d %H:%i:%s') as createTime,
+				T.STATUS,
+				T.DICT_TYPE,
+				T.LEVEL,
+				(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.LASTUPDATE_USER) LASTUPDATE_USER,
+				DATE_FORMAT(T.LASTUPDATE_TIME,'%Y-%m-%d %H:%i:%s') as lastupdateTime
+			FROM 
+			  	BMS_DICT_DATA T 
+			WHERE
+			  	T.DICT_PATH IN ('meeting.register.redpackage.switch',
+								'meeting.register.redpackage.minAmt',
+								'meeting.register.redpackage.maxAmt')
+			<if test="value != null and value != ''">AND T.VALUE = #{value,jdbcType=VARCHAR}</if>
+	    	<if test="name != null and name != ''">AND T.NAME LIKE CONCAT('%',#{name},'%')</if>				
+	</select>
+	<select id="selectByDataPath" parameterType="string"  resultType="com.qifenqian.bms.basemanager.dictData.bean.DictData">
+		SELECT
+			T.*
+		FROM
+			BMS_DICT_DATA T 
+		WHERE
+			T.DICT_PATH = #{dataPath,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDataValueByPath" resultType="string" parameterType="string">
+		SELECT
+			T.VALUE
+		FROM 
+			BMS_DICT_DATA T
+		WHERE 
+			T.DICT_PATH = #{dictPath,jdbcType = VARCHAR}
+	</select>
+	
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.jgkjsevendatasource.mapper.BalJgkjSevenDataSourceMapper">
+	<select id="selectSevenDataSourceList" resultType="com.qifenqian.bms.accounting.jgkjsevendatasource.bean.BalJgkjSevenDataSource" parameterType="com.qifenqian.bms.accounting.jgkjsevendatasource.bean.BalJgkjSevenDataSource">
+	SELECT
+		T.CLEAR_ID,
+		R.REQ_SERIAL_ID,
+		T.TRANS_FLOW_ID,
+		F.BUSINESS_TYPE,
+		IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = F.BUSINESS_TYPE),F.BUSINESS_TYPE) BUSINESS_TYPE_DESC,
+		T.TRANS_CODE,
+		C.CHANNEL_SERIAL_SEQ, 
+		T.CARD_NO,
+		T.CURR_CODE,
+		T.TRANS_AMT,
+		T.WORK_DATE,
+		T.SEND_DATE,
+		T.SEND_TIME,
+		IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'TRANS_STATUS' AND TYPE_CODE = T.TRANS_STATUS),T.TRANS_STATUS) TRANS_STATUS,
+		T.RTN_DATE,
+		T.RTN_TIME,
+		T.RTN_SEQ,
+		T.RTN_CODE,
+		T.RTN_INFO,
+		T.INST_DATE,
+		DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS INST_DATETIME
+		FROM
+		BAL_JGKJ_SEVEN_DATA_SOURCE T
+		LEFT JOIN CLEAR_JGKJ_RECHARGE C ON T.CLEAR_ID = C.ID
+		LEFT JOIN CLEAR_JGKJ_TRANSFER S ON T.CLEAR_ID = S.ID
+		LEFT JOIN TRANS_RECORD_FLOW F ON F.ID = T.TRANS_FLOW_ID 
+		LEFT JOIN TRANS_RECORD R ON F.MSG_ID = R.MSG_ID 
+		<where>
+			<if test="businessType != null and businessType != '' ">
+				AND F.BUSINESS_TYPE = #{businessType,jdbcType = VARCHAR}
+			</if>
+			<if test="clearId != null and clearId != '' ">
+				AND T.CLEAR_ID LIKE CONCAT('%',#{clearId,jdbcType = VARCHAR},'%')
+			</if>
+			<if test="reqSerialId != null and reqSerialId != '' ">
+				AND R.REQ_SERIAL_ID LIKE CONCAT('%',#{reqSerialId,jdbcType = VARCHAR},'%')
+			</if>
+			<if test="channelSerialSeq != null and channelSerialSeq != '' ">
+				AND C.CHANNEL_SERIAL_SEQ LIKE CONCAT('%',#{channelSerialSeq,jdbcType = VARCHAR},'%')
+			</if>
+			<if test="rtnSeq != null and rtnSeq != '' ">
+				AND T.RTN_SEQ LIKE CONCAT('%',#{rtnSeq,jdbcType = VARCHAR},'%')
+			</if>
+			<if test="workDate != null and workDate != '' ">
+				AND T.WORK_DATE = #{workDate,jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY T.INST_DATETIME DESC
+	</select>
+</mapper>

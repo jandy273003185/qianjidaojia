@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.bal.accountResult.mapper.BalBatchResultStatisticMapper">
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+    <id column="statistic_id" jdbcType="INTEGER" property="statisticId" />
+    <result column="batch_id" jdbcType="VARCHAR" property="batchId" />
+    <result column="bal_date" jdbcType="VARCHAR" property="balDate" />
+    <result column="work_date" jdbcType="VARCHAR" property="workDate" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="channel_id" jdbcType="INTEGER" property="channelId" />
+    <result column="data_owner" jdbcType="VARCHAR" property="dataOwner" />
+    <result column="trans_status" jdbcType="VARCHAR" property="transStatus" />
+    <result column="trans_type" jdbcType="VARCHAR" property="transType" />
+    <result column="trans_currency" jdbcType="VARCHAR" property="transCurrency" />
+    <result column="total_count" jdbcType="INTEGER" property="totalCount" />
+    <result column="total_amt" jdbcType="DECIMAL" property="totalAmt" />
+    <result column="bal_equal_count" jdbcType="INTEGER" property="balEqualCount" />
+    <result column="bal_equal_amt" jdbcType="DECIMAL" property="balEqualAmt" />
+    <result column="bal_doubt_count" jdbcType="INTEGER" property="balDoubtCount" />
+    <result column="bal_doubt_amt" jdbcType="DECIMAL" property="balDoubtAmt" />
+    <result column="bal_error_count" jdbcType="INTEGER" property="balErrorCount" />
+    <result column="bal_error_amt" jdbcType="DECIMAL" property="balErrorAmt" />
+    <result column="self_doubt_count" jdbcType="INTEGER" property="selfDoubtCount" />
+    <result column="self_doubt_amt" jdbcType="DECIMAL" property="selfDoubtAmt" />
+    <result column="inst_datetime" jdbcType="TIMESTAMP" property="instDatetime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="update_datetime" jdbcType="TIMESTAMP" property="updateDatetime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    statistic_id, batch_id, bal_date, work_date, file_id, channel_id, data_owner, trans_status, 
+    trans_type, trans_currency, total_count, total_amt, bal_equal_count, bal_equal_amt, 
+    bal_doubt_count, bal_doubt_amt, bal_error_count, bal_error_amt, self_doubt_count, 
+    self_doubt_amt, inst_datetime, status, memo, update_datetime
+  </sql>
+  <select id="selectByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatisticExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bal_batch_result_statistic
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bal_batch_result_statistic
+    where statistic_id = #{statisticId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bal_batch_result_statistic
+    where statistic_id = #{statisticId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatisticExample">
+    delete from bal_batch_result_statistic
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+    insert into bal_batch_result_statistic (statistic_id, batch_id, bal_date, 
+      work_date, file_id, channel_id, 
+      data_owner, trans_status, trans_type, 
+      trans_currency, total_count, total_amt, 
+      bal_equal_count, bal_equal_amt, bal_doubt_count, 
+      bal_doubt_amt, bal_error_count, bal_error_amt, 
+      self_doubt_count, self_doubt_amt, inst_datetime, 
+      status, memo, update_datetime
+      )
+    values (#{statisticId,jdbcType=INTEGER}, #{batchId,jdbcType=VARCHAR}, #{balDate,jdbcType=VARCHAR}, 
+      #{workDate,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR}, #{channelId,jdbcType=INTEGER}, 
+      #{dataOwner,jdbcType=VARCHAR}, #{transStatus,jdbcType=VARCHAR}, #{transType,jdbcType=VARCHAR}, 
+      #{transCurrency,jdbcType=VARCHAR}, #{totalCount,jdbcType=INTEGER}, #{totalAmt,jdbcType=DECIMAL}, 
+      #{balEqualCount,jdbcType=INTEGER}, #{balEqualAmt,jdbcType=DECIMAL}, #{balDoubtCount,jdbcType=INTEGER}, 
+      #{balDoubtAmt,jdbcType=DECIMAL}, #{balErrorCount,jdbcType=INTEGER}, #{balErrorAmt,jdbcType=DECIMAL}, 
+      #{selfDoubtCount,jdbcType=INTEGER}, #{selfDoubtAmt,jdbcType=DECIMAL}, #{instDatetime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{updateDatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+    insert into bal_batch_result_statistic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="statisticId != null">
+        statistic_id,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="balDate != null">
+        bal_date,
+      </if>
+      <if test="workDate != null">
+        work_date,
+      </if>
+      <if test="fileId != null">
+        file_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="dataOwner != null">
+        data_owner,
+      </if>
+      <if test="transStatus != null">
+        trans_status,
+      </if>
+      <if test="transType != null">
+        trans_type,
+      </if>
+      <if test="transCurrency != null">
+        trans_currency,
+      </if>
+      <if test="totalCount != null">
+        total_count,
+      </if>
+      <if test="totalAmt != null">
+        total_amt,
+      </if>
+      <if test="balEqualCount != null">
+        bal_equal_count,
+      </if>
+      <if test="balEqualAmt != null">
+        bal_equal_amt,
+      </if>
+      <if test="balDoubtCount != null">
+        bal_doubt_count,
+      </if>
+      <if test="balDoubtAmt != null">
+        bal_doubt_amt,
+      </if>
+      <if test="balErrorCount != null">
+        bal_error_count,
+      </if>
+      <if test="balErrorAmt != null">
+        bal_error_amt,
+      </if>
+      <if test="selfDoubtCount != null">
+        self_doubt_count,
+      </if>
+      <if test="selfDoubtAmt != null">
+        self_doubt_amt,
+      </if>
+      <if test="instDatetime != null">
+        inst_datetime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+      <if test="updateDatetime != null">
+        update_datetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="statisticId != null">
+        #{statisticId,jdbcType=INTEGER},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="balDate != null">
+        #{balDate,jdbcType=VARCHAR},
+      </if>
+      <if test="workDate != null">
+        #{workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="dataOwner != null">
+        #{dataOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="transStatus != null">
+        #{transStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="transType != null">
+        #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="transCurrency != null">
+        #{transCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null">
+        #{totalCount,jdbcType=INTEGER},
+      </if>
+      <if test="totalAmt != null">
+        #{totalAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balEqualCount != null">
+        #{balEqualCount,jdbcType=INTEGER},
+      </if>
+      <if test="balEqualAmt != null">
+        #{balEqualAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balDoubtCount != null">
+        #{balDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="balDoubtAmt != null">
+        #{balDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balErrorCount != null">
+        #{balErrorCount,jdbcType=INTEGER},
+      </if>
+      <if test="balErrorAmt != null">
+        #{balErrorAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="selfDoubtCount != null">
+        #{selfDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="selfDoubtAmt != null">
+        #{selfDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="instDatetime != null">
+        #{instDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDatetime != null">
+        #{updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatisticExample" resultType="java.lang.Integer">
+    select count(*) from bal_batch_result_statistic
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update bal_batch_result_statistic
+    <set>
+      <if test="record.statisticId != null">
+        statistic_id = #{record.statisticId,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchId != null">
+        batch_id = #{record.batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.balDate != null">
+        bal_date = #{record.balDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workDate != null">
+        work_date = #{record.workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileId != null">
+        file_id = #{record.fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelId != null">
+        channel_id = #{record.channelId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dataOwner != null">
+        data_owner = #{record.dataOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transStatus != null">
+        trans_status = #{record.transStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transType != null">
+        trans_type = #{record.transType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transCurrency != null">
+        trans_currency = #{record.transCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalCount != null">
+        total_count = #{record.totalCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.totalAmt != null">
+        total_amt = #{record.totalAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.balEqualCount != null">
+        bal_equal_count = #{record.balEqualCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.balEqualAmt != null">
+        bal_equal_amt = #{record.balEqualAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.balDoubtCount != null">
+        bal_doubt_count = #{record.balDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.balDoubtAmt != null">
+        bal_doubt_amt = #{record.balDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.balErrorCount != null">
+        bal_error_count = #{record.balErrorCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.balErrorAmt != null">
+        bal_error_amt = #{record.balErrorAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.selfDoubtCount != null">
+        self_doubt_count = #{record.selfDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.selfDoubtAmt != null">
+        self_doubt_amt = #{record.selfDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.instDatetime != null">
+        inst_datetime = #{record.instDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null">
+        memo = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDatetime != null">
+        update_datetime = #{record.updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update bal_batch_result_statistic
+    set statistic_id = #{record.statisticId,jdbcType=INTEGER},
+      batch_id = #{record.batchId,jdbcType=VARCHAR},
+      bal_date = #{record.balDate,jdbcType=VARCHAR},
+      work_date = #{record.workDate,jdbcType=VARCHAR},
+      file_id = #{record.fileId,jdbcType=VARCHAR},
+      channel_id = #{record.channelId,jdbcType=INTEGER},
+      data_owner = #{record.dataOwner,jdbcType=VARCHAR},
+      trans_status = #{record.transStatus,jdbcType=VARCHAR},
+      trans_type = #{record.transType,jdbcType=VARCHAR},
+      trans_currency = #{record.transCurrency,jdbcType=VARCHAR},
+      total_count = #{record.totalCount,jdbcType=INTEGER},
+      total_amt = #{record.totalAmt,jdbcType=DECIMAL},
+      bal_equal_count = #{record.balEqualCount,jdbcType=INTEGER},
+      bal_equal_amt = #{record.balEqualAmt,jdbcType=DECIMAL},
+      bal_doubt_count = #{record.balDoubtCount,jdbcType=INTEGER},
+      bal_doubt_amt = #{record.balDoubtAmt,jdbcType=DECIMAL},
+      bal_error_count = #{record.balErrorCount,jdbcType=INTEGER},
+      bal_error_amt = #{record.balErrorAmt,jdbcType=DECIMAL},
+      self_doubt_count = #{record.selfDoubtCount,jdbcType=INTEGER},
+      self_doubt_amt = #{record.selfDoubtAmt,jdbcType=DECIMAL},
+      inst_datetime = #{record.instDatetime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR},
+      memo = #{record.memo,jdbcType=VARCHAR},
+      update_datetime = #{record.updateDatetime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+    update bal_batch_result_statistic
+    <set>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="balDate != null">
+        bal_date = #{balDate,jdbcType=VARCHAR},
+      </if>
+      <if test="workDate != null">
+        work_date = #{workDate,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="dataOwner != null">
+        data_owner = #{dataOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="transStatus != null">
+        trans_status = #{transStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="transType != null">
+        trans_type = #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="transCurrency != null">
+        trans_currency = #{transCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=INTEGER},
+      </if>
+      <if test="totalAmt != null">
+        total_amt = #{totalAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balEqualCount != null">
+        bal_equal_count = #{balEqualCount,jdbcType=INTEGER},
+      </if>
+      <if test="balEqualAmt != null">
+        bal_equal_amt = #{balEqualAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balDoubtCount != null">
+        bal_doubt_count = #{balDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="balDoubtAmt != null">
+        bal_doubt_amt = #{balDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balErrorCount != null">
+        bal_error_count = #{balErrorCount,jdbcType=INTEGER},
+      </if>
+      <if test="balErrorAmt != null">
+        bal_error_amt = #{balErrorAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="selfDoubtCount != null">
+        self_doubt_count = #{selfDoubtCount,jdbcType=INTEGER},
+      </if>
+      <if test="selfDoubtAmt != null">
+        self_doubt_amt = #{selfDoubtAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="instDatetime != null">
+        inst_datetime = #{instDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDatetime != null">
+        update_datetime = #{updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where statistic_id = #{statisticId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+    update bal_batch_result_statistic
+    set batch_id = #{batchId,jdbcType=VARCHAR},
+      bal_date = #{balDate,jdbcType=VARCHAR},
+      work_date = #{workDate,jdbcType=VARCHAR},
+      file_id = #{fileId,jdbcType=VARCHAR},
+      channel_id = #{channelId,jdbcType=INTEGER},
+      data_owner = #{dataOwner,jdbcType=VARCHAR},
+      trans_status = #{transStatus,jdbcType=VARCHAR},
+      trans_type = #{transType,jdbcType=VARCHAR},
+      trans_currency = #{transCurrency,jdbcType=VARCHAR},
+      total_count = #{totalCount,jdbcType=INTEGER},
+      total_amt = #{totalAmt,jdbcType=DECIMAL},
+      bal_equal_count = #{balEqualCount,jdbcType=INTEGER},
+      bal_equal_amt = #{balEqualAmt,jdbcType=DECIMAL},
+      bal_doubt_count = #{balDoubtCount,jdbcType=INTEGER},
+      bal_doubt_amt = #{balDoubtAmt,jdbcType=DECIMAL},
+      bal_error_count = #{balErrorCount,jdbcType=INTEGER},
+      bal_error_amt = #{balErrorAmt,jdbcType=DECIMAL},
+      self_doubt_count = #{selfDoubtCount,jdbcType=INTEGER},
+      self_doubt_amt = #{selfDoubtAmt,jdbcType=DECIMAL},
+      inst_datetime = #{instDatetime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR},
+      update_datetime = #{updateDatetime,jdbcType=TIMESTAMP}
+    where statistic_id = #{statisticId,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="selectList" parameterType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic" resultType="com.qifenqian.bms.bal.accountResult.bean.BalBatchResultStatistic">
+  	select 
+		T.statistic_id,
+		T.batch_id,
+		T.bal_date,
+		T.work_date,
+		T.file_id,
+		T.channel_id,
+		T.data_owner,
+		T.trans_status,
+		
+		T.trans_currency,
+		T.total_count,
+		T.total_amt,
+		T.bal_equal_count,
+		T.bal_equal_amt,
+		T.bal_doubt_count,
+		T.bal_doubt_amt,
+		T.bal_error_count,
+		T.bal_error_amt,
+		T.self_doubt_count,
+		T.self_doubt_amt,
+		T.inst_datetime,
+		
+		T.memo,
+		T.update_datetime,
+		C.channel_Name,
+		e.type_name status,
+		case 
+			t.trans_type 
+		when 'GUANGDONG_MOBILE' then d.type_name
+		when 'GUANGDONG_TELECOM' then d.type_name
+		when 'GUANGDONG_UNICOM' then d.type_name
+		else t.trans_type end trans_type
+	from 
+		bal_batch_result_statistic T
+	left join 
+		base_channel C
+	on
+		T.channel_id=C.channel_id
+	left join 
+		base_type D
+	on
+		t.trans_type = d.type_code
+	left join
+		base_type E
+	on
+		t.status = e.type_code
+	<where>
+		<if test="workDateMax != null and workDateMax != '' "> AND #{workDateMax, jdbcType=VARCHAR} &gt;= T.WORK_DATE</if>
+		<if test="workDateMin != null and workDateMin != '' "> AND T.WORK_DATE &gt;= #{workDateMin, jdbcType=VARCHAR}</if>
+		<if test="status != null and status != '' ">AND T.STATUS = #{status, 	jdbcType=VARCHAR}</if>
+		<if test="channelId != null and channelId != '' "> AND T.CHANNEL_ID = #{channelId,jdbcType=VARCHAR}</if>
+	</where>
+		ORDER BY T.work_date DESC
+  </select>
+  
+  <select id="queryBalBaseChannel" resultType="com.qifenqian.bms.bal.accountResult.bean.BaseChannel">
+  	select
+  	 * 
+  	from
+  		base_channel
+  	
+  	
+  </select>
+</mapper>

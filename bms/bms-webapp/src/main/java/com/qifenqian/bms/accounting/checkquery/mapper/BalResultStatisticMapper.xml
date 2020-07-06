@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.checkquery.mapper.BalResultStatisticMapper" >
+   
+  <select id="selectList" resultType="com.qifenqian.bms.accounting.checkquery.bean.BalResultStatistic" parameterType="com.qifenqian.bms.accounting.checkquery.bean.BalResultStatistic" >
+		SELECT
+			T.BATCH_ID,
+			T.BAL_DATE,
+			T.WORK_DATE,
+			T.FILE_ID,
+			IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'CHANNEL_ID' AND TYPE_CODE = T.CHANNEL_ID),T.CHANNEL_ID) CHANNEL_ID_DESC,
+			IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'TRANS_STATUS' AND TYPE_CODE = T.TRANS_STATUS),T.TRANS_STATUS) TRANS_STATUS_DESC,
+		    IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = T.TRANS_TYPE),T.TRANS_TYPE) TRANS_TYPE_DESC,
+		    IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'SYSTEM' AND TYPE_CODE = T.SYSTEM),T.SYSTEM) SYSTEM_DESC,
+		    IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BAL_RESULT_STATUS' AND TYPE_CODE = T.STATUS),T.STATUS) STATUS_DESC,
+			T.TOTAL_COUNT,
+			T.TOTAL_AMT,
+			T.BAL_EQUAL_COUNT,
+			T.BAL_EQUAL_AMT,
+			T.BAL_DOUBT_COUNT,
+			T.BAL_DOUBT_AMT,
+			T.BAL_ERROR_COUNT,
+			T.BAL_ERROR_AMT,
+			T.SELF_DOUBT_COUNT,
+			T.SELF_DOUBT_AMT,
+			T.MEMO
+		FROM
+			BAL_RESULT_STATISTIC T
+			<where>
+				<if test="channelId != null and channelId != '' ">
+					AND T.CHANNEL_ID = #{channelId, jdbcType = VARCHAR}
+				</if>
+				<if test="status != null and status != '' ">
+					AND T.STATUS = #{status, jdbcType = VARCHAR}
+				</if>
+				<if test="balDate != null and balDate != '' ">
+					AND T.BAL_DATE = #{balDate, jdbcType = VARCHAR}
+				</if>
+				<if test="workDateMax != null and workDateMax != '' ">
+				<![CDATA[  
+					AND #{workDateMax, jdbcType=VARCHAR} >= T.WORK_DATE
+					]]> 
+				</if>
+				<if test="workDateMin != null and workDateMin != '' ">
+				<![CDATA[  
+					AND T.WORK_DATE >= #{workDateMin, jdbcType=VARCHAR}
+					]]> 
+				</if>
+			</where>
+		ORDER BY
+			T.BATCH_ID DESC,
+			T.CHANNEL_ID,
+			IFNULL((SELECT TYPE_NAME FROM BASE_TYPE WHERE TYPE_SORT = 'BUSINESS_TYPE' AND TYPE_CODE = T.TRANS_TYPE),T.TRANS_TYPE) ,
+			T.TRANS_STATUS DESC,
+			T.SYSTEM
+  </select>
+</mapper>

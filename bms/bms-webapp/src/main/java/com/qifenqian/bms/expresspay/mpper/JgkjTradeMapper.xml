@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.expresspay.mpper.JgkjTradeMapper">
+   <select id="queryJgkjTradeList" parameterType="com.qifenqian.bms.expresspay.tradeResult.bean.JgkjTrade" resultType="com.qifenqian.bms.expresspay.tradeResult.bean.JgkjTrade">
+			SELECT 
+			 TT.TRANS_ID,
+			 TT.TRANS_FLOW_ID,
+			CASE TT.BUSINESS_TYPE
+			WHEN 'WITHDRAW_APPLY' THEN
+				'提现申请'
+			WHEN 'PAYMENT' THEN
+				'消费'
+			WHEN 'RECHARGE' THEN
+				'充值'
+			WHEN 'RECHARGE_ONLINE' THEN
+				'在线充值'
+			WHEN 'TRANSFER' THEN
+				'转账'
+			END AS BUSINESS_TYPE,
+			 TT.CARD_NO,
+			 TT.TRANS_AMT,
+			 TT.ORDER_NO,
+			 TT.SEND_DATETIME,
+			 TT.WORK_DATE,
+			CASE
+			 TT.STATUS
+				WHEN 'SUCCESS' THEN '成功' 
+				WHEN 'FAILURE' THEN '失败' 
+				WHEN 'EXCEPTION' THEN '异常' 
+				ELSE TT.STATUS END STATUS,
+			 TT.RTN_TIME,
+			 TT.RTN_SEQ,
+			 TT.RTN_CODE FROM (
+			SELECT
+			 T.ID AS TRANS_ID,
+			 T.TRANS_FLOW_ID,
+			 T.BUSINESS_TYPE,
+			 T.CARD_NO,
+			 T.TRANS_AMT,
+			 T.ORDER_NO,
+			 T.SEND_DATETIME,
+			 T.WORK_DATE,
+			 T.STATUS,
+			 T.RTN_TIME,
+			 T.RTN_SEQ,
+			 T.RTN_CODE
+			FROM
+				STCS.CLEAR_JGKJ_TRADE T
+	UNION 
+SELECT
+			 T.ID AS TRANS_ID,
+			 T.TRANS_FLOW_ID,
+			 T.BUSINESS_TYPE,
+			 T.CARD_NO,
+			 T.TRANS_AMT,
+			 '' ORDER_NO,
+			 T.SEND_DATETIME,
+			 T.WORK_DATE,
+			 T.STATUS,
+			 T.RTN_TIME,
+			 T.RTN_SEQ,
+			 T.RTN_CODE
+			FROM
+				STCS.CLEAR_JGKJ_RECHARGE T
+	UNION 
+		SELECT
+			 T.ID AS TRANS_ID,
+			 T.TRANS_FLOW_ID,
+			 T.BUSINESS_TYPE,
+			 T.DEBIT_CARD_NO AS CARD_NO,
+			 T.TRANS_AMT,
+			 '' ORDER_NO,
+			 T.SEND_DATETIME,
+			 T.WORK_DATE,
+			 T.STATUS,
+			 T.RTN_TIME,
+			 T.RTN_SEQ,
+			 T.RTN_CODE
+			FROM
+				STCS.CLEAR_JGKJ_TRANSFER T
+	) TT
+		WHERE 1 = 1
+		<if test="transId != null and transId != '' ">
+		AND TT.TRANS_ID = #{transId,jdbcType = VARCHAR}
+		</if>
+		<if test="rtnSeq != null and rtnSeq != '' "> 
+		AND TT.RTN_SEQ =#{rtnSeq, jdbcType=VARCHAR}
+		</if>
+		<if test="businessType != null and businessType != '' "> 
+		AND TT.BUSINESS_TYPE =#{businessType, jdbcType=VARCHAR}
+		</if>
+		ORDER BY TT.SEND_DATETIME DESC	
+  </select>
+</mapper>

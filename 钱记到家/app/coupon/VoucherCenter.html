@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html PUBLtuyIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>优惠券中心</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <link href="css/newcoupon.css?0" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/coupon.js?v=003" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <div class="contain">
+        <div class="lab">
+            <div class="active" data-tType="1">未领取</div>
+            <div data-tType="2">未使用</div>
+            <div data-tType="3">优惠码</div>
+        </div>
+        <!--搜索-->
+        <div class="search" id="search" style="display:none;">
+            <div class="searchkey">
+                <input type="text" id="ExchangeCode" placeholder="请输入优惠码" />
+                <div class="btnsearch">确 认</div>
+            </div>
+        </div>
+
+        <ul class="" id="Uncollected">
+            <!--单个优惠券  未领取-->
+
+        </ul>
+        <ul class="" id="Notused" style="display:none;">
+            <!--单个优惠券-  已领取-->
+
+        </ul>
+        <!--么有优惠券-->
+        <div class="nopic none">
+            <div>暂无可用优惠券</div>
+        </div>
+
+        <div class="both"></div>
+    </div>
+    <nav class="navbar-white navbar-fixed-bottom" id="index-footer"></nav>
+</body>
+<script type="text/javascript">
+    var liIndex = 0;
+    var userId = sc.utils.getCookieValue("UserId");
+    var token = sc.utils.getCookieValue("Token");
+    var couId = sc.utils.getQueryString("couId");
+    var couDetailId = sc.utils.getQueryString("couDetailId");
+    var aType = sc.utils.getQueryString("activity");
+    var openId;
+    var isExist = false;
+    $(function () {
+        $("#index-footer").load("/footerV.html");
+    
+        
+        
+
+        $(".lab div").each(function () {
+            $(this).click(function () {
+                $(".lab div").removeClass("active");
+                $(this).addClass("active");
+                var tType = $(this).attr("data-tType");
+                if (tType == 1) {
+                    $("#Notused").hide();
+                    $("#Uncollected").show();
+                    $("#search").hide();
+                } else if (tType == 2) {
+                    $("#Notused").show();
+                    $("#Uncollected").hide();
+                    $("#search").hide();
+                } else if (tType == 3) {
+                    $("#Notused").hide();
+                    $("#Uncollected").hide();
+                    $("#search").show();
+                }
+            });
+        });
+        loadList(1);
+        loadList(2);
+       
+        $(".btnsearch").click(function () {
+            var ExchangeCode = $("#ExchangeCode").val();
+            if (ExchangeCode == "") {
+                layer.open({
+                    content: "请输入领取码",
+                    skin: 'msg',
+                    time: 1 //2秒后自动关闭
+                });
+                return;
+            }
+            var couId = $(this).attr("data-couId");
+            var url = "api/Coupon/CheckExchangeCode";
+            var callback = function (data) {
+                if (data.code == "0") {
+                    window.location.href = data.data;
+                } else {
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+               
+            }
+            sc.post(url, {
+                'UserId': userId,
+                'Token': token,
+                'ExchangeCode': ExchangeCode
+            }, callback)
+        });
+    });
+    var times = [];
+    function loadList(pType) {
+        if (pType == 2) {
+            if (times.length > 0) {
+                for (var n = 0; n < times.length; n++) {
+                    clearInterval(times[n]);
+                }
+            }
+            times = [];
+        }
+        var url = "api/Coupon/CouponCenterList";
+        var callback = function (data) {
+            if (data.code === 1) {
+                if (pType == 1) {
+                    if (data.data != null && data.data.length > 0) {
+                        var html = "";
+                        for (var i = 0; i < data.data.length; i++) {
+                            html += "<li class=\"l0\" data-couId=\"" + data.data[i].Id + "\" ><div class=\"one\"><div class=\"money\">";
+                            if (data.data[i].couponType == 0) {
+                                html += data.data[i].Denomination + "<span>元</span></div><div>";
+                            } else if (data.data[i].couponType == 1) {
+                                html += data.data[i].Denomination * 10 + "<span>折</span></div><div>";
+                            } else if (data.data[i].couponType == 2) {
+                                html += data.data[i].useSillStart + "-" + data.data[i].useSillEnd + "<span>元</span></div><div>";
+                            }
+                            html += data.data[i].UseExplain + "</div></div><div class=\"two\"><div class=\"name\">";
+                            html += data.data[i].Name + "</div><div class=\"desc\">";
+                            html += data.data[i].ProductExplain + "</div><div class=\"time\">";
+                            html += data.data[i].overdueDate + "</div></div></li>";
+                        }
+                        $("#Uncollected").html(html);
+                        subSave();
+                        $(".nopic").hide();
+                        isExist = true;
+                    } else {
+                        $(".nopic").show();
+                    }
+                } else if (pType == 2) {
+                    if (data.data != null && data.data.length > 0) {
+                        var html = "";
+                        for (var i = 0; i < data.data.length; i++) {
+                            html += "<li class=\"" +(data.data[i].MeetConditions == 0 ? "x0" : data.data[i].couponType == 0 ? "x1" : data.data[i].IsAppointUser?"x2":"x1") +"\" ><div class=\"one\"><div class=\"money\">";
+                            if (data.data[i].couponType == 0) {
+                                html += data.data[i].Denomination + "<span>元</span></div><div>";
+                            } else if (data.data[i].couponType == 1) {
+                                html += data.data[i].Denomination * 10 + "<span>折</span></div><div>";
+                            } else if (data.data[i].couponType == 2) {
+                                html += data.data[i].Denomination + "<span>元</span></div><div>";
+                            } else if (data.data[i].couponType == 4 || data.data[i].couponType == 3) {
+                                html += data.data[i].Denomination + "<span>元</span></div><div>";
+                            }
+                            html += data.data[i].UseExplain + "</div></div><div class=\"two\"><div class=\"name\">";
+                            html += data.data[i].Name + "</div><div class=\"desc\">";
+                            html += data.data[i].ProductExplain + "</div>";
+                            html += "<div class=\"time2\" id=\"time_" + data.data[i].Id + "\" data-time=\"" + data.data[i].useEndTime+"\"></div></div></li>";
+                            
+                        }
+                        $("#Notused").html(html);
+                        loadTimes();
+                        $(".nopic").hide();
+                    } else {
+                        $(".nopic").show();
+                    }
+                }
+            }
+            else {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+            }
+        }
+        sc.post(url, {
+            'UserId': userId,
+            'Token': token,
+            'Type': pType
+        }, callback)
+    }
+
+
+    function subSave() {
+        $("#Uncollected li").click(function () {
+            var couId = $(this).attr("data-couId");
+            var url = "api/Coupon/ReceiveCoupon";
+            var callback = function (data) {
+                if (data.code === 1) {
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+                else if (data.code === 2) {
+                    layer.open({
+                        content: '亲，您已掉线，请重新登录!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+                else if (data.code == 0 || data.code == 5) {
+                    layer.open({
+                        content: '领取成功!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                   
+                    loadList(1);
+                    loadList(2);
+                }
+            }
+            sc.post(url, {
+                'UserId': userId,
+                'Token': token,
+                'CouponId': couId,
+                'CounponDetailId': 0
+            }, callback)
+        });
+    }
+    function loadactivity() {
+        if (parms == null) {
+        }
+        var openId = "";
+        if (parms != "Info") {
+            var userInfo = sc.auth.getUserInfo();
+            var uInfo = JSON.parse(userInfo);
+            openId = uInfo.Openid;
+        }
+        var url = 'api/Coupon/ExclusiveCheck';
+        var activitycallback = function (data) {
+            if (data.code != "0") {
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 1 //1秒后自动关闭
+                });
+                setTimeout(function () {
+                    window.location.href = "/indexv.html";
+                }, 1000);
+            } else if (data.msg == "true") {
+                $(".icon-minus").hide();
+                $(".icon-add").hide();
+                $(".add-Cart").hide();
+                ActivityType = 3;
+            }
+        }
+        sc.post(url, {
+            "couId": parseInt(couId),
+            "parms": parms,
+            "openId": openId,
+            "couDetailId": couDetailId
+        }, activitycallback);
+    }
+    
+
+    function loadTimes() {
+        const countdown = {
+            domList: document.querySelectorAll('.time2'),
+            formatNumber(n) {
+                // return n.toString().padStart(2, '0');  // 用padStart方法要注意兼容问题
+                n = n.toString();
+                return n[1] ? n : '0' + n;
+            },
+            setTime(dom) {
+                //获取设置的时间 如：2019-3-28 14:00:00  ios系统得加正则.replace(/\-/g, '/');
+                //const leftTime = new Date(dom.getAttribute('data-time').replace(/\-/g, '/')) - new Date();
+                var end_time = new Date(dom.getAttribute('data-time')).getTime();//月份是实际月份-1
+                    //current_time = new Date().getTime(),
+                const leftTime = (end_time - new Date().getTime());
+            
+                if (leftTime >= 0) {
+                    const d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+                    const h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+                    const m = Math.floor(leftTime / 1000 / 60 % 60);
+                    dom.innerHTML = "<span>" + d + "</span>天<span>" +h + "</span>时<span>" + m + "</span>分过期";
+                } else {
+                    clearInterval(dom.$timer);
+                    dom.innerHTML = '<span>00</span>天<span>00</span>时<span>00</span>分过期';
+                }
+            },
+            start() {
+                this.domList.forEach((dom) => {
+                    this.setTime(dom);
+                    dom.$timer = setInterval(() => {
+                        this.setTime(dom);
+                    }, 1e3);
+                });
+            },
+        };
+        countdown.start();
+       
+    }
+
+</script>
+</html>

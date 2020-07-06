@@ -1,0 +1,17 @@
+<!--pages/nickName/nickName.wxml-->
+<view wx:if="{{pageName == 'nickName'}}">
+  <text class="tips">*以汉字或者英文字母开头，限制1～20个</text>
+  <view class="content">
+    <input value="{{NickName}}" bindinput="listenerInput"></input>
+    <image bindtap="del" src="images/del.png"></image>
+  </view>
+</view>
+
+<view wx:if="{{pageName == 'sex'}}">
+    <radio-group class="radio-group" bindchange="radioChange">
+        <radio class="radio" wx:for-items="{{items}}" wx:key="Sex" value="{{item.value}}" checked="{{item.checked}}">
+            <text class="sex-txt">{{item.Sex}}</text>
+        </radio>
+    </radio-group>
+</view>
+<view bindtap="finish" class="finish">完成</view>

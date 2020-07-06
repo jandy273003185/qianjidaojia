@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.kingdeeclear.mapper.KingdeeClearMapper">
+	<select id="selectKingdeeClearByOperaId" resultType="com.qifenqian.bms.accounting.exception.dao.kingdeeclear.bean.KingdeeClear">
+  		SELECT 
+  			T.*,
+			CASE 
+			WHEN T.STATUS = 'SUCCESS' and bank_Status ='C' THEN 'SUCCESS'
+			WHEN T.STATUS = 'SUCCESS' and bank_Status ='D' THEN 'FAILURE'
+			WHEN T.STATUS = 'FAIL' THEN 'FAILURE' 
+			WHEN T.STATUS = 'CONFIRM_FAILURE' THEN 'CONFIRM_FAILURE'
+			WHEN T.STATUS = 'CONFIRM_SUCCESS' THEN 'CONFIRM_SUCCESS' 
+			WHEN T.STATUS = 'EXCEPTION' THEN 'EXCEPTION' ELSE 'DEALING' END RESULT_STATUS,
+			CASE T.BUSINESS_TYPE 
+			WHEN 'PERSONAL_WITHDRAW' THEN 'KINGDEE_WITHDRAW'
+			WHEN 'MERCHANT_SETTLE'  THEN 'KINGDEE_SETTLE' 
+			ELSE T.BUSINESS_TYPE END transFlowOperate
+		FROM BMS_CLEAR_KINGDEE_PAY T
+		WHERE T.OPER_ID = #{operId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="queryKingdeeEntryList" resultType="com.qifenqian.bms.accounting.exception.dao.kingdeeclear.bean.KingdeePayEntry">
+		SELECT T.*
+		FROM BMS_CLEAR_KINGDEE_PAY_ENTRY T
+		WHERE T.CLEAR_ID  = #{clearId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectKingdeeClearByClearId" resultType="com.qifenqian.bms.accounting.exception.dao.kingdeeclear.bean.KingdeeClear">
+  		SELECT 
+			T.*
+		FROM BMS_CLEAR_KINGDEE_PAY T
+		WHERE T.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateWithdrawByReExcute" parameterType="string">
+		UPDATE TD_WITHDRAW_BILL t
+		SET T.WITHDRAW_STATE = '23',
+			T.MODIFY_TIME = NOW()
+		WHERE
+			T.WITHDRAW_SN = (
+			SELECT
+				C.WITHDRAW_SN
+			FROM
+				BMS_CLEAR_KINGDEE_PAY P,
+				TD_WITHDRAW_CHILD_BILL C
+			WHERE
+				P.OPER_ID =C.WITHDRAW_REQSERIALID
+				AND P.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+		)
+	</update>
+	
+	<update id="updateSettleByReExcute" parameterType="string">
+		UPDATE BMS_MERCHANT_SETTLE T
+		SET T.STATUS = 'AUDIT_PASS'
+		WHERE
+			T.ID = (
+				SELECT
+					C.SETTLE_ID
+				FROM
+					BMS_CLEAR_KINGDEE_PAY P,
+					BMS_MERCHANT_CHILD_SETTLE C
+				WHERE
+					P.OPER_ID =C.ORDER_ID
+					AND P.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+		)
+	</update>
+	
+	<update id="updateKingdeeClear" parameterType="com.qifenqian.bms.accounting.exception.dao.kingdeeclear.bean.KingdeeClear">
+		UPDATE BMS_CLEAR_KINGDEE_PAY T
+		<set>
+			<if test="status!=null and status!='' ">
+				T.STATUS = #{status,jdbcType = VARCHAR},
+			</if>
+			<if test="workDate!=null and workDate!='' ">
+				T.WORK_DATE = #{workDate,jdbcType = VARCHAR},
+			</if>
+			T.UPDATE_DATETIME = NOW()
+		</set>
+		WHERE T.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+	</update>
+</mapper>

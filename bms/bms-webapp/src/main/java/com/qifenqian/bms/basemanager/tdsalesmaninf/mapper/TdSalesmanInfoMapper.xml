@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.tdsalesmaninf.mapper.TdSalesmanInfoMapper">
+ 	<select id="selectTdSalesmanInfoList" resultType="com.qifenqian.bms.basemanager.tdsalesmaninf.bean.TdSalesmanInfo">
+ 		select
+ 			*
+ 		from
+ 			td_salesman_info
+ 	</select>
+	<select id="selectTdSalesmanInfoById" parameterType="String" resultType="com.qifenqian.bms.basemanager.tdsalesmaninf.bean.TdSalesmanInfo">
+ 		select
+ 			*
+ 		from
+ 			td_salesman_info
+ 		where salesman_id = #{salesmanId}
+ 	</select>
+	
+</mapper>

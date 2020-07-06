@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.basemanager.merchant.mapper.TdCertificateAuthMapper" >
+  <resultMap id="BaseResultMap" type="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    <id column="AUTH_ID" property="authId" jdbcType="INTEGER" />
+    <result column="CUST_ID" property="custId" jdbcType="VARCHAR" />
+    <result column="CERTIFICATE_STATE" property="certificateState" jdbcType="VARCHAR" />
+    <result column="CERTIFY_USER" property="certifyUser" jdbcType="VARCHAR" />
+    <result column="CERTIFY_DATETIME" property="certifyDatetime" jdbcType="TIMESTAMP" />
+    <result column="AUTH_RESULT_CODE" property="authResultCode" jdbcType="VARCHAR" />
+    <result column="AUTH_RESULT_DESC" property="authResultDesc" jdbcType="VARCHAR" />
+    <result column="CREATE_ID" property="createId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_ID" property="modifyId" jdbcType="VARCHAR" />
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    AUTH_ID, CUST_ID, CERTIFICATE_STATE, CERTIFY_USER, CERTIFY_DATETIME, AUTH_RESULT_CODE, 
+    AUTH_RESULT_DESC, CREATE_ID, CREATE_TIME, MODIFY_ID, MODIFY_TIME
+  </sql>
+ 
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from td_certificate_auth
+    where AUTH_ID = #{authId,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    insert into td_certificate_auth (AUTH_ID, CUST_ID, CERTIFICATE_STATE, 
+      CERTIFY_USER, CERTIFY_DATETIME, AUTH_RESULT_CODE, 
+      AUTH_RESULT_DESC, CREATE_ID, CREATE_TIME, 
+      MODIFY_ID, MODIFY_TIME)
+    values (#{authId,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, #{certificateState,jdbcType=VARCHAR}, 
+      #{certifyUser,jdbcType=VARCHAR}, #{certifyDatetime,jdbcType=TIMESTAMP}, #{authResultCode,jdbcType=VARCHAR}, 
+      #{authResultDesc,jdbcType=VARCHAR}, #{createId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    insert into td_certificate_auth
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="authId != null" >
+        AUTH_ID,
+      </if>
+      <if test="custId != null" >
+        CUST_ID,
+      </if>
+      <if test="certificateState != null" >
+        CERTIFICATE_STATE,
+      </if>
+      <if test="certifyUser != null" >
+        CERTIFY_USER,
+      </if>
+      <if test="certifyDatetime != null" >
+        CERTIFY_DATETIME,
+      </if>
+      <if test="authResultCode != null" >
+        AUTH_RESULT_CODE,
+      </if>
+      <if test="authResultDesc != null" >
+        AUTH_RESULT_DESC,
+      </if>
+      <if test="createId != null" >
+        CREATE_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="modifyId != null" >
+        MODIFY_ID,
+      </if>
+      <if test="modifyTime != null" >
+        MODIFY_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="authId != null" >
+        #{authId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null" >
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateState != null" >
+        #{certificateState,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyUser != null" >
+        #{certifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyDatetime != null" >
+        #{certifyDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authResultCode != null" >
+        #{authResultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="authResultDesc != null" >
+        #{authResultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyId != null" >
+        #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateByPrimaryKeySelective" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    update td_certificate_auth
+    <set >
+      <if test="custId != null" >
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateState != null" >
+        CERTIFICATE_STATE = #{certificateState,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyUser != null" >
+        CERTIFY_USER = #{certifyUser,jdbcType=VARCHAR},
+      </if>
+        CERTIFY_DATETIME = NOW(),
+      <if test="authResultCode != null" >
+        AUTH_RESULT_CODE = #{authResultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="authResultDesc != null" >
+        AUTH_RESULT_DESC = #{authResultDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        CREATE_ID = #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyId != null" >
+        MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      </if>
+        MODIFY_TIME = NOW()
+    </set>
+    where AUTH_ID = #{authId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth" >
+    update td_certificate_auth
+    set CUST_ID = #{custId,jdbcType=VARCHAR},
+      CERTIFICATE_STATE = #{certificateState,jdbcType=VARCHAR},
+      CERTIFY_USER = #{certifyUser,jdbcType=VARCHAR},
+      CERTIFY_DATETIME = #{certifyDatetime,jdbcType=TIMESTAMP},
+      AUTH_RESULT_CODE = #{authResultCode,jdbcType=VARCHAR},
+      AUTH_RESULT_DESC = #{authResultDesc,jdbcType=VARCHAR},
+      CREATE_ID = #{createId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      MODIFY_TIME = NOW()
+    where AUTH_ID = #{authId,jdbcType=INTEGER}
+  </update>
+  <select id="findTdCertificateAuthByCustId" parameterType="string" resultType="com.qifenqian.bms.basemanager.merchant.bean.TdCertificateAuth">
+    select
+    *
+    from
+    td_certificate_auth
+    where
+    AUTH_ID = #{authId,jdbcType=INTEGER}
+  </select>
+</mapper>

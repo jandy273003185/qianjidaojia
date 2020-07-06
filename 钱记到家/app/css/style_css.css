@@ -1,0 +1,102 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body{background: #fff !important;margin:0;padding:0 0 50px 0;font-size:12px}
+ul,li{list-style:none;padding:0}
+a{text-decoration:none!important;}
+
+
+/*导航栏样式*/
+.container{max-width:750px;padding:0 15px;margin:0 auto; clear:both}
+.bg-color{background: -webkit-linear-gradient(top,#FF7387,#FF1133);background: -moz-linear-gradient(top,#FF7387,#FF1133);height:140px ;max-width:750px;padding:0 15px;margin:0 auto}
+.navbar-current{color:#fff;height: 44px;line-height: 44px;font-size:22px; overflow:hidden}
+.navbar-current div{float:left;width:60%; text-align:center}
+.navbar-current div:first-child{width:20%; text-align:left}
+.navbar-current div:last-child{width:20%; text-align:right}
+.navbar-current a{color:#fff; display:block; text-decoration:none}
+.navbar-current a:focus,.navbar-current a:hover {color: #fff;}
+
+
+/*图标样式*/
+.icon-menu-left:after {content: '';display:inline-block;width: 14px;height: 14px;border-top: 2px solid #fff;border-right: 2px solid #fff;transform: rotate(-135deg);-webkit-transform: rotate(-135deg);position:relative;top:0px;left:4px;}
+.icon-menu-more:after{content: '...';display: inline-block;width: 28px;height: 28px;font-size: 28px; top:-7px; position: absolute;right:5px}
+
+
+
+
+ul.box1{background:#fff; border-radius:10px;margin-top:-80px;min-height:130px;padding:10px 0 10px 10px; clear:both}
+@media screen and (min-width: 560px) {ul.box1{min-height:250px;}}
+ul.box1 li.pics{float:left;width:30%;max-width:220px;min-width:110px;}
+ul.box1 li.pics img{width:100%;height:100%}
+ul.box1 li.tit{float:left;width:65%;margin-left:15px;}
+@media screen and (max-width: 408px) {ul.box1 li.tit {width: 60%;}}
+@media screen and (max-width: 362px) {ul.box1 li.tit {width: 58%;}}
+@media screen and (max-width: 350px) {ul.box1 li.tit {width: 56%;}}
+@media screen and (max-width: 334px) {ul.box1 li.tit {width: 54%;}}
+@media screen and (max-width: 322px) {ul.box1 li.tit {width: 52%;}}
+ul.box1 li.tit p{float:left;width:100%;margin:0;padding:0;font-size:14px}
+@media screen and (min-width: 560px) {ul.box1 li.tit p{font-size:20px}}
+ul.box1 li.tit .num{float:left;padding:2px 6px; background:#ff7387 ;color:#fff; border-radius:4px;margin:10px 0}
+@media screen and (min-width: 560px) {ul.box1 li.tit .num{padding:2px 6px;font-size:16px;margin:20px 0}}
+ul.box1 li.tit .price{clear:both; color:#666;}
+@media screen and (min-width: 560px) {ul.box1 li.tit .price{font-size:14px}}
+ul.box1 li.tit .price span{color:#ff2443;font-size:18px;margin-right:10px}
+@media screen and (min-width: 560px) {ul.box1 li.tit .price span{font-size:24px;}}
+
+ul.box2{}
+ul.box2 li.pics{max-width:240px;min-width:100px;margin:10px auto;width:38%}
+ul.box2 li.pics img{width:100%;width:100%;}
+ul.box2 li.tit{text-align:center;}
+ul.box2 li.tit .num{width:100%;margin:0 auto;}
+ul.box2 li.tit .num p{margin:0 ;padding:0;font-size:18px; height:20px;color: #333333;}
+ul.box2 li.tit .num p span{color:#ff7387}
+
+ul.box2 li.tit .time{clear:both;margin-top:10px;font-size:14px;color: #333333;}
+ul.box2 li.tit .time span{color:#ff7387}
+
+
+ul.box3 { display: table;margin:20px auto;min-height:80px; clear:both}
+ul.box3 li{float:left;width:40px;height:40px;margin:0 5px}
+ul.box3 li.on{width:52px;height:52px;margin-top:-6px;}
+ul.box3 li span{width:52px;height:18px; background:#FC0; display:block; border-radius:4px;text-align:center; color:#fff; position:relative;top:-18px;}
+ul.box3 li.on img{border:1px solid #ffcd15}
+ul.box3 li img{width:100%;height:100%;border-radius:50%; overflow:hidden; border:1px solid #f67a8b;}
+
+
+.notes {clear:both;margin-top:20px;}
+.notes button{ display:block;color:#fff;background:#ff2443;line-height:36px;font-size:16px; text-align:center; border-radius:22px; border:none;width:100%; margin:0 auto}
+.notes h4{ text-align:center;  color:#999;margin-top:10px;font-size:12px}
+.notes h3{color: #B7B7B7;text-align:center;  color:#999;margin-top:10px;font-size:12px}
+.notes p{width:90%; margin:0 auto;line-height:22px; color:#999;margin-top:10px;font-size:12px}
+/*弹窗*/
+.fcrs {
+    position: fixed;
+    background: rgb(0,0,0,0.4);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 99;
+    display: none;
+}
+
+    .fcrs .dvceng {
+        position: absolute;
+        bottom: 0px;
+        -webkit-animation: anima .8s linear;
+    }
+
+    .fcrs .know {
+        position: absolute;
+        bottom: .2rem;
+        width: 80%;
+        left: 10%;
+    }
+
+@-webkit-keyframes anima {
+    0% {
+        bottom: -500px;
+    }
+
+    100% {
+        bottom: 0px;
+    }
+}

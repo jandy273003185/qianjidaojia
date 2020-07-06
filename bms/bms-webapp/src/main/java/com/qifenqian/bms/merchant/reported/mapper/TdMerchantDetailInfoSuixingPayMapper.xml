@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantDetailInfoSuixingPayMapper">
+
+    <insert id="insert" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoSuixingPay">
+      insert into td_merchant_detail_info_suixing_pay (patch_no, merchant_code, cust_name,
+        mobile_no, sui_xing_merchant_type, mec_type_flag,
+        cpr_reg_nm_cn, regist_code, merchant_province,
+        merchant_city, merchant_area, cpr_reg_addr,
+        industry_code, representative_name, representative_cert_type,
+        representative_cert_no, act_nm, act_type,
+        certify_no, bank_card_no, sui_xin_bank,
+        bank_province, bank_city, interbank_name,
+        rate, task_code, lbnk_no,
+        parent_mno, independent_model, mer_url,
+        file_path, out_merchant_code, sign_qrcode,
+        wx_apply_no, iden_status, wx_child_no,
+        zfb_child_no, create_time, modify_time,
+        flag_status, result_msg, door_photo_path,
+        shop_interior_path, business_photo_path, legal_cert_attribute1_path,
+        legal_cert_attribute2_path, letter_of_auth_path,
+        open_account_path, bank_card_photo_path, settle_cert_attribute1_path,
+        settle_cert_attribute2_path, shop_check_stand_path
+        )
+      values (#{patchNo,jdbcType=VARCHAR}, #{merchantCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR},
+        #{mobileNo,jdbcType=VARCHAR}, #{suiXingMerchantType,jdbcType=VARCHAR}, #{mecTypeFlag,jdbcType=VARCHAR},
+        #{cprRegNmCn,jdbcType=VARCHAR}, #{registCode,jdbcType=VARCHAR}, #{merchantProvince,jdbcType=VARCHAR},
+        #{merchantCity,jdbcType=VARCHAR}, #{merchantArea,jdbcType=VARCHAR}, #{cprRegAddr,jdbcType=VARCHAR},
+        #{industryCode,jdbcType=VARCHAR}, #{representativeName,jdbcType=VARCHAR}, #{representativeCertType,jdbcType=VARCHAR},
+        #{representativeCertNo,jdbcType=VARCHAR}, #{actNm,jdbcType=VARCHAR}, #{actType,jdbcType=VARCHAR},
+        #{certifyNo,jdbcType=VARCHAR}, #{bankCardNo,jdbcType=VARCHAR}, #{suiXinBank,jdbcType=VARCHAR},
+        #{bankProvince,jdbcType=VARCHAR}, #{bankCity,jdbcType=VARCHAR}, #{interbankName,jdbcType=VARCHAR},
+        #{rate,jdbcType=VARCHAR}, #{taskCode,jdbcType=VARCHAR}, #{lbnkNo,jdbcType=VARCHAR},
+        #{parentMno,jdbcType=VARCHAR}, #{independentModel,jdbcType=VARCHAR}, #{merUrl,jdbcType=VARCHAR},
+        #{filePath,jdbcType=VARCHAR}, #{outMerchantCode,jdbcType=VARCHAR}, #{signQrcode,jdbcType=VARCHAR},
+        #{wxApplyNo,jdbcType=VARCHAR}, #{idenStatus,jdbcType=VARCHAR}, #{wxChildNo,jdbcType=VARCHAR},
+        #{zfbChildNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+        #{flagStatus,jdbcType=VARCHAR}, #{resultMsg,jdbcType=VARCHAR}, #{doorPhotoPath,jdbcType=VARCHAR},
+        #{shopInteriorPath,jdbcType=VARCHAR}, #{businessPhotoPath,jdbcType=VARCHAR}, #{legalCertAttribute1Path,jdbcType=VARCHAR},
+        #{legalCertAttribute2Path,jdbcType=VARCHAR}, #{letterOfAuthPath,jdbcType=VARCHAR},
+        #{openAccountPath,jdbcType=VARCHAR}, #{bankCardPhotoPath,jdbcType=VARCHAR}, #{settleCertAttribute1Path,jdbcType=VARCHAR},
+        #{settleCertAttribute2Path,jdbcType=VARCHAR}, #{shopCheckStandPath,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateDynamic" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoSuixingPay">
+        update td_merchant_detail_info_suixing_pay
+        <set>
+            <if test="merchantCode != null">
+                merchant_code = #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobileNo != null">
+                mobile_no = #{mobileNo,jdbcType=VARCHAR},
+            </if>
+            <if test="suiXingMerchantType != null">
+                sui_xing_merchant_type = #{suiXingMerchantType,jdbcType=VARCHAR},
+            </if>
+            <if test="mecTypeFlag != null">
+                mec_type_flag = #{mecTypeFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="cprRegNmCn != null">
+                cpr_reg_nm_cn = #{cprRegNmCn,jdbcType=VARCHAR},
+            </if>
+            <if test="registCode != null">
+                regist_code = #{registCode,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantProvince != null">
+                merchant_province = #{merchantProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantCity != null">
+                merchant_city = #{merchantCity,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantArea != null">
+                merchant_area = #{merchantArea,jdbcType=VARCHAR},
+            </if>
+            <if test="cprRegAddr != null">
+                cpr_reg_addr = #{cprRegAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="industryCode != null">
+                industry_code = #{industryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="representativeName != null">
+                representative_name = #{representativeName,jdbcType=VARCHAR},
+            </if>
+            <if test="representativeCertType != null">
+                representative_cert_type = #{representativeCertType,jdbcType=VARCHAR},
+            </if>
+            <if test="representativeCertNo != null">
+                representative_cert_no = #{representativeCertNo,jdbcType=VARCHAR},
+            </if>
+            <if test="actNm != null">
+                act_nm = #{actNm,jdbcType=VARCHAR},
+            </if>
+            <if test="actType != null">
+                act_type = #{actType,jdbcType=VARCHAR},
+            </if>
+            <if test="certifyNo != null">
+                certify_no = #{certifyNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCardNo != null">
+                bank_card_no = #{bankCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="suiXinBank != null">
+                sui_xin_bank = #{suiXinBank,jdbcType=VARCHAR},
+            </if>
+            <if test="bankProvince != null">
+                bank_province = #{bankProvince,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCity != null">
+                bank_city = #{bankCity,jdbcType=VARCHAR},
+            </if>
+            <if test="interbankName != null">
+                interbank_name = #{interbankName,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                rate = #{rate,jdbcType=VARCHAR},
+            </if>
+            <if test="taskCode != null">
+                task_code = #{taskCode,jdbcType=VARCHAR},
+            </if>
+            <if test="lbnkNo != null">
+                lbnk_no = #{lbnkNo,jdbcType=VARCHAR},
+            </if>
+            <if test="parentMno != null">
+                parent_mno = #{parentMno,jdbcType=VARCHAR},
+            </if>
+            <if test="independentModel != null">
+                independent_model = #{independentModel,jdbcType=VARCHAR},
+            </if>
+            <if test="merUrl != null">
+                mer_url = #{merUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null">
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="outMerchantCode != null">
+                out_merchant_code = #{outMerchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="signQrcode != null">
+                sign_qrcode = #{signQrcode,jdbcType=VARCHAR},
+            </if>
+            <if test="wxApplyNo != null">
+                wx_apply_no = #{wxApplyNo,jdbcType=VARCHAR},
+            </if>
+            <if test="idenStatus != null">
+                iden_status = #{idenStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="wxChildNo != null">
+                wx_child_no = #{wxChildNo,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbChildNo != null">
+                zfb_child_no = #{zfbChildNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyTime != null">
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flagStatus != null">
+                flag_status = #{flagStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="resultMsg != null">
+                result_msg = #{resultMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="doorPhotoPath != null">
+                door_photo_path = #{doorPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="shopInteriorPath != null">
+                shop_interior_path = #{shopInteriorPath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessPhotoPath != null">
+                business_photo_path = #{businessPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="legalCertAttribute1Path != null">
+                legal_cert_attribute1_path = #{legalCertAttribute1Path,jdbcType=VARCHAR},
+            </if>
+            <if test="legalCertAttribute2Path != null">
+                legal_cert_attribute2_path = #{legalCertAttribute2Path,jdbcType=VARCHAR},
+            </if>
+            <if test="letterOfAuthPath != null">
+                letter_of_auth_path = #{letterOfAuthPath,jdbcType=VARCHAR},
+            </if>
+            <if test="openAccountPath != null">
+                open_account_path = #{openAccountPath,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCardPhotoPath != null">
+                bank_card_photo_path = #{bankCardPhotoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="settleCertAttribute1Path != null">
+                settle_cert_attribute1_path = #{settleCertAttribute1Path,jdbcType=VARCHAR},
+            </if>
+            <if test="settleCertAttribute2Path != null">
+                settle_cert_attribute2_path = #{settleCertAttribute2Path,jdbcType=VARCHAR},
+            </if>
+            <if test="shopCheckStandPath != null">
+                shop_check_stand_path = #{shopCheckStandPath,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPatchNo" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoSuixingPay">
+        select
+            patch_no, merchant_code, cust_name, mobile_no, sui_xing_merchant_type, mec_type_flag,
+          cpr_reg_nm_cn, regist_code, merchant_province, merchant_city, merchant_area, cpr_reg_addr,
+          industry_code, representative_name, representative_cert_type, representative_cert_no,
+          act_nm, act_type, certify_no, bank_card_no, sui_xin_bank, bank_province, bank_city,
+          interbank_name, rate, task_code, lbnk_no, parent_mno, independent_model, mer_url,
+          file_path, out_merchant_code, sign_qrcode, wx_apply_no, iden_status, wx_child_no,
+          zfb_child_no, create_time, modify_time, flag_status, result_msg, door_photo_path,
+          shop_interior_path, business_photo_path, legal_cert_attribute1_path, legal_cert_attribute2_path,
+          letter_of_auth_path, open_account_path, bank_card_photo_path, settle_cert_attribute1_path,
+          settle_cert_attribute2_path, shop_check_stand_path
+        from  td_merchant_detail_info_suixing_pay
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <select id="getMerchantDetailInfoList" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoSuixingPay">
+        select
+            patch_no, merchant_code, cust_name, mobile_no, sui_xing_merchant_type, mec_type_flag,
+          cpr_reg_nm_cn, regist_code, merchant_province, merchant_city, merchant_area, cpr_reg_addr,
+          industry_code, representative_name, representative_cert_type, representative_cert_no,
+          act_nm, act_type, certify_no, bank_card_no, sui_xin_bank, bank_province, bank_city,
+          interbank_name, rate, task_code, lbnk_no, parent_mno, independent_model, mer_url,
+          file_path, out_merchant_code, sign_qrcode, wx_apply_no, iden_status, wx_child_no,
+          zfb_child_no, create_time, modify_time, flag_status, result_msg, door_photo_path,
+          shop_interior_path, business_photo_path, legal_cert_attribute1_path, legal_cert_attribute2_path,
+          letter_of_auth_path, open_account_path, bank_card_photo_path, settle_cert_attribute1_path,
+          settle_cert_attribute2_path, shop_check_stand_path
+        from  td_merchant_detail_info_suixing_pay
+       <where>
+       		1=1
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			 and patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null and custName != '' ">
+			 and  cust_name = #{custName,jdbcType=VARCHAR}
+			</if>
+		</where>
+    </select>
+</mapper>

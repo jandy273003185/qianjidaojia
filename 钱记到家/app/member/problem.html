@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>常见问题</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .main {
+            height: calc( 100% - .45rem);
+            height: -webkit-calc( 100% - .45rem);
+            height: -moz-calc( 100% - .45rem);
+            height: -ms-calc( 100% - .45rem);
+            height: -o-calc( 100% - .45rem);
+        }
+
+        .problemContent {
+            padding: .1rem;
+            height: calc( 100% - .2rem);
+            height: -webkit-calc( 100% - .2rem);
+            height: -moz-calc( 100% - .2rem);
+            height: -ms-calc( 100% - .2rem);
+            height: -o-calc( 100% - .2rem);
+            box-sizing: content-box;
+        }
+
+        .problemBox {
+            height: 100%;
+        }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="/member/set.html" class="btn_back"></a>
+				<div class="title center">常见问题</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="problemContent">
+				<div class="problemBox">
+					<ol class="problemList"></ol>
+				</div>
+			</div>
+		</div>
+		<!--常见问题模板-->
+		<script id="problemListTemp" type="text/x-dot-template">
+			{{~it:value:index}}
+			<li>
+				<a href="problemDetail.html?id={{=value.Id}}">
+					<p class="title">{{=index+1}}、{{=value.Title}}</p>
+				</a>
+			</li>
+			{{~}}
+	    </script>
+	    <!--常见问题模板  end-->
+		<script type="text/javascript">
+			var userId = sc.utils.getCookieValue("UserId");
+			var token = sc.utils.getCookieValue("Token");
+			var pageNum=0,pageSize=20;
+			$(function() {
+				$('.problemBox').dropload({
+					scrollArea: window,
+					domDown: {
+						domClass: 'dropload-down',
+						domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+						domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+						domNoData: '<div class="dropload-noData">已经到底了</div>'
+					},
+					loadDownFn: function(me) {
+						pageNum++;
+						xuanran(function(data) {
+							if(data.data.length == 0 && !data.isok){
+								me.lock();
+			                    me.noData();
+			                    me.resetload();                    
+			                    if (pageNum == 1) {
+									$(".dropload-down").remove();
+			                        var emptystr = "";
+										emptystr += '<div class="emptybox">';
+										emptystr += '<div class="iconimg"><img src="/images/icons/empty2.png"/></div>';
+										emptystr += '<p class="tips center">暂无数据 </p>';
+										emptystr += '</div>';
+									$('.problemList').html(emptystr);
+			                    }
+							}
+							else if(data.data.length<pageSize){
+								setTimeout(function () {
+									var interText = doT.template($("#problemListTemp").text());
+                                    $(".problemList")[0].innerHTML += interText(data.data);
+									me.resetload();	
+								},1000);
+								me.lock("down");
+								me.noData();
+							}
+							else{
+								if(pageNum == 1){
+									$(".problemList").html("");
+								}
+								setTimeout(function() {
+									var interText = doT.template($("#problemListTemp").text());
+                                    $(".problemList")[0].innerHTML += interText(data.data);
+									me.resetload();
+								}, 1000);
+							}
+						}, me);
+	
+					}
+				});
+			});
+			function xuanran(successCallback,fn) {
+				var url = "api/Help/HelpList";
+				var calback = function(data) {
+					console.log(data)
+					if(data.code === 0){
+						successCallback(data);
+					}
+					else{
+						$(".dropload-down").remove();
+						fn.lock();
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				}
+				var error = function(data){
+					$(".dropload-down").remove();
+				    fn.lock();
+				}
+				sc.post(url, {
+					"UserId": userId,
+					"Token": token,
+					"page": pageNum,
+					"pagesize" : pageSize
+				}, calback,error);
+			}
+		</script>
+		
+		
+	    
+	    
+	</body>
+
+</html>

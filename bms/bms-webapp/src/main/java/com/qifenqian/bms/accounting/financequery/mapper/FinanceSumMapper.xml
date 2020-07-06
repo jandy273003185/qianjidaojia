@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.FinanceSumMapper">
+
+	<sql id="Base_Column_List">
+		F.SUBJECT_CODE,F.SUBJECT_NAME,S.FINAL_AMOUNT,S.SUBJECT_ID,S.WORK_DATE
+	</sql>
+	<select id="selectFinanceList" resultType="com.qifenqian.bms.accounting.financequery.bean.FinanceSum" parameterType="string">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM ACCTING_SUBJECT_INFO F
+		INNER JOIN ACCTING_SUBJECT_SUMMARY S
+		ON F.ID=S.SUBJECT_ID
+		WHERE 1=1 AND
+		S.WORK_DATE IN
+		(SELECT MAX(T.WORK_DATE) FROM ACCTING_SUBJECT_SUMMARY T )
+		<if test="subjectName!=null and subjectName!='' ">
+			AND F.SUBJECT_NAME LIKE CONCAT('%',#{subjectName},'%')
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,29 @@
+<!--packageB/pages/discountCoupon/discountCoupon.wxml-->
+<view class="status">
+  <text class="{{item.id==idx?'active':''}}" wx:for="{{statusArr}}" wx:key="id" data-index="{{item.id}}" bindtap='onStatus'>{{item.name}}
+  </text>
+</view>
+<scroll-view style ="height:{{warpHeight}};" scroll-y ="true" bindscrolltolower="loadMore" class='deviceScroll'>
+  <view wx:if="{{idx==3}}" class="code">
+    <input placeholder="请输入优惠码" value="{{ExchangeCode}}" placeholder-style="color:#666666;font-size:28rpx;" bindinput="inputExchangeCode" bindconfirm="confirm"></input>
+    <text bindtap="confirm">确认</text>
+  </view>
+  <view wx:if="{{listArr}}" class="item" wx:for="{{listArr}}" wx:key="index" data-id="{{item.Id}}" bindtap="selectedCoupon">
+    <view class="money {{((index+3)%3)-1==0?'money2':''}} {{((index+3)%3-2==0&&index!=0)?'money3':''}}">
+      <view wx:if="{{item.couponType == 0}}"><text class="money-num">{{item.Denomination}}</text><text>元</text></view>
+      <view wx:if="{{item.couponType == 1}}"><text class="money-num">{{item.Denomination*10}}</text><text>折</text></view>
+      <view wx:if="{{item.couponType == 2}}"><text class="money-num">{{item.useSillStart}}-{{item.useSillEnd}}</text><text>元</text></view>
+      <view class="money-txt">{{item.Name}}</view>
+    </view>
+    <view class="content">
+      <view class="content-top {{type==2?'content-top2':''}}">{{item.UseExplain}}</view>
+      <view class="content-mid">{{item.ProductExplain}}</view>
+      <view class="content-down {{type==2?'content-down2':''}}">{{item.useEndTime||item.overdueDate}}</view>
+    </view>
+    <view wx:if="{{type!=2}}" class="get" data-id="{{item.Id}}" data-couDetailId="{{item.couDetailId}}" data-couId="{{item.couId}}" bindtap="exchange">立即领取</view>
+      <view wx:if="{{type==2}}" class="get21 {{((index+3)%3)-1==0?'get22':''}} {{((index+3)%3-2==0&&index!=0)?'get23':''}}">{{item.couponName}}     </view>
+  </view>
+</scroll-view>
+
+
+<view wx:if="{{listArr.length==0&&(idx==1||idx==2)}}" class="no_discount"><image src="/images/no_discount.png"></image><text>暂无可用优惠券</text></view>

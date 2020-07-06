@@ -1,0 +1,157 @@
+        body {
+            background-color: #F5F5F5;
+            padding: 0;
+            margin: 0;
+            font-family: PingFangSC-Regular, PingFang SC;
+        }
+        
+        .allStatus {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 0.72rem;
+            background: #ffffff;
+            color: #4C4C4C;
+            font-size: 0.24rem;
+            padding: 0 0.5rem;
+        }
+        
+        .allStatus>span {
+            line-height: 0.72rem;
+        }
+        
+        .allStatutsColor {
+            color: #09B007;
+            border-bottom: 0.04rem solid #09B007;
+        }
+        
+        .goodsList {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            margin: 0.16rem 0.2rem 0 0.2rem;
+            border-radius: 0.08rem;
+            padding: 0.32rem;
+            overflow: scroll;
+        }
+        
+        .store {
+            display: flex;
+            justify-content: space-between;
+            line-height: 0.3rem;
+            font-size: 0.24rem;
+            color: #A4A4A4;
+        }
+        
+        .storeName {
+            color: #4C4C4C;
+            font-weight: 600;
+            margin-left: 0.2rem;
+        }
+        
+        .goods {
+            display: flex;
+            padding-top: 0.5rem;
+        }
+        
+        .goodsImg {
+            width: 1.56rem;
+            min-width: 1.56rem;
+            max-width: 1.56rem;
+            height: 1.56rem;
+            background: #F5F5F5;
+        }
+        
+        .goodsImg>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .goods-right {
+            margin-left: 0.34rem;
+        }
+        
+        .goods-right>div {
+            height: 1.08rem;
+        }
+        
+        .goodsName {
+            font-size: 0.28rem;
+            color: #4C4C4C;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .num {
+            font-size: 0.24rem;
+            color: #A4A4A4;
+        }
+        
+        .price {
+            color: #4C4C4C;
+            font-size: 0.32rem;
+            font-weight: 550;
+        }
+        
+        .goods-num {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.26rem;
+            color: #4C4C4C;
+            margin-top: 0.3rem;
+        }
+        
+        .total-money {
+            color: #FF4343;
+            font-size: 0.32rem;
+            font-weight: 600;
+            margin-left: 0.2rem;
+        }
+        
+        .distribution {
+            margin-top: 0.5rem !important;
+        }
+        
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.25rem 0.2rem 0 0.2rem;
+            line-height: 0.33rem;
+            align-items: center;
+            color: #666666;
+            font-size: 0.26rem;
+        }
+        
+        .line {
+            border-bottom: 1px solid #eeeeee;
+        }
+        
+        .item-title {
+            color: #4C4C4C;
+        }
+        
+        .status-div {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+        
+        .status {
+            color: #999999;
+            font-size: 0.24rem;
+            border: 1px solid rgba(153, 153, 153, 1);
+            border-radius: 0.08rem;
+            padding: 0.1rem 0.2rem;
+            margin: 0 0.2rem 0 0.1rem;
+            min-width: 1.2rem;
+            text-align: center;
+        }
+        
+        .status-color {
+            border: 1px solid #FF4343;
+            color: #FF4343;
+        }

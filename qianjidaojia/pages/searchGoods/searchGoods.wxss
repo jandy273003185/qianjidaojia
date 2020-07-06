@@ -1,0 +1,184 @@
+/* pages/searchGoods/searchGoods.wxss */
+
+.searchBox {
+    width: 750rpx;
+    height: 88rpx;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 16rpx;
+    z-index: 9;
+}
+
+.searchBox .input {
+    width: 400rpx;
+    height: 56rpx;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 28rpx;
+    line-height: 56rpx;
+    margin: 0 auto;
+    display: block;
+    padding-left: 64rpx;
+    position: relative;
+}
+
+.placeholder {
+    height: 40rpx;
+    font-size: 28rpx;
+    color: rgba(165, 165, 165, 1);
+    line-height: 40rpx;
+    /* text-align: center; */
+}
+
+.searchBox .input .search {
+    font-size: 28rpx;
+    position: absolute;
+    top: 0;
+    left: 24rpx;
+    line-height: 56rpx;
+    color: rgba(165, 165, 165, 1);
+}
+
+.searchBox .searchBtn {
+    width: 56rpx;
+    height: 40rpx;
+    font-size: 28rpx;
+    color: rgba(144, 234, 82, 1);
+    line-height: 40rpx;
+    position: absolute;
+    top: 24rpx;
+    right: 18rpx;
+}
+
+.searchHint {
+    padding: 88rpx 0 0 24rpx;
+    width: 100%;
+    height: 100%;
+}
+
+.searchHint .hot {
+    margin-top: 32rpx;
+}
+
+.searchHint .hot.marT6 {
+    margin-top: 6rpx;
+}
+
+.searchHint .hot .hotTitle {
+    width: 96rpx;
+    height: 36rpx;
+    font-size: 24rpx;
+    color: rgba(51, 51, 51, 1);
+    line-height: 36rpx;
+    margin-bottom: 32rpx;
+}
+
+.searchHint .hot .hotHistory .history {
+    background: rgba(241, 241, 241, 1);
+    border-radius: 8rpx;
+    font-size: 24rpx;
+    color: rgba(51, 51, 51, 1);
+    height: 56rpx;
+    padding: 10rpx 24rpx;
+    margin: 0 30rpx 26rpx 0;
+}
+
+.searchHint .hot .empty {
+    width: 56rpx;
+    height: 40rpx;
+    font-size: 28rpx;
+    color: rgba(102, 102, 102, 1);
+    line-height: 40rpx;
+    margin-left: 12rpx;
+    margin-right: 30rpx;
+}
+
+.searchHint .hot .iconE {
+    font-size: 28rpx;
+}
+
+.result {
+    width: 100%;
+    height: 100%;
+    /* padding-top: 88rpx; */
+}
+
+.result .goods {
+    width: 100%;
+    height: 256rpx;
+    padding: 24rpx;
+    border-bottom: 3rpx solid rgb(236, 231, 231);
+}
+
+.result .goods .goodsImg {
+    width: 208rpx;
+    height: 208rpx;
+    /* background-color: yellowgreen; */
+    display: block;
+    margin-right: 64rpx;
+}
+
+.result .goods .goodsInfo {
+    height: 100%;
+    width: 430rpx;
+}
+
+.result .goods .goodsInfo .goodsName {
+    width: 372rpx;
+    height: 40rpx;
+    font-weight: 500;
+    color: rgba(51, 51, 51, 1);
+    line-height: 48rpx;
+}
+
+.result .goods .goodsInfo .specification {
+    height: 36rpx;
+    font-size: 24rpx;
+    color: rgba(102, 102, 102, 1);
+    line-height: 36rpx;
+    margin: 12rpx 14rpx 44rpx 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 270rpx;
+}
+
+.result .goods .goodsInfo .specification.red {
+    color: rgba(255, 115, 135, 1);
+}
+
+.result .goods .goodsInfo .nowPrice {
+    height: 40rpx;
+    font-size: 24rpx;
+    font-weight: 500;
+    color: rgba(255, 115, 135, 1);
+    line-height: 40rpx;
+}
+
+.result .goods .goodsInfo .oldPrice {
+    height: 36rpx;
+    font-size: 20rpx;
+    color: rgba(160, 159, 160, 1);
+    line-height: 36rpx;
+    display: inline-block;
+    position: relative;
+}
+.result .goods .goodsInfo .oldPrice .line{
+    width: calc(100% + 5rpx);
+    height: 3rpx;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 55%;
+    transform: translateY(-50%);
+    background-color: rgba(160, 159, 160, 1);
+}
+
+
+
+.result .goods .goodsInfo .cart {
+    width: 46rpx;
+    height: 46rpx;
+    display: block;
+}

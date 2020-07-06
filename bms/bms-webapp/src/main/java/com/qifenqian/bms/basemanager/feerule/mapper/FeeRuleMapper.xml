@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.feerule.mapper.FeeRuleMapper">
+	<update id="updateFeeRule" parameterType="com.qifenqian.bms.basemanager.feerule.bean.FeeRule">
+		update td_cust_fee_rule
+		<set>
+			<if test="feeCode != null">
+				FEE_CODE = #{feeCode,jdbcType=VARCHAR}
+			</if>	
+		</set>
+			where CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	<select id="selectFeeRule" parameterType="com.qifenqian.bms.basemanager.feerule.bean.FeeRule" resultType="com.qifenqian.bms.basemanager.feerule.bean.FeeRule">
+		SELECT T.*
+		FROM td_cust_fee_rule T
+		WHERE T.CUST_ID = #{custId,jdbcType=VARCHAR}
+	</select>
+</mapper>

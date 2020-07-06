@@ -1,0 +1,16 @@
+<!--pages/settlementList/settlementList.wxml-->
+<view class="item"  wx:for="{{goodsArr}}" wx:key="index" wx:for-index="idx">
+  <view class="shop"><text class="shopName">{{item.ShopName}}</text><text class="goods-num">共{{totalNum}}件(不含失效商品)</text></view>
+  <view class="goods" wx:for="{{item.goodsinfo}}" wx:key="index">
+    <view class="goods-left">
+      <view class="goods-img"><image src="{{item.ProductImg}}"></image></view>
+      <text class="goods-title">{{item.ProductName}}</text>
+    </view>
+    <view class="goods-right">
+      <text class="now-price">¥{{item.SalePrice}}</text>
+      <text class="old-price">¥{{item.SalePrice}}</text>
+      <text class="num">X{{item.Number}}</text>
+    </view>
+  </view>
+</view>
+

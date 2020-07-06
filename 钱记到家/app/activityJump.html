@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .loading {
+            background: url(/images/loading-1.gif) no-repeat;
+            width: 148px;
+            height: 148px;
+            background-size: 100% 100%;
+            text-align: center;
+            margin: 0 auto;
+            margin-top: 40%;
+        }
+    </style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="script/wxlogin.js?4"></script>
+    <script type="text/javascript">
+        var proId = sc.utils.getQueryString("proId");
+        var couId = sc.utils.getQueryString("couId");
+        var aType = sc.utils.getQueryString("activity");
+        var spreadcode = sc.utils.getQueryString("spreadcode");
+        $(function () {
+            if (!iswx()) {
+                 window.location.href = window.location.protocol + "//" + window.location.host + "/indexv.html";
+            }
+            var action = sc.utils.getQueryString("action");
+            if (action != null && action == "login") {
+                window.location.href = "login.html";
+            }
+           
+            var s = setInterval(function () {
+                if (isWxLoginOver == true) {
+                    clearInterval(s);
+                    $(".loading").hide();
+                    if (aType == 1) {
+                        jumpProDetail();
+                    } else if (aType == 2) {
+                        jumpCounpone();
+                    }
+                }
+            }, 300);
+        });
+        function jumpCounpone() {
+          
+            var userInfo = sc.auth.getUserInfo();
+            var auserInfo = JSON.parse(userInfo);
+            var CouopenId = auserInfo.Openid;
+         
+            var CouuuId = uuid();
+            var Couurl = 'api/Coupon/activitySetting';
+            var callback = function (data) {
+                if (data.code == "0") {
+                    window.location.href = window.location.protocol + "//" + window.location.host + "/member/receiveCoupon.html?id=" + couId + "&parms=" + CouuuId;
+                } else {
+                    window.location.href = window.location.protocol + "//" + window.location.host + "/indexv.html";
+                }
+            }
+            sc.post(Couurl, {
+                "couId": parseInt(couId),
+                "parms": CouuuId,
+                "activityType": 2,
+                "openId": CouopenId
+            }, callback);
+        }
+        function jumpProDetail() {
+            var userInfo = sc.auth.getUserInfo();
+            var auserInfo  = JSON.parse(userInfo);
+            var openId = auserInfo.Openid;
+            var uuId = uuid();
+            var url = 'api/Goods/activitySetting';
+            var callback = function (data) {
+                if (data.code == "0") {
+                    if (spreadcode && spreadcode != null) {
+                        window.location.href = window.location.protocol + "//" + window.location.host + "/details.html?id=" + proId + "&parms=" + uuId + "&spreadcode=" + spreadcode;
+                    } else {
+                        window.location.href = window.location.protocol + "//" + window.location.host + "/details.html?id=" + proId + "&parms=" + uuId;
+                    }
+                } else {
+                    window.location.href = window.location.protocol + "//" + window.location.host + "/indexv.html";
+                }
+            }
+            sc.post(url, {
+                "proId": parseInt(proId),
+                "parms": uuId,
+                "activityType": 1,
+                "openId": openId
+            }, callback);
+        }
+
+
+
+        function S4() {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        }
+        function uuid() {
+            return (S4() + S4() + S4()  + S4()  + S4()  + S4() + S4() + S4());
+        }
+
+    </script>    
+</head>
+<body>
+    <div class="loading"></div>
+</body>
+</html>

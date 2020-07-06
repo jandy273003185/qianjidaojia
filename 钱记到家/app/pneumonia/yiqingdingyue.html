@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>地区疫情订阅-钱记到家</title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+    <script src="/js/sc.core.js?v=1" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?v=2"></script>
+
+    <link href="css/yiqingdingyue.css" rel="stylesheet" type="text/css" />
+    <script src="../script/WxShare.js"></script>
+</head>
+<body>
+    <div class="main">
+        <img src="images/yiqing/yibg.png" class="banner" />
+        <div class="bgfff">
+            <div class="tabcontent">
+                <div class="nav" id="remindAll" style="color:#F09B4F">
+                    <p>
+                        你已成功订阅钱记到家「全国疫情地图」，也可以添加地区实时了解你想关注城市疫情；
+                    </p>
+                    <p>
+                       钱记到家团队将密切关注疫情进展，并持续为大家提供最新消息。
+                    </p>
+                </div>
+                <div class="nav">
+                    订阅你关注的地区（可多次添加）
+                </div>
+                <div class="choose">
+                    选择地区 >
+                </div>
+            </div>
+        </div>
+        <div class="mt10 bgfff">
+            <div class="tabcontent2">
+                <div class="lav">
+                </div>
+                <div class="mybuy">
+                    我的订阅
+                </div>
+                <div class="tip">
+                    完成订阅后，以下信息将通过公众号消息推送给你
+                </div>
+                <!--未订阅，加上active-->
+                <div class="shisi active">
+                </div>
+                <div class="ribao" style="display:none;">
+                </div>
+                <!--已订阅-->
+                <div class="list" id="sublist">
+
+
+                </div>
+                <!--未订阅-->
+                <div class="nav2 nothing" style="display:none;">
+                    暂时还没有订阅
+                </div>
+            </div>
+			 </div>
+            <div style="padding-top: .13rem;background: #fff;width: 100%;background-color: #fff;">
+           
+                <img src="images/yiqing/dingyuqr.png" style="width: 100%;"/>
+                <img src="images/yiqing/lafu.jpg" style="width: 100%;margin-top: .14rem;" />
+            </div>
+       
+    </div>
+    <div class="tabbotfff">
+        <div class="tabcontent3">
+            <div class="share"></div>
+            <div class="see"></div>
+        </div>
+    </div>
+        <!--弹出省市区列表-->
+        <div id="addressSelectWrapper">
+            <div id="addressSelect">
+                <div class="tip">
+                    <button type="button" id="cancel">取消</button>
+                    <button type="button" class="buy">确定</button>
+                </div>
+                <div id="address">
+                    <ul class="selected-address">
+                        <li class="lastarea" id="lastprovince" data-code="">请选择</li>
+                        <li class="lastarea" id="lastcity" data-code=""></li>
+                    </ul>
+                    <div class="address-content">
+                        <ul id="province" data-type="0"></ul>
+                        <ul id="city" data-type="1"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--弹出省市区列表-->
+        <div class="mask"><div class="arrow"></div><div class="hint">点击右上角更多<br />分享给好友或到朋友圈</div></div>
+        <script>
+            var liIndex = 0;
+            var userId = sc.utils.getCookieValue("UserId");
+            var token = sc.utils.getCookieValue("Token");
+            $(function () {
+                $(".share").click(function () {
+                    $(".mask").show();
+                });
+                $(".mask").click(function () {
+                    $(".mask").hide();
+                });
+                $(".see").click(function () {
+                    window.location.href = "pneumoniaAll.html";
+                });
+                 //$(".share").click(function () {
+                getWxfxConfig(1, "地区疫情订阅『实时播报功能』-钱记到家", "点击订阅您关注的城市疫情实时动态播报；科学防护，共渡难关。", "https://www.qianjidaojia.com/pneumonia/images/yiqing/logo.jpg");
+                //});
+                var s = setInterval(function () {
+                    if (!iswx() && !sc.auth.isLogin()) {
+                        window.location.href = "/login.html";
+                    }
+                    if (!iswx() || (iswx() && isWxLoginOver == true)) {
+                        clearInterval(s);
+                        setTimeout(function () {
+                            //登录过了
+                            if (sc.utils.isNullOrEmpty(token)) {
+                                userId = sc.utils.getCookieValue("UserId");
+                                token = sc.utils.getCookieValue("Token");
+                            }
+                            // 初始化分享链接
+                            //GetMemberInfo(function (data) {
+                            //    var url = 'https://www.qianjidaojia.com/register.html?referralCode=' + data.data.ReferralCode + '&id=';
+                            //    $(".fenxiang a").attr("data-url", url);
+                            //});
+                            //加载数据
+                            $(document).on("click", ".cancel", function () {
+                                $(this).parents(".nav2").remove();
+                            });
+                            selectCity();
+                            loadSubscribeData();
+
+
+
+
+
+                        }, 100);
+                    }
+                }, 300);
+
+
+
+
+
+
+
+            });
+
+            //获取省市区列表
+            function GetSrea(Types, Code, obj) {
+                var url = "api/Address/GetSrea";
+                var callback = function (data) {
+                    console.log(data);
+                    obj.html("");
+                    var str = "";
+                    if (data.data.length) {
+                        console.log(Types);
+                        //if (Types == "Province") {
+                        //    str += '<li city="" id="a-all" data-code="a-all" data-name="全国总数">全国总数</li>';
+                        //} else {
+                        //    str += '<li city="" id="allcity000" data-code="allcity000" data-name="全部地区总数">全部地区总数</li>';
+                        //}
+
+                        for (var i = 0; i < data.data.length; i++) {
+                            if (data.data[i].id != 0) {
+                                str += '<li city="" id="' + data.data[i].id + '" data-code="' + data.data[i].id + '" data-name="' + data.data[i].name + '">' + data.data[i].name + '</li>';
+                            }
+                        }
+                    } else {
+                        //str += '<li id="" data-code="" data-name="">暂不选择</li>';
+                    }
+                    obj.append(str);
+                }
+                sc.post(url, {
+                    "Types": Types,
+                    "Code": Code
+                }, callback);
+            }
+            function onCancel() {
+                $("#sublist .cancel").unbind();
+                $("#sublist .cancel").click(function () {
+                    var city = $(this).attr("data-city");
+                    var url = "api/Pneumonia/DelSubscribe";
+                    var callback = function (data) {
+                        if (data.code == "0") {
+                            window.location.reload();
+                        }
+                    }
+                    sc.post(url, {
+                        "UserId": userId,
+                        "Token": token,
+                        "city": city
+                    }, callback);
+                });
+            }
+            function loadSubscribeData() {
+                var url = "api/Pneumonia/loadSubscribeData";
+                var callback = function (data) {
+                    if (data.code == "0" || data.code == "2") {
+                        var Ishide = false;
+                      
+                        if (data.data != null && data.data.length > 0) {
+                            var html = "";
+                            for (var i = 0; i < data.data.length; i++) {
+                                html += "<div class=\"nav2\"><div class=\"area\">";
+                                html += data.data[i].followProvince + " " + data.data[i].followCity;
+                                html += "</div> <div class=\"cancel\" data-city=\"" + data.data[i].followCity + "\"></div></div>";
+                                if (data.data[i].followCity == "全国") {
+                                    Ishide = true;
+                                }
+                            }
+                            $("#sublist").html(html);
+                            if (Ishide) {
+                                $("#remindAll").show();
+                            } else {
+                                $("#remindAll").hide();
+                            }
+                            onCancel();
+                            $(".nothing").hide();
+                        } else {
+                            $("#sublist").hide();
+                            $(".nothing").show();
+                        }
+                    }
+                }
+                sc.post(url, {
+                    "UserId": userId,
+                    "Token": token
+                }, callback);
+            }
+            function Subscribe(Province, city) {
+                var url = "api/Pneumonia/AddSubscribe";
+                var callback = function (data) {
+                    if (data.code == "0") {
+                        var html = `<div class="nav2">
+                                        <div class="area">`+ Province + " " + city + `
+                                        </div>
+                                        <div class="cancel">
+                                        </div>
+                                    </div>`;
+                        $(".list").append(html);
+                        onCancel();
+                        $("#addressSelectWrapper").hide();
+                        window.location.reload();
+                    } else if (data.code == "2") {
+                        $("#addressSelectWrapper").hide();
+                    } else if (data.code == "-1") {
+                        alert(data.msg);
+
+                    }
+                }
+                sc.post(url, {
+                    "UserId": userId,
+                    "Token": token,
+                    "Province": Province,
+                    "city": city,
+                    "FollowType": 0
+                }, callback);
+            }
+
+
+            //弹出城市四级联动效果
+            function selectCity() {
+                var selected = [];
+                var selectedName = [];
+                // 地址选择器遮罩层打开与关闭
+                $(".choose").click(function (e) {
+                    $("#addressSelectWrapper").show();
+                    e.stopPropagation();
+                    selectCityArea();
+                });
+                $(document).click(function () {
+                    $("#addressSelectWrapper").hide();
+                });
+                //取消下拉选择
+                $("#cancel").click(function () {
+                    $("#addressSelectWrapper").hide();
+                });
+                //订阅
+                $(".buy").click(function () {
+
+                    var province = (selectedName[0].substr(selectedName[0].length - 1, 1) == "省" ? selectedName[0].substr(0, selectedName[0].length - 1) : selectedName[0]);
+                    var city = (selectedName[1].substr(selectedName[1].length - 1, 1) == "市" ? selectedName[1].substr(0, selectedName[1].length - 1) : selectedName[1]);
+                    Subscribe(province, city);
+
+
+                });
+                $("#addressSelect").click(function (e) {
+                    e.stopPropagation();
+                });
+
+                function selectCityArea() {
+                    var type = ["Province", "City", "District", "Street"],
+                        code = "",
+                        navLi = $('.selected-address li'),
+                        conUl = $('.address-content ul');
+                    //初始化省份
+                    GetSrea(type[0], code, conUl.eq(0));
+                    navLi.eq(liIndex).addClass('active').siblings().removeClass('active');
+
+                    conUl.each(function () {
+                        var that = $(this);
+                        that.find('li').each(function () {
+                            if ($(this).hasClass('active')) {
+                                selected[that.index()] = $(this).attr('data-code');
+                                selectedName[that.index()] = $(this).attr('data-name');
+                            }
+                        });
+                    });
+
+                    conUl.on("click", "li", function () {
+                        var index = 0;
+                        var PIndex = liIndex = $(this).parents('ul').index();
+                        navLi.eq(liIndex).addClass('active').siblings().removeClass('active');
+                        var dataName = $(this).attr('data-name');
+                        code = $(this).attr('data-code');
+
+                        selected[PIndex] = code;
+                        selectedName[PIndex] = dataName;
+                        index = PIndex + 1;
+                        $(this).addClass("active");
+                        $(this).siblings("li").removeClass('active');
+                        GetSrea(type[index], code, conUl.eq(index));
+                        //if (type[index] == "City") {
+                        //    selectedName[1] = "全部地区总数";
+                        //    selected[1] = "allcity000";
+                        //}
+                        $(this).parents('ul').hide();
+                        conUl.eq(index).show();
+                        navLi.eq(PIndex).text($(this).text());
+                        navLi.eq(PIndex).attr('data-code', code);
+                        navLi.eq(PIndex).nextAll().text("");
+                        //navLi.eq(index).addClass('active');
+                        //navLi.eq(index).siblings().removeClass('active');
+
+                    });
+                    navLi.click(function () {
+                        var index = $(this).index();
+                        $(this).addClass("active").siblings().removeClass('active');
+                        for (var i = index; i < selected.length; i++) {
+                            selected.splice(i, selected.length - i);
+                            selectedName.splice(i, selected.length - i);
+                        }
+                        conUl.eq(index).show().siblings().hide();
+                    });
+                }
+            }
+        </script>
+        <script src="js/resetFontSize.js?0" type="text/javascript"></script>
+        <script>
+            var _hmt = _hmt || [];
+            (function () {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?588c7e7b5e836d9e197a605517df0f9d";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </div>
+</body>
+</html>

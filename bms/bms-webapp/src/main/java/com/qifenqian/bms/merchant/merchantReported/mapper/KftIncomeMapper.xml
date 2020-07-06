@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.merchantReported.mapper.KftIncomeMapper">
+	
+	<select id="selKftProvinceList"  resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTArea">
+    	SELECT DISTINCT 
+			c.province_name
+		FROM 
+			tb_kftpay_areainfo c
+    </select>
+    
+    <select id="selKftCityList"  parameterType="com.qifenqian.bms.merchant.merchantReported.bean.KFTArea" resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTArea">
+    	SELECT DISTINCT
+			c.city_name
+		FROM 
+			tb_kftpay_areainfo c
+		<where>
+			<if test="provinceName != null and provinceName != '' ">
+			and c.province_name = #{provinceName,jdbcType=VARCHAR}
+			</if>
+		</where>
+    </select>
+    
+    <select id="selKftAreaList" parameterType="com.qifenqian.bms.merchant.merchantReported.bean.KFTArea"  resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTArea">
+    	SELECT 
+			c.area_id,
+			c.area_name
+		FROM 
+			tb_kftpay_areainfo c
+		<where>
+			<if test="provinceName != null and provinceName != '' ">
+			and c.province_name = #{provinceName,jdbcType=VARCHAR}
+			</if>
+			<if test="cityName != null and cityName != '' ">
+			and c.city_name = #{cityName,jdbcType=VARCHAR}
+			</if>
+		</where>
+    </select>
+    
+    
+    <select id="selKftIndustryList"  resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTMccBean">
+    	SELECT DISTINCT 
+			c.level_one
+		FROM 
+			td_kft_mcc_info c
+    </select>
+    
+    <select id="selKftIndustryTwoList"  parameterType="com.qifenqian.bms.merchant.merchantReported.bean.KFTMccBean" resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTMccBean">
+    	SELECT  DISTINCT
+			c.level_two
+		FROM 
+			td_kft_mcc_info c
+		<where>
+			<if test="levelOne != null and levelOne != '' ">
+			and c.level_one=#{levelOne,jdbcType=VARCHAR}
+			</if>
+		</where>
+    </select>
+    
+    <select id="selKftIndustryThreeList"  parameterType="com.qifenqian.bms.merchant.merchantReported.bean.KFTMccBean" resultType="com.qifenqian.bms.merchant.merchantReported.bean.KFTMccBean">
+    	SELECT
+			c.level_three,
+			c.level_code
+		FROM 
+			td_kft_mcc_info c
+		<where>
+			<if test="levelOne != null and levelOne != '' ">
+			and c.level_one=#{levelOne,jdbcType=VARCHAR}
+			</if>
+			<if test="levelTwo != null and levelTwo != '' ">
+			and c.level_two=#{levelTwo,jdbcType=VARCHAR}
+			</if>
+		</where>
+    </select>
+    
+    <select id="selInComeInfo" parameterType="String"  resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			c.*, 
+  			t.*
+		FROM
+			td_cust_info c
+		INNER JOIN td_login_user_info t ON c.cust_id = t.cust_id
+		WHERE
+			c.MERCHANT_CODE = #{merchantCode,jdbcType = VARCHAR}
+	</select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.transrecordflow.mapper.TransRecordFlowMapper">
+	
+  	<select id="selectRecordFlowListByReqId" resultType="com.qifenqian.bms.accounting.exception.dao.transrecordflow.bean.TransRecordFlow">
+	SELECT
+	FLOW.*
+	FROM TRANS_RECORD T
+	INNER JOIN TRANS_RECORD_FLOW FLOW ON FLOW.MSG_ID = T.MSG_ID
+	WHERE T.REQ_SERIAL_ID = #{reqSerialId, jdbcType=VARCHAR}
+	ORDER BY FLOW.ID 
+  	</select>
+  	
+  	<select id="selectRecordFlowById" resultType="com.qifenqian.bms.accounting.exception.dao.transrecordflow.bean.TransRecordFlow" parameterType="string" >
+		SELECT 
+			T.* 
+		FROM TRANS_RECORD_FLOW T 
+		WHERE T.ID = #{id,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectRecordFlowByReqId" resultType="com.qifenqian.bms.accounting.exception.dao.transrecordflow.bean.TransRecordFlow" parameterType="string">
+		SELECT
+			FLOW.*
+		FROM TRANS_RECORD T
+			INNER JOIN TRANS_RECORD_FLOW FLOW ON FLOW.MSG_ID = T.MSG_ID
+		WHERE T.REQ_SERIAL_ID = #{reqSerialId, jdbcType=VARCHAR}
+		AND FLOW.OPERATE='JGKJ_PAYMENT'
+	</select>
+	
+	<update id="updateRecordFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.transrecordflow.bean.TransRecordFlow">
+  	  UPDATE 
+  	  		TRANS_RECORD_FLOW  T 
+  	  SET
+            STATUS = #{status,jdbcType=VARCHAR} 
+      WHERE  
+           T.ID = #{id, jdbcType=VARCHAR}
+  	</update>
+</mapper>

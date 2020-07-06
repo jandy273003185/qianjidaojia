@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qifenqian.bms.accounting.kingdee.mapper.BmsClearKingdeePayMapper" >
+  <select id="selectList" parameterType="com.qifenqian.bms.accounting.kingdee.bean.BmsClearKingdeePayInfo" resultType="com.qifenqian.bms.accounting.kingdee.bean.BmsClearKingdeePayInfo">
+  	SELECT
+  		A.CLEAR_ID,
+		CASE WHEN 	A.BUSINESS_TYPE = 'PERSONAL_WITHDRAW' THEN '个人提现' 
+		WHEN A.BUSINESS_TYPE ='MERCHANT_SETTLE' THEN '商户结算' END AS BUSINESS_TYPE,
+		A.OPER_ID,
+		A.F_DATE AS DATE,
+		A.FCONTACTUNIT_NAME,
+		A.FCONTACTUNIT_NUMBER,
+		A.FCONTACTUNIT_TYPE,
+		A.FRECTUNIT_NAME,
+		A.FRECTUNIT_NUMBER,
+		A.FRECTUNIT_TYPE,
+		A.FISINIT,
+		A.WORK_DATE,
+		A.SEND_DATE,
+		A.SEND_TIME,
+		CASE A.STATUS
+		WHEN 'SUCCESS' THEN '成功'
+		WHEN 'FAIL' THEN '失败'
+		WHEN 'EXCEPTION' THEN '异常'
+		WHEN 'CONFIRM_FAILURE' THEN '确认失败'
+		WHEN 'CONFIRM_SUCCESS' THEN '确认成功' ELSE A.STATUS END STATUS,
+		(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID  = A.INST_USER) INST_USER,
+		A.INST_DATE,
+		DATE_FORMAT(A.INST_DATETIME,'%Y-%m-%d %H:%i:%s') INST_DATETIME,
+		A.RTN_DATE,
+		A.RTN_TIME,
+		A.RTN_ID,
+		A.RTN_NUMBER,
+		A.RTN_IS_SUCCESS,
+		A.RTN_ERROR_CODE,
+		A.RTN_MESSAGE,
+		A.RTN_STACK_TRACE,
+		A.RTN_ERRORS,
+		CASE WHEN A.BANK_STATUS = 'A' THEN '空' WHEN A.BANK_STATUS='B' THEN '银行处理中' WHEN A.BANK_STATUS = 'C' THEN '银行交易成功' WHEN A.BANK_STATUS = 'D' THEN '银行交易失败' WHEN A.BANK_STATUS = 'E' THEN '银行交易未确认' ELSE 'NULL' END AS BANK_STATUS, 
+		DATE_FORMAT(A.UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') UPDATE_DATETIME,
+		CASE WHEN A.BAL_STATUS = 'INIT' THEN '初始化' ELSE A.BAL_STATUS END AS BAL_STATUS,
+		A.fBankMsg,
+		A.fEbMsg,
+		B.FPURPOSEID_NAME,
+		B.FPURPOSEID_NUMBER,
+		B.FPAYTOTAL_AMOUNT_FOR,
+		B.FPAY_AMOUNT_FOR_E,
+		B.FSETTLEPAY_AMOUNT_FOR,
+		B.FREALPAY_AMOUNT_FOR_D,
+		B.FACCOUNTID_NAME,
+		B.FACCOUNTID_NUMBER,
+		B.FREC_TYPE,
+		B.FBANKTYPE_REC_NAME,
+		B.FBANKTYPE_REC_NUMBER,
+		B.FOPPOSITE_BANK_ACCOUNT,
+		B.FOPPOSITE_CCOUNT_NAME,
+		B.FOPPOSITE_BANK_NAME,
+		B.FOPEN_ADDRESS_REC,
+		B.F_CNAPS AS CNAPS,
+		B.F_COSTID AS COSTID,
+		B.FPAY_AMOUNT_E
+	FROM BMS_CLEAR_KINGDEE_PAY A
+	JOIN BMS_CLEAR_KINGDEE_PAY_ENTRY B ON A.CLEAR_ID = B.CLEAR_ID
+	<where>
+		<if test="null != clearId and clearId != ''">
+			AND	A.CLEAR_ID = #{clearId,jdbcType= VARCHAR} 
+		</if>
+		<if test="null != businessType and businessType != ''">
+		 	AND A.BUSINESS_TYPE = #{businessType,jdbcType= VARCHAR}
+		</if>
+		<if test="null != operId and operId != ''">
+		 	AND	A.OPER_ID = #{operId,jdbcType= VARCHAR} 
+		</if>
+		<if test="null != fisinit and fisinit != ''">
+			AND	A.FISINIT = #{fisinit,jdbcType= VARCHAR} 
+		</if>
+		<if test="null != beginDate and beginDate != ''">
+			<![CDATA[  
+				AND DATE_FORMAT(A.F_DATE ,'%Y%m%d') >=  #{beginDate,jdbcType= VARCHAR} 
+			]]>
+		</if>
+		<if test="null != endDate and endDate != ''">
+			<![CDATA[  
+				AND	DATE_FORMAT(A.F_DATE ,'%Y%m%d') <=  #{endDate,jdbcType= VARCHAR} 
+			]]>
+		</if>
+		<if test="null != balStatus and balStatus != ''">
+				AND	A.BAL_STATUS =  #{balStatus,jdbcType= VARCHAR} 
+		</if>
+		<if test="null != bankStatus and bankStatus != ''">
+				AND	A.BANK_STATUS =  #{bankStatus,jdbcType= VARCHAR} 
+		</if>
+	</where>
+	ORDER BY A.INST_DATE DESC
+  </select>
+</mapper>

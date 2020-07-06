@@ -1,0 +1,41 @@
+<!--pages/paymentType/paymentType.wxml-->
+<view class="item">
+  <text>产 品 金 额:</text><text class="symbol">¥</text><text class="money">{{numberUtil.numberFormat(TotalPrice)}}</text>
+</view>
+<view class="item">
+  <text decode="{{true}}" space="{{true}}">运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费:</text><text class="symbol">¥</text><text class="money">{{numberUtil.numberFormat(expressprice)}}</text>
+</view>
+<view class="item">
+  <text>优惠劵减免:</text><text class="symbol">-¥</text><text class="money">{{numberUtil.numberFormat(discountedAmount)}}</text>
+</view>
+<view class="item">
+  <text>订 单 金 额:</text><text class="symbol">¥</text><text class="money">{{numberUtil.numberFormat(TotalPrice- expressprice- discountedAmount)}}</text>
+</view>
+
+<!-- <view class="balance">
+  <view>使用余额</view>
+  <view class="balance-right">余额:  ¥{{balance}}</view>
+  <switch class="swith-img" checked="{{IsDefault}}" bindchange="changeSwitch"/>
+</view> -->
+
+<view class="item">
+  <text>待支付金额:</text><text class="symbol">¥</text><text class="money">{{numberUtil.numberFormat(noPayment)}}</text>
+</view>
+
+<view wx:if="{{IsDefault==0}}" class="paymentType">
+  <view class="payment-title">支付方式</view>
+  <view class="paymentType-down">
+      <view class="paymentType-down-left">
+        <image class="pay-img" src="images/weixin.png"></image>
+        <view>
+          <view class="pay-title"><text>微信支付</text><image class="recommended-img" src="images/tuijian.png"></image></view>
+          <view class="pay-txt">亿万用户的选择,更快更安全</view>
+        </view>
+      </view>
+      <image class="selected-img" src="images/selected.png"></image>
+  </view>
+</view>
+
+<view class="sumbit-order" bindtap="toOrder"><view>提交订单</view></view>
+
+<wxs module="numberUtil" src="../../utils/util.wxs"></wxs>

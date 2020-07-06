@@ -1,0 +1,38 @@
+<!--pages/addBankCard/addBankCard.wxml-->
+<view class="description">*姓名必须和身份证中的一样，务必保证银行卡信息正确，否则无法退款</view>
+<view class="content">
+  <view class="item line"><input placeholder="请输入持卡人姓名" placeholder-style="color:#999999;font-size:30rpx;" value="{{BankName}}" bindinput="BankName"></input></view>
+  <view class="item line"><input class="bankCardNo" type="number" placeholder="请输入卡号" placeholder-style="color:#999999;font-size:30rpx;" value="{{BankCardNo}}" bindinput="BankCardNo"></input></view>  <view class="item line select" bindtap="bankCard">
+      <view class="title">绑定银行卡<image class="bankCard" src="/images/bankCard.png"></image></view>
+      <view class="nickName">
+        <text>{{BankCardName}}</text>
+        <image class="arrow" src="/images/arrow.png" mode="cover"></image>
+      </view>
+    </view>
+  <view class="item"><input placeholder="开户支行" placeholder-style="color:#999999;font-size:30rpx;" value="{{BankAddress}}" bindinput="BankAddress"></input></view>
+</view>
+<view class="down">
+  <view class="item line"><text class="mobile">已绑定手机号：{{Mobile}}</text></view>
+  <view class="item2"><input placeholder="请输入手机验证码" placeholder-style="color:#999999;font-size:30rpx;" value="{{VerifyCode}}" bindinput="VerifyCode"></input><text class="code" bindtap="code">{{buttonTitle}}</text></view>
+</view>
+
+<view class="submit" bindtap="submit">提交</view>
+
+<view class="wrap">
+  <!-- modal  -->
+  <view class="modal modal-bottom-dialog" hidden="{{hideFlag}}">
+    <view class="modal-cancel" bindtap="hideModal"></view>
+    <view class="bottom-dialog-body bottom-positon" animation="{{animationData}}">
+      <!--  -->
+      <view class='Mselect' style="max-height:700rpx;overflow: scroll;">
+        <view wx:for="{{bankArr}}" wx:key="unique" data-value='{{item.Id}}' data-txt='{{item.BankName}}' bindtap='getOption'>
+          {{item.BankName}}
+        </view>
+      </view>
+      <view></view>
+      <view class='Mcancel' bindtap='mCancel'>
+        <text>取消</text>
+      </view>
+    </view>
+  </view>
+</view>

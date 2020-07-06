@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.FmIncomeMapper">
+	
+	<select id="selMerchantDetailInfoList" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+    	SELECT
+			t1.*,
+			f.CUST_NAME,
+			f.short_name,
+			f.cust_id,
+			f.merchant_email,
+			t.email,
+			t.mobile,
+			d.remark
+			
+		FROM
+			td_merchant_report t1
+			LEFT JOIN td_merchant_detail_info d ON d.MERCHANT_CODE = t1.merchant_code
+			LEFT JOIN td_cust_info f ON f.MERCHANT_CODE = t1.merchant_code
+			LEFT JOIN td_login_user_info t ON f.cust_id = t.cust_id
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t1.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			 and t1.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			 and t1.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelCode != null and channelCode != '' ">
+			 and t1.channel_no = #{channelCode,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+			 and t1.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+			<if test="custName != null and custName != '' ">
+			 and  f.cust_name = #{custName,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null and email != '' ">
+			 and  t.email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null and mobile != '' ">
+			 and  t.mobile = #{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="startModifyTime != null and '' != startModifyTime">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')>= #{startModifyTime}
+	            ]]>
+			</if>
+			<if test="endModifyTime !=null and '' !=endModifyTime">
+				<![CDATA[
+	              AND DATE_FORMAT(t1.report_time,'%Y-%m-%d')<= #{endModifyTime}
+	            ]]>
+			</if>
+		</where>
+		ORDER BY t1.report_time DESC
+    </select>
+    
+    
+    <select id="selProvinceList"  resultType="com.qifenqian.bms.merchant.reported.bean.Province">
+    	select * from tb_fm_province
+    </select>
+    
+    <select id="selBankList"  resultType="com.qifenqian.bms.merchant.reported.bean.Bank">
+    	select * from tb_fm_bankcode
+    </select>
+    
+    <select id="selPowerIdList"  resultType="com.qifenqian.bms.merchant.reported.bean.TbFmTradeInfo">
+    	select * from tb_fm_trade_info
+    </select>
+    
+    
+    
+    <select id="selCityList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.City">
+		SELECT
+			*
+		FROM
+			tb_fm_city t
+		WHERE
+			t.province_id = #{province,jdbcType = VARCHAR}
+	</select>
+    
+    <select id="selAreaList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.Area">
+		SELECT
+			*
+		FROM
+			tb_fm_area t
+		WHERE
+			t.city_id = #{city,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selInterBankList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.BankBranch">
+		SELECT
+			*
+		FROM
+			tb_fm_bank_branch t
+		WHERE
+			t.bank_branch_name LIKE CONCAT('%',#{interBank,jdbcType = VARCHAR},'%') 
+	</select>
+	
+	<select id="selAlipayList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.category_name from fm_alipay_category t
+	</select>
+	
+	<select id="selWxList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.first_type,t.second_type,t.third_type from fm_wx_category t GROUP BY first_type 
+	</select>
+	
+	<select id="selWxSecondTypeList" parameterType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.first_type,t.second_type,t.third_type from fm_wx_category t where first_type = #{firstType,jdbcType = VARCHAR} GROUP BY second_type
+	</select>
+	
+	<select id="selWxThirdTypeList" parameterType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.first_type,t.second_type,t.third_type from fm_wx_category t where second_type = #{secondType,jdbcType = VARCHAR} and first_type=#{firstType,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selJdList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.second_type,t.third_type from fm_jd_category t GROUP BY second_type
+	</select>
+	
+	<select id="selJdThirdTypeList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.FmWxCategory">
+		select t.id,t.second_type,t.third_type from fm_jd_category t where second_type = #{secondType,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selTdMerchantReport" parameterType="com.qifenqian.bms.merchant.reported.bean.CrInComeBean" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		SELECT
+			t1.*,t2.report_status as detailStatus
+		FROM
+			td_merchant_report t1
+		INNER JOIN td_merchant_detail_info t2 ON t1.patch_no = t2.patch_no
+		<where>
+			1=1
+			<if test="merchantCode != null and merchantCode != '' ">
+			AND t1.merchant_code = #{merchantCode,jdbcType = VARCHAR} 
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			AND t1.channel_no = #{channelNo,jdbcType = VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			AND t1.patch_no = #{patchNo,jdbcType = VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+			 and t2.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selInComeInfo" parameterType="String"  resultType="com.qifenqian.bms.basemanager.custInfo.bean.TdCustInfo">
+		SELECT
+			c.*, 
+  			t.*
+		FROM
+			td_cust_info c
+		INNER JOIN td_login_user_info t ON c.cust_id = t.cust_id
+		WHERE
+			c.MERCHANT_CODE = #{merchantCode,jdbcType = VARCHAR} AND c.STATE = '00' AND t.STATE = '00'
+		LIMIT 1
+	</select>
+	
+	
+	<!-- 写入商户报备表 -->
+	<insert id="insertTdMerchantReport" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		INSERT INTO `stcdb`.`td_merchant_report` (
+			`id`,
+			`merchant_code`,
+			`patch_no`,
+			`channel_no`,
+			`report_status`,
+			`report_time`
+		)
+		VALUES
+			(
+				#{id,jdbcType = VARCHAR},
+				#{merchantCode,jdbcType = VARCHAR},
+				#{patchNo,jdbcType = VARCHAR},
+				#{channelNo,jdbcType = VARCHAR},
+				#{reportStatus,jdbcType = VARCHAR},
+				now()
+			)
+	</insert>
+	
+	<!-- 写入商户报备详情表 -->
+	<insert id="inserTdMerchantDetailInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		INSERT INTO `stcdb`.`td_merchant_detail_info` (
+			`patch_no`,
+			`merchant_code`,
+			`report_status`,
+			`file_status`,
+			`out_merchant_code`,
+			`remark`,
+			`create_time`,
+			`modify_time`,
+			`prov_code`,
+			`city_code`,
+			`contry_code`,
+			`bank_code`,
+			`branch_bank_code`,
+			`branch_bank_name`,
+			`mobile_no`,
+			`customer_Phone`,
+			`qq`,
+			`power_id`,
+			`app_id`,
+			`category`,
+			`loginNo`,
+			`bestMerchantType`,
+			`bestpayMctNo`,
+			`rate`,
+			`zfb_batch_no`,
+  			`zfb_batch_status`,
+	  		`zfb_user_id`,
+	  		`zfb_auth_app_id`,
+	  		`zfb_app_auth_token`,
+	  		`zfb_app_refresh_token`,
+	  		`zfb_expires_in`,
+	  		`zfb_re_expires_in`,
+	  		`zfb_account`,
+	  		`account_number`
+	  		
+		)
+		VALUES
+			(
+				#{patchNo,jdbcType = VARCHAR},
+				#{merchantCode,jdbcType = VARCHAR},
+				#{reportStatus,jdbcType = VARCHAR},
+				#{fileStatus,jdbcType = VARCHAR},
+				#{outMerchantCode,jdbcType = VARCHAR},
+				#{remark,jdbcType = VARCHAR},
+				now(),
+				now(),
+				#{provCode,jdbcType = VARCHAR},
+				#{cityCode,jdbcType = VARCHAR},
+				#{contryCode,jdbcType = VARCHAR},
+				#{bankCode,jdbcType = VARCHAR},
+				#{branchBankCode,jdbcType = VARCHAR},
+				#{branchBankName,jdbcType = VARCHAR},
+				#{mobileNo,jdbcType = VARCHAR},
+				#{customerPhone,jdbcType = VARCHAR},
+				#{qq,jdbcType = VARCHAR},
+				#{powerId,jdbcType = VARCHAR},
+				#{appId,jdbcType = VARCHAR},
+				#{category,jdbcType = VARCHAR},
+				#{loginNo,jdbcType = VARCHAR},
+				#{bestMerchantType,jdbcType = VARCHAR},
+				#{bestpayMctNo,jdbcType = VARCHAR},
+				#{rate,jdbcType = VARCHAR},
+				#{zfbBatchNo,jdbcType = VARCHAR},
+				#{zfbBatchStatus,jdbcType = VARCHAR},
+				#{zfbUserId,jdbcType = VARCHAR},
+				#{zfbAuthAppId,jdbcType = VARCHAR},
+				#{zfbAppAuthToken,jdbcType = VARCHAR},
+				#{zfbAppRefreshToken,jdbcType = VARCHAR},
+				#{zfbExpiresIn,jdbcType = VARCHAR},
+				#{zfbReExpiresIn,jdbcType = VARCHAR},
+				#{zfbAccount,jdbcType = VARCHAR},
+				#{accountNumber,jdbcType = VARCHAR}
+			)
+	</insert>
+	
+	<update id="updateTdMerchantReport"  parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" >
+    	 UPDATE `stcdb`.`td_merchant_report`
+		 <set> 
+			<if test="reportStatus != null and reportStatus !='' ">
+		 	`report_status` = #{reportStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="outMerchantCode != null and outMerchantCode !='' ">
+		 	`out_merchant_code` = #{outMerchantCode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="detailStatus != null and detailStatus !='' ">
+		 	`detail_status` = #{detailStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="resultMsg != null and resultMsg !='' ">
+		 	`result_msg` = #{resultMsg,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="status != null and status !='' ">
+		 	`status` = #{status,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="channelMark != null and channelMark !='' ">
+		 	`channel_mark` = #{channelMark,jdbcType = VARCHAR}
+		 	</if>
+		 </set>
+		 <where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			merchant_code = #{merchantCode,jdbcType = VARCHAR} 
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			AND channel_no = #{channelNo,jdbcType = VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			AND patch_no = #{patchNo,jdbcType = VARCHAR}
+			</if>
+		</where>
+    </update>
+    
+    <update id="updateTdMerchantDetailInfo"  parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" >
+    	 UPDATE `stcdb`.`td_merchant_detail_info`
+		 SET 
+		 	<if test="reportStatus != null and reportStatus !='' ">
+		 	`report_status` = #{reportStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="fileStatus != null and fileStatus !='' ">
+		 	`file_status` = #{fileStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="outMerchantCode != null and outMerchantCode !='' ">
+		 	`out_merchant_code` = #{outMerchantCode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="remark != null and remark !='' ">
+		 	`remark` = #{remark,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="bestMerchantType != null and bestMerchantType !='' ">
+		 	`bestMerchantType` = #{bestMerchantType,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="loginNo != null and loginNo !='' ">
+		 	`loginNo` = #{loginNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="bestpayMctNo != null and bestpayMctNo !='' ">
+		 	`bestpayMctNo` = #{bestpayMctNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="resultMsg != null and resultMsg !='' ">
+		 	`result_msg` = #{resultMsg,jdbcType = VARCHAR},
+		 	</if>
+		 	
+		 	<if test="zfbBatchNo != null and zfbBatchNo !='' ">
+		 	`zfb_batch_no` = #{zfbBatchNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbBatchStatus != null and zfbBatchStatus !='' ">
+		 	`zfb_batch_status` = #{zfbBatchStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbUserId != null and zfbUserId !='' ">
+		 	`zfb_user_id` = #{zfbUserId,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbAuthAppId != null and zfbAuthAppId !='' ">
+		 	`zfb_auth_app_id` = #{zfbAuthAppId,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbAppAuthToken != null and zfbAppAuthToken !='' ">
+		 	`zfb_app_auth_token` = #{zfbAppAuthToken,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbAppRefreshToken != null and zfbAppRefreshToken !='' ">
+		 	`zfb_app_refresh_token` = #{zfbAppRefreshToken,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbExpiresIn != null and zfbExpiresIn !='' ">
+		 	`zfb_expires_in` = #{zfbExpiresIn,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbReExpiresIn != null and zfbReExpiresIn !='' ">
+		 	`zfb_re_expires_in` = #{zfbReExpiresIn,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbConfirmUrl != null and zfbConfirmUrl !='' ">
+		 	`zfb_confirm_url` = #{zfbConfirmUrl,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="merchantPid != null and merchantPid !='' ">
+		 	`merchant_pid` = #{merchantPid,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="signUrl != null and signUrl !='' ">
+		 	`sign_url` = #{signUrl,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="signQrcode != null and signQrcode !='' ">
+		 	`sign_qrcode` = #{signQrcode,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="wxApplyNo != null and wxApplyNo !='' ">
+		 	`wx_apply_no` = #{wxApplyNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="idenStatus != null and idenStatus !='' ">
+		 	`iden_status` = #{idenStatus,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="wxChildNo != null and wxChildNo !='' ">
+		 	`wx_child_no` = #{wxChildNo,jdbcType = VARCHAR},
+		 	</if>
+		 	<if test="zfbChildNo != null and zfbChildNo !='' ">
+		 	`zfb_child_no` = #{zfbChildNo,jdbcType = VARCHAR},
+		 	</if>
+			 `modify_time` = now()
+		 WHERE
+			`patch_no` = #{patchNo,jdbcType = VARCHAR}
+		 or
+		 	`out_merchant_code` = #{outMerchantCode,jdbcType = VARCHAR}
+    </update>
+	
+	<update id="updateInComeInfo"  parameterType="String" >
+    	 	update td_cust_info  t
+			SET
+				t.filing_status = '01'
+			WHERE
+				t.MERCHANT_CODE =  #{merchantCode}
+    </update>
+	<select id="selTdMerchantDetailInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo"  resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+		SELECT
+			*
+		FROM
+			td_merchant_report t1
+		WHERE
+			t1.`merchant_code` = #{merchantCode,jdbcType = VARCHAR} and t1.channel_no = #{channelNo,jdbcType = VARCHAR}
+		ORDER BY t1.report_time DESC
+		limit 1
+	</select>
+	
+		<select id="selMerchantDetailInfo" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfo">
+    	SELECT
+			t.*,
+			f.cust_name,
+			f.cust_id,
+			r.channel_no,
+			DATE_FORMAT(t.modify_time,'%Y-%m-%d %H:%i:%s') modify_time,
+			DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%i:%s') reportTime
+		FROM
+			td_merchant_detail_info t
+		LEFT JOIN td_cust_info f ON t.merchant_code = f.merchant_code
+		LEFT JOIN td_merchant_report r on r.patch_no = t.patch_no
+		<where>
+			<if test="merchantCode != null and merchantCode != '' ">
+			 and t.merchant_code= #{merchantCode,jdbcType=VARCHAR}
+			</if>
+			<if test="patchNo != null and patchNo != '' ">
+			 and t.patch_no = #{patchNo,jdbcType=VARCHAR}
+			</if>
+			<if test="channelNo != null and channelNo != '' ">
+			 and r.channel_no = #{channelNo,jdbcType=VARCHAR}
+			</if>
+			<if test="reportStatus != null and reportStatus != '' ">
+			 and r.report_status = #{reportStatus,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY t.create_time DESC
+		
+    </select>
+    
+    
+     <select id="selIndustryList"  resultType="com.qifenqian.bms.merchant.reported.bean.Industry">
+    	select * from td_merchant_industry_info
+    </select>
+    
+    <select id="selSuiXingIndustryList"  resultType="com.qifenqian.bms.merchant.reported.bean.Industry">
+    	select DISTINCT
+    		t.category_id,
+    		t.category_name
+    	from td_suixing_mcc_info t
+    </select>
+    
+    <select id="selSuiXingIndustryListByCategoryId"  parameterType="com.qifenqian.bms.merchant.reported.bean.Industry"  resultType="com.qifenqian.bms.merchant.reported.bean.Industry">
+    	select
+    		t.category_id,
+    		t.category_name, 
+    		t.industry_code,
+    		t.industry_name
+    	from td_suixing_mcc_info t
+    	<where>
+	    	<if test="categoryId != null and categoryId != '' ">
+	    	t.category_id = #{categoryId,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="categoryName != null and categoryName != '' ">
+	    	and t.category_name = #{categoryName,jdbcType = VARCHAR}
+	    	</if>
+	    </where>
+    </select>
+	
+	<select id="selSuiXingProvinceList"  resultType="com.qifenqian.bms.merchant.reported.bean.Province">
+    	SELECT DISTINCT 
+			b.province_id,
+			b.province_name
+		FROM 
+			td_suixing_bank_city_info b
+		ORDER BY b.province_id 
+    </select>
+    
+    <select id="selSuiXingCityList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.City">
+		SELECT
+			t.city_id,
+			t.city_name
+		FROM
+			td_suixing_bank_city_info t
+		WHERE
+			t.province_id = #{province,jdbcType = VARCHAR}
+	</select>
+    
+    <select id="selSuiXingAreaList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantCity">
+		SELECT
+			t.*
+		FROM
+			td_suixing_merchant_city_info t
+		WHERE
+			t.superior_area_code = #{superiorAreaCode,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selSuiXingMerchantCityList" parameterType="String" resultType="com.qifenqian.bms.merchant.reported.bean.MerchantCity">
+		SELECT
+			t.*
+		FROM
+			td_suixing_merchant_city_info t
+		WHERE
+			t.area_type = #{areaType,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selSumPayBankList"  resultType="com.qifenqian.bms.merchant.reported.bean.Bank">
+    	select 
+    		*
+    	from 
+    		td_sumpay_bank_info s
+    </select>
+    
+      <select id="selSumPayProvinceList"  parameterType="String"  resultType="com.qifenqian.bms.merchant.reported.bean.SumPayArea">
+    	select 
+    		t.* 
+    	from 
+    		td_sumpay_merchant_city_info t
+    	where t.superior_area_code = #{superiorAreaCode,jdbcType = VARCHAR}
+    </select>
+    
+    <select id="selSumpayMccList"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT DISTINCT
+			z.level_one 
+		FROM 
+			td_sumpay_zfb_mcc_info z
+    </select>
+    
+          <select id="selSumPayMccTwoList"  parameterType="String"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT DISTINCT
+			z.level_two 
+		FROM 
+			td_sumpay_zfb_mcc_info z
+    	where z.level_one = #{one,jdbcType = VARCHAR}
+    </select>
+    
+     <select id="selSumPayMccThreeList"  parameterType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT 
+			z.*
+		FROM 
+			td_sumpay_zfb_mcc_info z
+    	<where>
+	    	<if test="levelOne != null and levelOne != '' ">
+	    	and	z.level_one = #{levelOne,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="levelTwo != null and levelTwo != '' ">
+	    	and  z.level_two = #{levelTwo,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="levelThree != null and levelThree != '' ">
+	    	and z.level_three = #{levelThree,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="AlipayMchntType != null and AlipayMchntType != '' ">
+	    	and z.Alipay_mchnt_type = #{AlipayMchntType,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="mcc != null and mcc != '' ">
+	    	and z.mcc = #{mcc,jdbcType = VARCHAR}
+	    	</if>
+    	</where> 
+    	
+    </select>
+    
+    <select id="selSumpayMccWXList"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT DISTINCT
+			z.level_one 
+		FROM 
+			td_sumpay_wx_mcc_info z
+    </select>
+    
+    <select id="selSumPayMccTwoWXList"  parameterType="String"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT DISTINCT
+			z.level_two 
+		FROM 
+			td_sumpay_wx_mcc_info z
+    	where z.level_one = #{one,jdbcType = VARCHAR}
+    </select>
+    
+     <select id="selSumPayMccThreeWXList"  parameterType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT 
+			z.*
+		FROM 
+			td_sumpay_wx_mcc_info z
+    	where z.level_one = #{levelOne,jdbcType = VARCHAR}
+    	and  z.level_two = #{levelTwo,jdbcType = VARCHAR}
+    </select>
+    
+    <select id="selSumpayMccZFBList"  resultType="com.qifenqian.bms.merchant.reported.bean.SumpayMcc">
+    	SELECT DISTINCT
+			z.* 
+		FROM 
+			td_sumpay_zfb_info z
+    </select>
+    
+     <select id="selYQBProvinceList"  resultType="com.qifenqian.bms.merchant.reported.bean.YQBArea">
+    	SELECT DISTINCT
+    		c.province_name,
+    		c.area_code
+		FROM 
+			td_yqb_city_info c
+		where c.city_name =''
+		and c.area_name = ''
+    </select>
+    
+    <select id="selYQBCityList" parameterType="com.qifenqian.bms.merchant.reported.bean.YQBArea"  resultType="com.qifenqian.bms.merchant.reported.bean.YQBArea">
+    	SELECT DISTINCT
+    		c.city_name,
+    		c.area_code
+		FROM 
+			td_yqb_city_info c
+		where
+			c.area_name = ''
+		and c.city_name !=''
+		and	c.province_name = 
+		(SELECT
+			d.province_name
+		 FROM td_yqb_city_info d
+		 WHERE 
+		 d.area_code =#{areaCode,jdbcType = VARCHAR} )
+		
+
+    </select>
+    
+    <select id="selYQBAreaList" parameterType="com.qifenqian.bms.merchant.reported.bean.YQBArea"  resultType="com.qifenqian.bms.merchant.reported.bean.YQBArea">
+    	SELECT DISTINCT
+    		c.area_name,
+    		c.area_code
+		FROM 
+			td_yqb_city_info c
+		where
+			c.area_name !=''
+		and	c.city_name = 
+		(SELECT
+			d.city_name
+		 FROM td_yqb_city_info d
+		 WHERE 
+		 d.area_code =#{areaCode,jdbcType = VARCHAR} )
+		
+
+    </select>
+    
+    <select id="selYQBIndustryList"  resultType="com.qifenqian.bms.merchant.reported.bean.YQBIndustry">
+    	SELECT DISTINCT
+			m.level_one
+		FROM 
+			td_yqb_mcc_info m
+    </select>
+    
+    <select id="selYQBIndustryCodeList"  parameterType="com.qifenqian.bms.merchant.reported.bean.YQBIndustry" resultType="com.qifenqian.bms.merchant.reported.bean.YQBIndustry">
+    	SELECT DISTINCT
+    		m.level_two,
+			m.level_code
+		FROM 
+			td_yqb_mcc_info m
+		<where>
+			<if test="levelOne != null and levelOne != '' ">
+	    	and	 m.level_one = #{levelOne,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="levelTwo != null and levelTwo != '' ">
+	    	and  m.level_two = #{levelTwo,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="levelFour != null and levelFour != '' ">
+	    	and  m.level_four = #{levelFour,jdbcType = VARCHAR}
+	    	</if>
+	    	<if test="levelCode != null and levelCode != '' ">
+	    	and  m.level_code = #{levelCode,jdbcType = VARCHAR}
+	    	</if>
+		</where>
+		
+    </select>
+    
+    <select id="selYQBBankList"  parameterType="com.qifenqian.bms.merchant.reported.bean.Bank" resultType="com.qifenqian.bms.merchant.reported.bean.Bank">
+    	SELECT 
+			b.bank_id,
+			b.bank_name
+		FROM 
+			td_yqb_bank_info b
+		<where>
+			<if test="bankId != null and bankId !='' ">
+			and	 b.bank_id = #{bankId,jdbcType = VARCHAR}
+			</if>
+			<if test="bankName != null and bankName !='' ">
+			and	 b.bank_name = #{bankName,jdbcType = VARCHAR}
+			</if>
+		</where>
+    </select>
+</mapper>

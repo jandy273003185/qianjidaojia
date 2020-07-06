@@ -1,0 +1,58 @@
+/* pages/address/address.wxss */
+page{
+  background-color: #FDFAFE;
+}
+.item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx; 
+  background-color: #ffffff;
+  height: 50rpx;
+}
+.line{
+  border-top: 2rpx solid #eeeeee; 
+}
+.title{
+  color: #333333;
+  font-size: 30rpx;
+  width: 160rpx;
+}
+.item-left{
+  display: flex;
+}
+.icon{
+  width: 40rpx;
+  height: 40rpx;  
+}
+.icon2{
+  width: 34rpx;
+  height: 40rpx;  
+}
+.address{
+  color: #999999;
+  width: 470rpx;
+  display: inline-block;
+}
+.finish{
+  width: 500rpx;
+  margin: 0 auto;
+  padding: 20rpx;
+  text-align: center;
+  background:linear-gradient(135deg,rgba(9,176,7,1) 0%,rgba(2,155,0,1) 100%);
+  box-shadow:0rpx 4rpx 12rpx 0rpx rgba(2,156,1,0.24);
+  border-radius:40rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+  margin-top: 300rpx;
+}
+
+.default{
+  margin-top: 34rpx;
+}
+.title-width{
+  width: 300rpx;
+}
+.title-color{
+  color: #ed3a3e;
+}

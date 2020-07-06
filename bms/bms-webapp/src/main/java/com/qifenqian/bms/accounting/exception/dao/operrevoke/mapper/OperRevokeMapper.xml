@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.operrevoke.mapper.OperRevokeMapper">
+	<select id="selectRevokeBillById" resultType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		SELECT
+				T.ORDER_ID,
+				T.ORIGIN_ORDER_ID,
+				T.ORIGIN_TRANS_TIME ORDER_CREATE_TIME,
+				T.ORIGIN_ORDER_NAME ORDER_NAME,
+				T.REVOKE_CUST_ID PAYER_CUST_ID,
+				T.REVOKE_AMT SUM_AMT,
+				T.ORDER_STATUS REVOKE_STATUS,
+				U.MERCHANT_CODE PAYEE_CUST_ID,
+				LU.MOBILE,
+				(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.CREATE_ID) CREATOR,
+				T.CREATE_TIME,
+				T.CORE_RETURN_CODE RTN_CODE,
+				T.CORE_RETURN_MSG RTN_INFO
+			FROM
+				TD_CUST_TRANS_REVOKE T, TD_LOGIN_USER_INFO LU,TD_CUST_INFO U
+			WHERE
+				T.REVOKE_CUST_ID = LU.CUST_ID 
+				AND T.MERCHANT_CUST_ID = U.CUST_ID
+				AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectRechargeRevokeById" resultType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		SELECT
+				T.ORDER_ID,
+				T.ORIGIN_ORDER_ID,
+				T.ORIGIN_RECHARGE_TIME ORDER_CREATE_TIME,
+				T.RECHARGE_CUST_ID PAYER_CUST_ID,
+				T.REVOKE_AMT SUM_AMT,
+				T.ORDER_STATUS REVOKE_STATUS,
+				LU.MOBILE,
+				(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.CREATE_ID) CREATOR,
+				T.CREATE_TIME INST_DATETIME,
+				T.CORE_RETURN_CODE RTN_CODE,
+				T.CORE_RETURN_MSG RTN_INFO
+			FROM
+				TD_CUST_RECHARGE_REVOKE T, TD_LOGIN_USER_INFO LU
+			WHERE
+				T.RECHARGE_CUST_ID = LU.CUST_ID 
+				AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<select id="selectTransferRevokeById" resultType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		SELECT
+				T.ORDER_ID,
+				T.ORIGIN_ORDER_ID,
+				T.ORIGIN_TRANS_TIME ORDER_CREATE_TIME,
+				LU.MOBILE PAY_CUST_ID,
+				T.REVOKE_AMT SUM_AMT,
+				T.ORDER_STATUS REVOKE_STATUS,
+				U.MOBILE RCV_CUST_ID,
+				T.PAYEE_CUST_NAME PAY_CUST_NAME,
+				T.PAYER_CUST_NAME RCV_CUST_NAME,
+				(SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.CREATE_ID) CREATOR,
+				T.CREATE_TIME INST_DATETIME,
+				T.CORE_RETURN_CODE RTN_CODE,
+				T.CORE_RETURN_MSG RTN_INFO
+			FROM
+				TD_CUST_TRANSFER_REVOKE T, 
+				TD_LOGIN_USER_INFO LU,
+				TD_LOGIN_USER_INFO U
+			WHERE
+				T.PAYEE_CUST_ID = LU.CUST_ID 
+				AND T.PAYER_CUST_ID = U.CUST_ID 
+				AND T.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updatePaymentRevoke" parameterType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		UPDATE TD_CUST_TRANS_REVOKE R
+		<set>
+			<if test="revokeStatus!=null">
+				R.ORDER_STATUS = #{revokeStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="coreSn!=null">
+				R.CORE_RETURN_MSG = #{coreSn,jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE R.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateRechargeRevoke" parameterType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		UPDATE TD_CUST_RECHARGE_REVOKE R
+		<set>
+			<if test="revokeStatus!=null">
+				R.ORDER_STATUS = #{revokeStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="coreSn!=null">
+				R.CORE_RETURN_MSG = #{coreSn,jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE R.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+	
+	<update id="updateTransferRevokeState" parameterType="com.qifenqian.bms.accounting.exception.dao.operrevoke.bean.OperRevoke">
+		UPDATE TD_CUST_TRANSFER_REVOKE R
+		<set>
+			<if test="revokeStatus!=null">
+				R.ORDER_STATUS = #{revokeStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="coreSn!=null">
+				R.CORE_RETURN_MSG = #{coreSn,jdbcType = VARCHAR}
+			</if>
+		</set>
+		WHERE R.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</update>
+	
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.schedulerLog.mapper.SchedulerLogMapper">
+  <select id="selectSchedulerLogList"  resultType="com.qifenqian.bms.platform.web.schedulerLog.bean.SchedulerLog"  parameterType="com.qifenqian.bms.platform.web.schedulerLog.bean.SchedulerLog">
+	    SELECT
+			J.JOB_NAME,
+			L.EXECUTE_DATE,
+			L.JOB_CODE,
+			L.PARAMETR,
+			L.HOSTNAME,
+			L.START_DATETIME,
+			END_DATETIME,
+			(
+				CASE L.EXECUTE_FLAG
+				WHEN 'EXECUTING' THEN
+					'执行中'
+				WHEN 'SUCCESS' THEN
+					'成功'
+				WHEN 'FAILURE' THEN
+					'失败'
+				WHEN 'EMPTY' THEN
+					'参数为空'
+				ELSE
+					0
+				END
+			) AS EXECUTE_FLAG2,
+			EXECUTE_FLAG,
+			(
+				CASE L.EXECUTE_TYPE
+				WHEN 'HANDLE' THEN
+					'手动'
+				WHEN 'AUTO' THEN
+					'自动'
+				ELSE
+					0
+				END
+			) AS EXECUTE_TYPE2,
+			L.EXECUTE_TYPE,
+			L.EXECUTE_DESC,
+			L.EXECUTE_OPER
+		FROM
+			STCDB.BMS_SCHEDULER_LOG L LEFT JOIN
+			STCDB.BMS_SCHEDULER_JOB J
+		ON
+			L.JOB_CODE = J.ID
+	WHERE 1=1
+    <if test="executeDate!= null  and executeDate!= '' ">
+			AND L.EXECUTE_DATE = #{executeDate,jdbcType=DATE}
+	</if>
+	<if test="executeType!= null  and executeType!= '' ">
+			AND L.EXECUTE_TYPE = #{executeType,jdbcType=VARCHAR}
+	</if>
+	<if test="executeFlag!= null  and executeFlag!= '' ">
+			AND L.EXECUTE_FLAG = #{executeFlag,jdbcType=VARCHAR}
+	</if>
+	<if test="jobName!= null  and jobName!= '' ">
+			AND J.JOB_NAME LIKE CONCAT('%',#{jobName,jdbcType=VARCHAR},'%')
+	</if>
+	ORDER BY L.START_DATETIME   DESC	 
+  <!--   where LOG_ID = #{logId,jdbcType=VARCHAR} -->
+  </select>
+  
+  <insert id="addSchedulerLog" parameterType="com.qifenqian.bms.platform.web.schedulerLog.bean.SchedulerLog">
+		INSERT INTO BMS_SCHEDULER_LOG (LOG_ID,
+		  	JOB_CODE,
+		  	EXECUTE_DATE,
+		  	PARAMETR,
+		  	HOSTNAME,
+		  	START_DATETIME,	
+		  	END_DATETIME,	  	
+		  	EXECUTE_FLAG,
+		  	EXECUTE_DESC,
+		  	EXECUTE_TYPE,
+			EXECUTE_OPER
+		) VALUES (
+			#{logId, 		jdbcType=VARCHAR},
+			#{jobCode, 		jdbcType=VARCHAR},
+		  	CURDATE(),
+		  	#{parametr, 	jdbcType=VARCHAR},
+		  	#{hostname, 	jdbcType=VARCHAR},
+			NOW(),NOW(),
+			#{executeFlag, 	jdbcType=VARCHAR},
+			#{executeDesc,	jdbcType=VARCHAR},
+		  	#{executeType, 	jdbcType=VARCHAR},
+			#{executeOper, 	jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateSchedulerLog" parameterType="com.qifenqian.bms.platform.web.schedulerLog.bean.SchedulerLog">
+		UPDATE BMS_SCHEDULER_LOG 
+		<set>
+			<if test="executeFlag != null">
+				EXECUTE_FLAG = #{executeFlag,jdbcType=VARCHAR},
+			</if>
+			<if test="executeDesc != null">
+				EXECUTE_DESC = #{executeDesc,jdbcType=VARCHAR},
+			</if>
+				END_DATETIME = now(),
+		</set>
+			WHERE LOG_ID = #{logId, jdbcType=INTEGER}
+	</update>
+	
+</mapper>

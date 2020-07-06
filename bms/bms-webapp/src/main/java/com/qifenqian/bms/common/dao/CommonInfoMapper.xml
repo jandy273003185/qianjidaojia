@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.common.dao.CommonInfoMapper" >
+
+	<select id="selProvinceList" resultType="com.qifenqian.bms.merchant.reported.bean.Province">
+	SELECT 
+		P.PROVINCE_ID,
+		P.PROVINCE_NAME 
+	FROM 
+		TB_PROVINCE P
+	</select>
+	
+	
+	<select id="branchBankList" parameterType="com.qifenqian.bms.common.bean.BranchBankInfo" resultType="com.qifenqian.bms.common.bean.BranchBankInfo">
+		SELECT
+			T.BANK_CNAPS branchBankCode,
+			T.BANK_CODE,
+			T.AREA_ID areaCode,
+			T.BANK_NAME,
+			T.BANK_ADDRESS,
+			A.CITY_ID
+		FROM
+			TB_BANK_INFO T
+		LEFT JOIN tb_area_info a ON t.AREA_ID = a.AREA_ID
+		<where>
+			1=1
+			<if test="bankCode!=null and bankCode!='' ">
+				AND T.BANK_CODE = #{bankCode, jdbcType = VARCHAR}
+			</if>
+			<if test="areaCode!=null and areaCode!='' ">
+				AND a.AREA_ID = #{areaCode, jdbcType = VARCHAR}
+			</if>
+			<if test="cityCode!=null and cityCode!='' and cityCode !=-1">
+				AND a.CITY_ID = #{cityCode, jdbcType = VARCHAR}
+			</if>
+			<if test="provinceId!=null and provinceId!='' ">
+				AND a.PROVINCE_ID = #{provinceId, jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY T.BANK_CODE
+	</select>
+	
+	<select id="selectSuiXingBanks" resultType="com.qifenqian.bms.basemanager.bank.bean.Bank">
+	SELECT DISTINCT
+		s.bank_id as bank_code,
+		s.bank_name	as bank_name
+	FROM 
+		td_suixing_bank_info s;
+	</select>
+	
+	<select id="selSuiXingProvince" resultType="com.qifenqian.bms.merchant.reported.bean.Province">
+	SELECT DISTINCT
+		z.bank_province_code as province_id,
+		z.bank_province_name as	province_name
+	FROM 
+		td_suixing_bank_info z;
+	</select>
+	
+	<select id="selSuiXingCity" parameterType="String" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT  DISTINCT
+			z.bank_city_code,
+			z.bank_city_name
+		FROM td_suixing_bank_info z
+		WHERE z.bank_province_code = #{provinceId,jdbcType = VARCHAR};
+	</select>
+	
+	<select id="suiXingBranchBankList" parameterType="com.qifenqian.bms.common.bean.BranchBankInfo" resultType="com.qifenqian.bms.common.bean.BranchBankInfo">
+		SELECT
+			z.brnach_bank_id branchBankCode,
+			z.brnach_bank_name bankName
+		FROM
+			td_suixing_bank_info z
+		<where>
+			1=1
+			<if test="bankCode!=null and bankCode!='' ">
+				AND z.bank_id = #{bankCode, jdbcType = VARCHAR}
+			</if>
+			<if test="cityCode!=null and cityCode!='' ">
+				AND z.bank_city_code = #{cityCode, jdbcType = VARCHAR}
+			</if>
+			<if test="provinceId!=null and provinceId!='' ">
+				AND z.bank_province_code = #{provinceId, jdbcType = VARCHAR}
+			</if>
+		</where>
+		ORDER BY z.brnach_bank_id
+	</select>
+	
+	<select id="ListAliPayIndustry" resultType="com.qifenqian.bms.merchant.reported.bean.CommonIndustry">
+		SELECT
+			<if test="parentLevel == 'levelOne' or parentLevel == null">
+				distinct t.level_one
+			</if>
+			<if test="parentLevel == 'levelTwo'">
+				distinct t.level_two
+			</if>
+			<if test="parentLevel == 'levelThree'">
+				t.level_three,
+				t.special_certificate,
+				t.level_code
+			</if>
+			<if test="parentLevel == 'levelFour'">
+				t.level_three,
+				t.special_certificate,
+				t.level_code
+			</if>
+		FROM
+		td_alipay_mcc_info t
+		<where>
+			<if test="parentLevel == 'levelTwo'">
+				t.level_one = #{parentText, jdbcType=VARCHAR}
+			</if>
+			<if test="parentLevel == 'levelThree'">
+				t.level_two = #{parentText, jdbcType=VARCHAR}
+			</if>
+			<if test="parentLevel == 'levelFour'">
+				t.level_code = #{parentText, jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="selWxChatAppCity" parameterType="String" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT  DISTINCT
+				  AREA_ID,
+			PROVINCE_NAME,
+				CITY_NAME
+		FROM 
+			WX_AREA_INFO
+		WHERE 
+			PROVINCE_NAME = #{provinceId,jdbcType = VARCHAR}
+			and CITY_NAME != ''
+			AND AREA_NAME is NULL ;
+	</select>
+	
+	<select id="getWxAreaByCityId" parameterType="string" resultType="com.qifenqian.bms.basemanager.city.bean.City">
+		SELECT 
+			A.AREA_ID,
+			A.AREA_NAME 
+		FROM 
+			wx_area_info A 
+		<where>
+			1=1
+			<if test="cityName != null and cityName != ''">
+			AND  A.city_name = #{cityName,jdbcType = VARCHAR} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectWeChatBankList" parameterType="java.lang.String" resultType="java.util.Map" >
+		SELECT 
+			t.bank_cnaps 'id',
+			t.bank_name 'text'
+		FROM tb_bank_info t
+		where t.BANK_NAME like "%"#{bankName,jdbcType = VARCHAR}"%"
+	</select>
+	
+	<select id="selectAllinPayCity" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.city.bean.City" >
+		SELECT 
+			a.area_code areaCode,
+			a.area_name areaName 
+		FROM 
+			td_allinpay_area_info a
+		WHERE a.province_code = #{provinceId,jdbcType = VARCHAR}
+	</select>
+	
+	
+	<select id="allinPayBranchBankList" parameterType="com.qifenqian.bms.common.bean.BranchBankInfo" resultType="com.qifenqian.bms.common.bean.BranchBankInfo" >
+		SELECT
+			a.bank_name,
+			a.net_bank_code	branchBankCode
+		FROM
+			td_allinpay_net_bank_info  a
+		WHERE
+			a.bank_code = #{bankCode,jdbcType = VARCHAR}
+		AND a.area_name = (
+			SELECT 
+				i.area_name
+			FROM 
+				td_allinpay_area_info i
+			WHERE 
+				i.area_code =#{cityCode,jdbcType = VARCHAR}
+			)
+	</select>
+	
+	<select id="selLklPayCity" parameterType="java.lang.String" resultType="com.qifenqian.bms.basemanager.city.bean.City" >
+		SELECT 
+			a.district_id areaCode,
+			a.district_name areaName 
+		FROM 
+			td_lakala_bank_area_info a
+		WHERE a.district_parent = #{provinceId,jdbcType = VARCHAR}
+	</select>
+</mapper>

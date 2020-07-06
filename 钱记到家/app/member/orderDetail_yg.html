@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/details.css" />
+    <link rel="stylesheet" type="text/css" href="/css/sum.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/order.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .layui-m-layer0 .layui-m-layerchild {
+            width: 70%;
+        }
+
+        .layui-m-layercont {
+            padding: .18rem .2rem;
+        }
+
+        .layui-m-layerbtn {
+            height: .4rem;
+            line-height: .4rem;
+        }
+
+        .goods_text .goodsPrice .btn {
+            margin-left: .05rem;
+        }
+
+        .zhezhao {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            background: rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .codeDiv {
+            width: 90%;
+            max-width: 640px;
+            margin: 0 auto;
+            margin-top: 40%;
+            background: #fff;
+        }
+
+        .img canvas {
+            max-width: 100%;
+            border: 0;
+            display: block;
+            margin: 0 auto;
+        }
+
+        body .layui-m-layer-ewm {
+            width: 90%;
+            max-width: 640px;
+            overflow: hidden;
+        }
+
+        .layui-m-layer1 .layui-m-layerchild {
+            border-radius: 5px;
+        }
+
+        .layui-m-layer-ewm .pop-hd {
+            text-align: center;
+        }
+
+        .layui-m-layer-ewm .pop-bd {
+            padding-left: 15%;
+        }
+
+        .pop-qyCode .codelist .right .sendcode_btn {
+            text-align: center;
+        }
+
+        .pop-qyCode .codelist .right .txt {
+            text-align: center;
+        }
+
+        .scrollFix {
+            /*height:100%;*/
+            overflow: hidden;
+            position: relative;
+        }
+
+            .scrollFix body {
+                /*height:100%;*/
+                overflow: hidden;
+            }
+    </style>
+</head>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="title center">订单详情</div>
+        </div>
+    </div>
+    <div class="main">
+        <div id="orderDetail_Div"></div>
+    </div>
+    <input type="text" name="" id="shareUrl" value="" style="position: absolute;opacity: 0;" />
+</body>
+	<script id="orderDetail_Tpl" type="text/html">
+		<div class="transactionState">{{d.StatusName}}</div>
+		<div class="persionMeg">
+			<div class="zuobiao_icon">
+				<img src="/images/icons/dd_addr.png" alt="" />
+			</div>
+			<div class="persionMeg_text">
+				<p>
+					<span class="name">{{d.ContactName}}</span>
+					<span class="phoneNum">{{d.TelephoneNumber}}</span>
+				</p>
+				<p class="xxdizhi">{{d.Address}}</p>
+			</div>
+		</div>
+		<div class="goodsContent"> 
+			{{# for(var i = 0; i< d.orderDetails.length; i++){ }} 
+			<div class="item proitem clear" data-pid="{{d.orderDetails[i].ProductId}}" data-id="{{d.orderDetails[i].Id}}">
+				<div class="goodsImg">
+					<img src="{{d.orderDetails[i].ProductImg}}" alt="" />
+				</div>
+				<div class="goods_text">
+					<div class="goodstit clear">
+						<p class="text-line2 tit">{{d.orderDetails[i].ProductName}}</p>
+						<div class="flexItem fr">x<span class="num">{{d.orderDetails[i].ProductCount}}</span></div>
+					</div>
+					<p class="goodsMesg">
+						{{d.orderDetails[i].ProductSkuName}}
+					</p>
+					<p class="goodsPrice">
+						<span class="needbackmoney">￥{{d.orderDetails[i].UnitPrice}}</span>													
+					</p>					
+				</div>
+			</div>
+			{{# } }} 
+		</div>			
+		<div class="goodsPrice_content">
+			<div class="price_mesg1">
+				<div class="bor">
+					{{# var num = 0; for(var j = 0; j< d.orderDetails.length; j++){ }} 
+						{{#  
+						  (function(j){
+						  	num += parseInt(d.orderDetails[j].ProductCount);
+						    return num;
+						  })(j);
+						}}									
+					{{# } }}							
+					<div class="flexItem fl">共{{num}}件商品</div>						
+					<span>配送费用</span>
+					<span class="float-r">￥{{d.ExpressPrice}}</span>
+				</div>
+				
+			</div>
+			<div class="price_mesg2">
+				<span>实付款(含配送费用)</span>
+				<span class="float-r">￥{{d.TotalPrice}}</span>
+			</div>
+		</div>
+		<div class="orderContent">
+			
+			<p>订单编号：<span class="selectCopy">{{d.OrderNumber}}</span>	
+				<a href="javascript:;" class="CopyBtn">复制</a>
+			</p>
+			<p>创建时间：{{d.AddTime}}</p>
+			{{#  if(d.StatusId!==0){ }}
+			<!--待付款-->
+				<p>支付时间：{{d.PayTime}}</p>
+			{{#  } }} 
+			{{#  if(d.StatusId!==0 && d.StatusId!==1 && d.StatusId!==14){ }}
+			<!--待发货-->
+			<!--<p>发货时间：{{d.FaHuoTime}}</p>-->
+			{{#  } }} 
+			{{#  if(d.StatusId!==0 && d.StatusId!==14){ }}				
+			<p>成交时间：{{d.CompleteTime}}</p>
+			{{#  } }} 
+		</div>
+		{{# if(d.ShopState==1){ }}
+		<div class="lianxiBtn">
+			<div class="phoneBtn" data-tel="{{d.ShopMobile}}" onclick="Call(this)">
+				<span>拨打电话</span>
+			</div>
+			<a class="box otherBtn QQSevice" data-qq="{{d.ShopQQ}}" href="javascript:;">
+				<span>在线客服</span>
+			</a>
+		</div>
+		{{#  } }} 
+		<div class="successfoot">
+			<div class="footerBtn" data-No="{{d.OrderNumber}}" data-Id="{{d.OrderId}}">	
+				{{#  if(d.StatusId==0){ }}
+				<!--待付款-->
+				  	<a class="btn0 cancelbtn" href="javascript:;" onclick="CancelBtn(this)">取消订单</a>
+				  	{{#  
+					  function orderNo(){
+					  	var urldata = encodeURIComponent("orderno=" + d.OrderNumber+"&gotoType=1");
+					    return urldata;
+					  }
+					}}	
+					<a class="btn0 paybtn active" href="/pay.html?{{orderNo()}}">付款</a>
+				{{#  } else if(d.StatusId==13){ }}
+				<!--已完成-->
+					<a class="btn0 erweima" href="javascript:;" onclick="clickEWM(this)">查看二维码</a>
+					<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+				{{#  } else if(d.StatusId==14){ }}
+				<a class="btn0 DelOrderbtn" href="javascript:;" onclick="DelOrderBtn(this)">删除订单</a>
+				{{#  } else { }}
+					<a class="btn0 erweima" href="javascript:;" onclick="clickEWM(this)">查看二维码</a>
+				{{#  } }} 
+			</div>
+		</div>
+	</script>
+		
+	<script type="text/javascript">
+        var OrderNo = sc.utils.getQueryString("OrderNo");
+        var Orderfl = sc.utils.getQueryString("typefl");
+        var idx = layer.open({
+            type: 2
+            , content: 'loading...'
+        });
+        var s = setInterval(function () {
+            if (!iswx() || (iswx() && isWxLoginOver == true)) {
+                clearInterval(s);
+                layer.close(idx);
+                setTimeout(function () {
+                    //登录过了
+                    if (sc.utils.isNullOrEmpty(token)) {
+                        userId = sc.utils.getCookieValue("UserId");
+                        token = sc.utils.getCookieValue("Token");
+                    }
+                    OrderDetails(OrderNo, 0, function (data) {
+                        var gettpl = document.getElementById('orderDetail_Tpl').innerHTML;
+                        laytpl(gettpl).render(data.data, function (html) {
+                            //得到的模板渲染到html
+                            document.getElementById('orderDetail_Div').innerHTML = html;
+                        });
+
+                        $('#orderDetail_Div').on('click', '.proitem', function () {
+                            var pid = $(this).attr('data-pid');
+                            location.href = '/welfareDetails.html?id=' + pid;
+                        })
+                        $('#orderDetail_Div').on('click', '.CanelRefundbtn', function (event) {
+                            event.preventDefault();
+                            event.stopPropagation()
+                            CanelRefundBtnSingle($(this), OrderNo);
+                        })
+                        //联系客服发起qq				
+                        $('#orderDetail_Div').on('click', '.QQSevice', function () {
+                            var QQno = $(this).attr("data-qq");
+                            $(this).attr("href", "http://wpa.qq.com/msgrd?v=3&uin=" + QQno + "&site=qq&menu=yes");
+                        });
+                        $('.CopyBtn').click(function () {
+                            $('#shareUrl').val($('.selectCopy').text());
+                            jsCopy();
+                            layer.open({
+                                content: '已复制！',
+                                skin: 'msg',
+                                time: 2 //2秒后自动关闭
+                            });
+                        })
+                        if (Orderfl == 0) {
+                            $('.Refundbtn').remove();
+                        }
+                    });
+                }, 100);
+            }
+        }, 300);
+
+	var codePage = 1; //二维码列表页码
+	var isLoad = true;
+	var thisUrl = window.location.href.split("//")[0] + "//" + window.location.href.split("//")[1].split("/")[0];
+	function clickEWM(obj) {
+		codePage = 1;
+		$("body").addClass("scrollFix");
+		var str = '';
+		str += '<div class="pop-qyCode">';
+		str += '<span class="icon btn_close"></span>';
+		str += '<div class="pop-hd">礼包二维码</div>';
+		str += '<div class="pop-bd">';
+		str += '<ul class="codelist">';
+		str += '</ul>';
+		str += '</div>';
+		str += '</div>';
+		layer.open({
+			type: 1,
+			content: str,
+			skin: "ewm",
+			shade: 0.3,
+			Boolean: true,
+			shadeClose: false
+		});
+		GetGiftCode(OrderNo);
+		//滚动二维码
+		$(".codelist").scroll(function() {
+			isLoad = true;
+			//获取滚动条当前位置
+			var scroll_top = $(".codelist").scrollTop();
+			//获取盒子高度
+			var allHeight = $(".codelist").height();
+			//获取盒子文档高度
+			var scrollHeight = document.getElementsByClassName("codelist")[0].scrollHeight;
+			if(scrollHeight - allHeight - scroll_top >= 0 && scrollHeight - allHeight - scroll_top <= 2) {
+				console.log(isLoad)
+				if(isLoad) {
+					codePage++;
+					GetGiftCode(OrderNo);
+				}
+
+			}
+
+		})
+
+		$('.btn_close').click(function() {
+			layer.closeAll() //关闭所有层
+			$("body").removeClass("scrollFix");
+		});
+
+	}
+
+	//获取二维码列表**********************/
+	function GetGiftCode(order_no) {
+		var url = "api/Gift/GetGiftCode";
+		var callback = function(data) {
+			console.log(data);
+			var str = '';
+			for(var i = 0; i < data.data.length; i++) {
+				str += '<li class="codeItems" data-id=' + data.data[i].Id + ' data-IsSend=' + data.data[i].IsSend + ' data-ReceiveNo=' + data.data[i].ReceiveNo + '>';
+				str += '<div class="box">';
+				str += '<div class="img" id="qrcode' + data.data[i].Id + '"></div>';
+				str += '<div class="right">';
+				str += '<p class="txt">编号：' + data.data[i].Id + '</p>'
+				str += '<div class="txt">购买成功</div>';
+				if(data.data[i].IsSend === 0) {
+					str += '<a href="javascript:;" class="btn sendcode_btn">保存到手机</a>';
+				} else {
+					str += '<a href="javascript:;" class="btn sendcode_btn btn_disable">已保存</a>';
+				}
+				str += '</div>';
+				str += '</div>';
+				str += '</li>';
+			}
+			$(".codelist").append(str);
+			$(".codelist li").each(function() {
+				//生成二维码 start
+				var thisCode = $(this).find(".img").attr("id");
+				var qrcode = new QRCode(thisCode);
+				var receiveNo = $(this).attr("data-ReceiveNo");
+				var id = $(this).attr("data-id");
+				var elText = thisUrl + "/receiveGit.html?receiveNo=" + receiveNo + "&id=" + id;
+				qrcode.makeCode(elText);
+				//生成二维码 end
+			})
+			$(".sendcode_btn").each(function(index) {
+				$(this).click(function() {
+					var id = $(this).parents(".codeItems").attr("data-id");
+					SendGiftCode(id);
+					layer.open({
+						type: 0,
+						content: '请长按二维码保存图片',
+						skin: 'msg',
+						time: 2 //2秒后自动关闭
+					});
+					$(this).addClass("btn_disable").text("已保存");
+				})
+			});
+		}
+		sc.post(url, {
+			UserId: userId,
+			Token: token,
+			OrderNo: order_no,
+			page: codePage
+		}, callback)
+	}
+
+	//修改二维码发送状态
+	function SendGiftCode(id) {
+		var url = "api/Gift/SendGiftCode";
+		var callback = function(data) {
+			console.log(data)
+		}
+		sc.post(url, {
+			UserId: userId,
+			Token: token,
+			Id: id
+		}, callback)
+	}
+
+	function jsCopy() {
+		var u = navigator.userAgent;
+		//苹果
+		if(u.match(/(iPhone|iPod|iPad);?/i)) {
+			var copyDOM = document.getElementById("shareUrl");
+			var range = document.createRange();
+			// 选中需要复制的节点
+			range.selectNode(copyDOM);
+			// 执行选中元素
+			window.getSelection().addRange(range);
+			// 执行 copy 操作
+			var successful = document.execCommand('copy');
+
+		}
+
+		// 安卓
+		if(u.indexOf('Android') > -1) {
+			$('#shareUrl')[0].select(); // 选择对象
+			document.execCommand("Copy"); // 执行浏览器复制命令
+		}
+
+	}
+</script>
+
+</html>

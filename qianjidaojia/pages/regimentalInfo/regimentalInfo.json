@@ -1,0 +1,8 @@
+{
+"navigationBarTitleText": "个人明细",
+"navigationBarBackgroundColor": "#fff",
+"navigationBarTextStyle": "black",
+"usingComponents": {
+    "myIcon": "../../components/myIcon/myIcon"
+}
+}

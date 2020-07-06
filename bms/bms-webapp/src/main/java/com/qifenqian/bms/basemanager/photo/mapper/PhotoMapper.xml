@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.photo.mapper.PhotoMapper">
+
+	<select id="list" resultType="com.qifenqian.bms.basemanager.photo.bean.CertificateAuth" parameterType="com.qifenqian.bms.basemanager.photo.bean.CertificateAuth">
+		SELECT 
+			  IFNULL(bid.status,'无') as status,
+			  IFNULL(bid.rtn_msg,'') as rtnMsg,
+			  A.AUTH_ID,
+			  A.CUST_ID,
+			  A.CERTIFICATE_STATE,
+			  (SELECT S.USER_NAME FROM SYS_USER S WHERE S.USER_ID = A.CERTIFY_USER) CERTIFY_USER,
+			  DATE_FORMAT(A.CERTIFY_DATETIME,'%Y-%m-%d %H:%i:%s') CERTIFY_DATETIME,
+			  A.AUTH_RESULT_CODE,
+			  A.AUTH_RESULT_DESC,
+			  A.CREATE_ID,
+			  DATE_FORMAT(A.CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			  A.MODIFY_ID,
+			  DATE_FORMAT(A.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+			  T.CUST_NAME,
+			  L.MOBILE,
+			  T.CUST_TYPE
+			FROM TD_CERTIFICATE_AUTH A
+			JOIN TD_CUST_INFO T ON A.CUST_ID = T.CUST_ID  
+			INNER JOIN TD_LOGIN_USER_INFO L ON A.CUST_ID = L.CUST_ID
+
+			left join (
+				select b1.cust_Id as bid_id,status,rtn_msg from bms_identity_detail b1
+				inner join(
+					select cust_Id,max(inst_datetime ) time from bms_identity_detail group by cust_Id
+			) b2 on b1.cust_Id = b2.cust_Id and b1.inst_datetime = b2.time
+		)bid on A.cust_id = bid.bid_id
+			WHERE T.CUST_TYPE='0' and (t.MERCHANT_FLAG is null or t.MERCHANT_FLAG='1') and 
+			A.CREATE_TIME in (select MAX(U.CREATE_TIME) from TD_CERTIFICATE_AUTH U WHERE U.CUST_ID = T.CUST_ID )
+	    	<if test="custName != null and custName != '' ">
+	    		AND T.CUST_NAME LIKE CONCAT('%',#{custName,jdbcType=VARCHAR},'%')
+	    	</if>
+	    	<if test="mobile!= null and mobile!= '' ">
+	    		AND L.MOBILE LIKE CONCAT('%',#{mobile,jdbcType=VARCHAR},'%')
+	    	</if>
+	    	<if test="certificateState!=null and certificateState!='' ">
+	    		AND A.CERTIFICATE_STATE = #{certificateState,jdbcType=VARCHAR}
+	    	</if>
+		ORDER BY A.CREATE_TIME DESC
+	</select>
+	
+	<select id="selectCustCertificate" resultType="com.qifenqian.bms.basemanager.photo.bean.Photo">
+		SELECT  
+		  SCAN_ID,
+		  CUST_ID,
+		  AUTH_ID,
+		  CERTIFY_TYPE,
+		  CERTIFY_NO,
+		  CUST_NAME,
+		  SCAN_COPY_PATH,
+		  UPLOAD_TIME,
+		  CREATE_ID,
+		  CREATE_TIME,
+		  MODIFY_ID,
+		  MODIFY_TIME 
+	  FROM TD_CUST_SCAN_COPY WHERE AUTH_ID = #{authId , jdbcType = INTEGER}
+	</select>
+	
+	<update id="update" parameterType="com.qifenqian.bms.basemanager.photo.bean.CertificateAuth">
+		UPDATE TD_CERTIFICATE_AUTH
+		<set>
+			<if test="certificateState != null">
+				CERTIFICATE_STATE = #{certificateState,jdbcType=VARCHAR},
+			</if>
+			<if test="authResultDesc != null">
+				AUTH_RESULT_DESC = #{authResultDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="authResultCode != null">
+				AUTH_RESULT_CODE = #{authResultCode,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyId != null">
+				MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+			</if>
+			<if test="certifyUser != null">
+				CERTIFY_USER = #{certifyUser,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = NOW(),
+				CERTIFY_DATETIME = NOW()
+		</set>
+			WHERE AUTH_ID = #{authId,jdbcType = INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>申请售后</title>
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    <link rel="stylesheet" href="/js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="/css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/resetFontSize.js" type="text/javascript"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/order.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body class="bg_gray ac">
+    <div class="h45">
+        <div class="head">
+            <a href="javascript:;" class="btn_back" onclick="goBack();"></a>
+            <div class="title center">申请售后</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="orderitem" style="margin: .1rem;">
+            <div class="item-prolist">
+
+            </div>
+        </div>
+        <div class="weui-cells info__weui-cells bb__weui-cells">
+            <div class="weui-cell" id="selectReason">
+                <div class="weui-cell__hd"> <label for="" class="weui-label">退货/退款原因</label> </div>
+                <div class="weui-cell__bd text_r">
+                    <p class="txt" data-code="">请选择</p>
+                </div>
+                <div class="weui-cell__ft"> <span class="icon-arrow icon-arrowRight"></span> </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <textarea name="" rows="" cols="" class="weui-input apply-textarea" placeholder="为尽快处理你的售后申请，请填写详细描述" style="margin-bottom: 0;"></textarea>
+                    <div class="ft clear" style="font-size: .13rem;">
+                        <p class="fl tips red"></p>
+                        <div class="right fr c_999"><div class="counter"><span class="num">0</span><span>/300</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ftbtn ml10 mr10 mt30 mb30">
+        <a href="javascript:;" class="btn" id="submitBtn">提交</a>
+    </div>
+</body>
+<script type="text/javascript">
+    $(function () {
+        var OrderNo = sc.utils.getQueryString("OrderNo");
+        var DetailsId = sc.utils.getQueryString("DId");
+        var RefundType = sc.utils.getQueryString("RefundType");
+        var Pids = "";
+        if (RefundType == 1) {
+            $(".head .title").text('申请退款');
+        }
+        OrderDetails(OrderNo, function (data) {
+            var Data = data.data.orderDetails;
+            var str = '';
+            for (var i = 0; i < Data.length; i++) {
+                var strtpl = '<div class="proitem" data-itemid="' + Data[i].Id + '">'
+                    + '<div class="img fl">'
+                    + '<img src="' + Data[i].ProductImg + '"> </div>'
+                    + '<div class="descbox">'
+                    + '<div class="titleBox flex">'
+                    + '<div class="flex1 flexItem">'
+                    + '<p class="title ellipsis">' + Data[i].ProductName + '</p>'
+                    + '</div>'
+                    + '<div class="flexItem">x<span class="num">' + Data[i].ProductCount + '</span></div>'
+                    + '</div>'
+                    + '<p class="price">￥' + Data[i].UnitPrice + '</p>'
+                    + '</div>'
+                    + '</div>';
+                if (DetailsId && DetailsId != "null") {
+                    if (Data[i].Id == DetailsId) {
+                        str = strtpl;//单个
+                        Pids = DetailsId;
+                    }
+                } else {
+                    if (Data.length > 1) {
+                        console.log("111");
+                        if (RefundType == 1 && (Data[i].OrderStatusId == 2 || Data[i].OrderStatusId == 1)) {
+                            console.log("222");
+                            str += strtpl;
+                            if (i < Data.length - 1) {
+                                Pids += Data[i].Id + ',';
+                            }
+                            else {
+                                Pids += Data[i].Id;
+                            }
+                        } else if (RefundType == 2 && Data[i].OrderStatusId == 2) {
+                            console.log("333");
+                            str += strtpl;
+                            if (i < Data.length - 1) {
+                                Pids += Data[i].Id + ',';
+                            }
+                            else {
+                                Pids += Data[i].Id;
+                            }
+                        }
+                    } else {
+                        str = strtpl;//单个
+                        Pids = Data[i].Id;
+                    }
+                }
+
+            }
+            $('.item-prolist').append(str);
+        });
+        $('#selectReason').click(function () {
+            var str = '<div class="pop-Reason">';
+            str = '<div class="pop-hd center c_333">请选择退款/退货原因</div>';
+            str += '<ul class="wenList center reasonList">';
+            str += '</ul>';
+            str += '</div>';
+            layer.open({
+                type: 1,
+                content: str,
+                anim: 'up',
+                style: 'position:fixed; bottom:0; left:0; width: 100%;'
+            });
+            if (RefundType == 1) {
+                CancelReason($('.reasonList'));
+            } else if (RefundType == 2) {
+                GetRefundReason($('.reasonList'));
+            }
+            $('.reasonList').on('click', 'li', function () {
+                $(this).addClass('active').siblings().removeClass('active');
+                $('#selectReason .txt').text($(this).text());
+                $('#selectReason .txt').attr("data-code", $(this).attr("data-code"));
+                layer.closeAll();
+            })
+
+        })
+        //文本计算
+        $('.apply-textarea').keyup(function () {
+            var maxLength = 300;
+            var num = $.trim(this.value).length;
+            var numbox = $(this).parents('.weui-cell__bd').find('.counter .num');
+            if (num > maxLength) {
+                $(this).parents('.weui-cell__bd').find('.tips').text('最多可输入300个字符!');
+                numbox.text(maxLength);
+                $(this).val($(this).val().substr(0, maxLength));
+            } else {
+                $(this).parents('.weui-cell__bd').find('.tips').text('');
+                numbox.text(num);
+            }
+        })
+        $('#submitBtn').click(function () {
+            var Reason = $('#selectReason .txt').attr("data-code"),
+                ContentTxt = $.trim($('.apply-textarea').val());
+            if (Reason == "") {
+                layer.open({
+                    content: '请选择退款/退货原因！',
+                    skin: 'msg',
+                    time: 1 //2秒后自动关闭
+                });
+                return false;
+            }
+            if (RefundType == 1) {//仅退款
+                console.log(Pids);
+                if (DetailsId && DetailsId != "null") {
+                    SubmitReturnSingle(OrderNo, Pids, ContentTxt, Reason);
+                } else {
+                    SubmitReturn(OrderNo, ContentTxt, Reason);
+                }
+
+            }
+            if (RefundType == 2) {//退货
+                console.log(Pids);
+                if (DetailsId && DetailsId != "null") {
+                    SubmitRefundSingle(OrderNo, Pids, ContentTxt, Reason);
+                } else {
+                    SubmitRefund(OrderNo, ContentTxt, Reason);
+                }
+            }
+
+        })
+
+    })
+</script>
+<!--判断页面跳转，如果有前一页就跳转到前一页，如果没有就跳转首页 -->
+<script>
+    function goBack() {
+        if (window.history.length > 2) {
+            window.history.go(-1);
+        } else {
+            window.location.href = "/indexV.html";
+        }
+    }
+</script>
+</html>

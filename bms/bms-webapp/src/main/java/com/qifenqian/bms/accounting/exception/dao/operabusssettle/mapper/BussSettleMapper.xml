@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.operabusssettle.mapper.BussSettleMapper">
+	<select id="selectBussSettleApplyById" resultType="com.qifenqian.bms.accounting.exception.dao.operabusssettle.bean.BussSettleBean">
+  		select 
+			S.*,
+			SC.CORE_RETURN_CODE,
+			SC.CORE_SN,
+			SC.CORE_RETURN_MSG,
+			SC.OPER_TYPE businessType
+			FROM(
+			SELECT
+				  T.ID,
+				  T.CUST_ID,
+				  T.WORK_DATE,
+				  T.SETTLE_BEGIN_DATE,
+				  T.SETTLE_END_DATE,
+				  T.PROTOCOL_ID,
+				  T.RECEIVE_COUNT,
+				  T.RECEIVE_TOTAL_AMT,
+				  T.RECEIVE_TOTAL_FEE,
+				  T.REVOKE_COUNT,
+				  T.REVOKE_TOTAL_AMT,
+				  T.REVOKE_TOTAL_FEE,
+				  T.REFUND_COUNT,
+				  T.REFUND_TOTAL_AMT,
+				  T.REFUND_TOTAL_FEE,
+				  T.WITHDRAW_COUNT,
+				  T.WITHDRAW_TOTAL_AMT,
+				  T.WITHDRAW_TOTAL_FEE,
+				  T.MERCHANT_RECEIVABLE,
+				  T.MERCHANT_PAYABLE,
+				  T.SETTLE_AMT,
+				  T.FINISH_DATE,
+				  T.STATUS SETTLE_STATUS,
+				  T.MEMO,
+				  T.INST_USER,
+				  T.INST_DATE,
+				  T.INST_DATETIME,
+				  T.AUDIT_USER,
+				  T.AUDIT_DATETIME,
+				  T.VERIFIED_USER,
+				  T.VERIFIED_DATETIME,
+				  T.APPLY_CORE_ID,
+				  T.SETTLE_CORE_ID,
+				  A1.COLUMN_VALUE BANK_CARD_NO,
+				  A3.COLUMN_VALUE BANK_CARD_NAME,
+				  A2.COLUMN_VALUE MERCHANT_NAME,
+				  A4.COLUMN_VALUE BANK_NAME
+			FROM
+				BMS_MERCHANT_SETTLE t LEFT JOIN BMS_PROTOCOL_COLUMN A1 ON A1.PROTOCOL_ID = T.PROTOCOL_ID AND A1.STATUS = 'VALID' AND A1.COLUMN_CODE = 'bankCardNo'
+					LEFT JOIN BMS_PROTOCOL_COLUMN A2 ON A2.PROTOCOL_ID = T.PROTOCOL_ID AND A2.STATUS = 'VALID' AND A2.COLUMN_CODE = 'merchantName'
+					LEFT JOIN BMS_PROTOCOL_COLUMN A3 ON A3.PROTOCOL_ID = T.PROTOCOL_ID AND A3.STATUS = 'VALID' AND A3.COLUMN_CODE = 'bankCardName'
+					LEFT JOIN BMS_PROTOCOL_COLUMN A4 ON A4.PROTOCOL_ID = T.PROTOCOL_ID AND A4.STATUS = 'VALID' AND A4.COLUMN_CODE = 'bankName') S,
+			BMS_MERCHANT_CHILD_SETTLE SC
+		WHERE
+			S.ID = SC.SETTLE_ID
+		AND SC.ORDER_ID = #{orderId,jdbcType = VARCHAR}
+	</select>
+	
+	<update id="updateMerchantSettleStatus" parameterType="com.qifenqian.bms.merchant.settle.bean.MerchantSettle">
+		UPDATE BMS_MERCHANT_SETTLE S
+		SET S. STATUS = #{statusStr,jdbcType = VARCHAR} 
+		WHERE S.ID = (SELECT 
+							C.SETTLE_ID 
+							FROM
+							BMS_MERCHANT_CHILD_SETTLE C 
+				WHERE C.ORDER_ID = #{id,jdbcType = VARCHAR})
+	</update>
+</mapper>

@@ -1,0 +1,399 @@
+/* pages/index/index.wxss */
+page, view, text, navigator, input, form, select, option, image ,cover-view,cover-image{
+  box-sizing: border-box;
+  margin: 0;
+  padding:0;
+  border: none;
+}
+.swiper-banner {
+    width: 750rpx;
+    height: 420rpx;
+    margin-bottom: 10rpx;
+}
+
+.swiper-banner .banner-item {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-banner .banner-item .item-image {
+    width: 100%;
+    height: 100%;
+}
+
+.top-introduce {
+    width: 750rpx;
+    padding: 0 60rpx;
+    padding-bottom: 36rpx;
+    background-color: #FFF;
+}
+
+.top-introduce .introduceImg {
+    width: 108rpx;
+    height: 20rpx;
+}
+
+.swiperBox {
+    width: 750rpx;
+    height: 40rpx;
+    line-height: 40rpx;
+    background-color: rgb(255, 255, 255);
+    margin-bottom: 20rpx;
+}
+
+.swiperBox .notice {
+    font-size: 32rpx;
+    display: inline-block;
+    text-align: center;
+    margin: 0 18rpx 3rpx 38rpx;
+    color: #ffd6d6;
+}
+
+.swiperBox .swiper-text {
+    width: 588rpx;
+    height: 40rpx;
+    display: inline-block;
+}
+
+.swiperBox .swiper-text .text-item {
+    width: 100%;
+    height: 100%;
+    color: #999;
+    font-size: 28rpx;
+}
+
+.main {
+    padding: 0 18rpx;
+    margin-bottom: 112rpx;
+}
+
+.main .selectTitle {
+    padding: 36rpx 0;
+    text-align: center;
+}
+
+.main .padT0 {
+    /* padding: 0 0 18rpx 0; */
+}
+
+.main .selectTitle .titleBox {
+    width: 100%;
+    height: 50rpx;
+    line-height: 50rpx;
+}
+.titleBox{
+  display: flex;
+  justify-content: center;
+}
+.moreBox{
+  margin-left: 70rpx;
+}
+.main .selectTitle image {
+    width: 380rpx;
+    height: 48rpx;
+    display: inline-block;
+    
+}
+.titleBox-img{height: 90rpx;display: flex;justify-content: center;}
+.titleBox-img>image{height:100% !important;width:100% !important;}
+.main .selectTitle .more {
+    width: 56rpx;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: rgba(51, 51, 51, 1);
+    margin-right: 12rpx;
+    display: inline-block;
+}
+
+.main .selectTitle .moreIcon {
+    font-size: 26rpx;
+    display: inline-block;
+}
+
+.main .selectshoping {
+    width: 100%;
+    height: 440rpx;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 16rpx;
+    margin-bottom: 36rpx;
+}
+
+.main .selectshoping .goodsImg {
+    width: 100%;
+    height: 208rpx;
+    margin-bottom: 6rpx;
+}
+
+.main .selectshoping .goodsinfo {
+    padding: 0 30rpx 24rpx 20rpx;
+    height: 226rpx;
+    width: 100%;
+}
+
+.main .selectshoping .goodsinfo .nameinfo .selectIcon {
+    width: 50rpx;
+    height: 32rpx;
+    border-radius: 6rpx;
+    font-size: 20rpx;
+    color: #fff;
+    line-height: 32rpx;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #c59b78;
+    font-weight: 600;
+}
+
+.main .selectshoping .goodsinfo .nameinfo .goodsName {
+    width: 550rpx;
+    height: 48rpx;
+    font-size: 32rpx;
+    font-weight: bold;
+    color: rgba(51, 51, 51, 1);
+    line-height: 48rpx;
+    margin-left: 10rpx;
+}
+
+.main .selectshoping .goodsinfo .textinfo {
+    width: 546rpx;
+    height: 72rpx;
+    line-height: 36rpx;
+    font-size: 24rpx;
+    color: rgba(102, 102, 102, 1);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    align-content: center;
+}
+
+.main .selectshoping .goodsinfo .price {
+    height: 44rpx;
+    width: 100%;
+}
+
+.main .selectshoping .goodsinfo .price .oldPrice {
+    height: 44rpx;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: rgba(20, 179, 18, 1);
+    margin-right: 20rpx;
+    position: relative;
+}
+
+.main .selectshoping .goodsinfo .price .oldPrice .line {
+    width: calc(100% + 5rpx);
+    height: 4rpx;
+    background-color: rgba(20, 179, 18, 1);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -2rpx;
+}
+
+.main .selectshoping .goodsinfo .price .nowPrice {
+    height: 44rpx;
+    min-width: 194rpx;
+    padding: 0 10rpx;
+    background-color: #3e3b3f;
+    color: #ffebb2;
+    font-size: 24rpx;
+    font-family: SourceHanSansSC-Medium, SourceHanSansSC;
+    font-weight: 500;
+    line-height: 44rpx;
+    text-align: center;
+    border-bottom-right-radius: 12rpx;
+    border-top-left-radius: 12rpx;
+}
+
+.main .selectshoping .goodsinfo .price .cortIcon {
+    font-size: 52rpx;
+    color: rgba(20, 179, 18, 1);
+    font-weight: 600;
+}
+
+.main .cookhouse {
+    width: calc(100% - 8rpx);
+    margin: 0 auto;
+}
+
+.main .cookhouse .cookgoods {
+    width: 340rpx;
+    padding: 12rpx 20rpx 38rpx 20rpx;
+    position: relative;
+    margin-bottom: 32rpx;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 4rpx 8rpx 0px rgba(0, 0, 0, 0.06);
+    border-radius: 22rpx;
+}
+
+.main .cookhouse .cookgoods:last-child {
+    margin-bottom: 36rpx;
+}
+
+.main .cookhouse .cookgoods .cookImg {
+    width: 300rpx;
+    height: 300rpx;
+}
+.main .cookhouse .cookgoods .cookImg>image{
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* background-color: yellow; */
+}
+
+.main .cookhouse .cookgoods .goodsName {
+    max-width: 300rpx;
+    height: 40rpx;
+    font-size: 28rpx;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    font-weight: 550;
+    color: rgba(51, 51, 51, 1);
+    line-height: 40rpx;
+    margin: 4rpx 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.main .cookhouse .cookgoods .goodsText {
+    max-width: 300rpx;
+    height: 36rpx;
+    font-size: 24rpx;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    color: rgba(157, 156, 157, 1);
+    line-height: 36rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.main .cookhouse .cookgoods .oldPrice {
+    max-width: 270rpx;
+    height: 30rpx;
+    font-size: 24rpx;
+    font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    color: rgba(160, 159, 160, 1);
+    line-height: 30rpx;
+    display: inline-block;
+    position: relative;
+}
+
+.main .cookhouse .cookgoods .oldPrice .line {
+    width: 100%;
+    height: 3rpx;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: 1rpx;
+    background-color: rgba(160, 159, 160, 1);
+}
+
+.main .cookhouse .cookgoods .nowPrice {
+    max-width: 270rpx;
+    height: 40rpx;
+    font-size: 26rpx;
+    font-family: SourceHanSansSC-Medium, SourceHanSansSC;
+    color: rgba(255, 115, 135, 1);
+    line-height: 40rpx;
+}
+.nowPrice-symbol{font-size: 20rpx}
+.nowPrice-num{font-size: 32rpx}
+.main .cookhouse .cookgoods .shoppingCart {
+    width: 46rpx;
+    height: 46rpx;
+    position: absolute;
+    right: 32rpx;
+    bottom: 46rpx;
+}
+
+.main .cookhouse .cookgoods .brokerageBox {
+    width: 70%;
+    height: 76rpx;
+    margin: 12rpx 0 8rpx 0;
+}
+
+.main .cookhouse .cookgoods .brokerage {
+    height: 34rpx;
+    line-height: 34rpx;
+    padding: 0 16rpx;
+    border-radius: 17rpx;
+    background-color: #332f2d;
+    color: #eddba7;
+    display: block;
+    font-size: 20rpx;
+}
+
+.toast {
+    width: 750rpx;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 997;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.toast .toastBox {
+    width: calc(100% - 90rpx);
+    height: 980rpx;
+    margin: 80rpx auto;
+    position: relative;
+}
+
+.toast .toastBox .bgImg {
+    width: 100%;
+    height: 860rpx;
+}
+
+.toast .toastBox .toastImg {
+    width: 528rpx;
+    height: 454rpx;
+    z-index: 998;
+    position: absolute;
+    left: 72rpx;
+    bottom: 150rpx;
+}
+
+.toast .toastBox .toastImg .toastgoods {
+    width: 100%;
+    height: 258rpx;
+    margin-bottom: 10rpx;
+}
+
+.toast .toastBox .toastImg .discount_coupon {
+    width: 100%;
+    height: 186rpx;
+}
+
+.toast .toastBox .close {
+    width: 90rpx;
+    height: 90rpx;
+    display: block;
+    margin: 15rpx auto;
+    opacity: 0.6;
+}
+
+.moveA {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 99;
+    pointer-events: none;
+}
+
+.moveA .moveV {
+    width: 264rpx;
+    /* height: 280rpx; */
+    pointer-events: auto;
+}
+
+.moveA .moveV .moveImg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}

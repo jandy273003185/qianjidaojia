@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.aggregatepayment.merchant.mapper.TdMerchantProdRateSelectMapper">
+	
+	<select id="selectMerchantProdRate" parameterType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantProdRate"
+	resultType="com.qifenqian.bms.basemanager.aggregatepayment.merchant.bean.TdMerchantProdRate">
+		select
+			t.MER_AGREEMENT_CODE,
+			t.MER_CODE,
+			t.PROD_CODE,
+			t.MER_AGREE_RATE
+		 FROM
+			td_merchant_prod_rate t
+		<where>
+			<if test="merAgreementCode != null and merAgreementCode != ''">
+				AND t.MER_AGREEMENT_CODE = #{merAgreementCode,jdbcType=VARCHAR}
+			</if>
+			<if test="merCode != null and merCode != ''">
+				AND t.MER_CODE = #{merCode,jdbcType=VARCHAR}
+			</if>
+			<if test="prodCode != null and prodCode != ''">
+				AND t.PROD_CODE = #{prodCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

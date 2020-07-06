@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.admin.userRole.mapper.UserRoleMapper">
+
+	<insert id="insertUserRole" parameterType="com.qifenqian.bms.platform.web.admin.userRole.bean.UserRole">
+		INSERT INTO SYS_USER_ROLE (
+			USER_ID,
+			ROLE_ID,
+		  	INST_USER
+		) VALUES (
+			#{userId, 		jdbcType=INTEGER},
+		  	#{roleId, 		jdbcType=INTEGER},
+		  	#{instUser, 	jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<select id="selectUserRoleByUserId" parameterType="java.lang.Integer" resultType="com.qifenqian.bms.platform.web.admin.role.bean.Role">
+		SELECT 
+			R.ROLE_ID,
+			R.ROLE_NAME 
+		FROM SYS_USER_ROLE UR 
+		LEFT JOIN SYS_ROLE R ON UR.ROLE_ID=R.ROLE_ID 
+		WHERE UR.USER_ID = #{userId,jdbcType=INTEGER}
+		AND R.IS_VALID ='Y'
+	</select>
+
+	<update id="updateUserRole" parameterType="com.qifenqian.bms.platform.web.admin.userRole.bean.UserRole">
+		UPDATE SYS_USER_ROLE 
+		   SET ROLE_ID = #{roleId, 		jdbcType=INTEGER} 
+		 WHERE USER_ID = #{userId, 		jdbcType=INTEGER}
+	</update>
+	
+	<delete id="deleteUserRole" parameterType="java.lang.Integer">
+		DELETE FROM SYS_USER_ROLE 
+		WHERE USER_ID = #{userId, jdbcType=INTEGER}
+	</delete>
+
+</mapper>

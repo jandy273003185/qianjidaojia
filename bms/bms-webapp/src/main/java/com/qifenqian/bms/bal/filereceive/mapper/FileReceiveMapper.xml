@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.qifenqian.bms.bal.filereceive.mapper.FileReceiveMapper">
+
+<select id="selectFileReceiveList" parameterType="com.qifenqian.bms.bal.filereceive.bean.FileReceive"  resultType="com.qifenqian.bms.bal.filereceive.bean.FileReceive" >
+	SELECT
+		   T.FILE_ID,
+		   T.CHANNEL_ID,
+		   B.CHANNEL_NAME,
+		   T.FILE_TYPE,
+		   T.RECEIVE_DATE,
+		   T.WORK_DATE,
+		   T.FILE_NAME,
+		   T.STORAGE_PATH,
+		   T.TOTAL_COUNT,
+		   T.INST_USER,
+		   T.INST_DATE,
+		   T.STATUS,
+		   T.MEMO,
+		   DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') AS inst_datetime,
+		   DATE_FORMAT(T.BAL_BEGIN_DATETIME,'%Y-%m-%d %H:%i:%s') AS bal_begin_datetime,
+		   DATE_FORMAT(T.BAL_END_DATETIME,'%Y-%m-%d %H:%i:%s') AS bal_end_datetime,
+		   DATE_FORMAT(T.UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') AS update_datetime
+		FROM
+		   BAL_FILE_RECEIVE T ,BASE_CHANNEL B
+		WHERE T.CHANNEL_ID = B.CHANNEL_ID
+		<if test="workDate != null and workDate != '' "> AND T.WORK_DATE =#{workDate, jdbcType=VARCHAR}</if>
+		<if test="fileType != null and fileType != '' "> AND T.FILE_TYPE = #{fileType, jdbcType=VARCHAR}</if>
+		<if test="channelId != null and channelId != '' "> AND T.CHANNEL_ID = #{channelId, jdbcType=VARCHAR}</if>
+		<if test="status != null and status != '' "> AND T.STATUS = #{status, jdbcType=VARCHAR}</if>
+		ORDER BY T.WORK_DATE DESC
+</select>
+
+
+<select id="selectByFileName" parameterType="com.qifenqian.bms.bal.filereceive.bean.FileReceive" >
+	SELECT T.*
+    	  FROM BAL_FILE_RECEIVE T
+    	 WHERE 
+    	 T.FILE_NAME = #{fileName,	jdbcType=VARCHAR}	
+    	 AND T.WORK_DATE = #{workDate,jdbcType = VARCHAR}	 
+</select>
+
+
+<update id="updateFile" parameterType="com.qifenqian.bms.bal.filereceive.bean.FileReceive">
+	UPDATE BAL_FILE_RECEIVE T
+   	    <set>
+	    	<if test="fileName != null">
+	        	T.FILE_NAME = #{fileName,	jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="status != null">
+	        	T.STATUS = #{status,		jdbcType=VARCHAR},
+	      	</if>
+	      		T.UPDATE_DATETIME = now()
+   		 </set>
+    	 WHERE T.FILE_ID = #{fileId,		jdbcType=VARCHAR}
+</update>
+
+
+<insert id="insertFile" parameterType="com.qifenqian.bms.bal.filereceive.bean.FileReceive">
+	INSERT INTO BAL_FILE_RECEIVE (
+			FILE_ID,
+			CHANNEL_ID,
+			FILE_TYPE,
+			RECEIVE_DATE,
+			WORK_DATE,
+			FILE_NAME,
+			STORAGE_PATH,
+			TOTAL_COUNT,
+			INST_USER,
+			INST_DATE,
+			INST_DATETIME,
+			STATUS
+		) VALUES (
+			#{fileId,			jdbcType=VARCHAR},
+			#{channelId,		jdbcType=VARCHAR},
+			#{fileType,			jdbcType=VARCHAR},
+			#{receiveDate,		jdbcType=VARCHAR},
+			#{workDate,			jdbcType=VARCHAR},
+			#{fileName,			jdbcType=VARCHAR},
+			#{storagePath,		jdbcType=VARCHAR},
+			#{totalCount,		jdbcType=INTEGER},
+			#{instUser,			jdbcType=VARCHAR},
+			CURDATE(),
+			now(),
+			#{status,			jdbcType=VARCHAR}
+        )  
+    </insert>  
+	
+	<!-- 根据主键查询数据 -->
+	<!-- <select id="selectAgentMerInfo" resultType="channleAgentMerInfo">
+		SELECT C.*
+		FROM COMBINEDPAYMENT.td_channel_agent_mer_info C
+		<where>
+			<if test="channelCode !=null and channelCode !='' ">
+				AND C.CHANNEL_CODE LIKE CONCAT('%',#{channelCode, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="merCustId !=null and merCustId !='' ">
+				AND C.MER_CUST_ID LIKE CONCAT('%',#{merCustId, jdbcType = VARCHAR},'%')
+			</if>
+			<if test="merNo !=null and merNo !='' ">
+				AND C.MER_NO LIKE CONCAT('%',#{merNo, jdbcType = VARCHAR},'%')
+			</if>
+		</where>
+		ORDER BY C.CREATE_TIME
+	</select> -->
+
+</mapper>
+
+
+
+
+
+
+
+

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.sns.balance.mapper.RedenvResultMapper">
+
+	<select id="selectResultStatistic" parameterType="com.qifenqian.bms.sns.balance.bean.ResultStatistic" resultType="com.qifenqian.bms.sns.balance.bean.ResultStatistic">  
+		    SELECT 
+				 T.BATCH_ID,
+				 T.BAL_DATE,
+				 T.WORK_DATE,
+				 CASE T.SYSTEM
+					WHEN 'SEVEN' THEN '七分钱' 
+					WHEN 'REDENV' THEN '红包'
+					ELSE T.SYSTEM END SYSTEM,
+				 CASE T.TRANS_STATUS
+					WHEN 'SUCCESS' THEN '成功' 
+					WHEN 'DEALING' THEN '待入账' 
+					WHEN 'FAILURE' THEN '失败'
+					ELSE T.TRANS_STATUS END TRANS_STATUS,
+				 CASE T.TRANS_TYPE
+					WHEN 'RECHARGE' THEN '红包入账'
+					WHEN 'PAYMENT' THEN '红包支付'
+					WHEN 'REFUND' THEN '红包退款'
+					ELSE T.TRANS_TYPE END TRANS_TYPE,
+				 T.TOTAL_COUNT,
+				 T.TOTAL_AMT,
+				 T.SELF_DOUBT_COUNT,
+				 T.SELF_DOUBT_AMT,
+				 T.BAL_DOUBT_COUNT,
+				 T.BAL_DOUBT_AMT,
+				 T.BAL_ERROR_COUNT,
+				 T.BAL_ERROR_AMT,
+				 T.BAL_EQUAL_COUNT,
+				 T.BAL_EQUAL_AMT,
+				 T.MEMO
+			FROM
+				BAL_REDENV_RESULT_STATISTIC T
+			WHERE T.STATUS = 'VALID'
+			<if test="transType!=null and transType!='' ">
+				AND T.TRANS_TYPE = #{transType,jdbcType = VARCHAR}
+			</if>
+			<if test="balDate!=null and balDate!='' ">
+				AND T.BAL_DATE = #{balDate,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND T.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND T.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		ORDER BY 
+			T.BATCH_ID DESC,
+			T.TRANS_TYPE,
+			T.TRANS_STATUS,
+			T.SYSTEM
+	</select>
+	
+	<select id="selectResultEqual" parameterType="com.qifenqian.bms.sns.balance.bean.ResultEqual" resultType="com.qifenqian.bms.sns.balance.bean.ResultEqual">  
+		SELECT 
+			A.BATCH_ID,
+			A.INST_DATE,
+			A.CLEAR_ID,
+			A.WORK_DATE,
+			A.CUST_ID,
+			CASE A.TRANS_TYPE
+			WHEN '1301' THEN '红包支付'
+			WHEN '1302' THEN '红包入账'
+			WHEN '1303' THEN '红包退款'
+			ELSE A.TRANS_TYPE END TRANS_TYPE,
+			A.TRANS_AMT,
+			CASE A.TRANS_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '99' THEN '失败'
+			ELSE A.TRANS_STATUS END TRANS_STATUS,
+			A.RESERVE,
+			A.BAL_MEMO
+		FROM
+			BAL_REDENV_BATCH T
+			INNER JOIN BAL_REDENV_RESULT_EQUAL A ON A.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER'
+			INNER JOIN BAL_REDENV_SEVEN_RESULT_EQUAL B ON B.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER'
+			AND A.CLEAR_ID = B.CLEAR_ID
+		<where>
+			<if test="clearId!=null and clearId!='' ">
+				AND A.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+			</if>
+			<if test="instDate!=null and instDate!='' ">
+				AND A.INST_DATE = #{instDate,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY A.INST_DATE DESC
+	</select>
+	
+	<select id="selectResultFailure" parameterType="com.qifenqian.bms.sns.balance.bean.ResultFailure" resultType="com.qifenqian.bms.sns.balance.bean.ResultFailure">  
+		SELECT 
+			A.BATCH_ID,
+			A.INST_DATE,
+			A.CLEAR_ID,
+			A.WORK_DATE,
+			A.CUST_ID,
+			CASE A.TRANS_TYPE
+			WHEN '1301' THEN '红包支付'
+			WHEN '1302' THEN '红包入账'
+			WHEN '1303' THEN '红包退款'
+			ELSE A.TRANS_TYPE END TRANS_TYPE,
+			A.TRANS_AMT,
+			CASE A.TRANS_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '99' THEN '失败'
+			WHEN '01' THEN '待入账'
+			ELSE A.TRANS_STATUS END TRANS_STATUS,
+			A.RESERVE,
+			A.BAL_MEMO
+		FROM
+			BAL_REDENV_BATCH T
+			INNER JOIN BAL_REDENV_RESULT_EXCEPTION A ON A.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER' AND A.BAL_RESULT='BAL_ERROR'
+			LEFT JOIN BAL_REDENV_SEVEN_RESULT_EXCEPTION B ON B.BATCH_ID = T.BATCH_ID AND T.STATUS='BAL_OVER' AND B.BAL_RESULT='BAL_ERROR'
+			AND A.CLEAR_ID = B.CLEAR_ID
+		<where>
+			<if test="clearId!=null and clearId!='' ">
+				AND A.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+			</if>
+			<if test="instDate!=null and instDate!='' ">
+				AND A.INST_DATE = #{instDate,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY A.INST_DATE DESC
+	</select>
+	
+	<select id="selectResultRedenvDoubt" parameterType="com.qifenqian.bms.sns.balance.bean.ResultRedenvDoubt" resultType="com.qifenqian.bms.sns.balance.bean.ResultRedenvDoubt">  
+		SELECT 
+		    A.BATCH_ID,
+			A.INST_DATE,
+			A.CLEAR_ID,
+			A.WORK_DATE,
+			A.CUST_ID,
+			CASE A.TRANS_TYPE
+			WHEN '1301' THEN '红包支付'
+			WHEN '1302' THEN '红包入账'
+			WHEN '1303' THEN '红包退款'
+			ELSE A.TRANS_TYPE END TRANS_TYPE,
+			A.TRANS_AMT,
+			CASE A.TRANS_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '01' THEN '待入账'
+			WHEN '99' THEN '失败'
+			ELSE A.TRANS_STATUS END TRANS_STATUS,
+			A.RESERVE,
+			A.BAL_MEMO
+		FROM
+		  BAL_REDENV_BATCH T
+		  INNER JOIN BAL_REDENV_RESULT_EXCEPTION A ON A.BATCH_ID = T.BATCH_ID 
+		  AND T.STATUS = 'BAL_OVER' 
+		  AND A.BAL_RESULT IN ('SELF_DOUBT','BAL_DOUBT') 
+		<where>
+			<if test="clearId!=null and clearId!='' ">
+				AND A.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+			</if>
+			<if test="instDate!=null and instDate!='' ">
+				AND A.INST_DATE = #{instDate,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY A.INST_DATE DESC
+	</select>
+	
+	<select id="selectResultSevenDoubt" parameterType="com.qifenqian.bms.sns.balance.bean.ResultSevenDoubt" resultType="com.qifenqian.bms.sns.balance.bean.ResultSevenDoubt">  
+		SELECT 
+		  A.BATCH_ID,
+			A.INST_DATE,
+			A.CLEAR_ID,
+			A.WORK_DATE,
+			A.CUST_ID,
+			CASE A.TRANS_CODE
+			WHEN '1301' THEN '红包支付'
+			WHEN '1302' THEN '红包入账'
+			WHEN '1303' THEN '红包退款'
+			ELSE A.TRANS_CODE END TRANS_CODE,
+			A.TRANS_AMT,
+			CASE A.TRANS_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '99' THEN '失败'
+			ELSE A.TRANS_STATUS END TRANS_STATUS,
+			A.BAL_MEMO
+		FROM
+		  BAL_REDENV_BATCH T
+		  INNER JOIN BAL_REDENV_SEVEN_RESULT_EXCEPTION A ON A.BATCH_ID = T.BATCH_ID 
+		  AND T.STATUS = 'BAL_OVER' 
+		  AND A.BAL_RESULT IN ('SELF_DOUBT','BAL_DOUBT') 
+		<where>
+			<if test="clearId!=null and clearId!='' ">
+				AND A.CLEAR_ID = #{clearId,jdbcType = VARCHAR}
+			</if>
+			<if test="instDate!=null and instDate!='' ">
+				AND A.INST_DATE = #{instDate,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND A.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		</where>
+		ORDER BY A.INST_DATE DESC
+	</select>
+	<select id="selectResultSummary" parameterType="com.qifenqian.bms.sns.balance.bean.ResultSummary" resultType="com.qifenqian.bms.sns.balance.bean.ResultSummary">
+		SELECT
+		  T.BATCH_ID,
+		  T.BAL_DATE,
+		  T.WORK_DATE,
+		  T.REDENV_DATE,
+		  T.REDENV_ID,
+		  T.REDENV_COUNT,
+		  T.REDENV_AMT,
+		  CASE T.TRANS_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '99' THEN '失败'
+		  ELSE T.TRANS_STATUS END TRANS_STATUS,
+		  T.IN_SUCCESS_COUNT,
+		  T.IN_SUCCESS_AMT,
+		  T.IN_FAILURE_COUNT,
+		  T.IN_FAILURE_AMT,
+		  T.NOT_IN_COUNT,
+		  T.NOT_IN_AMT,
+		  T.REFUND_AMT,
+		  CASE T.REFUND_STATUS
+			WHEN '00' THEN '成功'
+			WHEN '99' THEN '失败'
+		  ELSE T.REFUND_STATUS END REFUND_STATUS,
+		  CASE T.BAL_STATUS
+			WHEN 'EXCEPTION' THEN '异常'
+			WHEN 'REUAL' THEN '一致'
+		  ELSE T.BAL_STATUS END BAL_STATUS,								
+		  T.BAL_MEMO,
+		  CASE T.DEAL_STATUS
+			WHEN '01' THEN '待处理'
+			WHEN '00' THEN '处理成功'
+			WHEN '99' THEN '无需处理'
+		  ELSE T.DEAL_STATUS END DEAL_STATUS_DESC,
+		  T.DEAL_STATUS,
+		  T.DEAL_USER,
+		  DATE_FORMAT(T.DEAL_DATETIME,'%Y-%m-%d %H:%i:%s') DEAL_DATETIME,
+		  T.DEAL_MEMO,
+		  DATE_FORMAT(T.UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') UPDATE_DATETIME
+		  FROM
+		  BAL_REDENV_RESULT_SUMMARY T
+		  <where>
+		  	T.STATUS = 'BAL_OVER'
+		    <if test="redenvId!=null and redenvId!='' ">
+				AND T.REDENV_ID = #{redenvId,jdbcType = VARCHAR}
+			</if>
+			<if test="balDate!=null and balDate!='' ">
+				AND T.BAL_DATE = #{balDate,jdbcType = VARCHAR}
+			</if>
+			<if test="redenvDate!=null and redenvDate!='' ">
+				AND T.REDENV_DATE = #{redenvDate,jdbcType = VARCHAR}
+			</if>
+			<if test="transStatus!=null and transStatus!='' ">
+				AND T.TRANS_STATUS = #{transStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="refundStatus!=null and refundStatus!='' ">
+				AND T.REFUND_STATUS = #{refundStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="balStatus!=null and balStatus!='' ">
+				AND T.BAL_STATUS = #{balStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="dealStatus!=null and dealStatus!='' ">
+				AND T.DEAL_STATUS = #{dealStatus,jdbcType = VARCHAR}
+			</if>
+			<if test="workBeginDate!=null and workBeginDate!=''">
+				<![CDATA[ 
+	 				AND T.WORK_DATE >= #{workBeginDate}
+	 			]]>
+			</if>
+			<if test="workEndDate!=null and workEndDate!=''">
+				<![CDATA[ 
+	 				AND T.WORK_DATE<= #{workEndDate}
+	 			]]>
+			</if>
+		  </where>
+		  ORDER BY T.BAL_DATE DESC
+	</select>
+	
+	<update id="updateResultSummary" parameterType="com.qifenqian.bms.sns.balance.bean.ResultSummary">
+		UPDATE BAL_REDENV_RESULT_SUMMARY T
+		<set>
+			<if test="dealStatus!=null and dealStatus!='' ">
+				T.DEAL_STATUS = #{dealStatus,jdbcType = VARCHAR},
+			</if>
+			<if test="dealUser!=null and dealUser!='' ">
+				T.DEAL_USER = #{dealUser,jdbcType = VARCHAR},
+			</if>
+			<if test="dealMemo!=null and dealMemo!='' ">
+				T.DEAL_MEMO = #{dealMemo,jdbcType = VARCHAR},
+			</if>
+			T.DEAL_DATETIME = NOW(),
+			T.UPDATE_DATETIME = NOW()
+		</set>
+		WHERE T.REDENV_ID = #{redenvId,jdbcType = VARCHAR}
+	</update>
+</mapper>

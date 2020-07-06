@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.financequery.mapper.QueryWaterMapper">
+
+	<select id="selectQueryWaterList" resultType="com.qifenqian.bms.accounting.financequery.bean.QueryWaterVo" parameterType="com.qifenqian.bms.accounting.financequery.bean.QueryWaterVo">
+		SELECT
+		A.WORK_DATE,
+		C.SUBJECT_CODE, 
+		C.SUBJECT_NAME, 
+		A.TRANS_TYPE,
+		(CASE A.TRANS_TYPE
+		WHEN 'ONL_TO_SEV' THEN '网银入账七分钱'
+		WHEN 'CAD_TO_SEV' THEN '快捷支付至七分钱'
+		WHEN 'SEV_TO_CAD' THEN '七分钱至银行卡'
+		WHEN 'SEV_TO_SEV'
+		THEN '七分钱至七分钱'
+		WHEN 'SEV_TO_QFB' THEN '七分钱至七分宝'
+		WHEN 'QFB_TO_SEV' THEN '七分宝至七分钱'
+		ELSE '' END) AS trans_type2,
+		(IF(t.LOAN_FIELD = 'D', C.SUBJECT_NAME, D.SUBJECT_NAME)) AS debtor,
+		(IF(t.LOAN_FIELD = 'D', T.AMOUNT, A.AMOUNT)) AS debtorBlance,
+		(IF(t.LOAN_FIELD = 'D', D.SUBJECT_NAME, C.SUBJECT_NAME)) AS credit, 
+		(IF(t.LOAN_FIELD = 'D', A.AMOUNT, T.AMOUNT)) AS creditBlance
+		FROM ACCTING_SUBJECT_DETAIL T
+		INNER JOIN ACCTING_SUBJECT_DETAIL A ON A.TRANS_ID = T.TRANS_ID AND A.SUBJECT_ID != T.SUBJECT_ID
+		INNER JOIN ACCTING_SUBJECT_INFO C ON C.ID = T.SUBJECT_ID
+		INNER JOIN ACCTING_SUBJECT_INFO D ON D.ID = A.SUBJECT_ID
+		WHERE 1=1
+		<if test="subjectId != null and ' '!= subjectId">
+			AND C.ID = #{subjectId,jdbcType=VARCHAR}
+		</if>
+		<if test="workDate != null and '' != workDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.WORK_DATE ,'%Y%m%d') >= #{workDate}  
+            ]]>
+		</if>
+		<if test="endWorkDate!= null and '' !=endWorkDate">  
+            <![CDATA[  
+              AND DATE_FORMAT(a.WORK_DATE ,'%Y%m%d') <= #{endWorkDate}  
+            ]]>
+		</if>
+		<if test="transType!=null and ''!=transType">
+			AND A.TRANS_TYPE = #{transType,jdbcType=VARCHAR}
+		</if>
+		ORDER BY a.WORK_DATE DESC
+	</select>
+</mapper>

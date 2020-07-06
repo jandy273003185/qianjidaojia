@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.merchant.reported.mapper.TdMerchantDetailInfoYqbMapper">
+
+    <insert id="insert" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoYqb">
+      INSERT INTO stcdb.td_merchant_detail_info_yqb (
+	patch_no,
+	merchant_code,
+	cust_name,
+	version,
+	req_serial_no,
+	product_no,
+	channel_no,
+	merchant_type,
+	business_license_no,
+	legal_represent,
+	business_license_path,
+	business_license_eff_date,
+	business_license_val_date,
+	fee_rate,
+	establish_date,
+	merchant_short_name,
+	identity_no,
+	identity_pos_path,
+	identity_neg_path,
+	identity_eff_date,
+	identity_val_date,
+	industry_code,
+	province_code,
+	city_code,
+	county_code,
+	business_address,
+	store_facade_path,
+	store_bussiness_place_path,
+	store_with_owner_path,
+	special_industry_paths,
+	other_material_paths,
+	electronic_sign_path,
+	bank_account_name,
+	bank_account_no,
+	bank_name,
+	branch_bank_name,
+	bank_code,
+	sub_bank_code,
+	bank_card_path,
+	open_bank_phone_no,
+	admin_name,
+	admin_cell_phone_no,
+	call_back_url,
+	create_time,
+	modify_time 
+)
+      values (
+    #{patchNo,jdbcType=VARCHAR},
+	#{merchantCode,jdbcType=VARCHAR},
+	#{custName,jdbcType=VARCHAR},
+    #{version,jdbcType=VARCHAR},
+    #{reqSerialNo,jdbcType=VARCHAR},
+    #{productNo,jdbcType=VARCHAR},
+    #{channelNo,jdbcType=VARCHAR},
+    #{merchantType,jdbcType=VARCHAR},
+    #{businessLicenseNo,jdbcType=VARCHAR},
+    #{legalRepresent,jdbcType=VARCHAR},
+    #{businessLicensePath,jdbcType=VARCHAR},
+    #{businessLicenseEffDate,jdbcType=VARCHAR},
+    #{businessLicenseValDate,jdbcType=VARCHAR},
+    #{feeRate,jdbcType=VARCHAR},
+    #{establishDate,jdbcType=VARCHAR},
+    #{merchantShortName,jdbcType=VARCHAR},
+    #{identityNo,jdbcType=VARCHAR},
+    #{identityPosPath,jdbcType=VARCHAR},
+    #{identityNegPath,jdbcType=VARCHAR},
+    #{identityEffDate,jdbcType=VARCHAR},
+    #{identityValDate,jdbcType=VARCHAR},
+    #{industryCode,jdbcType=VARCHAR},
+    #{provinceCode,jdbcType=VARCHAR},
+    #{cityCode,jdbcType=VARCHAR},
+    #{countyCode,jdbcType=VARCHAR},
+    #{businessAddress,jdbcType=VARCHAR},
+    #{storeFacadePath,jdbcType=VARCHAR},
+    #{storeBussinessPlacePath,jdbcType=VARCHAR},
+    #{storeWithOwnerPath,jdbcType=VARCHAR},
+    #{specialIndustryPaths,jdbcType=VARCHAR},
+    #{otherMaterialPaths,jdbcType=VARCHAR},
+    #{electronicSignPath,jdbcType=VARCHAR},
+    #{bankAccountName,jdbcType=VARCHAR},
+    #{bankAccountNo,jdbcType=VARCHAR},
+    #{bankName,jdbcType=VARCHAR},
+    #{branchBankName,jdbcType=VARCHAR},
+    #{bankCode,jdbcType=VARCHAR},
+    #{subBankCode,jdbcType=VARCHAR},
+    #{bankCardPath,jdbcType=VARCHAR},
+    #{openBankPhoneNo,jdbcType=VARCHAR},
+    #{adminName,jdbcType=VARCHAR},
+    #{adminCellPhoneNo,jdbcType=VARCHAR},
+    #{callBackUrl,jdbcType=VARCHAR},
+    NOW(),
+    NOW()
+        )
+    </insert>
+
+    <update id="update" parameterType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoYqb">
+        update td_merchant_detail_info_yqb
+        <set>
+            <if test="merchantCode != null and merchantCode !=''">
+                merchant_code = #{merchantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="custName != null and custName !=''">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null and version !=''">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="reqSerialNo != null and reqSerialNo !=''">
+                req_serial_no = #{reqSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productNo != null and productNo !=''">
+                product_no = #{productNo,jdbcType=VARCHAR},
+            </if>
+            <if test="channelNo != null and channelNo !=''">
+                channel_no = #{channelNo,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantType != null and merchantType !=''">
+                merchant_type = #{merchantType,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseNo != null and businessLicenseNo !=''">
+                business_license_no = #{businessLicenseNo,jdbcType=VARCHAR},
+            </if>
+            <if test="legalRepresent != null and legalRepresent !=''">
+                legal_represent = #{legalRepresent,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicensePath != null and businessLicensePath !=''">
+                business_license_path = #{businessLicensePath,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseEffDate != null and businessLicenseEffDate !=''">
+                business_license_eff_date = #{businessLicenseEffDate,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseValDate != null and businessLicenseValDate !=''">
+                business_license_val_date = #{businessLicenseValDate,jdbcType=VARCHAR},
+            </if>
+            <if test="feeRate != null and feeRate !=''">
+                fee_rate = #{feeRate,jdbcType=VARCHAR},
+            </if>
+            <if test="establishDate != null and establishDate !=''">
+                establish_date = #{establishDate,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantShortName != null and merchantShortName !=''">
+                merchant_short_name = #{merchantShortName,jdbcType=VARCHAR},
+            </if>
+            <if test="identityNo != null and identityNo !=''">
+                identity_no = #{identityNo,jdbcType=VARCHAR},
+            </if>
+            <if test="identityPosPath != null and identityPosPath !=''">
+                identity_pos_path = #{identityPosPath,jdbcType=VARCHAR},
+            </if>
+            <if test="identityNegPath != null and identityNegPath !=''">
+                identity_neg_path = #{identityNegPath,jdbcType=VARCHAR},
+            </if>
+            <if test="identityEffDate != null and identityEffDate !=''">
+                identity_eff_date = #{identityEffDate,jdbcType=VARCHAR},
+            </if>
+            <if test="identityValDate != null and identityValDate !=''">
+                identity_val_date = #{identityValDate,jdbcType=VARCHAR},
+            </if>
+            <if test="industryCode != null and industryCode !=''">
+                industry_code = #{industryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceCode != null and provinceCode !=''">
+                province_code = #{provinceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="cityCode != null and cityCode !=''">
+                city_code = #{cityCode,jdbcType=VARCHAR},
+            </if>
+            <if test="countyCode != null and countyCode !=''">
+                county_code = #{countyCode,jdbcType=VARCHAR},
+            </if>
+            <if test="businessAddress != null and businessAddress !=''">
+                business_address = #{businessAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="storeFacadePath != null and storeFacadePath !=''">
+                store_facade_path = #{storeFacadePath,jdbcType=VARCHAR},
+            </if>
+            <if test="storeBussinessPlacePath != null and storeBussinessPlacePath !=''">
+                store_bussiness_place_path = #{storeBussinessPlacePath,jdbcType=VARCHAR},
+            </if>
+            <if test="storeWithOwnerPath != null and storeWithOwnerPath !=''">
+                store_with_owner_path = #{storeWithOwnerPath,jdbcType=VARCHAR},
+            </if>
+            <if test="specialIndustryPaths != null and specialIndustryPaths !=''">
+                special_industry_paths = #{specialIndustryPaths,jdbcType=VARCHAR},
+            </if>
+            <if test="otherMaterialPaths != null and otherMaterialPaths !=''">
+                other_material_paths = #{otherMaterialPaths,jdbcType=VARCHAR},
+            </if>
+            <if test="electronicSignPath != null and electronicSignPath !=''">
+                electronic_sign_path = #{electronicSignPath,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAccountName != null and bankAccountName !=''">
+                bank_account_name = #{bankAccountName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAccountNo != null and bankAccountNo !=''">
+                bank_account_no = #{bankAccountNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bankName != null and bankName !=''">
+                bank_name = #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="branchBankName != null and branchBankName !=''">
+                branch_bank_name = #{branchBankName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCode != null and bankCode !=''">
+                bank_code = #{bankCode,jdbcType=VARCHAR},
+            </if>
+            <if test="subBankCode != null and subBankCode !=''">
+                sub_bank_code = #{subBankCode,jdbcType=VARCHAR},
+            </if>
+            <if test="bankCardPath != null and bankCardPath !=''">
+                bank_card_path = #{bankCardPath,jdbcType=VARCHAR},
+            </if>
+            <if test="openBankPhoneNo != null and openBankPhoneNo !=''">
+                open_bank_phone_no = #{openBankPhoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="adminName != null and adminName !=''">
+                admin_name = #{adminName,jdbcType=VARCHAR},
+            </if>
+            <if test="adminCellPhoneNo != null and adminCellPhoneNo !=''">
+                admin_cell_phone_no = #{adminCellPhoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="callBackUrl != null and callBackUrl !=''">
+                call_back_url = #{callBackUrl,jdbcType=VARCHAR},
+            </if>
+                modify_time = NOW()
+        </set>
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPatchNo" parameterType="java.lang.String" resultType="com.qifenqian.bms.merchant.reported.bean.TdMerchantDetailInfoYqb">
+        select
+	patch_no,
+	merchant_code,
+	cust_name,
+	version,
+	req_serial_no,
+	product_no,
+	channel_no,
+	merchant_type,
+	business_license_no,
+	legal_represent,
+	business_license_path,
+	business_license_eff_date,
+	business_license_val_date,
+	fee_rate,
+	establish_date,
+	merchant_short_name,
+	identity_no,
+	identity_pos_path,
+	identity_neg_path,
+	identity_eff_date,
+	identity_val_date,
+	industry_code,
+	province_code,
+	city_code,
+	county_code,
+	business_address,
+	store_facade_path,
+	store_bussiness_place_path,
+	store_with_owner_path,
+	special_industry_paths,
+	other_material_paths,
+	electronic_sign_path,
+	bank_account_name,
+	bank_account_no,
+	bank_name,
+	branch_bank_name,
+	bank_code,
+	sub_bank_code,
+	bank_card_path,
+	open_bank_phone_no,
+	admin_name,
+	admin_cell_phone_no,
+	call_back_url,
+	create_time,
+	modify_time
+        from  td_merchant_detail_info_yqb
+        where patch_no = #{patchNo,jdbcType=VARCHAR}
+    </select>
+</mapper>

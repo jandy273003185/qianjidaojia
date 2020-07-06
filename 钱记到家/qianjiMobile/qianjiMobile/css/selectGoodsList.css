@@ -1,0 +1,118 @@
+    body {
+        background-color: #FDFAFE;
+        padding: 0;
+        margin: 0;
+        font-family: SourceHanSansSC-Regular, SourceHanSansSC;
+    }
+    
+    .goods {
+        background: #ffffff;
+        margin: 0.3rem 0;
+        padding: 0.12rem 0.2rem 1rem 0.2rem;
+    }
+    
+    .shop {
+        height: 0.44rem;
+        font-size: 0.32rem;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 550;
+        color: #333333;
+        line-height: 0.44rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .arrow {
+        width: 0.18rem;
+        height: 0.28rem;
+        margin-left: 0.2rem;
+    }
+    
+    .item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eeeeee;
+        padding: 0.3rem 0;
+    }
+    
+    .goods-img {
+        width: 1.44rem;
+        height: 1.44rem;
+        margin: 0 0.2rem;
+    }
+    
+    .goods-img>img {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .goodsName {
+        width: 3.4rem;
+        font-size: 0.26rem;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 550;
+        color: #333333;
+    }
+    
+    .goods-num {
+        width: 1.3rem;
+        text-align: right;
+        color: #666666;
+        font-size: 0.26rem;
+    }
+    
+    .goods-num>p:first-child {
+        color: #FF7387;
+    }
+    
+    .down {
+        width: 100%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        background: #ffffff;
+        position: fixed;
+        bottom: 0;
+        padding: 0 0.3rem;
+        font-size: 0.32rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .down>div:first-child {
+        display: flex;
+        align-items: center;
+        width: 2rem;
+    }
+    
+    .allSelect>div,
+    .allSelect>img {
+        width: 0.32rem;
+        height: 0.32rem;
+        margin-right: 0.17rem;
+    }
+    
+    .down>div:last-child {
+        width: 3.66rem;
+        background: #09b007;
+        border-radius: 0.4rem;
+        height: 0.8rem;
+        color: #ffffff;
+        text-align: center;
+        line-height: 0.8rem;
+    }
+    
+    .select {
+        width: 0.26rem;
+        height: 0.26rem;
+        border-radius: 50%;
+        border: 2px solid #dddddd;
+        margin: 0.59rem 0.1rem;
+    }
+    
+    .selected {
+        display: none;
+        width: 0.26rem;
+        height: 0.26rem;
+        margin: 0.59rem 0.1rem;
+    }

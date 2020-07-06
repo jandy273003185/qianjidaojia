@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>意见反馈</title>
+    <link rel="stylesheet" type="text/css" href="../css/global.css" />
+    <link rel="stylesheet" href="../js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/dd_style.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <style type="text/css">
+        .feedbackList .item {
+            margin-bottom: .1rem;
+            background: #fff;
+            border-radius: 6px;
+        }
+
+        .feedbackList .hd {
+            line-height: 1;
+            font-size: .15rem;
+            padding: .1rem;
+            border-bottom: 1px solid #eeee;
+        }
+
+            .feedbackList .hd .type {
+                float: left;
+                font-size: .13rem;
+                margin-right: 0.05rem;
+            }
+
+        .feedbackList .con {
+            padding: .1rem;
+            color: #666;
+        }
+
+            .feedbackList .con .time {
+                color: #999;
+            }
+    </style>
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">反馈记录</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="feedbackList pd10">
+				
+			</div>
+		</div>
+		<script type="text/javascript">			
+			var userId = sc.utils.getCookieValue("UserId");
+			var token = sc.utils.getCookieValue("Token");					
+			//平台回复
+			FeedbackList();
+			function FeedbackList(){
+				var url="api/News/FeedbackList";
+				var callback = function(data) {
+					if(data.code == 0){
+						var strhtml="";
+						var typeArr = ["网站", "产品", "服务", "建议","其他"];
+						var typetxt="";
+						if(data.data.length){
+							for(var i = 0; i < data.data.length; i++){
+								typetxt=data.data[i].FeedbackType;
+								strhtml+='<div class="item">';
+								strhtml+='<div class="hd">';
+								strhtml+='<span class="type c_Org">['+typeArr[typetxt]+']</span>';
+								strhtml+='<p class="title">'+data.data[i].FeedbackContent+'</p>';
+								strhtml+='</div>';
+								if(data.data[i].Reply){
+								strhtml+='<div class="con">';
+								strhtml+='<div class="reprly"><span>平台回复：</span>'+data.data[i].Reply+'</div>';
+								strhtml+='<div class="time"><span>回复时间：</span>'+data.data[i].ReplyTime+'</div>';
+								strhtml+='</div>';
+								}else{
+									strhtml+='<div class="con"><span>平台回复：</span>暂无回复</div>';
+								}
+								strhtml+='</div>';
+							}
+						}else{
+							strhtml += '<div class="emptybox">';
+							strhtml += '<div class="iconimg"><img src="/images/icons/empty2.png"/></div>';
+							strhtml += '<p class="tips center c_999">暂无数据 </p>';
+							strhtml += '</div>';
+						}
+						$('.feedbackList').append(strhtml);
+					}
+					if(data.code == 1||data.code == 99){
+						layer.open({
+							content: data.msg,
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+					}
+				}
+				sc.post(url, {
+					"UserId":userId,
+					"token":token,
+					"page":1,
+					"pagesize":100
+				}, callback);
+			}
+		
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.operfreeze.mapper.OperFreezeMapper">
+	<select id="selectCustFreezeById" resultType="com.qifenqian.bms.accounting.exception.dao.operfreeze.bean.OperFreeze">
+		SELECT
+			  T.ID ORDER_ID,
+			  T.ACCT_ID,
+			  T.CUST_ID,
+			  T.STATUS FREEZE_STATUS,
+			  T.BRIEF,
+			  T.RELATE_ID,
+			  T.INST_DATE,
+			  T.INST_DATETIME,
+			  T.CREATOR,
+			  T.RTN_CODE,
+			  T.RTN_DATETIME,
+			  T.RTN_INFO
+		  FROM ACCT_SEVEN_CUST_FREEZE T
+		 WHERE T.ID = #{orderId, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateCustFreezeStatus" parameterType="com.qifenqian.bms.accounting.exception.dao.operfreeze.bean.OperFreeze">
+			UPDATE ACCT_SEVEN_CUST_FREEZE
+			<set>
+				<if test="freezeStatus!=null and freezeStatus!='' ">
+				    STATUS = #{freezeStatus,jdbcType = VARCHAR},
+				</if>
+				<if test="relateId!=null and relateId!='' ">
+				    RELATE_ID = #{relateId,jdbcType = VARCHAR},
+				</if>
+					RTN_DATETIME= NOW()
+			</set>
+			WHERE 
+				ID =  #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

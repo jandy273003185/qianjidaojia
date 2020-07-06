@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>钱记到家</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="css/style_css.css?0" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://res2.wx.qq.com/open/js/jweixin-1.4.0.js " type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script type="text/javascript" src="js/commen.js"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?0" type="text/javascript"></script>
+    <script src="script/WxShare.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="script/pintuan.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+</head>
+
+    <body class="bg_gray ac">
+        <!--导航-->
+        <div class="bg-color">
+            <nav class="navbar-current">
+                <div><a href="/pintuan.html?type=1"><span class="icon-menu-left"></span></a></div>
+                <div>拼团详情</div>
+                <div>
+                <!--<span class="icon-menu-more"></span>-->
+                </div>
+            </nav>
+        </div>
+        <div class="main">
+            <div class="pin-content myPinTuanInfo"></div>
+        </div>
+        <input type="text" name="" readonly="readonly" id="shareUrl" value="" style="position: absolute;top:0;opacity: 0; z-index: -999; height: 0;" />
+        <!--弹窗-->
+        <div class="fcrs">
+            <div class="dvceng">
+                <img src="/images/er.png" />
+                <img class="know" src="/images/know.png"/>
+            </div>
+        </div>
+    </body>
+	<!--详情模板-->
+    <script id="myGroupInfoTemp" type="text/x-dot-template">
+        <div class="container">
+            <ul class="box1">
+                <li class="pics">
+                    {{? it.GroupImage}}
+                    <img src="{{=it.GroupImage}}" /> {{??}}
+                    <img src="images/noPic.jpg" /> {{?}}
+                </li>
+                <li class="tit">
+                    <p>{{=it.GroupTitle}}</p>
+                    <div class="num">{{=it.MaxPeopleNum}}人团</div>
+                    <div class="price">
+                        <span>¥{{=it.PayAmount}}</span>
+                        <!--<span>¥{{=it.FightingPrice}}</span><del>¥{{=it.OriginalPrice}}</del>-->
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            <ul class="box2">
+                <!--拼团中 显示-->
+                {{? it.GroupStatus ===0 && it.IsArriveEnd ===1}}
+                <li class="pics"><img src="images/nav/pics_02.png"></li>
+                <li class="tit">
+                    <div class="num">
+                        <p>还差 <span>{{=it.RemainingNum}}人</span>成团</p>
+                    </div>
+                    <div class="time">距离结束还剩 <span class="endTime" data-endtime="{{=it.EndTime}}">00:00:00</span></div>
+                </li>
+                {{?}}
+                {{? it.GroupStatus ===0 && it.IsArriveEnd ===0}}
+                <li><span class="c_999">已到拼团截止时间</span></li>
+                {{?}}
+                <!--拼团成功-->
+                {{? it.GroupStatus ===1}}
+                <li class="pics"><img src="/images/nav/pics_03.png"></li>
+                <li class="tit">
+                    <div class="num">
+                        <p><span>拼团成功</span></p>
+                    </div>
+                    {{? it.BackCommission!=undefined}}
+                    <div class="time"> <span>团长可获 ¥{{=it.BackCommission}} 返佣</span></div>
+                    {{?}}
+                    {{? it.RefundAmount!=0}}
+                    <div class="time"> <span>可获 ¥{{=it.RefundAmount}} 返利</span></div>
+                    {{?}}
+                </li>
+                {{?}}
+                <!--拼团失效-->
+                {{? it.GroupStatus ===2}}
+                <li class="pics"><img src="/images/nav/pics_04.png"></li>
+                <li class="tit">
+                    <div class="num">
+                        <p>—— 还差 <span>{{=it.RemainingNum}}人</span>成团 ——</p>
+                    </div>
+                    <div class="time">拼团倒计时结束，{{=it.GroupStatusStr}}</div>
+                </li>
+                {{?}}
+            </ul>
+        </div>
+        <div class="container">
+            <ul class="box3">
+                {{~it.MemberList:value2:index2}}
+                <li class="{{? value2.IsLaunch}}on{{?}}">
+                    {{? value2.MemberAvatar}}<img src="{{=value2.MemberAvatar}}" />{{??}}<img src="/images/tx/default.png" />{{?}}
+                    {{? value2.IsLaunch}}<span>团长</span>{{?}}
+                </li>
+                {{~}}
+            </ul>
+        </div>
+        <div class="container">
+            <div class="notes">
+                <!--拼团中-->
+                {{? it.GroupStatus ===0 && it.IsArriveEnd ===1}}
+                <button type="button" id="btn_share">分享给更多好友</button>
+                {{?}}
+                <!--团长结束拼团-->
+                {{? it.IsGroupHead===true&&it.GroupStatus===0 && it.IsArriveEnd ===1}}
+                <button type="button" style="margin-top:10px;" id="overedPin">提前结束拼团</button>
+                {{?}}
+                <!--拼团成功-->
+                {{? it.GroupStatus ===1}}
+                <button type="button" onclick="window.location.href='pintuan.html?type=1'">查看我的拼团</button>
+                <p>
+                    拼团规则<br />1.团长可获得拼团订单总金额10%的返佣；
+                    <br />2.拼团人数每+1，价格逐级递减；(人数越多，价格越低）
+                </p>
+                {{?}}
+                <!--拼团中显示-->
+                {{? it.GroupStatus ===0 && it.IsArriveEnd ===1}}
+                <h4>赶紧邀请好友一起来拼团吧！</h4>
+                {{?}}
+                <!--拼团失败-->
+                {{? it.GroupStatus ===2}}
+                <button type="button" onclick="window.location.href='pintuan.html'">重新拼团</button>
+                <h3>拼团失败？快邀请重新发起拼团</h3>
+                {{?}}
+            </div>
+        </div>
+    </script>
+	<!--详情模板  end-->
+	<script>
+        $(function () {
+            var source = sc.utils.getQueryString("source");
+            if (!sc.utils.isNullOrEmpty(source) && source == "pay") {
+                $(".fcrs").show();
+            }
+            $(".know").click(function () {
+                $(".fcrs").hide();
+            });
+
+			var groupId = sc.utils.getQueryString("groupId");
+			var id = sc.utils.getQueryString("id");
+			getGroupMemberInfo(groupId, id, function(data) {
+				var interText = doT.template($("#myGroupInfoTemp").text());
+				$(".myPinTuanInfo").html(interText(data.data));
+				$('.myPinTuanInfo').each(function() {
+					var that = $(this).find('.endTime');
+					GetRTime(that);
+				});
+				if(data.data.MemberList.length < data.data.MinPeople){
+					$('#overedPin').hide();
+				}else{
+					$('#overedPin').show();
+				}
+				
+				// 微信自带分享
+				var shareLink=GetUrlRelativePath() + '/pintuan_detail.html?id=' + groupId + '&groupRecordId=' + id;
+				getWxfxConfig_pt(0,'您的好友邀您一起拼团',data.data.GroupTitle,data.data.GroupImage,shareLink);
+				//分享给好友
+				$('#btn_share').click(function() {
+//					$('#shareUrl').val(GetUrlRelativePath() + '/pintuan_detail.html?id=' + groupId + '&groupRecordId=' + id + '');
+//					jsCopy();
+//					layer.open({
+//						content: '已复制，请粘贴发送给朋友！',
+//						skin: 'msg',
+//						time: 2 //2秒后自动关闭
+//					});
+                    layer.open({
+                        content: '<img class="mt15" src="/images/s.png"/>',
+						//content: '<img class="icon_wxjt" src="/images/s.png"><div class="wxshare"><h2>邀请好友一起拼团</h2><h5>点击右上角，选择"<img src="/images/share2.png">"发送给好友</h5></div>',
+						style: 'position: fixed; width: 100%; height:100%;left:0; top:0; height: 200px; padding:0; border:none; background:none',
+						time: 3 //3秒后自动关闭
+					});				
+				});
+				//团长操作完成拼团
+				$('#overedPin').click(function() {
+					operationCompleteGroup(groupId, id, function(res) {
+						layer.open({
+							content: '结束拼团成功!',
+							skin: 'msg',
+							time: 2 //2秒后自动关闭
+						});
+						setTimeout(function() {
+							window.location.reload();
+						}, 2000);
+
+					});
+				});
+			});
+		})
+
+		function GetUrlRelativePath() {
+			var urlStr = '';　　　　
+			var url = document.location.toString();　　　　
+			var arrUrl = url.split("//");　　　　
+			var start = arrUrl[1].split("/");
+			urlStr = arrUrl[0] + '//' + start[0];　　　　
+			return urlStr;　　
+		}
+
+		function jsCopy() {
+			var u = navigator.userAgent;
+			//苹果
+			if(u.match(/(iPhone|iPod|iPad);?/i)) {
+				var copyDOM = document.getElementById("shareUrl");
+				var range = document.createRange();
+				// 选中需要复制的节点
+				range.selectNode(copyDOM);
+				// 执行选中元素
+				window.getSelection().addRange(range);
+				// 执行 copy 操作
+				var successful = document.execCommand('copy');
+
+			}
+
+			// 安卓
+			if(u.indexOf('Android') > -1) {
+				$('#shareUrl')[0].select(); // 选择对象
+				document.execCommand("Copy"); // 执行浏览器复制命令
+			}
+
+		}
+	</script>
+
+</html>

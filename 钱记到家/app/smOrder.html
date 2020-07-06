@@ -1,0 +1,1008 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>提交订单</title>
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" href="js/layer_mobile/need/layer.css" />
+    <link rel="stylesheet" href="/css/popaddress.css" />
+    <link rel="stylesheet" type="text/css" href="css/dd_style.css?5" />
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="/script/dropload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/layer_mobile/layer.js"></script>
+    <script src="js/sc.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js?4"></script>
+    <script src="/js/resetFontSize.js?3" type="text/javascript"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/member.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/address.js?5" type="text/javascript" charset="utf-8"></script>
+    <script src="script/submitOrder.js?v=015" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+        .fixed__defaultPage {
+            overflow-y: auto;
+        }
+
+        .noAddress {
+            margin-bottom: .1rem;
+        }
+
+        .setDefault-item {
+            background-color: #fff;
+            border-radius: .06rem;
+            line-height: 1.7;
+            font-size: .15rem;
+        }
+
+        .from .btn_bb {
+            margin: .1rem .1rem .1rem 0;
+        }
+
+        .cartItem .m-pro .hd {
+            width: 25%;
+            height: auto;
+        }
+
+        .cartItem .skuType {
+            font-size: .13rem;
+            color: #999;
+            line-height: 1.4;
+            margin-bottom: .05rem;
+        }
+
+        .cartItem .name {
+            margin-bottom: .05rem !important;
+        }
+
+        .shopStoreOrder .item__hd {
+            background-color: #fff;
+            position: relative;
+            font-size: .15rem;
+            color: #505050;
+        }
+
+        .shopStoreOrder .storeName span.name {
+            display: inline-block;
+            background: url(/images/icons/shopico.png) left center no-repeat;
+            background-size: .26rem .26rem;
+            padding-left: .32rem;
+            position: relative;
+            padding-right: .25rem;
+        }
+
+            .shopStoreOrder .storeName span.name:after {
+                position: absolute;
+                content: "";
+                right: 0;
+                height: 100%;
+                width: .2rem;
+                background: url(/images/icons/down.png) center no-repeat;
+                background-size: .12rem auto;
+                transform: rotate(-90deg);
+            }
+
+        .shopStoreOrder .item__hd:after {
+            position: absolute;
+            content: "";
+            left: .1rem;
+            right: 0;
+            background-color: #eee;
+            height: 1px;
+            bottom: 0;
+        }
+
+        .shopStoreOrder .weui-cells {
+            margin-top: 0;
+        }
+
+        .shopStoreOrder .item {
+            border-radius: .06rem;
+            overflow: hidden;
+        }
+
+        .shopStoreOrder .cartList {
+            margin-top: 0;
+        }
+
+        /*使用优惠券的样式*/
+        .pop-Coupon .tit-hd {
+            font-size: .18rem;
+            text-align: center;
+        }
+
+        .pop-Coupon ul {
+            margin-bottom: .2rem;
+            margin-top: .1rem;
+        }
+
+            .pop-Coupon ul li {
+                line-height: .36rem;
+                padding: .1rem .3rem .1rem 0;
+                border-bottom: 1px solid #eee;
+                font-size: .16rem;
+                background: url(/images/icons/checked-checkbox.png) right center no-repeat;
+                background-size: .24rem;
+            }
+
+                .pop-Coupon ul li:last-child {
+                    border-bottom: none;
+                }
+
+                .pop-Coupon ul li.active {
+                    background: url(/images/icons/checked-checkbox_2.png) right center no-repeat;
+                    background-size: .24rem;
+                }
+
+        #invoiceBtn {
+            background-color: #fff;
+            border-radius: .06rem;
+            margin-bottom: .1rem;
+        }
+
+            #invoiceBtn .txt {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        .invoiceEmail {
+            background-color: #fff;
+            border-radius: .06rem;
+            margin-bottom: .1rem;
+        }
+
+        .fapiaoTypeBox {
+            border-radius: .06rem;
+        }
+
+        .fapiao_label {
+            display: inline-block;
+            width: .9rem;
+            text-align: center;
+            vertical-align: middle;
+            line-height: .28rem;
+            border: 1px solid #E5E5E5;
+            color: #333;
+            border-radius: .06rem;
+            margin-right: .15rem;
+        }
+
+            .fapiao_label.active {
+                color: #ff5c29;
+                border-color: #ff5c29;
+            }
+
+        .fapiao_tips {
+            font-size: .13rem;
+            color: #666;
+        }
+
+        #sureOrderListHtml .item {
+            margin-bottom: .1rem;
+        }
+
+        .fapiaoList .weui-cell__bd {
+            padding-right: .7rem;
+        }
+
+        .delInvoice {
+            position: absolute;
+            width: .5rem;
+            text-align: center;
+            border: 1px solid #ccc;
+            color: #666;
+            border-radius: .05rem;
+            right: .1rem;
+            z-index: 5;
+            display: block;
+        }
+    </style>
+
+</head>
+
+	<body class="bg_gray ac">
+		<div class="h45">
+			<div class="head search_head">
+				<a href="javascript:history.go(-1);" class="btn_back"></a>
+				<div class="title center">提交订单</div>
+			</div>
+		</div>
+		<div class="main mA10">
+			<!--没有地址的时候添加地址-->
+			<div class="noAddress weui-cell" style="display: none;" id="noAddress">
+				<div class="weui-cell__hd">
+					<img src="images/icons/dd_addr.png" alt="" class="icon-addr" />
+				</div>
+				<div class="weui-cell__bd">
+					<p class="txt">添加收货地址</p>
+				</div>
+				<div class="weui-cell__ft">
+					<span class="icon-arrow icon-arrowRight"></span>
+				</div>
+			</div>
+			<!--没有地址的时候添加地址  end-->
+			
+			<!--选择地址-->
+			<div id="HasAddressBox"></div>
+			<!--选择地址  end-->
+			
+			<!--开发票-->
+			<div class="weui-cell" id="invoiceBtn">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">开发票</label>
+				</div>
+				<div class="weui-cell__bd text_r">
+					<p class="txt invoice_info">不需要</p>
+				</div>
+				<div class="weui-cell__ft">                         
+					<span class="icon-arrow icon-arrowRight"></span>                     
+				</div>  
+			</div>
+			<!--开发票  end-->
+			
+			<!--选择发票类型（是纸质还是电子）-->
+			<div class="fapiaoTypeBox weui-cells bb__weui-cells" style="margin-bottom: .1rem;display: none;">
+				<div class="weui-cell">
+					<div class="weui-cell__hd" style="width: 1rem;">
+	                    <label for="" class="weui-label">发票类型</label>
+	                </div>
+	                <div class="weui-cell__bd">
+	                    <span class="fapiao_label active" data-invoicetype="2">普通发票</span>
+	         
+	                </div>
+				</div>
+				<div class="weui-cell">
+	                <p class="fapiao_tips">电子普通发票是税局认可的有效凭证，其法律效力、基本用途及使用规定同纸质发票</p>
+	            </div>
+			</div>
+			<!--选择发票类型（是纸质还是电子）  end-->
+			<!--当选择开发票的时候并选择电子发票的时候就会出现填写邮箱的-->
+			<div class="weui-cell email__weui-cell invoiceEmail" style="display: none;">
+	            <div class="weui-cell__hd">
+	                <label for="" class="weui-label" style="margin-right: .1rem;">收票人邮箱</label>
+	            </div>
+	            <div class="weui-cell__bd">
+	                <input type="text" class="weui-input text_r" id="invoice_email" placeholder="用于接收电子发票" />
+	            </div>
+	        </div>
+			<!--当选择开发票的时候就会出现填写邮箱的  end-->
+			<!--提取方式-->
+			<div class="PickupType weui-cell" style="display: none;">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">提取方式</label>
+				</div>
+				<div class="weui-cell__bd">
+					<label for="PickupType1" class="check-label">
+						<div class="IconsCK checked IconsCK-radio">
+							<input type="radio" name="PickupType" checked="checked" id="PickupType1" value="" />
+							<span></span>
+						</div>
+						送货上门
+					</label>
+					<label for="PickupType2" class="check-label">
+						<div class="IconsCK IconsCK-radio">
+							<input type="radio" name="PickupType" id="PickupType2" value="" />
+							<span></span>
+						</div>
+						站点提取
+					</label>
+				</div>
+			</div>
+			<!--提取方式  end-->
+			<!--订单的商品展示  -->
+			<div class="shopStoreOrder" id="sureOrderListHtml">
+
+            </div>
+            <!--订单的商品展示  end-->
+            
+            <!--直接下单的-->
+            <div class="shopStoreOrder" id="detailsSureOrder" style="display: none;">
+            	<div class="item shoporder">
+					<div class="item__hd weui-cell">
+						<div class="weui-cell__hd">
+							<p class="storeName"><span class="name"></span></p>
+						</div>
+					</div>
+					<div class="cartList weui-cells bb__weui-cells">
+						<div class="cartItem weui-cell">
+							<div class="weui-cell__bd">
+								<div class="m-pro">
+									<div class="hd">
+										<div class="img">
+											<a href="#">
+												<img src=""> 
+											</a>
+										</div>
+									</div>
+									<div class="bd">
+										<h4 class="name">
+											<a href="javascript:;"></a>
+										</h4>
+										<div class="flex flexAlignCenter">
+											<div class="flex1 flexItem">
+												<p class="skuType">
+													<span class="type"></span>
+												</p>
+											</div>
+											<div class="flexItem">
+												<span class="symbol">x</span>
+	                                            <span class="buyNum"></span>
+											</div>
+										</div>
+										
+										<div class="flex flexAlignCenter">
+											<div class="flex1 flexItem">
+												<p class="price">
+													<span>￥<span class="num">0</span></span>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> 
+					</div>
+			    </div>
+                <div class="weui-cells storePrice__weui-cells bb__weui-cells">
+					<!--商家留言-->
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">商家留言</label>
+						</div>
+						<div class="weui-cell__bd" style="margin-left:.2rem;">
+							<input type="text" class="weui-input to_shop_msg" placeholder="填写内容并与卖家确认" />
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">商品总价</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<p class="txt">￥<span class="orderTotal"></span></p>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">运费</label>
+						</div>
+						<div class="weui-cell__bd text_r">
+							<p class="txt"><span class="shop_freight">免邮</span></p>
+						</div>
+					</div>
+					
+				</div>
+            </div>
+            <!--直接下单的  end-->
+			<!--商品是否使用余额跟优惠详细信息-->
+			<div class="sm-OrderInfo weui-cells bb__weui-cells">
+				<div class="weui-cell" id="couponBtn" >
+					<div class="weui-cell__hd">
+						<img src="" alt="" class="iconImg" /><label for="">优惠券</label>
+					</div>
+					<div class="weui-cell__bd text_r">
+						<p class="txt couponText">不使用</p>
+					</div>
+					<div class="weui-cell__ft">
+						<span class="icon-arrow icon-arrowRight"></span>
+					</div>
+				</div>
+				<div class="weui-cell" style="display:none;">
+					<div class="weui-cell__hd">
+						<label for="" class="weui-label">使用余额</label>
+					</div>
+					<div class="weui-cell__bd text_r">
+						<p class="txt usablePrice">余额￥<span id="balance">0</span></p>
+					</div>
+					<div class="weui-cell__ft">
+						<div class="switch_btn">
+							<input type="checkbox" class="switch" id="use__usablePrice" />
+							<label for="use__usablePrice"></label>
+						</div>
+					</div>
+				</div>
+				
+				<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<label for="" class="weui-label">共<span id="proNum"></span>件商品</label>
+					</div>
+					<div class="weui-cell__bd text_r">
+						<p class="txt allPrice">合计：<span class="price">￥<span id="total"></span></span>
+						</p>
+					</div>
+				</div>
+			</div>
+			<!--商品是否使用余额跟优惠详细信息  end-->
+			
+			<!--购买提示信息-->
+			<div class="saleTips" style="display: none;">再购物19元即可使用20元优惠券哦！</div>
+			<!--购买提示信息  end-->
+		</div>
+
+		<!--底部-->
+		<div class="smOrderFt">
+			<footer>
+				<div class="inner flex">
+					<div class="flex1 priceInfo">
+						<div class="con">
+							<span class="payText">付款</span>：
+							<span class="price">￥<span id="total4"></span></span>
+						</div>
+					</div>
+					<a href="javascript:;" class="flex1 btnPay" id="btnPay">去下单</a>
+				</div>
+			</footer>
+		</div>
+		
+		<!--弹出选择地址-->
+		<div class="defaultPage fixed__defaultPage addressListPage bg_f6f6f6" id="pop-addrlist">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:;" class="btn_back"></a>
+					<div class="title center">选择地址</div>
+				</div>
+			</div>
+			<div class="main Address">
+				<div class="Addr-list mA10" id="Addrlist_Div"></div>
+				<script id="Addrlist_Tpl" type="text/html">
+					{{# for(var i = 0; i< d.length; i++){ }} 
+						{{# if(d[i].is_def==1){ }} 
+						<div class="addritem active" data-id="{{d[i].id}}">
+						{{# } else { }}
+						<div class="addritem" data-id="{{d[i].id}}">
+							{{# } }}
+							<div class="row clear name-row">
+								<span class="name fl">收件人：{{d[i].name}}</span>
+								<span class="tel fr">手机：{{d[i].tel}}</span>
+							</div>
+							<div class="row addr">
+								{{# if(d[i].is_def==1){ }}
+								<span class="defaultaddr">默认</span> {{# } }}
+								<span class="addrtxt">{{d[i].addressinfo}}</span>
+							</div>
+							<a href="javascript:;" class="editbtn">编辑</a>
+						</div>
+						{{# } }} 
+				</script>				
+			</div>
+			<div class="h60">
+				<footer class="ftbtn" style="background: #f6f6f6;">
+					<a class="btn" href="javascript:;" id="btnEadit"><span class="icon-add">添加新地址</span></a>
+				</footer>
+			</div>
+		</div>
+		<!--弹出选择地址 end-->
+		
+		<!--弹出编辑地址-->
+		<div id="pop-addrEadit" class="defaultPage fixed__defaultPage bg_f6f6f6 addressEaditPage">
+			<div class="h45">
+				<div class="head">
+					<a href="javascript:;" class="btn_back"></a>
+					<div class="title center">添加收货地址</div>
+				</div>
+			</div>
+			<div class="main Add_addr">
+				<div class="from mb10 pl10 pr10">
+					<div class="from-item">
+						<label class="text">收货人</label>
+						<div class="txt-r"><input type="text" class="ipt0" id="name" placeholder="收货人姓名"></div>
+					</div>
+					<div class="from-item">
+						<label class="text">手机号码</label>
+						<div class="txt-r"><input type="text" class="ipt0" id="tel" placeholder="联系电话" style="width:1.8rem"></div>
+					</div>
+					<div class="from-item from-item-City arrow_r">
+						<label class="text">所在城市</label>
+						<div class="txt-r">
+							<input type="text" class="ipt0" id="selectCity" readonly="" data-code="" placeholder="请选择您所在城市" style="width:2.4rem">
+						</div>
+					</div>
+					<div class="from-item">
+						<label class="text">详细地址</label>
+						<div class="txt-r"><input type="text" class="ipt0" id="fullAddress" placeholder="输入您详细地址"></div>
+					</div>
+					<div class="from-item" style="line-height: .5rem;display: none;">
+						<label class="text">地址标签</label>
+						<div class="txt-r" style="height: inherit;">
+							<div class="btns-min">
+								<a class="btn_bb" href="javascript:;">住宅</a>
+								<a class="btn_bb active" href="javascript:;">公司</a>
+								<a class="btn_bb" href="javascript:;">学校</a>
+								<a class="btn_bb" href="javascript:;">其他</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="setDefault-item weui-cell mb10">
+					<div class="weui-cell__bd">
+						<p class="txt">设为默认地址</p>
+					</div>
+					<div class="weui-cell__ft">
+						<div class="switch_btn">
+							<input type="checkbox" class="switch" id="switch1" data-def="0">
+							<label for="switch1"></label>
+						</div>
+					</div>
+				</div>
+				<div class="setDefault-item weui-cell" id="Del_addr" style="display: none;">
+					<div class="weui-cell__bd">
+						<p class="txt red">删除收货地址</p>
+					</div>
+				</div>
+			</div>
+			<div class="null50">
+				<footer class="ftbtn">
+					<a class="btn" id="submitBtn" href="javascript:;">保存</a>
+				</footer>
+			</div>
+			<!--弹出省市区街道列表-->
+			<div id="addressSelectWrapper">
+				<div id="addressSelect">
+					<div class="tip">
+						<h3>所在地区</h3>
+						<button type="button" id="cancel"></button>
+					</div>
+					<div id="address">
+						<ul class="selected-address">
+							<li class="lastarea" id="lastprovince" data-code="">请选择</li>
+							<li class="lastarea" id="lastcity" data-code="">请选择</li>
+							<li class="lastarea" id="lastarea" data-code="">请选择</li>
+							<li class="lastarea" id="lasttown" data-code="">请选择</li>
+						</ul>
+						<div class="address-content">
+							<ul id="province" data-type="0"></ul>
+							<ul id="city" data-type="1"></ul>
+							<ul id="area" data-type="2"></ul>
+							<ul id="town" data-type="3"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--弹出省市区街道列表-->
+
+		</div>
+		<!--弹出选择优惠券-->
+		<div class="shadeAll" id="pop-CouponTpl">
+			<div class="mask"></div>
+			<div class="shade alignBottom__shade">
+				<div class="shade__bd">
+					<div class="shadeContent">
+						<div class="shadeContent__hd">
+		                    <span class="btn-back btn-cancel"></span><span class="title">选择优惠券</span>
+		                </div>
+						<div class="shadeContent__bd">
+							<ul id="usablecouponhtml" class="SelectProCouponList"></ul>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出选择优惠券-->
+		
+		<!--选择发票抬头弹窗-->
+		<div class="shadeAll selectInvoice__shadeAll">
+			<div class="mask"></div>
+			<div class="shade alignBottom__shade">
+				<div class="shade__bd">
+					<div class="shadeContent">
+						<div class="shadeContent__hd">
+		                    <span class="btn-back btn-cancel"></span><span class="title">选择开发票信息</span>
+		                </div>
+						<div class="shadeContent__bd">
+							<div class="weui-cells bb__weui-cells fapiaoList" id="myinvoicelist">	
+		                	</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--选择发票抬头  end-->
+		
+		<!--新增发票抬头弹窗-->
+        <div class="defaultPage fixed__defaultPage addInvoice__defaultPage bg_f6f6f6">
+            <div class="h45">
+                <div class="head beilian__head">
+                    <a href="javascript:;" class="btn_back close_page"></a>
+                    <div class="title center">新增报销凭证</div>
+                </div>
+            </div>
+            <div class="main">
+                <div class="addInvoice__weui-cells weui-cells bb__weui-cells">
+                    <div class="weui-cell" id="selectInvoiceType">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">抬头类型</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" readonly="readonly" value="个人" id="txtInvoiceType">
+                        </div>
+                        <div class="weui-cell__ft">
+                            <span class="icon-arrow icon-arrowRight"></span>
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">抬头名称</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="请输入个人姓名" id="txtHeaderName">
+                        </div>
+                    </div>
+                    <div class="weui-cell taxNo__weui-cell" style="display: none;">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">税号</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="请输入正确的税号" id="txtTaxNumber">
+                        </div>
+                    </div>
+                </div>
+                <div class="addInvoice__weui-cells addInvoice__weui-cells2 weui-cells bb__weui-cells" style="display: none;">
+                    <div class="weui-cell ">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">注册城市</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="必填" id="txtRegAbout">
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">注册电话</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="选填" id="txtRegCall">
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">开户银行</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="必填" id="txtBankName">
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">银行账号</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input type="text" class="weui-input" placeholder="选填" id="txtBankAccount">
+                        </div>
+                    </div>
+                </div>
+                <div class="ftbtn ftbtnBox">
+                    <!--<a href="javascript:;" class="btn btn_defalut" id="btnReset">重置</a>-->
+                    <a href="javascript:;" class="btn btn_active" id="btnSave">保存</a>
+                </div>
+
+
+            </div>
+            <div id="addressSelectWrapper1" style="position: fixed;
+    top: 0;
+    z-index: 11;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);">
+                <div id="addressSelect1">
+                    <div class="tip">
+                        <h3>所在地区</h3>
+                        <button type="button" id="cancel1"></button>
+                    </div>
+                    <div id="address1">
+                        <ul class="selected-address">
+                            <li class="lastarea" id="lastprovince" data-code="">请选择</li>
+                            <li class="lastarea" id="lastcity" data-code="">请选择</li>
+                            <li class="lastarea" id="lastarea" data-code="">请选择</li>
+                            <li class="lastarea" id="lasttown" data-code="">请选择</li>
+                        </ul>
+                        <div class="address-content">
+                            <ul id="province" data-type="0"></ul>
+                            <ul id="city" data-type="1"></ul>
+                            <ul id="area" data-type="2"></ul>
+                            <ul id="town" data-type="3"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<!--新增发票抬头弹窗  end-->
+		<div class="shadeAll selectFapiaoType__shadeAll">
+			<div class="mask"></div>
+			<div class="shade alignBottom__shade">
+				<div class="shade__bd">
+					<div class="shadeContent">
+						<div class="shadeContent__hd">
+							<div class="btnGroup clear text_l block">
+								<a href="javascript:;" class="btn fl btn-cancel">取消</a>
+								<a href="javascript:;" class="btn fr btn-sure">确定</a>
+							</div>
+						</div>
+						<div class="shadeContent__bd">
+							<ul class="typeList" id="invoiceTypeList">
+								<li data-type="0">个人</li>
+								<li data-type="1">公司</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--订单列表模板-->
+		<script id="sureOrderList" type="text/html">
+			{{# for(var i = 0; i< d.data.length; i++){ }}
+			{{# if(i===0||d.data[i-1].ShopId!==d.data[i].ShopId){ }}
+			<div class="item shoporder" id="shopnumber_{{d.data[i].ShopId}}" data-shopid="{{d.data[i].ShopId}}">
+				<div class="item__hd weui-cell">
+					<div class="weui-cell__hd">
+						<p class="storeName"><span class="name">{{d.data[i].ShopName}}</span></p>
+					</div>
+				</div>
+				<div class="cartList weui-cells bb__weui-cells" data-shopid={{d.data[i].ShopId}}>
+					{{# } }}
+					<div class="cartItem weui-cell {{# if(d.data[i].TabFlashSale==1){ }} limit__cartItem {{# } }}">
+						<div class="weui-cell__bd">
+							<div class="m-pro">
+								<div class="hd">
+									<div class="img" proid="{{d.data[i].ProductId}}">
+										<a href="javascript:;">
+											<img src="{{d.data[i].ProductImg}}"> 
+										</a>
+									</div>
+								</div>
+								<div class="bd">
+									<h4 class="name">
+										<a href="javascript:;">{{d.data[i].ProductName}}</a>
+									</h4>
+									<div class="flex flexAlignCenter">
+										<div class="flex1 flexItem">
+											<p class="skuType">
+												{{# if(d.data[i].SpecText!==null&&d.data[i].SpecText!==""&&d.data[i].SpecText!==undefined){ }}
+												<span class="type" cartid="{{d.data[i].Id}}">{{d.data[i].SpecText}}</span>
+		                                        {{# } }}
+											</p>
+										</div>
+										<div class="flexItem">
+											<span class="symbol">x</span>
+                                            <span>{{d.data[i].Number}}</span>
+										</div>
+									</div>
+									
+									<div class="flex flexAlignCenter">
+										<div class="flex1 flexItem">
+											<p class="price">
+												<span>￥<span class="num">{{d.data[i].SalePrice}}</span></span>
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> 
+					{{# if(i===d.data.length-1||d.data[i].ShopId!==d.data[i+1].ShopId){ }}
+				</div>
+				<!--每个店铺的价格-->
+                <div class="weui-cells storePrice__weui-cells bb__weui-cells">
+                    <!--商家留言-->
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">商家留言</label>
+                        </div>
+                        <div class="weui-cell__bd" style="margin-left:.2rem;">
+                            <input type="text" class="weui-input to_shop_msg" placeholder="填写内容并与卖家确认" />
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">商品总价</label>
+                        </div>
+                        <div class="weui-cell__bd text_r">
+                            <p class="txt">￥<span class="orderTotal"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="weui-cell shopfreight">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label shop_freightlab">运费</label>
+                        </div>
+                        <div class="weui-cell__bd text_r">
+                            <p class="txt"><span class="shop_freight">免邮</span></p>
+                        </div>
+                    </div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">小计</label>
+                        </div>
+                        <div class="weui-cell__bd text_r">
+                            <p class="txt">￥<span class="orderMoney"></span></p>
+                        </div>
+                    </div>
+                    <div class="weui-cell sleCoupon"  data-proId="{{d.data[i].ProductId}}" data-spec="{{d.data[i].SpecText}}" data-Num="{{d.data[i].Number}}" data-shopid="{{d.data[i].ShopId}}">
+                        <div class="weui-cell__hd">
+                            <img src="" alt="" class="iconImg" /><label for="">优惠券</label>
+                        </div>
+                        <div class="weui-cell__bd text_r">
+                            <p class="txt couponText">{{d.data[i].coupons}}</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <span class="icon-arrow icon-arrowRight"></span>
+                        </div>
+                    </div>
+
+                </div>
+			</div>
+			{{getShopOrderMoney(d.data[i].ShopId)}}
+            {{# } }}
+			{{# } }}
+		</script>
+		<!--订单列表模板  end-->
+		<!--优惠券模板-->
+	    <script type="text/html" id="usablecoupon">
+	        <li class="active" data-coupon="0">不使用优惠</li>
+	        {{# for(var i = 0; i< d.data.length; i++){ }}
+	        <li data-coupon="{{d.data[i].Id}}" data-shopid="{{d.data[i].ShopId}}">
+	            {{d.data[i].Title}}：
+                <span>
+                    {{# if(d.data[i].DiscountType==1||d.data[i].couponType==0||d.data[i].couponType==2||d.data[i].couponType==3||d.data[i].couponType==4){ }}
+                    省{{d.data[i].Denomination}}元
+                    {{# } else if(d.data[i].DiscountType==2) { }}
+                    {{d.data[i].Denomination*10}}折
+                    {{# } }}
+                </span>
+	        </li>
+	        {{# } }}
+	    </script>
+	    <!--选择发票抬头模板-->
+	    <script type="text/html" id="myinvoice">
+	    	<label for="invoice_0" data-invoiceid=0 class="weui-cell select_invoice">
+                <div class="weui-cell__hd">
+                    <div class="IconsCK IconsCK-radio checked">
+                        <input type="radio" name="invoiceList" value="" id="invoice_0" {{# if(invoiceId===0){ }} checked="checked" {{# } }}>
+                        <span class="icon"></span>
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    <p class="name">不开发票</p>
+                </div>
+            </label>
+            {{# for(var i = 0; i< d.data.length; i++){ }}
+            <label for="invoice_{{d.data[i].Id}}" data-invoiceid={{d.data[i].Id}} class="weui-cell select_invoice">
+                <div class="weui-cell__hd">
+                    <div class="IconsCK IconsCK-radio">
+                        <input type="radio" name="invoiceList" value="" id="invoice_{{d.data[i].Id}}" {{# if(d.data[i].Id===invoiceId){ }} checked="checked" {{# } }}>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="weui-cell__bd">
+                    <p class="name">发票抬头：{{d.data[i].HeaderName}}</p>
+                    <p class="type">类型：{{d.data[i].InvoiceTitlestr}}</p>
+                    <p class="number" {{# if(d.data[i].InvoiceTitle===0){ }} style="display:none;" {{# } }}>税号：{{d.data[i].TaxNumber}}</p>
+                </div>
+                <a href="javascript:;" class="delInvoice">删除</a>
+            </label>
+            {{# } }}
+            <div class="weui-cell" id="invoice_add">
+                <div class="weui-cell__hd">
+                    <img src="images/icons/add.png" class="addImg" />
+                </div>
+                <div class="weui-cell__bd">
+                    <p class="name">新增发票信息</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="icon-arrow icon-arrowRight"></span>
+                </div>
+            </div>
+	    </script>
+	    
+	    <!--选择发票抬头模板  end-->
+		<script type="text/javascript">
+            $(function () {
+                $(".waylist li").each(function (index) {
+                    $(this).click(function () {
+                        $(this).addClass("active").siblings().removeClass("active")
+                    });
+                });
+                selectCityAddr();
+            });
+            function selectCityAddr() {
+
+                var liIndex = 0;
+                // 地址选择器遮罩层打开与关闭
+                $("#txtRegAbout").click(function (e) {
+                  
+                    $("#addressSelectWrapper1").show();
+                    e.stopPropagation();
+                    selectCityArea();
+                });
+                $(document).click(function () {
+                    $("#addressSelectWrapper1").hide();
+                });
+                $("#cancel").click(function () {
+                    $("#addressSelectWrapper1").hide();
+                });
+                $("#addressSelect1").click(function (e) {
+                    e.stopPropagation();
+                });
+
+                function selectCityArea() {
+                    var selected = [],//编码
+                        selectedName = [],//地名
+                        //			selectCityName = $('#selectCity').val(),
+                        //			selectCityCode = $('#selectCity').attr('data-code'),
+                        type = ["Province", "City", "District", "Street"],
+                        code = "",
+                        navLi = $('#addressSelectWrapper1 .selected-address li'),
+                        conUl = $('#addressSelectWrapper1 .address-content ul');
+                    //初始化省份
+                    GetSrea(type[0], code, conUl.eq(0));
+                    navLi.eq(liIndex).addClass('active').siblings().removeClass('active');
+
+                    //		if(selectCityName!=""){
+                    //			var NameArr=[],
+                    //				CodeArr=[];				
+                    //			NameArr.push(selectCityName.split(" "));
+                    //			CodeArr.push(selectCityCode.split(","));
+                    //			for(var i=0; i<navLi.length;i++){
+                    //				if(NameArr[0][i]!=""){
+                    //					navLi.eq(i).text(NameArr[0][i]);
+                    //				}
+                    //				navLi.eq(i).attr('data-code',CodeArr[0][i]);
+                    //			}
+                    //			
+                    //		}
+
+                    conUl.each(function () {
+                        var that = $(this);
+                        that.find('li').each(function () {
+                            if ($(this).hasClass('active')) {
+                                selected[that.index()] = $(this).attr('data-code');
+                                selectedName[that.index()] = $(this).attr('data-name');
+                            }
+                        });
+                    });
+
+                    conUl.on("click", "li", function () {
+                        var index = 0;
+                        var PIndex = liIndex = $(this).parents('ul').index();
+                        navLi.eq(liIndex).addClass('active').siblings().removeClass('active');
+                        var dataName = $(this).attr('data-name');
+                        code = $(this).attr('data-code');
+                        selected[PIndex] = code;
+                        selectedName[PIndex] = dataName;
+                        index = PIndex + 1;
+                        $(this).addClass("active").siblings("li").removeClass('active');
+                        if (index == 3) { //选到第四级后
+                            $('#txtRegAbout').attr("data-code", selected.join(","));
+                            $('#txtRegAbout').val(selectedName.join(" "));
+                            $("#addressSelectWrapper1").hide();
+                        } else {
+                            GetSrea(type[index], code, conUl.eq(index));
+                            $(this).parents('ul').hide();
+                            conUl.eq(index).show();
+                            navLi.eq(PIndex).text($(this).text());
+                            navLi.eq(PIndex).attr('data-code', code);
+                            navLi.eq(PIndex).nextAll().text("请选择");
+                            navLi.eq(index).addClass('active').siblings().removeClass('active');
+                        }
+                        console.log(selectedName);
+                        console.log(selected);
+
+                    });
+
+                    navLi.click(function () {
+                        var index = $(this).index();
+                        $(this).addClass("active").siblings().removeClass('active');
+                        for (var i = index; i < selected.length; i++) {
+                            selected.splice(i, selected.length - i);
+                            selectedName.splice(i, selected.length - i);
+                        }
+                        conUl.eq(index).show().siblings().hide();
+                    });
+                }
+            }
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.expresspay.jgkjfileupload.mapper.FileOfferMapper">
+
+	<insert id="insert" parameterType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer">  
+        INSERT INTO BAL_FILE_RECEIVE (
+			FILE_ID,
+			CHANNEL_ID,
+			FILE_TYPE,
+			RECEIVE_DATE,
+			WORK_DATE,
+			FILE_NAME,
+			STORAGE_PATH,
+			TOTAL_COUNT,
+			INST_DATE,
+			STATUS
+		) VALUES (
+			#{fileId,			jdbcType=VARCHAR},
+			#{channelId,		jdbcType=VARCHAR},
+			#{fileType,			jdbcType=VARCHAR},
+			#{receiveDate,		jdbcType=VARCHAR},
+			#{workDate,			jdbcType=VARCHAR},
+			#{fileName,			jdbcType=VARCHAR},
+			#{storagePath,		jdbcType=VARCHAR},
+			#{totalCount,		jdbcType=INTEGER},
+			CURDATE(),
+			#{status,			jdbcType=VARCHAR}
+        )  
+    </insert>  
+    
+    <select id="selectByFileName" resultType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer">
+    	SELECT T.*
+    	  FROM BAL_FILE_RECEIVE T
+    	 WHERE T.FILE_NAME = #{fileName,	jdbcType=VARCHAR}	
+    </select>
+    
+    <select id="selectByBean" resultType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer" parameterType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer">
+    	SELECT T.*
+    	  FROM BAL_FILE_RECEIVE T
+    	  <where>
+			<if test="workDate != null and workDate != '' "> AND T.WORK_DATE =#{workDate, jdbcType=VARCHAR}</if>
+			<if test="fileType != null and fileType != '' "> AND T.FILE_TYPE = #{fileType, jdbcType=VARCHAR}</if>
+			<if test="channelId != null and channelId != '' "> AND T.CHANNEL_ID = #{channelId, jdbcType=VARCHAR}</if>
+			<if test="status != null and status != '' "> AND T.STATUS = #{status, jdbcType=VARCHAR}</if>
+		 </where>
+		 ORDER BY INST_DATETIME DESC
+    </select>
+    
+    <update id="update" parameterType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer">
+    	UPDATE BAL_FILE_RECEIVE T
+   	    <set>
+	    	<if test="fileName != null">
+	        	T.FILE_NAME 	= #{fileName,	jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="status != null">
+	        	T.STATUS 	= #{status,		jdbcType=VARCHAR},
+	      	</if>
+	      		T.UPDATE_DATETIME = now()
+   		 </set>
+    	 WHERE T.FILE_ID 	= #{fileId,		jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByFileId" resultType="com.qifenqian.bms.expresspay.jgkjfileupload.bean.FileOffer" parameterType="string">
+    	SELECT 
+    		T.*
+    	FROM 
+    		BAL_FILE_RECEIVE T
+    	WHERE T.FILE_ID = #{fileId,jdbcType = VARCHAR}
+    </select>
+    
+    <delete id="deleteByFileId" parameterType="string">
+    	DELETE FROM 
+    	BAL_FILE_RECEIVE WHERE FILE_ID = #{fileId,jdbcType = VARCHAR}
+    </delete>
+    
+</mapper>

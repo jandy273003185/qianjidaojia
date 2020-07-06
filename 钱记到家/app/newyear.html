@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>食材年货节</title>
+    <link href="css/newyear.css?0" rel="stylesheet" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/resetFontSize.js" type="text/javascript"></script>
+    <script src="js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+</head>
+<body>
+    <div class="contain">
+        <div class="bannerdv"><img class="banner" src="/images/newyear/stocking2.jpg" /></div>
+        <div class="coupondv"><a href="/member/receiveCoupon.html"><img class="couponimg" src="/images/newyear/coupon.png" /></a></div>
+        <div class="contenttitledv"><img class="contenttitle" src="/images/newyear/content-title.png" /></div>
+        <div id="list">
+        </div>
+        <div class="footer">
+            <img src="/images/newyear/footer.png" />
+        </div>
+    </div>
+    <script id="ExplosiveProlistTemp" type="text/x-dot-template">
+        {{~it:value:index}}
+        <div class="content-bg">
+            <div class="content-left"><img src="{{=value.ProductImg}}" /></div>
+            <div class="content-right">
+                <div class="goods-title">{{=value.Name}}</div>
+                <div class="goods-content">
+                    {{ if(value.Synopsis) { }}<span>{{=value.Synopsis}} </span>{{ }else{ }}
+                                              <span>暂无产品简介</span>
+                    {{ } }}
+                </div>
+                <div class="price">
+                    <div>
+                        <div class="price-txt">活动价:</div>
+                        <div class="price-num"><span class="money-symbol">¥</span><span>{{=value.Price}}</span></div>
+                    </div>
+                    <a href="/details.html?id={{=value.Id}}"><div class="buy"><img src="/images/newyear/click-buy.png" alt=""></div></a>
+                </div>
+            </div>
+        </div>
+        {{~}}
+    </script>
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var id = "";
+        var pageIndex = 1;
+        var pageSize = 10;
+        var isEnd = false;
+        $(function () {
+            dropDownEvent(goodsList(1, pageIndex, pageSize));
+        });
+        function goodsList(newyear, pageIndex, pageSize) {            
+            var url = 'api/Goods/GoodsList';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data.length > 0) {
+                        if (newyear) {
+                            var arrText = doT.template($("#ExplosiveProlistTemp").text());
+                            $("#list").append(arrText(data.data));
+                        }
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "page": pageIndex,
+                "pageSize": pageSize,
+                "newyear": newyear
+            }, callback, error);
+        }
+
+        function dropDownEvent(Fn) {
+            $(window).scroll(function () {
+                var scrollTop = parseFloat($(this).scrollTop()),
+                    scrollHeight = $(document).height(),
+                    windowHeight = parseFloat($(this).height()),
+                    totalHeight = scrollTop + windowHeight;
+                if (scrollTop + windowHeight >= scrollHeight - 0.7) {
+                    pageIndex++;
+                    goodsList(1, pageIndex, pageSize);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

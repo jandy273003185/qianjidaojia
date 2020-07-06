@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qifenqian.bms.sms.message.mapper.BaseMessageMapper">
+    <select id="selectBaseMessageList" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage"
+            resultType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+        SELECT
+        T.ID,
+        T.CUST_NAME,
+        T.CUST_AMT,
+        T.MOBILE,
+        T.DATE_DATA,
+        T.CONTENT,
+        T.STATUS,
+        (SELECT U.USER_NAME FROM SYS_USER U WHERE U.USER_ID = T.INST_USER) INST_USER,
+        DATE_FORMAT(T.INST_DATETIME,'%Y-%m-%d %H:%i:%s') INST_DATETIME,
+        DATE_FORMAT(T.SEND_TIME,'%Y-%m-%d %H:%i:%s') SEND_TIME
+        FROM
+        BASE_MESSAGE_DETAIL T
+        <where>
+            <if test="mobile != null and '' != mobile">
+                AND T.MOBILE = #{mobile,jdbcType = VARCHAR}
+            </if>
+            <if test="custName != null and '' != custName">
+                AND T.CUST_NAME LIKE CONCAT('%',#{custName},'%')
+            </if>
+            <if test="status != null and '' != status">
+                AND T.STATUS = #{status,jdbcType = VARCHAR}
+            </if>
+            <if test="sendStartTime != null and '' != sendStartTime">
+                <![CDATA[
+		          AND T.DATE_DATA >= #{sendStartTime}  
+		        ]]>
+            </if>
+            <if test="sendEndTime != null and '' != sendEndTime">
+                <![CDATA[
+	              AND T.DATE_DATA <= #{sendEndTime}  
+	            ]]>
+            </if>
+        </where>
+        ORDER BY T.INST_DATETIME DESC
+    </select>
+    <select id="selectBaseMessageById" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage"
+            resultType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+	SELECT
+			  T.ID,
+			  T.CUST_NAME,
+			  T.CUST_AMT,
+			  T.MOBILE,
+			  T.DATE_DATA,
+			  T.CONTENT,
+			  T.STATUS
+		 FROM
+			  BASE_MESSAGE_DETAIL T WHERE T.ID = #{id,jdbcType = VARCHAR} AND T.STATUS = 'INIT'
+	</select>
+    <insert id="insertBaseMessage" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+        INSERT INTO BASE_MESSAGE_DETAIL(
+        CUST_NAME,
+        CUST_AMT,
+        MOBILE,
+        DATE_DATA,
+        <if test="content!=null and content!=''">
+            CONTENT,
+        </if>
+        STATUS,
+        INST_USER
+        )VALUES(
+        #{custName,	jdbcType = VARCHAR},
+        #{custAmt, 	jdbcType = DECIMAL},
+        #{mobile,	jdbcType = VARCHAR},
+        #{dateData,	jdbcType = VARCHAR},
+        <if test="content!=null and content!=''">
+            <![CDATA[
+				#{content,	jdbcType = VARCHAR},
+				]]>
+        </if>
+        #{status,	jdbcType = VARCHAR},
+        #{instUser,	jdbcType = VARCHAR}
+        )
+    </insert>
+
+    <update id="updateBaseMessage" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+        UPDATE BASE_MESSAGE_DETAIL T
+        <set>
+            <if test="status!=null and status!='' ">
+                T.STATUS = #{status,	jdbcType = VARCHAR},
+            </if>
+            T.SEND_TIME =NOW()
+        </set>
+        WHERE T.ID = #{id,jdbcType = VARCHAR}
+    </update>
+
+    <update id="updateSingleMessage" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+        UPDATE BASE_MESSAGE_DETAIL T
+        <set>
+            <if test="mobile!=null and mobile!='' ">
+                T.MOBILE = #{mobile,	jdbcType = VARCHAR},
+            </if>
+            <if test="custName!=null and custName!='' ">
+                T.CUST_NAME = #{custName,	jdbcType = VARCHAR},
+            </if>
+            <if test="status!=null and status!='' ">
+                T.STATUS = #{status,	jdbcType = VARCHAR},
+            </if>
+            <if test="dateData!=null and dateData!='' ">
+                T.DATE_DATA = #{dateData,	jdbcType = VARCHAR},
+            </if>
+            <if test="custAmt > 0 ">
+                T.CUST_AMT = #{custAmt,	jdbcType = DECIMAL},
+            </if>
+            <if test="content!=null and content!='' ">
+                <![CDATA[
+					T.CONTENT = #{content,	jdbcType = VARCHAR},
+				]]>
+            </if>
+            T.SEND_TIME =NOW()
+        </set>
+        WHERE T.ID = #{id,jdbcType = VARCHAR}
+    </update>
+
+    <delete id="deleteBaseMessage" parameterType="com.qifenqian.bms.sms.message.bean.BaseMessage">
+		DELETE FROM BASE_MESSAGE_DETAIL  
+	 	WHERE ID = #{id,jdbcType = VARCHAR}
+	</delete>
+    <delete id="batchDelete" parameterType="com.qifenqian.bms.v2.biz.message.sms.bean.domain.BaseMessageAO">
+        DELETE FROM BASE_MESSAGE_DETAIL
+        where ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

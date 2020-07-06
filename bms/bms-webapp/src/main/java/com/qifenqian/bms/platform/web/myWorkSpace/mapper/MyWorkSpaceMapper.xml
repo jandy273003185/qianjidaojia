@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.myWorkSpace.mapper.MyWorkSpaceMapper">
+
+	<select id="getMyTasks" parameterType="com.qifenqian.bms.platform.web.myWorkSpace.bean.WaitTaskBean" resultType="com.qifenqian.bms.platform.web.myWorkSpace.bean.WaitTaskBean">
+		  SELECT 
+		 	T.*,P.NAME_ proName , U.REAL_NAME startUser , V.URL url
+		 FROM
+		 	ACT_RU_TASK T 
+		 	left join ACT_RE_PROCDEF P on T.PROC_DEF_ID_ = P.ID_
+		 	left join ACT_HI_PROCINST H on T.PROC_INST_ID_ = H.PROC_INST_ID_
+		 	left join sys_user U on H.START_USER_ID_ = U.USER_ID
+		 	left join act_hi_identitylink l on t.ID_ = l.TASK_ID_
+			left join act_view_url V on P.KEY_ = V.application_name
+		 	<where>
+		 			(T.ASSIGNEE_ = #{userId,jdbcType=VARCHAR} or l.GROUP_ID_ in (select r.role_id from sys_user_role r where r.user_id = #{userId,jdbcType=VARCHAR}))
+		 			<if test="id != null and '' != id">  
+			            <![CDATA[  
+			              AND T.ID_ = #{id} 
+			            ]]>  
+	        		</if>  
+					<if test="name != null and '' != name">  
+			            <![CDATA[  
+			              AND T.NAME_ = #{name} 
+			            ]]>  
+	        		</if>  
+	        		<if test="startUser != null and '' != startUser">  
+			            <![CDATA[  
+			              AND U.REAL_NAME = #{startUser} 
+			            ]]>  
+	        		</if>  
+					<if test="taskBeginTime != null and '' != taskBeginTime">  
+			            <![CDATA[  
+			              AND DATE_FORMAT( T.CREATE_TIME_ ,'%Y-%m-%d') >= #{taskBeginTime}  
+			            ]]>  
+	        		</if>  
+			        <if test="taskEndTime != null and '' !=taskEndTime">  
+			            <![CDATA[  
+			              AND DATE_FORMAT( T.CREATE_TIME_ ,'%Y-%m-%d') <= #{taskEndTime}  
+			            ]]>  
+			     	</if>  
+		 	</where>
+		 	ORDER BY 
+					  T.CREATE_TIME_ DESC
+	</select>
+	
+	<select id="getUrl" parameterType="string" resultType="string">
+		SELECT  
+			U.URL
+		FROM 
+			ACT_RU_TASK T , ACT_DEF_URL U
+		WHERE
+			T.ID_ = #{taskId,jdbcType=VARCHAR}
+			AND T.PROC_DEF_ID_ = U.PROC_DEF_ID_
+			AND T.TASK_DEF_KEY_ = U.TASK_DEF_KEY_	
+	</select>
+</mapper>

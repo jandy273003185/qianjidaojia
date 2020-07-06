@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.platform.web.admin.dept.mapper.DeptMapper">
+
+	<insert id="insertDept" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept">
+		INSERT INTO SYS_DEPT (
+			DEPT_CODE,
+			DEPT_LEVEL,
+			DEPT_NAME,
+			DEPT_ADDRESS,
+			UP_DEPT_ID,
+			MEMO,
+			STATUS,
+			INST_USER,
+			INST_DATETIME
+		) VALUES (
+			#{deptCode, 	jdbcType=VARCHAR},
+			#{deptLevel, 	jdbcType=INTEGER},
+			#{deptName, 	jdbcType=VARCHAR},
+			#{deptAddress, 	jdbcType=VARCHAR},
+			#{upDeptId, 	jdbcType=INTEGER},
+			#{memo, 		jdbcType=VARCHAR},
+			#{status, 		jdbcType=VARCHAR},
+			#{instUser, 	jdbcType=INTEGER},
+			now()
+		)
+	</insert>
+	
+	<update id="updateDept" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept">
+		UPDATE SYS_DEPT
+		<set>
+			<if test="deptName != null">
+				DEPT_NAME = #{deptName,jdbcType=VARCHAR},
+			</if>
+			<if test="deptAddress != null">
+				DEPT_ADDRESS = #{deptAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="deptCode != null">
+				DEPT_CODE = #{deptCode,jdbcType=VARCHAR},
+			</if>
+			<if test="deptLevel != null">
+				DEPT_LEVEL = #{deptLevel,jdbcType=INTEGER},
+			</if>
+			<if test="memo != null">
+				MEMO = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="upDeptId > 0">
+				UP_DEPT_ID = #{upDeptId,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="lupdUser != null">
+				LUPD_USER = #{lupdUser,jdbcType=INTEGER},
+			</if>
+				LUPD_DATETIME = now()
+		</set>
+		WHERE DEPT_ID = #{deptId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="deleteDept" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept">
+		UPDATE SYS_DEPT D
+           SET D.STATUS = #{status, jdbcType=VARCHAR}, 
+			   D.LUPD_USER = #{lupdUser, jdbcType=VARCHAR} 
+		 WHERE
+			   D.DEPT_ID = #{deptId,jdbcType=INTEGER}
+	</update>
+	
+	<sql id="selectCondition">
+		<if test="status != null "> AND D.STATUS = #{status, jdbcType=VARCHAR} </if>
+		<if test="deptId != null and deptId != '' "> AND D.dept_id = #{deptId} </if>
+		<if test="deptCode != null and deptCode != '' "> AND D.DEPT_CODE = #{deptCode, jdbcType=VARCHAR} </if>
+		<if test="deptName != null and deptName != '' "> AND D.DEPT_NAME LIKE CONCAT('%',#{deptName,jdbcType=VARCHAR},'%')</if>
+	</sql>
+
+	<select id="selectDeptList" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept" resultType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept">
+		SELECT 
+		  D.DEPT_ID,
+		  D.DEPT_CODE,
+		  D.DEPT_LEVEL,
+		  D.DEPT_NAME,
+		  D.DEPT_ADDRESS,
+		  D.UP_DEPT_ID,
+		  D.MEMO,
+		  D.STATUS,
+ 		  D.INST_USER,
+		 (SELECT U.USER_NAME FROM SYS_USER U WHERE D.INST_USER=U.USER_ID) instUserName,
+		  DATE_FORMAT(D.INST_DATETIME,'%Y-%m-%d %H:%i:%s') as instDatetime,
+		  D.LUPD_USER,
+		 (SELECT U.USER_NAME FROM SYS_USER U WHERE D.LUPD_USER=U.USER_ID) lupdUserName,
+		  DATE_FORMAT(D.LUPD_DATETIME,'%Y-%m-%d %H:%i:%s') as lupdDatetime
+		  FROM SYS_DEPT D
+		<where>
+			<include refid="selectCondition" />
+		</where>	
+		ORDER BY D.DEPT_ID	
+	</select>
+	
+	<select id="selectDeptSingle" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept" resultType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept">
+		SELECT D.* 
+		  FROM SYS_DEPT D
+		<where>
+			<include refid="selectCondition" />
+		</where>	
+	</select>
+	
+	<select id="deptCodeIsExists" parameterType="string" resultType="string">
+		SELECT 
+		COUNT(*) 
+		FROM  
+		SYS_DEPT D 
+		WHERE  
+		D.STATUS='VALID'
+		AND D.DEPT_CODE = #{deptCode,jdbcType = VARCHAR} 
+	</select>
+	
+	<select id="deptCodeAndIdIsExists" parameterType="com.qifenqian.bms.platform.web.admin.dept.bean.Dept" resultType="string">
+		SELECT 
+		COUNT(*) 
+		FROM  
+		SYS_DEPT D 
+		WHERE  
+		D.STATUS='VALID'
+		AND D.DEPT_CODE = #{deptCode,jdbcType = VARCHAR} 
+		AND D.DEPT_ID != #{deptId,jdbcType = INTEGER}
+	</select>
+</mapper>

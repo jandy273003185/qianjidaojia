@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>营长个人中心</title>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/resetFontSize.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/layer_mobile/layer.js"></script>
+    <script src="/js/sc.core.js?v=0.2" type="text/javascript" charset="utf-8"></script>
+    <script src="/script/wxlogin.js"></script>
+    <script src="/js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+    <link href="/css/groupoffinecenter.css?1" rel="stylesheet" />
+</head>
+<body>
+    <div class="banner">
+        <div class="person" id="groupuser">
+            <img src="/images/noPic.jpg" alt="">
+            <div class="avatarname">
+                <div>营长</div>
+                <div class="remark"></div>
+            </div>
+        </div>
+        <div class="new-guidelines" onclick="GroupRemark()">
+            <img src="/images/groupuser/bianji.png"/>
+        </div>
+    </div>
+    <div id="GroupuserInfo"></div>
+    <script id="GroupuserInfoTemp" type="text/x-dot-template">
+        <div class="withdraw">
+            <div class="kaikuang">
+                营长概况
+            </div>
+            <div class="shoyi">
+                <div class="dvlay">
+                    <div class="jia"><div class="tit">今日客户</div><div class="num1">{{=it.offineuserTodayTotal}}<span>人</span></div></div>
+                    <div class="jia"><div class="tit">累计客户</div><div class="num1">{{=it.offineuserTotal}}<span>人</span></div></div>
+                    <!--<div class="jia"><div class="tit">待结算收益</div><div class="num1">{{=it.commissionDelayPriceTotalY}}<span>元</span></div></div>
+                    <div class="jia"><div class="tit">累计收益</div><div class="num2">{{=it.commissionPriceTotalY}}<span>元</span></div></div>-->
+                </div>
+                <div class="line"></div>
+                <div class="dvlay">
+                    <div class="jia ml14"><div class="tit">今日购买订单</div><div class="num2">{{=it.offineorderTodayTotal}}<span>笔</span></div></div>
+                    <div class="jia ml14"><div class="tit">累计订单</div><div class="num2">{{=it.offineorderTotal}}<span>笔</span></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="withdraw2" style="    height: 1.2rem;margin-top: 0">
+            <div class="kaikuang2">
+                营长总收益
+            </div>
+            <div class="shoyi2">
+                <div class="jia"><div class="tit">待结算收益</div><div class="num">{{=it.commissionDelayPriceTotalY}}<span>元</span></div></div>
+                <div class="jia"><div class="tit">累计收益</div><div class="num">{{=it.commissionPriceTotalY}}<span>元</span></div></div>
+            </div>
+        </div>
+        <div class="withdraw2">
+            <div class="kaikuang2">
+                团队收益
+            </div>
+            <div class="shoyi2">
+                <div class="jia"><div class="tit">今日预估团队收益</div><div class="num">{{=it.commissionPriceTodayTotal}}<span>元</span></div></div>
+                <div class="jia"><div class="tit">待结算团队收益</div><div class="num">{{=it.commissionDelayPriceTotal}}<span>元</span></div></div>
+                <div class="jia"><div class="tit">累计团队收益</div><div class="num">{{=it.commissionPriceTotal}}<span>元</span></div></div>
+            </div>
+        </div>
+        <div class="footer">
+            转发分享，手有余香
+        </div>
+    </script>
+    
+    <script>
+        var userId = sc.utils.getCookieValue("UserId");
+        var token = sc.utils.getCookieValue("Token");
+        var offineId = getUrlParam("offineId");
+        $(function () {
+           
+            $(".balancego").click(function () { 
+                window.location.href = "/member/balance.html";
+            });
+            getGroupUserInfo();
+        });
+        
+        function getGroupUserInfo() {
+            var url = 'api/User/getSecondGroupUserInfo';
+            var callback = function (data) {
+                if (data.code == 0) {
+                    if (data.data!="") {
+                        var arrText = doT.template($("#GroupuserInfoTemp").text());
+                        $("#GroupuserInfo").append(arrText(data.data));
+                        if (data.data.headimgurl != "")
+                            $("#groupuser img").attr("src", data.data.headimgurl);
+                        $("#groupuser .avatarname div").eq(0).html(data.data.nickname);
+                        if (data.data.groupremark != null && data.data.groupremark != "") {
+                            $("#groupuser .avatarname div").eq(1).html("备注名：" + data.data.groupremark);
+                        }
+                    }
+                } else if (data.code == 99) {
+                    layer.open({
+                        content: '服务器开了点小差，请重新刷新!',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                } else if (data.code == -1) {
+                    layer.open({
+                        content: '登录超时，请重新登录!',
+                        skin: 'msg',
+                        time: 1 //1秒后自动关闭
+                    });
+                    setTimeout(function () {
+                        location.href = "/register.html";
+                    }, 1000);
+                }
+
+
+                $(".aorder").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineorderlist.html?day=" + day;
+                });
+                $(".auser").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineuserlist.html?day=" + day;
+                });
+                $(".aprofit").click(function () {
+                    var day = $(this).data("day");
+                    window.location.href = "/member/groupoffineprofitlist.html?day=" + day;
+                });
+            }
+            var error = function (data) {
+
+            }
+            sc.post(url, {
+                "UserId": userId,
+                "Token": token,
+                "offineId": offineId
+            }, callback, error);
+        }
+        //修改备注
+        function GroupRemark() {
+            layer.open({
+                content: '<input type="text" id="remark" class="groupremark" placeholder="请输入备注名" value="' + $(".remark").html().replace("备注名：", "") + '"  />',
+                btn: ['确认', '取消'],
+                shadeClose: false,
+                yes: function () {
+                    var url = 'api/User/UpdGroupRemark';
+                    var callback = function (data) {
+                        if (data.code == 0) {
+                            $(".remark").html("备注名：" + $("#remark").val());
+                            layer.open({
+                                content: '保存成功',
+                                skin: 'msg',
+                                time: 2 //2秒后自动关闭
+                            });
+                        }
+                        else {
+                            layer.open({
+                                content: '服务器开了点小差，请重新刷新!',
+                                skin: 'msg',
+                                time: 2 //2秒后自动关闭
+                            });
+                        }
+                    };
+                    sc.post(url, {
+                        "UserId": userId,
+                        "Token": token,
+                        "Id": offineId,
+                        "GroupRemark": $("#remark").val()
+                    }, callback);
+                }, no: function () {
+
+                }
+            });
+        }
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    </script>
+</body>
+</html>

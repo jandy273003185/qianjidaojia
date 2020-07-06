@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.accounting.exception.dao.acctseven.mapper.AcctSevenFreezeMapper">
+	<select id="selectCustFreezeByFLowId" parameterType="java.lang.String" resultType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenFreeze">
+	     	SELECT
+			  	F.ACCT_ID,
+			  	T.ID,
+				T.TRANS_FLOW_ID,
+				T.OPERATE,
+				T.FREEZE_AMT_BEFORE,
+				T.CURR_CODE,
+				T.OPERATE_AMT,
+				T.RELATE_ID,
+				T.WORK_DATE,
+				T.BRIEF,
+				T.STATUS,
+				T.INST_DATE,
+				T.INST_DATETIME
+		FROM
+			STCS.TRANS_RECORD_FLOW F LEFT JOIN 
+			STCS.ACCT_SEVEN_CUST_FREEZE_FLOW T  ON F.ID = T.TRANS_FLOW_ID
+		WHERE F.ID = #{transFlowId,jdbcType = VARCHAR}
+	</select>
+	<update id="updateCustFreezeFlow" parameterType="com.qifenqian.bms.accounting.exception.dao.acctseven.bean.AcctSevenFreeze">
+		UPDATE ACCT_SEVEN_CUST_FREEZE_FLOW F
+			<set>
+				<if test="workDate!=null and workDate!=''">
+					F.WORK_DATE= #{workDate,jdbcType = VARCHAR},
+				</if>
+			</set>
+		WHERE F.TRANS_FLOW_ID = #{transFlowId,jdbcType = VARCHAR}
+	</update>
+</mapper>

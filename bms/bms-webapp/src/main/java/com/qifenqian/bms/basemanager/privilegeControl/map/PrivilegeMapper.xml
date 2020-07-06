@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qifenqian.bms.basemanager.privilegeControl.map.PrivilegeMapper">
+
+	<insert id="insertPrivilege" parameterType="com.qifenqian.bms.basemanager.privilegeControl.bean.Privilege" >
+			INSERT INTO td_privilege_controller (
+			CUST_ID,
+			PRIVILEGE_CODE,
+			CREATE_OPER,
+			CREATE_TIME,
+			MODIFY_OPER,
+			MODIFY_TIME
+			) VALUES (
+			#{custId, 				jdbcType=VARCHAR},
+		  	#{privilegeCode, 			jdbcType=INTEGER},
+		  	#{createOper, 		jdbcType=VARCHAR},
+		  	#{createTime, 		jdbcType=VARCHAR},
+		  	#{modifyOper, 		jdbcType=VARCHAR},
+		  	#{modifyTime, 		jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updatePrivilege" parameterType="com.qifenqian.bms.basemanager.privilegeControl.bean.Privilege">
+		update td_privilege_controller
+		<set>
+			<if test="privilegeCode != null">
+				PRIVILEGE_CODE = #{privilegeCode,jdbcType=VARCHAR},
+			</if>
+			<if test="createOper != null">
+				CREATE_OPER = #{createOper,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyOper != null">
+				MODIFY_OPER = #{modifyOper,jdbcType=VARCHAR},
+			</if>	
+			<if test="createTime != null">
+				CREATE_TIME = #{createTime,jdbcType=VARCHAR},
+			</if>
+				MODIFY_TIME = now()				
+		</set>
+			where CUST_ID = #{custId,jdbcType=VARCHAR}
+	</update>
+	
+	<delete id="deletePrivilege" parameterType="com.qifenqian.bms.basemanager.privilegeControl.bean.Privilege">
+	DELETE FROM TD_PRIVILEGE_CONTROLLER WHERE  CUST_ID = #{custId,jdbcType=VARCHAR}
+	</delete>
+
+</mapper>
